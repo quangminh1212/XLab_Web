@@ -6,6 +6,9 @@ import common from './common';
 import footer from './footer';
 import product from './product';
 import products from './products';
+import about from './about';
+import contact from './contact';
+import privacy from './privacy';
 
 // Kết hợp tất cả các phần dịch
 const vi = {
@@ -17,6 +20,9 @@ const vi = {
   ...footer,
   ...product,
   ...products,
+  ...about,
+  ...contact,
+  ...privacy,
 };
 
 export default vi; 

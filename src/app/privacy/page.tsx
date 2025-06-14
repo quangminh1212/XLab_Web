@@ -1,60 +1,57 @@
+'use client';
+
 import Link from 'next/link';
 import { siteConfig } from '@/config/siteConfig';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function PrivacyPage() {
+  const { t } = useLanguage();
+  
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-xl shadow-sm p-8 sm:p-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Chính sách bảo mật</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">{t('privacy.title')}</h1>
 
           <div className="prose prose-teal max-w-none">
             <p className="text-gray-600 mb-6">
-              Cập nhật lần cuối: {siteConfig.legal.privacyLastUpdated}
+              {t('privacy.lastUpdated')}: {siteConfig.legal.privacyLastUpdated}
             </p>
 
-            <h2>1. Giới thiệu</h2>
+            <h2>1. {t('privacy.section1.title')}</h2>
             <p>
-              {siteConfig.legal.companyName} ("chúng tôi", "của chúng tôi") cam kết bảo vệ quyền
-              riêng tư của bạn. Chính sách bảo mật này mô tả cách chúng tôi thu thập, sử dụng và
-              chia sẻ thông tin cá nhân của bạn khi bạn truy cập hoặc sử dụng trang web, ứng dụng
-              hoặc dịch vụ của chúng tôi.
+              {t('privacy.section1.content', { companyName: siteConfig.legal.companyName })}
             </p>
 
-            <h2>2. Thông tin chúng tôi thu thập</h2>
-            <p>Chúng tôi có thể thu thập các loại thông tin sau từ bạn:</p>
+            <h2>2. {t('privacy.section2.title')}</h2>
+            <p>{t('privacy.section2.intro')}</p>
             <ul>
               <li>
-                <strong>Thông tin cá nhân:</strong> Tên, địa chỉ email, số điện thoại, địa chỉ thanh
-                toán.
+                <strong>{t('privacy.section2.item1').split(':')[0]}:</strong> {t('privacy.section2.item1').split(':')[1]}
               </li>
               <li>
-                <strong>Thông tin tài khoản:</strong> Tên đăng nhập, mật khẩu (được lưu trữ dưới
-                dạng mã hóa).
+                <strong>{t('privacy.section2.item2').split(':')[0]}:</strong> {t('privacy.section2.item2').split(':')[1]}
               </li>
               <li>
-                <strong>Thông tin thanh toán:</strong> Chi tiết thẻ tín dụng hoặc phương thức thanh
-                toán khác.
+                <strong>{t('privacy.section2.item3').split(':')[0]}:</strong> {t('privacy.section2.item3').split(':')[1]}
               </li>
               <li>
-                <strong>Thông tin thiết bị:</strong> Loại thiết bị, hệ điều hành, trình duyệt, địa
-                chỉ IP.
+                <strong>{t('privacy.section2.item4').split(':')[0]}:</strong> {t('privacy.section2.item4').split(':')[1]}
               </li>
               <li>
-                <strong>Dữ liệu sử dụng:</strong> Thông tin về cách bạn sử dụng trang web và dịch vụ
-                của chúng tôi.
+                <strong>{t('privacy.section2.item5').split(':')[0]}:</strong> {t('privacy.section2.item5').split(':')[1]}
               </li>
             </ul>
 
-            <h2>3. Cách chúng tôi sử dụng thông tin của bạn</h2>
-            <p>Chúng tôi sử dụng thông tin của bạn cho các mục đích sau:</p>
+            <h2>3. {t('privacy.section3.title')}</h2>
+            <p>{t('privacy.section3.intro')}</p>
             <ul>
-              <li>Cung cấp, duy trì và cải thiện dịch vụ của chúng tôi</li>
-              <li>Xử lý giao dịch và thanh toán</li>
-              <li>Gửi thông báo liên quan đến tài khoản hoặc dịch vụ của bạn</li>
-              <li>Gửi thông tin tiếp thị nếu bạn đã đồng ý</li>
-              <li>Phát hiện và ngăn chặn gian lận hoặc lạm dụng</li>
-              <li>Tuân thủ nghĩa vụ pháp lý</li>
+              <li>{t('privacy.section3.item1')}</li>
+              <li>{t('privacy.section3.item2')}</li>
+              <li>{t('privacy.section3.item3')}</li>
+              <li>{t('privacy.section3.item4')}</li>
+              <li>{t('privacy.section3.item5')}</li>
+              <li>{t('privacy.section3.item6')}</li>
             </ul>
 
             <h2>4. Chia sẻ thông tin của bạn</h2>
