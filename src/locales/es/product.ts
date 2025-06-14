@@ -24,6 +24,31 @@ const product: TranslationRecord = {
   'product.addedToCart': 'Añadido al Carrito',
   'product.viewCart': 'Ver Carrito',
   'product.continueShopping': 'Continuar Comprando',
+  
+  // Products page
+  'products.pageTitle': 'Productos - XLab',
+  'products.title': 'Productos',
+  'products.subtitle': 'Lista de software y servicios de alta calidad con los mejores precios del mercado.',
+  'products.loading': 'Cargando productos...',
+  'products.error': 'Error al cargar los productos',
+  'products.errorTitle': 'Error',
+  'products.invalidData': 'Datos de productos no válidos',
+  'products.loadError': 'No se pudieron cargar los productos',
+  'products.tryAgain': 'Intentar de nuevo',
+  'products.backToHome': 'Volver al inicio',
+  'products.noResults': 'No se encontraron productos',
+  'products.showing': 'Mostrando',
+  'products.results': 'resultados',
+  'products.sortBy': 'Ordenar por:',
+  'products.newest': 'Más recientes',
+  'products.priceHighToLow': 'Precio: de mayor a menor',
+  'products.priceLowToHigh': 'Precio: de menor a mayor',
+  'products.popular': 'Más populares',
+  'products.rating': 'Mejor valorados',
+  'products.search': 'Buscar productos...',
+  'products.all': 'Todos',
+  'products.software': 'Software',
+  'products.service': 'Servicio',
 };
 
 export default product; 

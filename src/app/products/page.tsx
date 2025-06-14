@@ -10,7 +10,7 @@ import { Button } from '@/components/common/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ProductsPage() {
-  const { t } = useLanguage();
+  const { t, setLanguage } = useLanguage();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -18,6 +18,11 @@ export default function ProductsPage() {
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // Establecer el idioma español al cargar
+  useEffect(() => {
+    setLanguage('es');
+  }, [setLanguage]);
 
   // Set filter from URL params
   useEffect(() => {
@@ -135,17 +140,17 @@ export default function ProductsPage() {
 
   // Danh mục sản phẩm
   const productCategories = [
-    { id: 'all', name: 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
+    { id: 'all', name: t('products.all'), count: Array.isArray(allProducts) ? allProducts.length : 0 },
     {
       id: 'software',
-      name: 'Phần mềm',
+      name: t('products.software'),
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => !p.isAccount && (p.type === 'software' || !p.type)).length
         : 0,
     },
     {
       id: 'service',
-      name: 'Dịch vụ',
+      name: t('products.service'),
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => p.isAccount || p.type === 'account').length
         : 0,
@@ -250,7 +255,53 @@ export default function ProductsPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
+              </svg>
+              {t('products.backToHome')}
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (sortedProducts.length === 0) {
+    return (
+      <div className="py-12 container mx-auto px-4">
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-16 w-16 text-gray-400 mx-auto mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            />
+          </svg>
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('products.noResults')}</h3>
+          <div className="mt-6">
+            <Link
+              href="/"
+              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                 />
               </svg>
               {t('products.backToHome')}
@@ -263,159 +314,152 @@ export default function ProductsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="bg-gray-50 py-4">
-        <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
-          <h1 className="text-3xl font-bold mb-2">{t('products.title')}</h1>
-          
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('products.title')}</h1>
+        <p className="text-gray-600">{t('products.subtitle')}</p>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Sidebar */}
+        <div className="lg:w-1/4 w-full">
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <h3 className="font-semibold text-gray-800 mb-4">{t('product.category')}</h3>
+            <div className="space-y-2">
+              {productCategories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setFilter(category.id)}
+                  className={`w-full text-left px-3 py-2 rounded-md flex justify-between items-center transition-colors ${
+                    filter === category.id
+                      ? 'bg-primary-50 text-primary-700'
+                      : 'hover:bg-gray-50 text-gray-700'
+                  }`}
+                >
+                  <span>{category.name}</span>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      filter === category.id ? 'bg-primary-100' : 'bg-gray-100'
+                    }`}
+                  >
+                    {category.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-4">
+            <h3 className="font-semibold text-gray-800 mb-4">{t('products.sortBy')}</h3>
+            <div className="space-y-2">
+              <button
+                onClick={() => setSort('newest')}
+                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  sort === 'newest' ? 'bg-primary-50 text-primary-700' : 'hover:bg-gray-50 text-gray-700'
+                }`}
+              >
+                {t('products.newest')}
+              </button>
+              <button
+                onClick={() => setSort('price-low')}
+                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  sort === 'price-low'
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'hover:bg-gray-50 text-gray-700'
+                }`}
+              >
+                {t('products.priceLowToHigh')}
+              </button>
+              <button
+                onClick={() => setSort('price-high')}
+                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  sort === 'price-high'
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'hover:bg-gray-50 text-gray-700'
+                }`}
+              >
+                {t('products.priceHighToLow')}
+              </button>
+              <button
+                onClick={() => setSort('popular')}
+                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  sort === 'popular'
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'hover:bg-gray-50 text-gray-700'
+                }`}
+              >
+                {t('products.popular')}
+              </button>
+              <button
+                onClick={() => setSort('rating')}
+                className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
+                  sort === 'rating'
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'hover:bg-gray-50 text-gray-700'
+                }`}
+              >
+                {t('products.rating')}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="lg:w-3/4 w-full">
+          {/* Search Bar */}
           <div className="mb-6">
-            <p className="text-sm md:text-base text-gray-600">
-              {t('products.subtitle')}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={t('products.search')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-3 pl-10 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Results Count */}
+          <div className="mb-6">
+            <p className="text-gray-600">
+              {t('products.showing')} {sortedProducts.length} {t('products.results')}
             </p>
           </div>
 
-          {/* Filter tabs */}
-          <div className="border-b border-gray-200 mb-4">
-            <div className="flex space-x-4">
-              <button
-                onClick={() => setFilter('all')}
-                className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-              >
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 10h16M4 14h16M4 18h16"
-                    />
-                  </svg>
-                  {t('products.all')}
-                </div>
-              </button>
-              <button
-                onClick={() => setFilter('software')}
-                className={`py-2 px-2 ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-              >
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  {t('products.software')}
-                </div>
-              </button>
-              <button
-                onClick={() => setFilter('service')}
-                className={`py-2 px-2 ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-              >
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  {t('products.service')}
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Main content */}
-            <div className="w-full">
-              {/* Filters bar */}
-              <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
-                <div className="text-sm md:text-base text-gray-600">
-                  {t('products.showing', { count: sortedProducts.length })}
-                </div>
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
-                    {t('products.sortBy')}:
-                  </label>
-                  <select
-                    id="sort"
-                    className="text-sm md:text-base border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    value={sort}
-                    onChange={(e) => setSort(e.target.value)}
-                  >
-                    <option value="newest">{t('products.sortNewest')}</option>
-                    <option value="price-low">{t('products.sortPriceLow')}</option>
-                    <option value="price-high">{t('products.sortPriceHigh')}</option>
-                    <option value="popular">{t('products.sortPopular')}</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Product grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
-                {sortedProducts.map((product) => {
-                  // Log the product data for debugging
-                  console.log(`Product ${product.id} image data:`, product.images);
-
-                  // Xác định giá hiển thị - kiểm tra versions trước
-                  const displayPrice =
-                    product.versions && product.versions.length > 0
-                      ? product.versions[0].price || 0
-                      : product.price || 0;
-
-                  // Xác định giá gốc - kiểm tra versions trước
-                  const originalPrice =
-                    product.versions && product.versions.length > 0
-                      ? product.versions[0].originalPrice || 0
-                      : product.salePrice || 0;
-
-                  // Lấy ảnh sản phẩm (sử dụng helper function)
-                  const imageUrl = getValidImageUrl(product);
-
-                  console.log(`Processed image URL for ${product.name}:`, imageUrl);
-
-                  return (
-                    <div key={product.id} className="aspect-[1/1.5]">
-                      <ProductCard
-                        id={product.id.toString()}
-                        name={product.name}
-                        description={product.shortDescription || product.description || ''}
-                        price={displayPrice}
-                        originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
-                        image={imageUrl}
-                        category={categories.find((c) => c.id === product.categoryId)?.name}
-                        rating={product.rating}
-                        reviewCount={product.reviewCount}
-                        weeklyPurchases={product.weeklyPurchases}
-                        totalSold={product.totalSold}
-                        slug={product.slug}
-                        isAccount={product.isAccount || product.type === 'account'}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                description={product.shortDescription || product.description || ''}
+                price={product.price}
+                originalPrice={product.originalPrice}
+                image={getValidImageUrl(product)}
+                rating={product.rating}
+                reviewCount={product.reviewCount}
+                weeklyPurchases={product.weeklyPurchases}
+                totalSold={product.totalSold}
+                slug={product.slug}
+                isAccount={product.isAccount}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -423,12 +467,10 @@ export default function ProductsPage() {
   );
 }
 
-// Helper function to format currency
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
   }).format(value);
 }
