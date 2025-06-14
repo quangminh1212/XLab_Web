@@ -1,30 +1,17 @@
 @echo off
-title XLab Web - Quick Start
-echo.
-echo ==========================================
-echo    XLab Web - Quick Start
-echo ==========================================
-echo.
-echo Installing dependencies...
-call npm install
-echo.
-echo Installing json5 specifically...
-call npm install json5
-echo.
-echo Clearing Next.js cache...
-if exist ".next" (
-    rd /s /q ".next"
+echo === XLab Web Server ===
+echo Cleaning up .next directory...
+if exist .next (
+  rmdir /s /q .next
 )
-echo.
-echo Starting development server...
-echo.
 
-cd %~dp0
-npm run dev
+echo Running fix-next script...
+node fix-next.js
 
-rem Keep the window open if there's an error
-if errorlevel 1 (
-    echo.
-    echo Error occurred. Press any key to exit...
-    pause >nul
-) 
+echo Installing dependencies...
+npm install
+
+echo Starting production server...
+npm start
+
+pause 
