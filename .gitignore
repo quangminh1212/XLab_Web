@@ -25,7 +25,6 @@ cypress/screenshots
 .next/server/
 .next/server/app/api/auth/
 .next/server/chunks/
-.next/server/app-paths-manifest.json
 .next/server/app/api/auth/[...nextauth]/
 
 # production
@@ -115,8 +114,6 @@ powershell-dev.js
 start-dev.bat
 no-trace.bat
 run-fixed.bat
-fix-eslint.js
-fix-next.js
 
 !/images/products/.gitkeep
 
@@ -152,16 +149,6 @@ report.*.json
 .next/cache/webpack/edge-server-development
 .next/server/chunks
 .next/static/css/app-layout.css
-.next/types
-.next/server/*.json
-.next/server/pages-manifest.json
-.next/server/middleware-manifest.json
-.next/server/middleware-build-manifest.js
-.next/server/middleware-react-loadable-manifest.js
-.next/server/app-paths-manifest.json
-.next/build-manifest.json
-.next/react-loadable-manifest.json
-.next/required-server-files.json
 
 # user data files
 /data/users/*.json
