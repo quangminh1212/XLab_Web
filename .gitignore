@@ -68,7 +68,6 @@ next-env.d.ts
 # IDE
 .idea/
 .vscode/
-.next/
 *.iml
 *.suo
 *.user
@@ -144,10 +143,6 @@ report.*.json
 /data/users/*.json
 /data/backups
 
-# IDE
-.idea
-.vscode
-
 # Generated files during runtime
 .next/cache/webpack/client-development
 .next/cache/webpack/server-development
@@ -158,3 +153,18 @@ report.*.json
 # user data files
 /data/users/*.json
 /data/users.json
+
+# Temporary files
+*.tmp
+*~
+._*
+Thumbs.db
+.DS_Store
+ehthumbs.db
+Desktop.ini
+
+# Other runtime generated files
+output-*.json
+test-output/
+temp/
+tmp/
