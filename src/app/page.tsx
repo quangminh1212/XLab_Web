@@ -88,11 +88,16 @@ const getValidImageUrl = (product: Product): string => {
 };
 
 function HomePage() {
-  const { t } = useLanguage();
+  const { t, setLanguage } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleProductCount, setVisibleProductCount] = useState(8);
   const [isClient, setIsClient] = useState(false);
+
+  // Establecemos el idioma español al cargar el componente
+  useEffect(() => {
+    setLanguage('es');
+  }, [setLanguage]);
 
   // Đánh dấu khi component được mount ở client
   useEffect(() => {

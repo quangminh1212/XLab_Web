@@ -10,16 +10,21 @@ export default function HomeTestimonials() {
 
   // Định nghĩa các chuỗi văn bản trực tiếp dựa trên ngôn ngữ hiện tại
   const texts = {
-    title: language === 'vi' ? 'Đánh giá của khách hàng' : 'Customer Reviews',
-    viewAll: language === 'vi' ? 'Xem tất cả đánh giá' : 'View all reviews',
+    title: language === 'vi' ? 'Đánh giá của khách hàng' : 
+           language === 'es' ? 'Opiniones de Clientes' : 'Customer Reviews',
+    viewAll: language === 'vi' ? 'Xem tất cả đánh giá' : 
+             language === 'es' ? 'Ver todas las opiniones' : 'View all reviews',
     testimonials: [
       {
         id: 1,
         text: language === 'vi' 
           ? '"Tôi đã sử dụng dịch vụ của XLab được 2 năm và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, có đầy đủ tính năng, và đội ngũ hỗ trợ rất tận tâm."'
+          : language === 'es'
+          ? '"He estado utilizando los servicios de XLab durante 2 años y estoy extremadamente satisfecho. El software funciona sin problemas, tiene características completas y el equipo de soporte es muy dedicado."'
           : '"I have been using XLab services for 2 years and am extremely satisfied. The software runs smoothly, has complete features, and the support team is very dedicated."',
         name: 'Michael Roberts',
-        position: language === 'vi' ? 'Giám đốc kinh doanh' : 'Business Director',
+        position: language === 'vi' ? 'Giám đốc kinh doanh' : 
+                  language === 'es' ? 'Director de Negocios' : 'Business Director',
         image: '/images/testimonials/michael-roberts.jpg',
         fallbackImage: 'https://randomuser.me/api/portraits/men/32.jpg'
       },
@@ -27,9 +32,12 @@ export default function HomeTestimonials() {
         id: 2,
         text: language === 'vi'
           ? '"Các giải pháp AI của XLab đã giúp doanh nghiệp của chúng tôi tiết kiệm được 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."'
+          : language === 'es'
+          ? '"Las soluciones de IA de XLab han ayudado a nuestra empresa a ahorrar un 30% en costos operativos. El equipo de soporte técnico responde de manera rápida y efectiva."'
           : '"XLab\'s AI solutions have helped our business save 30% in operating costs. The technical support team responds quickly and effectively."',
         name: 'David Wilson',
-        position: language === 'vi' ? 'CTO - Tech Solutions' : 'CTO - Tech Solutions',
+        position: language === 'vi' ? 'CTO - Tech Solutions' : 
+                  language === 'es' ? 'CTO - Tech Solutions' : 'CTO - Tech Solutions',
         image: '/images/testimonials/david-wilson.jpg',
         fallbackImage: 'https://randomuser.me/api/portraits/men/41.jpg'
       },
@@ -37,9 +45,12 @@ export default function HomeTestimonials() {
         id: 3,
         text: language === 'vi'
           ? '"Các bản cập nhật liên tục của XLab đảm bảo sản phẩm luôn đáp ứng được những yêu cầu ngày càng cao của chúng tôi. Giao diện thân thiện và dễ sử dụng ngay cả với người mới."'
+          : language === 'es'
+          ? '"Las actualizaciones continuas de XLab aseguran que el producto siempre satisfaga nuestras demandas cada vez más altas. La interfaz es amigable y fácil de usar incluso para los principiantes."'
           : '"XLab\'s continuous updates ensure the product always meets our increasingly high demands. The interface is friendly and easy to use even for newcomers."',
         name: 'Emily Parker',
-        position: language === 'vi' ? 'Quản lý dự án' : 'Project Manager',
+        position: language === 'vi' ? 'Quản lý dự án' : 
+                  language === 'es' ? 'Gerente de Proyectos' : 'Project Manager',
         image: '/images/testimonials/emily-parker.jpg',
         fallbackImage: 'https://randomuser.me/api/portraits/women/68.jpg'
       }
