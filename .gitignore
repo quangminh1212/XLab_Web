@@ -34,10 +34,8 @@ cypress/screenshots
 # misc
 .DS_Store
 *.pem
-.env
 .env.development
 .env.production
-.env.test
 
 # debug
 npm-debug.log*
@@ -47,9 +45,6 @@ lerna-debug.log*
 next.config.log
 next-fix-all.log
 
-# local env files
-.env*.local
-!.env.example
 
 # vercel
 .vercel
@@ -58,8 +53,6 @@ next-fix-all.log
 *.tsbuildinfo
 next-env.d.ts
 
-# User data files
-/data/users/*.json
 /data/backups/
 
 # Generated files
