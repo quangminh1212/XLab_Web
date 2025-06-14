@@ -180,11 +180,27 @@ export default function ProductCard({
     // Đảm bảo amount là số
     const safeAmount = isNaN(amount) ? 0 : amount;
     
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    }).format(safeAmount);
+    // Định dạng tiền tệ tùy theo ngôn ngữ
+    if (language === 'es') {
+      return new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 0,
+      }).format(safeAmount);
+    } else if (language === 'en') {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+      }).format(safeAmount);
+    } else {
+      // Mặc định là tiếng Việt
+      return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+        minimumFractionDigits: 0,
+      }).format(safeAmount);
+    }
   };
 
   const renderRatingStars = (rating: number) => {

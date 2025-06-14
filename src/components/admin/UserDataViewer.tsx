@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface UserDataViewerProps {
   className?: string;
@@ -78,6 +79,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [searchEmail, setSearchEmail] = useState('');
+  const { t } = useLanguage();
 
   const searchUserData = async () => {
     if (!searchEmail.trim()) {
@@ -120,12 +122,12 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
       const data = await response.json();
 
       if (data.isValid) {
-        alert('✅ Dữ liệu người dùng toàn vẹn');
+        alert(t('admin.userData.integrity.valid'));
       } else {
-        alert('⚠️ Cảnh báo: Dữ liệu có thể bị thay đổi');
+        alert(t('admin.userData.integrity.invalid'));
       }
     } catch (error) {
-      alert('❌ Lỗi khi kiểm tra tính toàn vẹn dữ liệu');
+      alert(t('admin.userData.integrity.error'));
     } finally {
       setLoading(false);
     }
@@ -146,7 +148,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
   if (!session?.user?.isAdmin) {
     return (
       <div className={`p-6 bg-red-50 border border-red-200 rounded-lg ${className}`}>
-        <p className="text-red-700">⛔ Chỉ admin mới có thể truy cập tính năng này</p>
+        <p className="text-red-700">{t('common.admin.onlyAccess')}</p>
       </div>
     );
   }
@@ -154,14 +156,14 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🔍 Truy vấn dữ liệu người dùng</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('common.admin.userData')}</h2>
 
         <div className="flex gap-4 mb-4">
           <input
             type="email"
             value={searchEmail}
             onChange={(e) => setSearchEmail(e.target.value)}
-            placeholder="Nhập email người dùng..."
+            placeholder={t('admin.userData.emailPlaceholder')}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             onKeyPress={(e) => e.key === 'Enter' && searchUserData()}
           />
@@ -170,7 +172,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
             disabled={loading}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? '⏳' : '🔍'} Tìm kiếm
+            {loading ? '⏳' : '🔍'} {t('admin.userData.search')}
           </button>
           {userData && (
             <button
@@ -178,7 +180,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
               disabled={loading}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
-              ✅ Kiểm tra
+              ✅ {t('admin.userData.check')}
             </button>
           )}
         </div>
@@ -194,38 +196,38 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
         <div className="space-y-6">
           {/* Profile Info */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">👤 Thông tin cá nhân</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">{t('admin.userData.profile')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p>
-                  <strong>ID:</strong> {userData.profile.id}
+                  <strong>{t('admin.userData.profile.id')}:</strong> {userData.profile.id}
                 </p>
                 <p>
-                  <strong>Tên:</strong> {userData.profile.name}
+                  <strong>{t('admin.userData.profile.name')}:</strong> {userData.profile.name}
                 </p>
                 <p>
-                  <strong>Email:</strong> {userData.profile.email}
+                  <strong>{t('admin.userData.profile.email')}:</strong> {userData.profile.email}
                 </p>
                 <p>
-                  <strong>Admin:</strong> {userData.profile.isAdmin ? 'Có' : 'Không'}
+                  <strong>{t('admin.userData.profile.admin')}:</strong> {userData.profile.isAdmin ? 'Có' : 'Không'}
                 </p>
               </div>
               <div>
                 <p>
-                  <strong>Số dư:</strong> {formatCurrency(userData.profile.balance)}
+                  <strong>{t('admin.userData.profile.balance')}:</strong> {formatCurrency(userData.profile.balance)}
                 </p>
                 <p>
-                  <strong>Tham gia:</strong> {formatDateTime(userData.profile.createdAt)}
+                  <strong>{t('admin.userData.profile.joinDate')}:</strong> {formatDateTime(userData.profile.createdAt)}
                 </p>
                 <p>
-                  <strong>Đăng nhập cuối:</strong>{' '}
+                  <strong>{t('admin.userData.profile.lastLogin')}:</strong>{' '}
                   {userData.profile.lastLogin
                     ? formatDateTime(userData.profile.lastLogin)
                     : 'Chưa có'}
                 </p>
                 <p>
-                  <strong>Trạng thái:</strong>{' '}
-                  {userData.profile.isActive ? '✅ Hoạt động' : '❌ Không hoạt động'}
+                  <strong>{t('admin.userData.profile.status')}:</strong>{' '}
+                  {userData.profile.isActive ? t('admin.userData.profile.active') : t('admin.userData.profile.inactive')}
                 </p>
               </div>
             </div>
@@ -233,47 +235,47 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
 
           {/* Stats */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">📊 Thống kê</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">{t('admin.userData.stats')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
                 <p className="text-2xl font-bold text-blue-600">{userData.stats.activeSessions}</p>
-                <p className="text-sm text-gray-600">Sessions hoạt động</p>
+                <p className="text-sm text-gray-600">{t('admin.userData.stats.sessions')}</p>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
                 <p className="text-2xl font-bold text-green-600">
                   {userData.stats.totalActivities}
                 </p>
-                <p className="text-sm text-gray-600">Tổng hoạt động</p>
+                <p className="text-sm text-gray-600">{t('admin.userData.stats.activities')}</p>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <p className="text-2xl font-bold text-purple-600">
                   {userData.stats.totalTransactions}
                 </p>
-                <p className="text-sm text-gray-600">Tổng giao dịch</p>
+                <p className="text-sm text-gray-600">{t('admin.userData.stats.transactions')}</p>
               </div>
             </div>
           </div>
 
           {/* Data Integrity */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">🔒 Tính toàn vẹn dữ liệu</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">{t('admin.userData.integrity')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p>
-                  <strong>Phiên bản:</strong> {userData.metadata.dataVersion}
+                  <strong>{t('admin.userData.integrity.version')}:</strong> {userData.metadata.dataVersion}
                 </p>
                 <p>
-                  <strong>Backup cuối:</strong> {formatDateTime(userData.metadata.lastBackup)}
+                  <strong>{t('admin.userData.integrity.lastBackup')}:</strong> {formatDateTime(userData.metadata.lastBackup)}
                 </p>
               </div>
               <div>
                 <p>
-                  <strong>Checksum:</strong>{' '}
+                  <strong>{t('admin.userData.integrity.checksum')}:</strong>{' '}
                   <code className="text-xs">{userData.metadata.checksum.substring(0, 16)}...</code>
                 </p>
                 <p>
-                  <strong>Tính toàn vẹn:</strong>{' '}
-                  {userData.metadata.dataIntegrity ? '✅ OK' : '⚠️ Cảnh báo'}
+                  <strong>{t('admin.userData.integrity.status')}:</strong>{' '}
+                  {userData.metadata.dataIntegrity ? t('admin.userData.integrity.ok') : t('admin.userData.integrity.warning')}
                 </p>
               </div>
             </div>
@@ -281,7 +283,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
 
           {/* Recent Activities */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">📝 Hoạt động gần đây</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">{t('admin.userData.activities')}</h3>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {userData.activities.map((activity) => (
                 <div
@@ -291,7 +293,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-medium">{activity.description}</p>
-                      <p className="text-sm text-gray-600">Loại: {activity.type}</p>
+                      <p className="text-sm text-gray-600">{t('admin.userData.activities.type')}: {activity.type}</p>
                     </div>
                     <span className="text-xs text-gray-500">
                       {formatDateTime(activity.timestamp)}

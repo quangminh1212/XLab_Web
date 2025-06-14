@@ -80,7 +80,7 @@ export default function RelatedProducts({
 
   if (loading) {
     return (
-      <div className="mt-12 py-8 text-center text-gray-500">Đang tải sản phẩm liên quan...</div>
+      <div className="mt-12 py-8 text-center text-gray-500">{t('common.products.loading')}</div>
     );
   }
 

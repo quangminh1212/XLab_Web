@@ -1,0 +1,43 @@
+import { TranslationRecord } from '../index';
+
+const privacy: TranslationRecord = {
+  // Privacy page
+  'privacy.title': 'Privacy Policy',
+  'privacy.lastUpdated': 'Last Updated',
+  'privacy.section1.title': 'Introduction',
+  'privacy.section1.content': 'This privacy policy explains how {companyName} collects, uses, and safeguards your personal information when you visit our website or use our services.',
+  'privacy.section2.title': 'Information We Collect',
+  'privacy.section2.intro': 'We may collect the following types of information:',
+  'privacy.section2.item1': 'Personal Information: Name, email address, phone number, billing address, payment information',
+  'privacy.section2.item2': 'Account Information: Login credentials, purchase history, preferences',
+  'privacy.section2.item3': 'Usage Data: How you interact with our website, products and services',
+  'privacy.section2.item4': 'Technical Information: IP address, browser type, device information',
+  'privacy.section2.item5': 'Cookies and Tracking: Information collected through cookies and similar technologies',
+  'privacy.section3.title': 'How We Use Your Information',
+  'privacy.section3.intro': 'We use your information for various purposes, including:',
+  'privacy.section3.item1': 'Providing and managing the services you request',
+  'privacy.section3.item2': 'Processing transactions and sending transaction notifications',
+  'privacy.section3.item3': 'Improving our website, products, and services',
+  'privacy.section3.item4': 'Customizing your experience and providing personalized content',
+  'privacy.section3.item5': 'Communicating with you about updates, security alerts, and support',
+  'privacy.section4.title': 'How We Share Your Information',
+  'privacy.section4.intro': 'We may share your information with:',
+  'privacy.section4.item1': 'Service providers who perform services on our behalf',
+  'privacy.section4.item2': 'Business partners with your consent',
+  'privacy.section4.item3': 'Legal authorities when required by law',
+  'privacy.section5.title': 'Your Rights',
+  'privacy.section5.intro': 'Depending on your location, you may have the right to:',
+  'privacy.section5.item1': 'Access the personal information we hold about you',
+  'privacy.section5.item2': 'Correct inaccurate or incomplete information',
+  'privacy.section5.item3': 'Request deletion of your personal information',
+  'privacy.section5.item4': 'Object to or restrict certain processing activities',
+  'privacy.section5.item5': 'Data portability',
+  'privacy.section6.title': 'Security Measures',
+  'privacy.section6.content': 'We implement appropriate technical and organizational measures to protect your personal information from unauthorized access, disclosure, alteration, or destruction.',
+  'privacy.section7.title': 'Changes to This Policy',
+  'privacy.section7.content': 'We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page.',
+  'privacy.section8.title': 'Contact Us',
+  'privacy.section8.content': 'If you have questions about this privacy policy, please contact us at:',
+};
+
+export default privacy; 
