@@ -8,7 +8,6 @@ import {
   StyleLoader,
   CssErrorHandler,
   GlobalStyles,
-  LanguageAutoSwitcher,
 } from '@/components/common';
 import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
@@ -37,7 +36,6 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
               <StyleLoader />
               <CssErrorHandler />
               <GlobalStyles />
-              <LanguageAutoSwitcher />
             </CartProvider>
           </BalanceProvider>
         </NotificationProvider>

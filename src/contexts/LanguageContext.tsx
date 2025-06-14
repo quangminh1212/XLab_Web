@@ -3,7 +3,6 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 <<<<<<< HEAD
 <<<<<<< HEAD
-<<<<<<< HEAD
 import { Language, translations } from '@/locales';
 =======
 
@@ -12,9 +11,6 @@ type Language = 'vi' | 'en';
 =======
 import { translations, Language } from '@/locales';
 >>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
-=======
-import { Language, vi, en, es } from '@/locales';
->>>>>>> dev_10
 
 type LanguageContextType = {
   language: Language;
@@ -29,7 +25,6 @@ interface LanguageProviderProps {
 // Tạo một context mới
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1493,13 +1488,6 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
   },
-=======
-// Tập hợp các bản dịch từ các file ngôn ngữ
-const translations = {
-  vi,
-  en,
-  es
->>>>>>> dev_10
 };
 
 >>>>>>> parent of eea5ca55 (feat: add Spanish translations to language context)
@@ -1512,7 +1500,6 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
 <<<<<<< HEAD
-<<<<<<< HEAD
     const savedLanguage = localStorage.getItem('language') as Language | null;
     if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage);
@@ -1521,11 +1508,6 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage as Language);
 >>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
-=======
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
-      setLanguageState(savedLanguage as Language);
->>>>>>> dev_10
     }
   }, []);
 

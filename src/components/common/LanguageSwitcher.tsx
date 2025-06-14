@@ -29,7 +29,6 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
 
   const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
 <<<<<<< HEAD
-<<<<<<< HEAD
     if (lang === language) {
       setIsOpen(false);
       return;
@@ -37,16 +36,18 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     
 =======
 >>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
-=======
->>>>>>> dev_10
     setLanguage(lang);
     setIsOpen(false);
   };
 
-  const getLanguageDisplay = () => {
-    switch(language) {
-      case 'vi':
-        return (
+  return (
+    <div className={`relative ${className}`} ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
+        aria-expanded={isOpen}
+      >
+        {language === 'vi' ? (
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -60,15 +61,9 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             <span>VIE</span>
           </>
 <<<<<<< HEAD
-<<<<<<< HEAD
         ) : language === 'en' ? (
 =======
         ) : language === 'es' ? (
-=======
-        );
-      case 'es':
-        return (
->>>>>>> dev_10
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -81,14 +76,8 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>ESP</span>
           </>
-<<<<<<< HEAD
         ) : (
 >>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
-=======
-        );
-      default: // 'en'
-        return (
->>>>>>> dev_10
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -101,18 +90,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>ENG</span>
           </>
-        );
-    }
-  };
-
-  return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
-        aria-expanded={isOpen}
-      >
-        {getLanguageDisplay()}
+        )}
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           className="h-4 w-4 ml-1" 

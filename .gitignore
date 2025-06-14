@@ -68,6 +68,7 @@ next-env.d.ts
 # IDE
 .idea/
 .vscode/
+.next/
 *.iml
 *.suo
 *.user
@@ -110,7 +111,7 @@ hide-warnings.js
 update-gitignore.js
 dev.cmd
 dev.ps1
-powershell-dev.js
+powershell-dev.ps1
 start-dev.bat
 no-trace.bat
 run-fixed.bat
@@ -138,37 +139,3 @@ report.*.json
 .next/static/chunks/
 .next/static/webpack/
 .next/trace
-
-# user data
-/data/users/*.json
-/data/backups
-
-# Generated files during runtime
-.next/cache/webpack/client-development
-.next/cache/webpack/server-development
-.next/cache/webpack/edge-server-development
-.next/server/chunks
-.next/static/css/app-layout.css
-
-# user data files
-/data/users/*.json
-/data/users.json
-
-# Temporary files
-*.tmp
-*~
-._*
-Thumbs.db
-.DS_Store
-ehthumbs.db
-Desktop.ini
-
-# Other runtime generated files
-output-*.json
-test-output/
-temp/
-tmp/
-
-# Translation validation
-validate-translations.js
-validate-translations-output.json

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 declare global {
   interface Window {
@@ -12,7 +11,6 @@ declare global {
 }
 
 const SpeechToTextDemo = () => {
-  const { t, language } = useLanguage();
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(true);
@@ -30,18 +28,7 @@ const SpeechToTextDemo = () => {
 
     recognitionRef.current.continuous = true;
     recognitionRef.current.interimResults = true;
-    
-    // Set language based on current app language
-    switch(language) {
-      case 'vi':
-        recognitionRef.current.lang = 'vi-VN';
-        break;
-      case 'es':
-        recognitionRef.current.lang = 'es-ES';
-        break;
-      default:
-        recognitionRef.current.lang = 'en-US';
-    }
+    recognitionRef.current.lang = 'vi-VN'; // Mặc định là tiếng Việt
 
     recognitionRef.current.onresult = (event: any) => {
       let interimTranscript = '';
@@ -76,7 +63,7 @@ const SpeechToTextDemo = () => {
         recognitionRef.current.stop();
       }
     };
-  }, [isListening, language]);
+  }, [isListening]);
 
   const toggleListening = () => {
     if (isListening) {
@@ -96,7 +83,7 @@ const SpeechToTextDemo = () => {
     navigator.clipboard
       .writeText(transcript)
       .then(() => {
-        alert(t('product.speechToText.copied'));
+        alert('Đã sao chép vào clipboard!');
       })
       .catch((err) => {
         console.error('Không thể sao chép: ', err);
@@ -111,8 +98,8 @@ const SpeechToTextDemo = () => {
     return (
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="text-center text-red-500 mb-4">
-          <p>{t('product.speechToText.notSupported')}</p>
-          <p>{t('product.speechToText.useBrowser')}</p>
+          <p>Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.</p>
+          <p>Vui lòng sử dụng Chrome, Edge hoặc Safari phiên bản mới nhất.</p>
         </div>
         <Image
           src="/images/speech-to-text/microphone.svg"
@@ -127,7 +114,7 @@ const SpeechToTextDemo = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4 text-center">{t('common.speechToText.title')}</h2>
+      <h2 className="text-xl font-semibold mb-4 text-center">Demo Nhận Dạng Giọng Nói</h2>
 
       <div className="flex justify-center mb-6">
         <button
@@ -150,9 +137,9 @@ const SpeechToTextDemo = () => {
 
       <div className="text-center mb-2">
         {isListening ? (
-          <p className="text-red-500 font-medium">{t('common.listening')}</p>
+          <p className="text-red-500 font-medium">Đang lắng nghe...</p>
         ) : (
-          <p className="text-gray-600">{t('common.pressToStart')}</p>
+          <p className="text-gray-600">Nhấn nút micro để bắt đầu</p>
         )}
       </div>
 
@@ -160,7 +147,7 @@ const SpeechToTextDemo = () => {
         {transcript ? (
           <p className="whitespace-pre-wrap">{transcript}</p>
         ) : (
-          <p className="text-gray-400 italic text-center">{t('common.saySomething')}</p>
+          <p className="text-gray-400 italic text-center">Nói điều gì đó...</p>
         )}
       </div>
 
@@ -170,7 +157,7 @@ const SpeechToTextDemo = () => {
           className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors disabled:opacity-50"
           disabled={!transcript}
         >
-          {t('product.speechToText.clear')}
+          Xóa
         </button>
 
         <button
@@ -178,17 +165,17 @@ const SpeechToTextDemo = () => {
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
           disabled={!transcript}
         >
-          {t('product.speechToText.copy')}
+          Sao chép
         </button>
       </div>
 
       <div className="mt-6 border-t pt-4 border-gray-200">
-        <h3 className="text-sm font-medium mb-2">{t('common.speechToText.features')}</h3>
+        <h3 className="text-sm font-medium mb-2">Chức năng của VoiceTyping:</h3>
         <ul className="text-sm text-gray-600 space-y-1 list-disc pl-5">
-          <li>{t('product.speechToText.feature1')}</li>
-          <li>{t('product.speechToText.feature2')}</li>
-          <li>{t('product.speechToText.feature3')}</li>
-          <li>{t('product.speechToText.feature4')}</li>
+          <li>Nhận dạng giọng nói tiếng Việt và các ngôn ngữ khác</li>
+          <li>Tự động định dạng và chỉnh sửa văn bản</li>
+          <li>Tích hợp với Microsoft Office và các ứng dụng văn phòng</li>
+          <li>Hoạt động cả online và offline</li>
         </ul>
       </div>
     </div>
