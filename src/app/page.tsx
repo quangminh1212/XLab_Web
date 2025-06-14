@@ -146,10 +146,10 @@ function HomePage() {
               <span className="text-primary-500">Lab</span>
             </h1>
             <p className="text-responsive-lg text-gray-600 max-w-3xl mb-6 sm:mb-8">
-              {isClient ? t('home.slogan') : 'Tối ưu hiệu quả, tối thiểu chi phí!'}
+              {t('home.slogan')}
             </p>
 
-            <SearchBar placeholder={isClient ? t('home.search') : 'Tìm kiếm phần mềm, ứng dụng...'} />
+            <SearchBar placeholder={t('home.search')} />
           </div>
         </div>
       </section>
@@ -180,19 +180,19 @@ function HomePage() {
                       </svg>
                     </div>
                   </div>
-                  <h2 className="heading-3 mb-3 text-gray-800 text-center">{isClient ? t('home.aboutTitle') : 'Về XLab'}</h2>
+                  <h2 className="heading-3 mb-3 text-gray-800 text-center">{t('home.aboutTitle')}</h2>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    {isClient ? t('home.aboutDesc1') : 'XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.'}
+                    {t('home.aboutDesc1')}
                   </p>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    {isClient ? t('home.aboutDesc2') : 'Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.'}
+                    {t('home.aboutDesc2')}
                   </p>
                   <div className="mt-4">
                     <Link
                       href="/about"
                       className="w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-3 sm:px-4 rounded-lg transition-colors flex items-center justify-center text-responsive-sm"
                     >
-                      {isClient ? t('home.learnMore') : 'Tìm hiểu thêm'}
+                      {t('home.learnMore')}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-3 w-3 sm:h-4 sm:w-4 ml-1"

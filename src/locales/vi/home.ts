@@ -8,7 +8,7 @@ const home: TranslationRecord = {
   'home.aboutDesc1': 'XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.',
   'home.aboutDesc2': 'Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.',
   'home.learnMore': 'Tìm hiểu thêm',
-  'home.domesticProduct': 'Sản phẩm nội địa',
+  'home.domesticProduct': 'Sản phẩm trong nước',
   'home.vietnamDevs': 'Phát triển bởi đội ngũ Việt Nam',
   'home.support247': 'Hỗ trợ 24/7',
   'home.supportTeam': 'Đội ngũ hỗ trợ nhiệt tình',
