@@ -139,3 +139,12 @@ report.*.json
 .next/static/chunks/
 .next/static/webpack/
 .next/trace
+
+# Generated files when project is running
+.next/cache/webpack/client-development/*.pack
+.next/cache/webpack/client-development/*.pack.gz
+.next/cache/webpack/server-development/*.pack
+.next/cache/webpack/server-development/*.pack.gz
+.next/cache/webpack/edge-server-development/*.pack
+.next/cache/webpack/edge-server-development/*.pack.gz
+.next/static/css/app-layout.css

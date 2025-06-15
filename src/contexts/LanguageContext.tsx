@@ -746,6 +746,49 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.disableCheckout': 'Tạm ngừng thanh toán',
     'admin.settings.saving': 'Đang lưu...',
     'admin.settings.saveButton': 'Lưu cài đặt',
+
+    // Strings found in components
+    'common.loading': 'Đang tải dữ liệu...',
+    'common.processing': 'Đang xử lý...',
+    'common.copied': 'Đã sao chép vào clipboard!',
+    'common.notFound': 'Không tìm thấy',
+    'common.checking': 'Đang kiểm tra...',
+    'common.checkAgain': 'Kiểm tra lại',
+    'common.syncing': 'Đang đồng bộ...',
+    'common.syncNow': 'Đồng bộ ngay',
+    'common.notSynced': 'Chưa đồng bộ',
+    'common.synced': 'Đã đồng bộ',
+    'common.error': 'Đã xảy ra lỗi',
+    'common.unknownProduct': 'Sản phẩm không xác định',
+    'common.undefinedError': 'Đã xảy ra lỗi không xác định',
+    'common.applying': 'Đang áp dụng...',
+    'common.apply': 'Áp dụng',
+    'common.recommendedProducts': 'Sản phẩm đề xuất cho bạn',
+    'common.relatedProducts': 'Sản phẩm bạn có thể quan tâm',
+
+    // Testimonial content not in translations
+    'testimonials.content1': 'Sản phẩm rất tuyệt vời, đúng với mô tả và hoạt động rất ổn định. Đội ngũ hỗ trợ phản hồi nhanh và giải quyết vấn đề hiệu quả.',
+    'testimonials.content2': 'Sản phẩm của XLab đã giúp công ty chúng tôi tăng hiệu suất làm việc lên 40%. Đội ngũ hỗ trợ rất chuyên nghiệp và luôn sẵn sàng giải đáp mọi thắc mắc. Chúng tôi rất hài lòng với sự hợp tác này.',
+    
+    // Product FAQ content
+    'product.faq.monthlyFee': 'Sản phẩm này có phải trả phí hàng tháng không?',
+
+    // Payment states
+    'payment.notFound': 'Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.',
+    
+    // Order statuses
+    'order.active': 'Hoạt động',
+    'order.inactive': 'Đã kết thúc',
+
+    // Admin translations
+    'admin.user.active': 'Đang hoạt động',
+    'admin.user.spent': 'Đã chi: ',
+
+    // Error messages
+    'error.coupon': 'Đã xảy ra lỗi khi áp dụng mã giảm giá',
+    'error.voucher': 'Đã xảy ra lỗi khi tải voucher',
+    'error.settings': 'Đã xảy ra lỗi khi lưu cài đặt',
+    'error.authentication': 'Đã xảy ra lỗi không xác định trong quá trình xác thực. Vui lòng thử lại.',
   },
   en: {
     // Admin Notifications
@@ -1476,6 +1519,49 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.disableCheckout': 'Disable Checkout',
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
+
+    // Strings found in components
+    'common.loading': 'Loading...',
+    'common.processing': 'Processing...',
+    'common.copied': 'Copied to clipboard!',
+    'common.notFound': 'Not found',
+    'common.checking': 'Checking...',
+    'common.checkAgain': 'Check again',
+    'common.syncing': 'Syncing...',
+    'common.syncNow': 'Sync now',
+    'common.notSynced': 'Not synced',
+    'common.synced': 'Synced',
+    'common.error': 'An error occurred',
+    'common.unknownProduct': 'Unknown product',
+    'common.undefinedError': 'An undefined error occurred',
+    'common.applying': 'Applying...',
+    'common.apply': 'Apply',
+    'common.recommendedProducts': 'Recommended products for you',
+    'common.relatedProducts': 'Products you might be interested in',
+
+    // Testimonial content not in translations
+    'testimonials.content1': 'The product is excellent, exactly as described and operates very reliably. The support team responds quickly and resolves issues effectively.',
+    'testimonials.content2': 'XLab\'s product has helped our company increase work efficiency by 40%. The support team is very professional and always ready to answer any questions. We are very satisfied with this cooperation.',
+    
+    // Product FAQ content
+    'product.faq.monthlyFee': 'Does this product require a monthly fee?',
+
+    // Payment states
+    'payment.notFound': 'Transaction not found. Please check again after completing the transfer.',
+    
+    // Order statuses
+    'order.active': 'Active',
+    'order.inactive': 'Ended',
+
+    // Admin translations
+    'admin.user.active': 'Active',
+    'admin.user.spent': 'Spent: ',
+
+    // Error messages
+    'error.coupon': 'An error occurred while applying the coupon',
+    'error.voucher': 'An error occurred while loading vouchers',
+    'error.settings': 'An error occurred while saving settings',
+    'error.authentication': 'An undefined error occurred during authentication. Please try again.',
   },
 };
 
