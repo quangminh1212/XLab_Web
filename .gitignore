@@ -139,9 +139,3 @@ report.*.json
 .next/static/chunks/
 .next/static/webpack/
 .next/trace
-
-# Generated files during development
-.next/
-.next/cache/
-.next/server/
-.next/static/

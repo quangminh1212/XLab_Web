@@ -58,20 +58,4 @@ export const common = {
   'product.added': 'Added',
   'product.week': 'week',
   'product.purchasesPerWeek': '{count}/week',
-  
-  // Footer
-  'footer.aboutLink': 'About Us',
-  'footer.companyDescription1': 'XLab is a pioneer in software development and technology solutions in Vietnam.',
-  'footer.companyDescription2': 'We provide high-quality products and services to meet the diverse needs of our customers.',
-  'footer.customers': '1000+ customers',
-  'footer.years': '10+ years experience',
-  'footer.support': '24/7 support',
-  'footer.productsAndServices': 'Products & Services',
-  'footer.products': 'Products',
-  'footer.services': 'Services',
-  'footer.testimonials': 'Testimonials',
-  'footer.navigationLinks': 'Quick Links',
-  'footer.pricing': 'Pricing',
-  'footer.contactLink': 'Contact',
-  'footer.copyright': 'All rights reserved by'
 }; 
