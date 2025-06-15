@@ -302,7 +302,7 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
               {"© "}{CURRENT_YEAR} <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
-              {COPYRIGHT_TEXT} {siteConfig.legal.companyName}
+              {COPYRIGHT_TEXT} <span className="text-primary-400">{siteConfig.legal.companyName}</span>
             </p>
           </div>
 
