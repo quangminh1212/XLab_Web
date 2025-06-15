@@ -240,7 +240,7 @@ const Header = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
+    return new Intl.NumberFormat(t('format.currency'), {
       style: 'currency',
       currency: 'VND',
       maximumFractionDigits: 0,
@@ -253,7 +253,7 @@ const Header = () => {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString('vi-VN');
+    ).toLocaleDateString(t('format.date'));
   };
 
   const handleCopyVoucher = (code: string) => {
@@ -262,7 +262,7 @@ const Header = () => {
       .then(() => {
         // Use a more elegant notification method instead of alert
         setShowNotification(true);
-        setNotificationMessage(`Đã sao chép mã: ${code}`);
+        setNotificationMessage(t('notification.copied', {code: code}));
 
         // Hide notification after 2 seconds
         setTimeout(() => {
@@ -272,7 +272,7 @@ const Header = () => {
       .catch((err) => {
         console.error('Copy failed:', err);
         setShowNotification(true);
-        setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
+        setNotificationMessage(t('notification.copyFailed'));
 
         setTimeout(() => {
           setShowNotification(false);

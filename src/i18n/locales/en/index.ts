@@ -6,6 +6,8 @@ import terms from './terms';
 import auth from './auth';
 import admin from './admin';
 import products from './products';
+import speech from './speech';
+import formatting from './formatting';
 
 export default {
   common,
@@ -15,5 +17,7 @@ export default {
   terms,
   auth,
   admin,
-  products
+  products,
+  speech,
+  formatting
 }; 
