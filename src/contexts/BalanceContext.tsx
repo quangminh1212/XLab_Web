@@ -19,7 +19,8 @@ interface BalanceContextType {
   lastUpdated: Date | null;
 }
 
-const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
+// Export context để có thể truy cập trực tiếp nếu cần
+export const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 
 // Cache để tránh gọi API quá nhiều - tăng thời gian cache
 let lastFetchTime = 0;
@@ -40,6 +41,11 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const isMountedRef = useRef(true);
 
+  // Force re-render when session changes
+  useEffect(() => {
+    console.log('🔑 Session changed:', { status, email: session?.user?.email });
+  }, [session, status]);
+
   const fetchBalance = useCallback(
     async (force = false): Promise<void> => {
       if (!session?.user?.email || status !== 'authenticated') {
@@ -47,8 +53,12 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         return;
       }
 
+      // Debug: log initial state
+      console.log('Begin fetchBalance:', { cachedBalance, force });
+
       // Luôn hiển thị cached balance trước để tránh hiển thị 0
       if (cachedBalance > 0 && isMountedRef.current) {
+        console.log('Showing cached balance immediately:', cachedBalance);
         setBalance(cachedBalance);
       }
 
@@ -65,6 +75,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
 
       // Tránh multiple requests cùng lúc
       if (isCurrentlyFetching && !force) {
+        console.log('Already fetching, skipping duplicate request');
         return;
       }
 
@@ -87,6 +98,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
           setError(null);
           // Không set loading = true nếu đã có cached balance để tránh UI nhấp nháy
           if (cachedBalance === 0) {
+            console.log('Setting loading=true because no cached balance');
             setLoading(true);
           }
         }
@@ -103,6 +115,8 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
             
             // Thêm timestamp để đảm bảo không bị cache
             const timestamp = new Date().getTime();
+            console.log(`Fetch attempt ${attempts}: /api/user/balance?t=${timestamp}&force=${force}`);
+            
             const response = await fetch(`/api/user/balance?t=${timestamp}&force=${force}`, {
               method: 'GET',
               credentials: 'include',
@@ -261,6 +275,11 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
     refreshBalance,
     lastUpdated,
   };
+
+  // Debug log
+  useEffect(() => {
+    console.log('🔄 BalanceContext state updated:', { balance, loading, error });
+  }, [balance, loading, error]);
 
   return <BalanceContext.Provider value={value}>{children}</BalanceContext.Provider>;
 }

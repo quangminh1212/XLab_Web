@@ -446,7 +446,7 @@ export async function syncUserBalance(email: string): Promise<number> {
     
     // Bắt buộc hiển thị số dư cho người dùng test
     if (email === 'xlab.rnd@gmail.com') {
-      console.log('💰 Đây là user test, hiển thị số dư cố định');
+      console.log('💰 Đây là user test, hiển thị số dư cố định: 57000');
       return 57000;
     }
     
@@ -455,6 +455,7 @@ export async function syncUserBalance(email: string): Promise<number> {
 
     // Đảm bảo là số
     if (typeof balance !== 'number' || isNaN(balance)) {
+      console.log(`💰 Balance không hợp lệ: ${balance}, đặt về 0`);
       balance = 0;
     }
 

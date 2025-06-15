@@ -13,19 +13,26 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading, refreshBalance } = useBalance();
 
+  // Add debug log
+  useEffect(() => {
+    console.log('BalanceDisplay render:', { balance, loading });
+  }, [balance, loading]);
+
   // Auto refresh balance when component mounts
   useEffect(() => {
     if (session?.user) {
+      console.log('BalanceDisplay: Refreshing balance');
       refreshBalance();
     }
   }, [session?.user, refreshBalance]);
 
   const formattedBalance = useMemo(() => {
+    const value = typeof balance === 'number' && !isNaN(balance) ? balance : 0;
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       maximumFractionDigits: 0,
-    }).format(balance);
+    }).format(value);
   }, [balance]);
 
   if (!session?.user) {
@@ -52,16 +59,15 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
           />
         </svg>
-        {loading && balance === 0 ? (
-          <div className="flex items-center space-x-1.5 sm:space-x-2">
-            <div className="animate-spin rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 border-t-2 border-b-2 border-teal-600"></div>
-            <span className="text-xs sm:text-sm font-medium text-teal-600">Đang tải...</span>
-          </div>
-        ) : (
-          <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">
-            {formattedBalance}
-          </span>
-        )}
+        {/* Always show balance, display spinner only if balance is zero AND loading */}
+        <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">
+          {formattedBalance}
+          {loading && balance === 0 && (
+            <span className="inline-block ml-1">
+              <div className="animate-spin rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 border-t-2 border-b-2 border-teal-600"></div>
+            </span>
+          )}
+        </span>
       </div>
     </Link>
   );
