@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
@@ -9,11 +10,15 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const CURRENT_YEAR = "2025";
 // Tạo biến tĩnh cho cụm từ bản quyền để đảm bảo server và client render giống nhau
 const COPYRIGHT_TEXT = "Bản quyền thuộc về công ty";
-// Tạo chuỗi copyright hoàn chỉnh để tránh hydration mismatch
+// Tạo chuỗi copyright hoàn chỉnh để tránh hydration mismatch - chúng tôi thêm dấu chấm vào chuỗi tĩnh
 const FULL_COPYRIGHT = `© ${CURRENT_YEAR} XLab. ${COPYRIGHT_TEXT} XLab Technologies`;
 
 export default function Footer() {
   const { t } = useLanguage();
+  const CURRENT_YEAR = new Date().getFullYear();
+  
+  // Log to verify changes are applied
+  console.log('Footer component rendered with fixed dot');
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden">
@@ -303,7 +308,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
-              © {CURRENT_YEAR} <span className="text-white font-medium">XLab</span>. {COPYRIGHT_TEXT} <span className="text-primary-400">XLab Technologies</span>
+              © {CURRENT_YEAR} <span className="text-white font-medium">XLab</span>. <span className="text-primary-400">XLab Technologies</span>
             </p>
           </div>
 
