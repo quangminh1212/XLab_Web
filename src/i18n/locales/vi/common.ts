@@ -27,9 +27,35 @@ export default {
   
   // Cart
   'cart.viewCart': 'Xem giỏ hàng',
+  'cart.decreaseQuantity': 'Giảm số lượng',
+  'cart.increaseQuantity': 'Tăng số lượng',
+  'cart.removeItem': 'Xóa sản phẩm',
+  'cart.continueShopping': 'Tiếp tục mua sắm',
+  'cart.clearCart': 'Xóa giỏ hàng',
+  'cart.orderSummary': 'Tóm tắt đơn hàng',
+  'cart.subtotal': 'Tạm tính ({count} sản phẩm)',
+  'cart.couponCode': 'Mã khuyến mãi',
+  'cart.enterCouponCode': 'Nhập mã khuyến mãi',
+  'cart.applyCoupon': 'Áp dụng',
+  'cart.cancelCoupon': 'Hủy',
+  'cart.total': 'Tổng cộng',
+  'cart.checkout': '🚀 Tiến hành thanh toán',
+  'cart.emptyCart': 'Giỏ hàng trống',
+  'cart.couponInfo': 'Mã khuyến mãi có sẵn:',
   
   // Vouchers
   'vouchers.label': 'Voucher',
+  'voucher.title': 'Mã giảm giá',
+  'voucher.viewAll': 'Xem tất cả',
+  'voucher.loading': 'Đang tải mã giảm giá...',
+  'voucher.yourVouchers': 'Mã giảm giá của bạn',
+  'voucher.expiryDate': 'Hạn:',
+  'voucher.usesLeft': 'Còn {count} lần dùng',
+  'voucher.minOrder': 'Tối thiểu:',
+  'voucher.noLimit': 'Không giới hạn',
+  
+  // Menu
+  'menu.openMenu': 'Open menu',
   
   // Common buttons and labels
   'button.learnMore': 'Tìm hiểu thêm',
@@ -37,6 +63,30 @@ export default {
   'button.send': 'Gửi tin nhắn',
   'button.sending': 'Đang gửi...',
   'button.contactUs': 'Liên hệ tư vấn',
+  
+  // Form placeholders
+  'placeholder.email': 'Nhập email người dùng...',
+  'placeholder.transactionId': 'Nhập mã giao dịch',
+  'placeholder.search': 'Tìm kiếm câu hỏi, hướng dẫn, tài liệu...',
+  'placeholder.fullName': 'Nhập họ tên của bạn',
+  'placeholder.emailAddress': 'Nhập địa chỉ email của bạn',
+  'placeholder.createPassword': 'Tạo mật khẩu (ít nhất 6 ký tự)',
+  'placeholder.confirmPassword': 'Nhập lại mật khẩu của bạn',
+  'placeholder.imageUrl': 'Nhập URL hình ảnh',
+  'placeholder.couponCode': 'Nhập mã giảm giá',
+  'placeholder.productName': 'Tên sản phẩm',
+  'placeholder.productVersion': 'Premium, Basic...',
+  'placeholder.price': '0',
+  'placeholder.inventory': '0',
+  'placeholder.shortDescription': 'Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)',
+  'placeholder.fullDescription': 'Nhập mô tả chi tiết về sản phẩm...',
+  'placeholder.specifications': 'Nhập thông số kỹ thuật chi tiết...',
+  'placeholder.specName': 'Tên thông số (VD: CPU, RAM, HDD)',
+  'placeholder.specValue': 'Giá trị thông số',
+  
+  // Pagination
+  'pagination.previous': 'Previous',
+  'pagination.next': 'Next',
   
   // Categories
   'category.office-software': 'Phần mềm văn phòng',
@@ -63,4 +113,7 @@ export default {
   // Settings
   'settings.title': 'Cài đặt hệ thống',
   'settings.errors': 'Đã xảy ra lỗi',
+
+  // Orders
+  'orders.myOrders': 'Đơn hàng của tôi',
 }; 

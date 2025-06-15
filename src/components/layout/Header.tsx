@@ -636,7 +636,7 @@ const Header = () => {
                 href="/cart"
                 className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
-                <span className="sr-only">View cart</span>
+                <span className="sr-only">{t('cart.viewCart')}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -765,7 +765,7 @@ const Header = () => {
                   href="/cart"
                   className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
                 >
-                  <span className="sr-only">View cart</span>
+                  <span className="sr-only">{t('cart.viewCart')}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -791,7 +791,7 @@ const Header = () => {
                   onClick={toggleMenu}
                   className="p-1.5 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
-                  <span className="sr-only">Open menu</span>
+                  <span className="sr-only">{t('menu.openMenu')}</span>
                   {isOpen ? (
                     <svg
                       className="h-6 w-6"
