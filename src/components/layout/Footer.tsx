@@ -7,6 +7,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 // Lấy năm hiện tại từ một biến hằng để đảm bảo server và client render giống nhau
 const CURRENT_YEAR = 2025;
+// Tạo biến tĩnh cho cụm từ bản quyền để đảm bảo server và client render giống nhau
+const COPYRIGHT_TEXT = "Bản quyền thuộc về công ty";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -300,7 +302,7 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
               {"© "}{CURRENT_YEAR} <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
-              Bản quyền thuộc về công ty {siteConfig.legal.companyName}
+              {COPYRIGHT_TEXT} {siteConfig.legal.companyName}
             </p>
           </div>
 
