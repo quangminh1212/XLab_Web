@@ -308,20 +308,7 @@ const viTranslations = {
   'orders.myOrders': 'Đơn hàng của tôi',
 
   // Footer - Additional
-  'footer.company': 'Công ty',
-  'footer.aboutLink': 'Giới thiệu',
-  'footer.contactLink': 'Liên hệ',
-  'footer.productsAndServices': 'Sản phẩm & Dịch vụ',
-  'footer.products': 'Sản phẩm',
-  'footer.services': 'Dịch vụ',
-  'footer.testimonials': 'Đánh giá',
-  'footer.navigationLinks': 'Điều hướng',
-  'footer.companyDescription1': 'XLab cung cấp các giải pháp phần mềm và dịch vụ công nghệ hiện đại với chất lượng cao.',
-  'footer.companyDescription2': 'Chúng tôi giúp khách hàng tối ưu hóa công việc và tăng năng suất.',
-  'footer.customers': '1000+ Khách hàng',
-  'footer.years': '5+ Năm kinh nghiệm',
-  'footer.support': 'Hỗ trợ 24/7',
-  'footer.pricing': 'Bảng giá'
+  'footer.company': 'Công ty'
 };
 
 export default viTranslations; 
