@@ -26,16 +26,18 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
         <NotificationProvider>
           <BalanceProvider>
             <CartProvider>
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow">{children}</main>
-                <Footer />
-              </div>
-              <Analytics />
-              <CompileIndicator />
-              <StyleLoader />
-              <CssErrorHandler />
-              <GlobalStyles />
+              <>
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main className="flex-grow">{children}</main>
+                  <Footer />
+                </div>
+                <Analytics />
+                <CompileIndicator />
+                <StyleLoader />
+                <CssErrorHandler />
+                <GlobalStyles />
+              </>
             </CartProvider>
           </BalanceProvider>
         </NotificationProvider>
