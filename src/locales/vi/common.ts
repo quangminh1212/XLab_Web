@@ -1,0 +1,61 @@
+export const common = {
+  // Header
+  'nav.home': 'Trang chủ',
+  'nav.products': 'Sản phẩm',
+  'nav.about': 'Giới thiệu',
+  'nav.contact': 'Liên hệ',
+  'nav.warranty': 'Bảo hành',
+  'nav.login': 'Đăng nhập',
+  'nav.logout': 'Đăng xuất',
+  'nav.account': 'Tài khoản',
+  'nav.admin': 'Quản trị',
+  'auth.signOut': 'Đăng xuất',
+  'auth.signIn': 'Đăng nhập',
+  
+  // Common actions
+  'actions.save': 'Lưu',
+  'actions.cancel': 'Hủy',
+  'actions.edit': 'Chỉnh sửa',
+  'actions.delete': 'Xóa',
+  'actions.add': 'Thêm',
+  'actions.create': 'Tạo mới',
+  'actions.update': 'Cập nhật',
+  'actions.submit': 'Gửi',
+  'actions.confirm': 'Xác nhận',
+  'actions.back': 'Quay lại',
+  'actions.next': 'Tiếp tục',
+  'actions.search': 'Tìm kiếm',
+  'actions.filter': 'Lọc',
+  'actions.view': 'Xem',
+  'actions.close': 'Đóng',
+  
+  // Messages
+  'messages.success': 'Thành công',
+  'messages.error': 'Lỗi',
+  'messages.warning': 'Cảnh báo',
+  'messages.info': 'Thông tin',
+  'messages.loading': 'Đang tải',
+  'messages.processing': 'Đang xử lý',
+  'messages.confirmDelete': 'Bạn có chắc chắn muốn xóa?',
+  'messages.required': 'Trường này là bắt buộc',
+  'messages.invalidEmail': 'Email không hợp lệ',
+  'messages.invalidPhone': 'Số điện thoại không hợp lệ',
+  
+  // Time
+  'time.seconds': 'giây',
+  'time.minutes': 'phút',
+  'time.hours': 'giờ',
+  'time.days': 'ngày',
+  'time.weeks': 'tuần',
+  'time.months': 'tháng',
+  'time.years': 'năm',
+  'time.ago': 'trước',
+  'time.justNow': 'vừa xong',
+  
+  // Product card
+  'product.addToCart': 'Thêm vào giỏ',
+  'product.buyNow': 'Mua ngay',
+  'product.added': 'Đã thêm',
+  'product.week': 'tuần',
+  'product.purchasesPerWeek': '{count}/tuần',
+}; 
