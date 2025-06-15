@@ -441,18 +441,16 @@ export async function syncUserBalance(email: string): Promise<number> {
     // Log cho debug
     console.log(`🔄 Đang lấy số dư của: ${email}`);
 
-    // Đơn giản hóa: chỉ lấy dữ liệu từ file người dùng
+    // Đơn giản hóa: chỉ lấy dữ liệu từ file người dùng và users.json
     const userData = await getUserDataFromFile(email);
     
-    // Bắt buộc hiển thị số dư cho người dùng test
-    if (email === 'xlab.rnd@gmail.com') {
-      console.log('💰 Đây là user test, hiển thị số dư cố định: 57000');
-      return 57000;
-    }
+    // Lấy từ users.json để đảm bảo đồng bộ
+    const users = await getUsers();
+    const userFromJson = users.find(u => u.email === email);
     
-    // Nếu không phải user test, lấy từ userData
-    let balance = userData?.profile?.balance || 0;
-
+    // Ưu tiên dữ liệu từ users.json
+    let balance = userFromJson?.balance || userData?.profile?.balance || 0;
+    
     // Đảm bảo là số
     if (typeof balance !== 'number' || isNaN(balance)) {
       console.log(`💰 Balance không hợp lệ: ${balance}, đặt về 0`);

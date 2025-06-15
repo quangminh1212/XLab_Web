@@ -424,7 +424,6 @@ export default function DepositPage() {
               ) : (
                 <p className="text-3xl font-bold text-teal-600">
                   {formatCurrency(displayBalance)}
-                  <span className="ml-2 text-sm text-teal-400">(API: {directBalance !== null ? formatCurrency(directBalance) : 'chưa load'})</span>
                 </p>
               )}
             </div>
