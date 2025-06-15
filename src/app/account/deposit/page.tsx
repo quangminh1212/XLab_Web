@@ -13,6 +13,10 @@ export default function DepositPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { balance, loading, refreshBalance } = useBalance();
+  
+  // State cho số dư trực tiếp từ API
+  const [directBalance, setDirectBalance] = useState<number | null>(null);
+  const [isDirectLoading, setIsDirectLoading] = useState(false);
 
   // Lấy thông tin từ URL params
   const suggestedAmount = searchParams?.get('amount');
@@ -32,17 +36,53 @@ export default function DepositPage() {
     accountName: 'BACH MINH QUANG',
   };
 
+  // Lấy balance trực tiếp từ API
+  const fetchDirectBalance = async () => {
+    if (!session?.user) return;
+    
+    try {
+      setIsDirectLoading(true);
+      console.log('Fetching direct balance');
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/user/balance?t=${timestamp}&force=true`, {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store',
+          'Pragma': 'no-cache'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Direct balance API response:', data);
+        const newBalance = typeof data.balance === 'number' ? data.balance : 0;
+        setDirectBalance(newBalance);
+      }
+    } catch (error) {
+      console.error('Error fetching direct balance:', error);
+    } finally {
+      setIsDirectLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login');
     } else if (session?.user) {
       generateTransactionCode();
+      
       // Refresh balance immediately and force a reload from server
       refreshBalance();
+      
+      // Thêm fetch trực tiếp từ API
+      fetchDirectBalance();
       
       // Set up periodic balance refresh
       const refreshInterval = setInterval(() => {
         refreshBalance();
+        fetchDirectBalance(); // Thêm fetch trực tiếp
       }, 15000); // Refresh balance every 15 seconds
       
       // Log số dư để debug
@@ -55,7 +95,8 @@ export default function DepositPage() {
   // Thêm useEffect để log khi balance thay đổi
   useEffect(() => {
     console.log('Balance updated in component:', balance);
-  }, [balance]);
+    console.log('Direct balance updated:', directBalance);
+  }, [balance, directBalance]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -198,6 +239,10 @@ export default function DepositPage() {
       </div>
     );
   }
+
+  // Hiển thị balance ưu tiên directBalance nếu có
+  const displayBalance = directBalance !== null ? directBalance : balance;
+  const isLoadingBalance = isDirectLoading || (loading && directBalance === null);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -353,7 +398,10 @@ export default function DepositPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
                 <button 
-                  onClick={() => refreshBalance()} 
+                  onClick={() => {
+                    refreshBalance();
+                    fetchDirectBalance();
+                  }} 
                   className="ml-auto text-teal-600 hover:text-teal-800 p-1"
                   title="Làm mới số dư"
                 >
@@ -362,20 +410,21 @@ export default function DepositPage() {
                   </svg>
                 </button>
               </div>
-              {loading ? (
+              {isLoadingBalance ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center space-x-2">
                     <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-teal-600"></div>
                     <p className="text-sm text-gray-500">Đang tải...</p>
                   </div>
-                  {/* Hiển thị số dư hiện có nếu có, tránh hiện "(đang tải...)" */}
+                  {/* Hiển thị giá trị nếu có */}
                   <p className="text-3xl font-bold text-gray-400">
-                    {formatCurrency(balance)}
+                    {formatCurrency(displayBalance)}
                   </p>
                 </div>
               ) : (
                 <p className="text-3xl font-bold text-teal-600">
-                  {formatCurrency(balance)}
+                  {formatCurrency(displayBalance)}
+                  <span className="ml-2 text-sm text-teal-400">(API: {directBalance !== null ? formatCurrency(directBalance) : 'chưa load'})</span>
                 </p>
               )}
             </div>
