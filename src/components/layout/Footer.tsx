@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+// Lấy năm hiện tại từ một biến hằng để đảm bảo server và client render giống nhau
+const CURRENT_YEAR = 2025;
+
 export default function Footer() {
   const { t } = useLanguage();
-  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden">
@@ -297,7 +299,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
-              {"© "}{currentYear} <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
+              {"© "}{CURRENT_YEAR} <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
               Bản quyền thuộc về công ty {siteConfig.legal.companyName}
             </p>
           </div>
