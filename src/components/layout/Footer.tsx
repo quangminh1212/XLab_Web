@@ -109,7 +109,7 @@ export default function Footer() {
                   {t('footer.years')}
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
-                  {t('footer.support247')}
+                  {t('footer.support')}
                 </span>
               </div>
             </div>
