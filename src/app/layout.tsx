@@ -4,6 +4,12 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { siteConfig } from '@/config/siteConfig';
 import { ClientLayoutWrapper } from '@/components/layout';
+import { Analytics } from '@vercel/analytics/react';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { CartProvider } from '@/contexts/CartContext';
+import { BalanceProvider } from '@/contexts/BalanceContext';
+import { TranslationProvider } from '@/contexts/TranslationContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -91,7 +97,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-sans antialiased">
-        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+        <AuthProvider>
+          <ThemeProvider>
+            <BalanceProvider>
+              <CartProvider>
+                <TranslationProvider>
+                  <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+                </TranslationProvider>
+              </CartProvider>
+            </BalanceProvider>
+          </ThemeProvider>
+        </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );

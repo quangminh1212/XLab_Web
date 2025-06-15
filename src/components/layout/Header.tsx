@@ -3,14 +3,16 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
+import { useBalance } from '@/contexts/BalanceContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -32,8 +34,9 @@ interface PublicCoupon {
 
 const Header = () => {
   const pathname = usePathname();
-  const { data: session } = useSession();
-  const { t } = useLanguage();
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const { t, locale, changeLocale, availableLocales } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -44,15 +47,16 @@ const Header = () => {
   const [lastCouponFetch, setLastCouponFetch] = React.useState<number>(0);
   const [showNotification, setShowNotification] = React.useState(false);
   const [notificationMessage, setNotificationMessage] = React.useState('');
-
-  // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
+  const { balance } = useBalance();
 
   // Tạo ref để tham chiếu đến phần tử dropdown profile
   const profileRef = useRef<HTMLDivElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const voucherRef = useRef<HTMLDivElement>(null);
+  const langDropdownRef = useRef<HTMLDivElement>(null);
+  const langButtonRef = useRef<HTMLButtonElement>(null);
 
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
@@ -142,51 +146,53 @@ const Header = () => {
     };
   }, [isVoucherOpen]);
 
-  // Xử lý đóng dropdown khi click bên ngoài
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
+  // Đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
       // Đóng profile dropdown khi click ra ngoài
       if (
-        isProfileOpen &&
         profileRef.current &&
-        profileButtonRef.current &&
         !profileRef.current.contains(event.target as Node) &&
-        !profileButtonRef.current.contains(event.target as Node)
+        isProfileOpen
       ) {
         setIsProfileOpen(false);
       }
 
       // Đóng notification dropdown khi click ra ngoài
       if (
-        isNotificationOpen &&
         notificationRef.current &&
-        !notificationRef.current.contains(event.target as Node)
+        !notificationRef.current.contains(event.target as Node) &&
+        isNotificationOpen
       ) {
         setIsNotificationOpen(false);
       }
 
       // Đóng voucher dropdown khi click ra ngoài
       if (
-        isVoucherOpen &&
         voucherRef.current &&
-        !voucherRef.current.contains(event.target as Node)
+        !voucherRef.current.contains(event.target as Node) &&
+        isVoucherOpen
       ) {
         setIsVoucherOpen(false);
       }
-    },
-    [isProfileOpen, isNotificationOpen, isVoucherOpen],
-  );
 
-  // Thêm event listener khi component được mount
-  useEffect(() => {
-    // Thêm event listener cho document để bắt sự kiện click bên ngoài
+      // Close language dropdown when clicking outside
+      if (
+        langDropdownRef.current &&
+        !langDropdownRef.current.contains(event.target as Node) &&
+        langButtonRef.current &&
+        !langButtonRef.current.contains(event.target as Node) &&
+        isLangDropdownOpen
+      ) {
+        setIsLangDropdownOpen(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-
-    // Dọn dẹp event listener khi component bị unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [handleClickOutside]);
+  }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isLangDropdownOpen]);
 
   // Thêm effect để đóng dropdown khi người dùng nhấn Escape
   useEffect(() => {
@@ -321,8 +327,8 @@ const Header = () => {
     ];
   };
 
-  // Các link chính của navigation
-  const navLinks = [
+  // Danh sách các mục điều hướng
+  const navItems = [
     { href: '/', label: t('nav.home') },
     { href: '/products', label: t('nav.products') },
     { href: '/about', label: t('nav.about') },
@@ -330,48 +336,100 @@ const Header = () => {
     { href: '/bao-hanh', label: t('nav.warranty') },
   ];
 
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+
   return (
     <>
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
-          <div className="flex justify-between items-center">
+      <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
             {/* Logo */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center justify-center">
+              <Link href="/" className="flex items-center">
                 <Image
-                  src="/images/logo.jpg"
+                  src="/images/logo.png"
                   alt="XLab Logo"
                   width={100}
-                  height={60}
-                  className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
+                  height={30}
+                  className="h-8 w-auto"
                 />
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-              {navLinks.map((link) => (
+            {/* Navigation Links - Desktop */}
+            <nav className="hidden md:flex items-center space-x-6">
+              {navItems.map((item) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`${isActive(link.href)} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                  key={item.href}
+                  href={item.href}
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === item.href
+                      ? 'text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600'
+                  }`}
                 >
-                  {link.label}
+                  {item.label}
                 </Link>
               ))}
             </nav>
 
-            {/* Right Side - Balance + Auth + Cart */}
-            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+            {/* Right Side Icons */}
+            <div className="flex items-center space-x-1 md:space-x-4">
+              {/* Language Switcher */}
+              <div className="relative">
+                <button
+                  ref={langButtonRef}
+                  onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                  className="flex items-center text-gray-700 hover:text-teal-600 focus:outline-none"
+                >
+                  <span className="hidden sm:inline-block mr-1 text-sm font-medium">
+                    {locale === 'en' ? 'ENG' : 'VIE'}
+                  </span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {/* Language Dropdown */}
+                {isLangDropdownOpen && (
+                  <div
+                    ref={langDropdownRef}
+                    className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50"
+                  >
+                    {availableLocales.map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => {
+                          changeLocale(lang);
+                          setIsLangDropdownOpen(false);
+                        }}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          locale === lang ? 'bg-teal-50 text-teal-600' : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {lang === 'en' ? 'English' : 'Tiếng Việt'}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Balance Display */}
               {session && (
                 <div className="hidden sm:block">
                   <BalanceDisplay />
                 </div>
               )}
-
-              {/* Language Switcher */}
-              <LanguageSwitcher className="mr-2" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -517,8 +575,6 @@ const Header = () => {
                                     ></div>
                                   </div>
                                 )}
-
-                                {/* Note section removed */}
                               </div>
                             </div>
                           ))}
@@ -838,7 +894,7 @@ const Header = () => {
           } md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2`}
         >
           <nav className="container mx-auto px-4 py-2 space-y-1">
-            {navLinks.map((link) => (
+            {navItems.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
