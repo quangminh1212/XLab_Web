@@ -58,4 +58,20 @@ export const common = {
   'product.added': 'Đã thêm',
   'product.week': 'tuần',
   'product.purchasesPerWeek': '{count}/tuần',
+  
+  // Footer
+  'footer.aboutLink': 'Giới thiệu',
+  'footer.companyDescription1': 'XLab là đơn vị tiên phong trong lĩnh vực phát triển phần mềm và giải pháp công nghệ tại Việt Nam.',
+  'footer.companyDescription2': 'Chúng tôi cung cấp các sản phẩm và dịch vụ chất lượng cao, đáp ứng nhu cầu đa dạng của khách hàng.',
+  'footer.customers': '1000+ khách hàng',
+  'footer.years': '10+ năm kinh nghiệm',
+  'footer.support': 'Hỗ trợ 24/7',
+  'footer.productsAndServices': 'Sản phẩm & Dịch vụ',
+  'footer.products': 'Sản phẩm',
+  'footer.services': 'Dịch vụ',
+  'footer.testimonials': 'Đánh giá',
+  'footer.navigationLinks': 'Liên kết',
+  'footer.pricing': 'Bảng giá',
+  'footer.contactLink': 'Liên hệ',
+  'footer.copyright': 'Bản quyền thuộc về'
 }; 
