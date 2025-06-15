@@ -307,7 +307,20 @@ const enTranslations = {
   // Orders
   'orders.myOrders': 'My Orders',
 
-  // Footer - Additional
+  // Footer
+  'footer.aboutLink': 'About Us',
+  'footer.contactLink': 'Contact',
+  'footer.productsAndServices': 'Products & Services',
+  'footer.products': 'Products',
+  'footer.services': 'Services',
+  'footer.testimonials': 'Testimonials',
+  'footer.navigationLinks': 'Navigation',
+  'footer.companyDescription1': 'XLab provides high-quality modern software solutions and technology services.',
+  'footer.companyDescription2': 'We help our customers optimize their work and increase productivity.',
+  'footer.customers': '1000+ Customers',
+  'footer.years': '5+ Years Experience',
+  'footer.support': '24/7 Support',
+  'footer.pricing': 'Pricing',
   'footer.company': 'Company'
 };
 
