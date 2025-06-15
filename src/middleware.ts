@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { locales, defaultLocale, Locale } from './i18n/config';
 
 // Định nghĩa các loại route
 const ROUTES = {
@@ -50,13 +51,35 @@ const isStaticFile = (path: string): boolean => {
 };
 
 /**
+ * Kiểm tra xem path có chứa locale hay không
+ * @param path Đường dẫn cần kiểm tra
+ */
+const hasLocale = (path: string): boolean => {
+  return locales.some(locale => path === `/${locale}` || path.startsWith(`/${locale}/`));
+};
+
+/**
+ * Lấy locale từ path
+ * @param path Đường dẫn cần kiểm tra
+ */
+const getLocaleFromPath = (path: string): Locale | undefined => {
+  for (const locale of locales) {
+    if (path === `/${locale}` || path.startsWith(`/${locale}/`)) {
+      return locale;
+    }
+  }
+  return undefined;
+};
+
+/**
  * Log thông tin debug (chỉ trong development)
  */
-const logDebug = (request: NextRequest, token: any): void => {
+const logDebug = (request: NextRequest, token: any, locale?: string): void => {
   if (process.env.NODE_ENV === 'development') {
     console.log('[Middleware Debug]:', {
       path: request.nextUrl.pathname,
       token: token ? `Found (${token.email})` : 'Not found',
+      locale: locale || 'Not specified',
       timestamp: new Date().toISOString(),
     });
   }
@@ -73,14 +96,14 @@ const isAdmin = (token: any): boolean => {
 /**
  * Tạo response chuyển hướng đến trang đăng nhập
  */
-const redirectToLogin = (request: NextRequest, callbackPath: string): NextResponse => {
-  const loginUrl = new URL('/login', request.url);
+const redirectToLogin = (request: NextRequest, callbackPath: string, locale: string = defaultLocale): NextResponse => {
+  const loginUrl = new URL(`/${locale}/login`, request.url);
   loginUrl.searchParams.set('callbackUrl', callbackPath);
   return NextResponse.redirect(loginUrl);
 };
 
 /**
- * Middleware chính để xử lý kiểm tra quyền truy cập
+ * Middleware chính để xử lý kiểm tra quyền truy cập và ngôn ngữ
  */
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -96,25 +119,62 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
   });
 
-  // Log thông tin debug trong môi trường phát triển
-  logDebug(request, token);
+  // Xử lý ngôn ngữ
+  // Kiểm tra nếu path hiện tại không chứa locale
+  if (!hasLocale(pathname)) {
+    // Lấy locale từ cookie hoặc accept-language header hoặc dùng mặc định
+    let locale: Locale = defaultLocale;
+    
+    // Thử lấy locale từ cookie
+    const localeCookie = request.cookies.get('NEXT_LOCALE')?.value as Locale | undefined;
+    if (localeCookie && locales.includes(localeCookie)) {
+      locale = localeCookie;
+    } else {
+      // Thử lấy từ accept-language header
+      const acceptLanguage = request.headers.get('accept-language');
+      if (acceptLanguage) {
+        for (const lang of acceptLanguage.split(',')) {
+          const [langCode] = lang.trim().split(';');
+          const twoLetterLangCode = langCode.substring(0, 2);
+          if (locales.includes(twoLetterLangCode as Locale)) {
+            locale = twoLetterLangCode as Locale;
+            break;
+          }
+        }
+      }
+    }
 
+    // Redirect tới cùng path nhưng có thêm locale
+    const url = new URL(request.url);
+    url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
+    return NextResponse.redirect(url);
+  }
+
+  // Đã có locale trong path, lấy nó ra
+  const locale = getLocaleFromPath(pathname);
+
+  // Log thông tin debug trong môi trường phát triển
+  logDebug(request, token, locale);
+
+  // Loại bỏ locale khỏi path để check routes
+  const pathWithoutLocale = pathname.replace(new RegExp(`^/${locale}`), '');
+  
   // Xử lý đường dẫn admin
-  if (matchesRoute(pathname, ROUTES.admin)) {
+  if (matchesRoute(pathWithoutLocale, ROUTES.admin)) {
     // Nếu chưa đăng nhập, chuyển đến login
     if (!token) {
-      return redirectToLogin(request, pathname);
+      return redirectToLogin(request, pathname, locale);
     }
 
     // Kiểm tra có quyền admin không
     if (!isAdmin(token)) {
-      return NextResponse.redirect(new URL('/', request.url));
+      return NextResponse.redirect(new URL(`/${locale}`, request.url));
     }
   }
 
   // Xử lý đường dẫn được bảo vệ
-  if (matchesRoute(pathname, ROUTES.protected) && !token) {
-    return redirectToLogin(request, pathname);
+  if (matchesRoute(pathWithoutLocale, ROUTES.protected) && !token) {
+    return redirectToLogin(request, pathname, locale);
   }
 
   // Mọi route khác được xử lý bởi Next.js App Router
@@ -123,5 +183,11 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   // Chỉ áp dụng cho các đường dẫn cần kiểm tra
-  matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/protected/:path*'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|images).*)',
+    '/admin/:path*', 
+    '/account/:path*', 
+    '/checkout/:path*', 
+    '/api/protected/:path*'
+  ],
 };
