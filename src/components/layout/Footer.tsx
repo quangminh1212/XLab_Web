@@ -9,6 +9,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const CURRENT_YEAR = "2025";
 // Tạo biến tĩnh cho cụm từ bản quyền để đảm bảo server và client render giống nhau
 const COPYRIGHT_TEXT = "Bản quyền thuộc về công ty";
+// Tạo chuỗi copyright hoàn chỉnh để tránh hydration mismatch
+const FULL_COPYRIGHT = `© ${CURRENT_YEAR} XLab. ${COPYRIGHT_TEXT} XLab Technologies`;
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -301,7 +303,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
-              <span>© {CURRENT_YEAR} </span><span className="text-white font-medium">{siteConfig.name}</span><span>. {COPYRIGHT_TEXT} </span><span className="text-primary-400">{siteConfig.legal.companyName}</span>
+              {FULL_COPYRIGHT}
             </p>
           </div>
 
