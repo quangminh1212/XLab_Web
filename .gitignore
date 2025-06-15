@@ -139,7 +139,3 @@ report.*.json
 .next/static/chunks/
 .next/static/webpack/
 .next/trace
-
-# user data generated at runtime
-/data/users/*.json
-/data/users.json
