@@ -78,17 +78,6 @@ export default function DepositPage() {
       
       // Thêm fetch trực tiếp từ API
       fetchDirectBalance();
-      
-      // Set up periodic balance refresh
-      const refreshInterval = setInterval(() => {
-        refreshBalance();
-        fetchDirectBalance(); // Thêm fetch trực tiếp
-      }, 15000); // Refresh balance every 15 seconds
-      
-      // Log số dư để debug
-      console.log('Current balance in component:', balance);
-      
-      return () => clearInterval(refreshInterval);
     }
   }, [session, status, router, refreshBalance]);
 

@@ -55,21 +55,14 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
     }
   };
 
-  // Auto refresh balance when component mounts
+  // Chỉ lấy số dư khi component mount lần đầu
   useEffect(() => {
     if (session?.user) {
-      console.log('BalanceDisplay: Refreshing balance');
+      console.log('BalanceDisplay: Initial balance fetch');
       refreshBalance();
       fetchDirectBalance();
-      
-      // Auto refresh every 15 seconds
-      const interval = setInterval(() => {
-        fetchDirectBalance();
-      }, 15000);
-      
-      return () => clearInterval(interval);
     }
-  }, [session?.user, refreshBalance, forceRefresh]);
+  }, [session?.user, refreshBalance]);
 
   // Ưu tiên hiển thị directBalance nếu có
   const displayBalance = directBalance !== null ? directBalance : balance;
@@ -95,6 +88,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
       title="Số dư tài khoản - Click để nạp tiền"
       onClick={() => {
         fetchDirectBalance();
+        refreshBalance();
         setForceRefresh(prev => prev + 1);
       }}
     >

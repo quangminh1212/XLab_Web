@@ -22,12 +22,11 @@ interface BalanceContextType {
 // Export context để có thể truy cập trực tiếp nếu cần
 export const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 
-// Cache để tránh gọi API quá nhiều - tăng thời gian cache
+// Cache để tránh gọi API quá nhiều
 let lastFetchTime = 0;
 let cachedBalance = 0;
 let isCurrentlyFetching = false;
-const CACHE_DURATION = 5000; // 5 seconds (giảm từ 10s xuống 5s)
-const AUTO_REFRESH_INTERVAL = 10000; // 10 seconds (giảm từ 15s xuống 10s)
+const CACHE_DURATION = 5000; // 5 seconds
 
 interface BalanceProviderProps {
   children: ReactNode;
@@ -234,22 +233,6 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
       lastFetchTime = 0;
       setError(null);
     }
-  }, [session?.user?.email, status, fetchBalance]);
-
-  // Auto refresh với tần suất thấp hơn và chỉ khi user active
-  useEffect(() => {
-    if (!session?.user?.email || status !== 'authenticated') return;
-
-    console.log('⏱️ Setting up auto refresh interval');
-    const interval = setInterval(() => {
-      // Chỉ refresh khi đã hết cache và user đang active
-      if (document.visibilityState === 'visible' && isMountedRef.current) {
-        console.log('⏱️ Auto refresh triggered');
-        fetchBalance(); // Sẽ dùng cache nếu chưa hết hạn
-      }
-    }, AUTO_REFRESH_INTERVAL);
-
-    return () => clearInterval(interval);
   }, [session?.user?.email, status, fetchBalance]);
 
   // Refresh khi user quay lại tab (nếu cache đã hết hạn)
