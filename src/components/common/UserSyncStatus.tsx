@@ -99,6 +99,23 @@ export default function UserSyncStatus() {
     return 'Đã đồng bộ';
   };
 
+  const formatDateTime = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      const day = date.getUTCDate().toString().padStart(2, '0');
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+      const year = date.getUTCFullYear();
+      const hours = date.getUTCHours().toString().padStart(2, '0');
+      const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+      
+      return `${day}/${month}/${year} ${hours}:${minutes}`;
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   return (
     <div className="p-4 bg-white border rounded-lg shadow-sm">
       <div className="flex items-center justify-between mb-4">
@@ -135,7 +152,7 @@ export default function UserSyncStatus() {
             <div className="text-sm">
               <span className="text-gray-500">Cập nhật cuối:</span>
               <span className="ml-2 font-medium">
-                {new Date(syncStatus.syncStatus.lastUpdated).toLocaleString('vi-VN')}
+                {formatDateTime(syncStatus.syncStatus.lastUpdated)}
               </span>
             </div>
           )}
@@ -144,7 +161,7 @@ export default function UserSyncStatus() {
             <div className="text-sm">
               <span className="text-gray-500">Đồng bộ cuối:</span>
               <span className="ml-2 font-medium text-green-600">
-                {new Date(lastSyncTime).toLocaleString('vi-VN')}
+                {formatDateTime(lastSyncTime)}
               </span>
             </div>
           )}
