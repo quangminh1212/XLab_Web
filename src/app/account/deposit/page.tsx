@@ -368,15 +368,14 @@ export default function DepositPage() {
                     <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-teal-600"></div>
                     <p className="text-sm text-gray-500">Đang tải...</p>
                   </div>
-                  {/* Hiển thị số dư mặc định để người dùng không phải chờ */}
+                  {/* Hiển thị số dư hiện có nếu có, tránh hiện "(đang tải...)" */}
                   <p className="text-3xl font-bold text-gray-400">
-                    {formatCurrency(balance > 0 ? balance : 0)}
-                    <span className="text-sm text-gray-400 ml-1">{balance === 0 ? "(đang tải...)" : ""}</span>
+                    {formatCurrency(balance)}
                   </p>
                 </div>
               ) : (
                 <p className="text-3xl font-bold text-teal-600">
-                  {formatCurrency(balance > 0 ? balance : 0)}
+                  {formatCurrency(balance)}
                 </p>
               )}
             </div>

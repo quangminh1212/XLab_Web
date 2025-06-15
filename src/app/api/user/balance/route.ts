@@ -57,7 +57,6 @@ export async function GET(request: Request) {
     
     console.log(`📊 Balance request for ${userEmail}, force=${forceRefresh}`);
 
-    // Đảm bảo lấy được số dư ngay lập tức
     try {
       // Check cache first if not forced to refresh
       const cached = balanceCache.get(userEmail);
@@ -69,11 +68,11 @@ export async function GET(request: Request) {
         });
       }
 
-      // Get synchronized balance directly (simplified for speed)
+      // Get synchronized balance directly
       let balance = await syncUserBalance(userEmail);
       
-      // Ensure balance is a number
-      balance = Number(balance) || 0;
+      // Double-check - ensure balance is a valid number
+      balance = typeof balance === 'number' && !isNaN(balance) ? balance : 0;
 
       // Cache the result
       balanceCache.set(userEmail, { balance, timestamp: Date.now() });
@@ -95,8 +94,7 @@ export async function GET(request: Request) {
           balance: cachedFallback ? cachedFallback.balance : 0,
           error: error instanceof Error ? error.message : 'Unknown error occurred',
           cached: !!cachedFallback,
-        }, 
-        { status: 200 } // Vẫn trả về 200 để UI có thể hiển thị
+        }
       );
     }
   } catch (error) {
@@ -106,8 +104,7 @@ export async function GET(request: Request) {
         balance: 0,
         error: 'Internal Server Error', 
         message: error instanceof Error ? error.message : 'Unknown error occurred',
-      }, 
-      { status: 200 } // Vẫn trả về 200 để UI có thể hiển thị
+      }
     );
   }
 }

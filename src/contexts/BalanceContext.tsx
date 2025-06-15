@@ -25,8 +25,8 @@ const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 let lastFetchTime = 0;
 let cachedBalance = 0;
 let isCurrentlyFetching = false;
-const CACHE_DURATION = 10000; // 10 seconds (giảm từ 60s xuống 10s)
-const AUTO_REFRESH_INTERVAL = 15000; // 15 seconds (giảm từ 5 phút xuống 15 giây)
+const CACHE_DURATION = 5000; // 5 seconds (giảm từ 10s xuống 5s)
+const AUTO_REFRESH_INTERVAL = 10000; // 10 seconds (giảm từ 15s xuống 10s)
 
 interface BalanceProviderProps {
   children: ReactNode;
@@ -68,7 +68,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         return;
       }
 
-      // Set timeout cho loading state để tránh mắc kẹt
+      // Set timeout cho loading state để tránh mắc kẹt - giảm xuống 1 giây
       const loadingTimeout = setTimeout(() => {
         if (isMountedRef.current) {
           console.log('💰 Loading timeout - showing cached balance');
@@ -78,7 +78,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
             setBalance(cachedBalance);
           }
         }
-      }, 3000); // 3 giây timeout cho loading state
+      }, 1000); // 1 giây timeout cho loading state
 
       isCurrentlyFetching = true;
 
@@ -132,6 +132,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
                 setLoading(false);
               }
 
+              // Luôn cập nhật cache dù balance là 0
               cachedBalance = newBalance;
               lastFetchTime = now;
               
@@ -143,17 +144,17 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
             
             console.warn(`Balance fetch attempt ${attempts} failed: ${errorMessage} (Status: ${response.status})`);
             
-            // Wait 500ms before retry
+            // Wait 300ms before retry - giảm thời gian chờ retry
             if (attempts < maxAttempts) {
-              await new Promise(resolve => setTimeout(resolve, 500));
+              await new Promise(resolve => setTimeout(resolve, 300));
             }
           } catch (err) {
             errorMessage = err instanceof Error ? err.message : 'Unknown network error';
             console.warn(`Balance fetch attempt ${attempts} failed: ${errorMessage}`);
             
-            // Wait 500ms before retry
+            // Wait 300ms before retry - giảm thời gian chờ retry
             if (attempts < maxAttempts) {
-              await new Promise(resolve => setTimeout(resolve, 500));
+              await new Promise(resolve => setTimeout(resolve, 300));
             }
           }
         }
@@ -161,7 +162,13 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         if (!success) {
           // Ensure we clear loading state even on error
           clearTimeout(loadingTimeout);
-          throw new Error(`Failed to fetch balance after ${maxAttempts} attempts: ${errorMessage}`);
+          // Không throw error mà vẫn hiển thị cached balance
+          console.error(`Failed to fetch balance after ${maxAttempts} attempts: ${errorMessage}`);
+          if (isMountedRef.current) {
+            setError(errorMessage);
+            setLoading(false);
+            // Vẫn giữ balance cũ nếu có
+          }
         }
       } catch (err) {
         // Clear loading timeout

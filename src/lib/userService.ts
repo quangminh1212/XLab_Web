@@ -459,14 +459,13 @@ export async function syncUserBalance(email: string): Promise<number> {
     }
 
     // Log cho debug
-    console.log(`💰 Số dư: ${balance.toLocaleString('vi-VN')} VND`);
+    console.log(`💰 Số dư của ${email}: ${balance.toLocaleString('vi-VN')} VND`);
     
     return balance;
   } catch (error) {
     console.error('Lỗi lấy số dư:', error);
-    // Rethrow nhưng với thông tin chi tiết hơn
-    const errorMessage = error instanceof Error ? error.message : 'Lỗi không xác định';
-    throw new Error(`Không thể lấy số dư cho ${email}: ${errorMessage}`);
+    // Trả về 0 thay vì throw error để đảm bảo UI không bị lỗi
+    return 0;
   }
 }
 
