@@ -16,6 +16,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   // Thêm state để lấy balance trực tiếp từ API
   const [directBalance, setDirectBalance] = useState<number | null>(null);
   const [isDirectLoading, setIsDirectLoading] = useState(false);
+  const [forceRefresh, setForceRefresh] = useState(0);
 
   // Add debug log
   useEffect(() => {
@@ -43,7 +44,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('BalanceDisplay API response:', data);
+        console.log('BalanceDisplay Header API response:', data);
         const newBalance = typeof data.balance === 'number' ? data.balance : 0;
         setDirectBalance(newBalance);
       }
@@ -68,7 +69,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
       
       return () => clearInterval(interval);
     }
-  }, [session?.user, refreshBalance]);
+  }, [session?.user, refreshBalance, forceRefresh]);
 
   // Ưu tiên hiển thị directBalance nếu có
   const displayBalance = directBalance !== null ? directBalance : balance;
@@ -92,7 +93,10 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
       href="/account/deposit"
       className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
       title="Số dư tài khoản - Click để nạp tiền"
-      onClick={() => fetchDirectBalance()}
+      onClick={() => {
+        fetchDirectBalance();
+        setForceRefresh(prev => prev + 1);
+      }}
     >
       <div className="flex items-center space-x-1.5 sm:space-x-2">
         <svg

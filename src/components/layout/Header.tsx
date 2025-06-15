@@ -364,9 +364,9 @@ const Header = () => {
             {/* Right Side - Balance + Auth + Cart */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
               {/* Balance Display */}
-              {session && (
-                <div className="hidden sm:block">
-                  <BalanceDisplay />
+              {session?.user && (
+                <div className="hidden lg:flex lg:items-center">
+                  <BalanceDisplay className="mr-4" />
                 </div>
               )}
 
