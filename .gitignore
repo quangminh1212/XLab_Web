@@ -16,16 +16,34 @@ cypress/screenshots
 
 # next.js
 /.next/
-/.next-dev/
 /out/
 .next/
 .next-dev/
+
+# Files generated during Next.js build/development
 .next/cache/
 .next/static/
 .next/server/
-.next/server/app/api/auth/
 .next/server/chunks/
+.next/server/app/api/auth/
 .next/server/app/api/auth/[...nextauth]/
+.next/cache/webpack/client-development/
+.next/cache/webpack/server-development/
+.next/cache/webpack/edge-server-development/
+.next/static/css/
+.next/static/development/
+.next/static/chunks/
+.next/static/webpack/
+.next/trace
+
+# Generated files when project is running
+.next/cache/webpack/client-development/*.pack
+.next/cache/webpack/client-development/*.pack.gz
+.next/cache/webpack/server-development/*.pack
+.next/cache/webpack/server-development/*.pack.gz
+.next/cache/webpack/edge-server-development/*.pack
+.next/cache/webpack/edge-server-development/*.pack.gz
+.next/static/css/app-layout.css
 
 # production
 /build
@@ -46,7 +64,9 @@ yarn-error.log*
 lerna-debug.log*
 next.config.log
 next-fix-all.log
-
+*.log
+logs/
+next-setup.log
 
 # vercel
 .vercel
@@ -61,11 +81,9 @@ next-env.d.ts
 # Secure user data - NEVER commit these!
 /data/backups/
 
-
 # IDE
 .idea/
 .vscode/
-.next/
 *.iml
 *.suo
 *.userosscache
@@ -76,6 +94,14 @@ next-env.d.ts
 *-timestamp
 output.txt
 output-*.txt
+/data/backups/
+*.bak
+*.temp
+*.cache
+.eslintcache
+
+# Report files
+report.*.json
 
 # Runtime generated files
 /public/timestamp-handler.js
@@ -87,11 +113,6 @@ output-*.txt
 # backups
 /public/images/backup-categories/
 /public/images/products-backup/
-
-# Log files
-*.log
-logs/
-next-setup.log
 
 # Turbo
 .turbo/
@@ -113,34 +134,3 @@ no-trace.bat
 run-fixed.bat
 
 !/images/products/.gitkeep
-
-# Generated files
-/data/backups/
-*.bak
-*.temp
-*.cache
-
-# ESLint cache
-.eslintcache
-
-# Report files
-report.*.json
-
-# Runtime cache files
-.next/cache/webpack/client-development/
-.next/cache/webpack/server-development/
-.next/cache/webpack/edge-server-development/
-.next/static/css/
-.next/static/development/
-.next/static/chunks/
-.next/static/webpack/
-.next/trace
-
-# Generated files when project is running
-.next/cache/webpack/client-development/*.pack
-.next/cache/webpack/client-development/*.pack.gz
-.next/cache/webpack/server-development/*.pack
-.next/cache/webpack/server-development/*.pack.gz
-.next/cache/webpack/edge-server-development/*.pack
-.next/cache/webpack/edge-server-development/*.pack.gz
-.next/static/css/app-layout.css
