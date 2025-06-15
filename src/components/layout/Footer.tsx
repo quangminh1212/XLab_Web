@@ -9,6 +9,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const CURRENT_YEAR = 2025;
 // Tạo biến tĩnh cho cụm từ bản quyền để đảm bảo server và client render giống nhau
 const COPYRIGHT_TEXT = "Bản quyền thuộc về công ty";
+// Tạo biến tĩnh CHỈ chứa ký hiệu copyright
+const COPYRIGHT_SYMBOL = "©";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -301,8 +303,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
-              © {CURRENT_YEAR}{" "}<span className="text-white font-medium">{siteConfig.name}</span>
-              {" - "}{COPYRIGHT_TEXT}{" "}<span className="text-primary-400">{siteConfig.legal.companyName}</span>
+              {COPYRIGHT_SYMBOL} {CURRENT_YEAR} <span className="text-white font-medium">{siteConfig.name}</span> {COPYRIGHT_TEXT} <span className="text-primary-400">{siteConfig.legal.companyName}</span>
             </p>
           </div>
 
