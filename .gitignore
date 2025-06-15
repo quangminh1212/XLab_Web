@@ -47,9 +47,6 @@ lerna-debug.log*
 next.config.log
 next-fix-all.log
 
-# local env files
-.env*.local
-!.env.example
 
 # vercel
 .vercel
@@ -63,7 +60,7 @@ next-env.d.ts
 
 # Secure user data - NEVER commit these!
 /data/backups/
-*.user_*.json
+
 
 # IDE
 .idea/
@@ -71,7 +68,6 @@ next-env.d.ts
 .next/
 *.iml
 *.suo
-*.user
 *.userosscache
 *.sln.docstates
 
