@@ -3,9 +3,7 @@ import '../styles/app-layout.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { siteConfig } from '@/config/siteConfig';
-import { notFound } from 'next/navigation';
-import { locales } from '@/i18n/config';
-import RootLayoutClient from '@/components/layout/RootLayoutClient';
+import { ClientLayoutWrapper } from '@/components/layout';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -81,21 +79,9 @@ export const viewport: Viewport = {
   themeColor: '#00A19A',
 };
 
-type RootLayoutProps = {
-  children: React.ReactNode;
-  params: {
-    locale: string;
-  };
-};
-
-export default function RootLayout({ children, params }: RootLayoutProps) {
-  // Validate locale parameter
-  if (!locales.includes(params.locale as any)) {
-    notFound();
-  }
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={params.locale} className={`${inter.variable} scroll-smooth`}>
+    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -105,7 +91,7 @@ export default function RootLayout({ children, params }: RootLayoutProps) {
         />
       </head>
       <body className="font-sans antialiased">
-        <RootLayoutClient locale={params.locale}>{children}</RootLayoutClient>
+        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>
   );

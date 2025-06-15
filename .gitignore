@@ -139,14 +139,3 @@ report.*.json
 .next/static/chunks/
 .next/static/webpack/
 .next/trace
-
-# Temp files
-*.tmp
-*.temp
-*.swp
-*.swo
-.cache
-
-# User uploads or generated data
-/data/users/
-/data/backups/
