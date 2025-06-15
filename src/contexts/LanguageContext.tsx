@@ -103,6 +103,4 @@ export const useLanguage = (): LanguageContextType => {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
-};
-
-export default LanguageContext; 
+}; 
