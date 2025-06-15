@@ -1,10 +1,10 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/components/cart/CartContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
-import { useState, useEffect } from 'react';
 // import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 import {
   AiOutlineShoppingCart,
@@ -15,7 +15,6 @@ import {
   AiOutlineInfoCircle,
 } from 'react-icons/ai';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 
 // Kết hợp interface CartItem từ CartContext và utils
 interface CartItemWithVersion {
@@ -49,7 +48,6 @@ export default function CartPage() {
   const [showCouponInfo, setShowCouponInfo] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { t } = useTranslation();
 
   // Fetch products from API when component loads
   useEffect(() => {
@@ -361,7 +359,7 @@ export default function CartPage() {
                                         item.quantity - 1,
                                       )
                                     }
-                                    aria-label={t('cart.decreaseQuantity')}
+                                    aria-label="Giảm số lượng"
                                   >
                                     <AiOutlineMinus className="w-3 h-3" />
                                   </button>
@@ -379,7 +377,7 @@ export default function CartPage() {
                                         item.quantity + 1,
                                       )
                                     }
-                                    aria-label={t('cart.increaseQuantity')}
+                                    aria-label="Tăng số lượng"
                                   >
                                     <AiOutlinePlus className="w-3 h-3" />
                                   </button>
@@ -387,7 +385,7 @@ export default function CartPage() {
                                 <button
                                   className="text-red-500 hover:text-red-700 transition-colors p-1"
                                   onClick={() => removeItemFromCart(item.uniqueKey || item.id)}
-                                  aria-label={t('cart.removeItem')}
+                                  aria-label="Xóa sản phẩm"
                                 >
                                   <AiOutlineDelete className="w-4 h-4" />
                                 </button>
@@ -405,14 +403,14 @@ export default function CartPage() {
                     href="/accounts"
                     className="border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 px-4 py-2 rounded text-xs font-medium transition-colors text-center"
                   >
-                    {t('cart.continueShopping')}
+                    Continue Shopping
                   </Link>
                   <button
                     className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-4 py-2 rounded text-xs font-medium transition-colors flex items-center justify-center"
                     onClick={() => clearCart()}
                   >
                     <AiOutlineDelete className="w-3 h-3 mr-1" />
-                    {t('cart.clearCart')}
+                    Clear Cart
                   </button>
                 </div>
               </motion.div>
@@ -426,13 +424,13 @@ export default function CartPage() {
               >
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 sticky top-20">
                   <h2 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-100 text-gray-800">
-                    {t('cart.orderSummary')}
+                    Order Summary
                   </h2>
 
                   <div className="space-y-3 mb-5">
                     <div className="flex justify-between">
                       <span className="text-gray-600">
-                        {t('cart.subtotal', { count: cart.reduce((total, item) => total + item.quantity, 0) })}
+                        {`${cart.reduce((total, item) => total + item.quantity, 0)} items`}
                       </span>
                       <span className="font-medium">{formatCurrency(subtotal)}</span>
                     </div>
@@ -442,14 +440,14 @@ export default function CartPage() {
                       <div className="flex items-center justify-between mb-2">
                         <label htmlFor="coupon" className="flex items-center text-sm font-medium">
                           <AiOutlineTag className="mr-2" />
-                          {t('cart.couponCode')}
+                          Coupon Code
                         </label>
                         <button
                           className="text-xs text-primary-600 hover:text-primary-700 flex items-center"
                           onClick={() => setShowCouponInfo(!showCouponInfo)}
                         >
                           <AiOutlineInfoCircle className="mr-1" />
-                          {t('cart.couponCode')}
+                          View Coupon Codes
                         </button>
                       </div>
 
@@ -460,23 +458,23 @@ export default function CartPage() {
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                         >
-                          <p className="font-medium">{t('cart.couponInfo')}</p>
+                          <p className="font-medium">Available Coupon Codes:</p>
                           <div className="space-y-1">
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">WELCOME50</span>
-                              <span>Giảm 50.000đ (tối thiểu 200.000đ)</span>
+                              <span>Discount 50.000đ (min 200.000đ)</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">WELCOME10</span>
-                              <span>Giảm 10% cho đơn hàng đầu tiên</span>
+                              <span>10% off first order</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">FREESHIP</span>
-                              <span>Miễn phí vận chuyển (30.000đ)</span>
+                              <span>Free shipping (30.000đ)</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">XLAB20</span>
-                              <span>Giảm 20% cho sản phẩm XLab</span>
+                              <span>20% off XLab products</span>
                             </div>
                           </div>
                         </motion.div>
@@ -488,13 +486,13 @@ export default function CartPage() {
                             <p className="font-medium text-green-700 text-sm">
                               {appliedCoupon.name}
                             </p>
-                            <p className="text-green-600 text-xs mt-1">Mã: {appliedCoupon.code}</p>
+                            <p className="text-green-600 text-xs mt-1">Code: {appliedCoupon.code}</p>
                           </div>
                           <button
                             onClick={() => setAppliedCoupon(null)}
                             className="text-red-500 hover:text-red-700 text-xs"
                           >
-                            {t('cart.cancelCoupon')}
+                            Cancel
                           </button>
                         </div>
                       ) : (
@@ -502,7 +500,7 @@ export default function CartPage() {
                           <input
                             type="text"
                             id="coupon"
-                            placeholder={t('cart.enterCouponCode')}
+                            placeholder="Enter coupon code"
                             className="flex-grow border rounded-l-md px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary-600 focus:border-primary-600"
                             value={couponCode}
                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
@@ -511,7 +509,7 @@ export default function CartPage() {
                             className="bg-primary-600 text-white px-4 py-2.5 rounded-r-md text-sm whitespace-nowrap hover:bg-primary-700 transition-colors"
                             onClick={applyPromoCode}
                           >
-                            {t('cart.applyCoupon')}
+                            Apply Coupon
                           </button>
                         </div>
                       )}
@@ -522,12 +520,12 @@ export default function CartPage() {
 
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">{t('cart.subtotal')}</span>
+                      <span className="text-gray-600 text-sm">Subtotal</span>
                       <span className="whitespace-nowrap text-sm">{formatCurrency(subtotal)}</span>
                     </div>
                     {appliedCoupon && (
                       <div className="flex justify-between items-center text-green-600">
-                        <span className="text-sm">Giảm giá</span>
+                        <span className="text-sm">Discount</span>
                         <span className="whitespace-nowrap text-sm">
                           -{formatCurrency(couponDiscount)}
                         </span>
@@ -537,7 +535,7 @@ export default function CartPage() {
 
                   <div className="border-t border-b border-gray-100 py-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-base font-semibold">{t('cart.total')}</span>
+                      <span className="text-base font-semibold">Total</span>
                       <span className="text-lg font-bold text-primary-600 whitespace-nowrap">
                         {formatCurrency(total)}
                       </span>
@@ -548,7 +546,7 @@ export default function CartPage() {
                     href="/checkout?skipInfo=true"
                     className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-4 block text-center py-4 rounded-lg text-base font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
                   >
-                    {t('cart.checkout')}
+                    Proceed to Checkout
                   </Link>
                 </div>
               </motion.div>

@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
 
 interface Category {
   id: string;
@@ -31,7 +30,6 @@ const CategoryList = ({
 }: CategoryListProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [carouselItems, setCarouselItems] = useState<Category[]>([]);
-  const { t } = useTranslation();
 
   useEffect(() => {
     // Set up initial carousel items with clones for looping
@@ -147,7 +145,7 @@ const CategoryList = ({
             <button
               onClick={handlePrev}
               className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-md z-10"
-              aria-label={t('pagination.previous')}
+              aria-label="Previous"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +163,7 @@ const CategoryList = ({
             <button
               onClick={handleNext}
               className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-md z-10"
-              aria-label={t('pagination.next')}
+              aria-label="Next"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
