@@ -25,8 +25,8 @@ const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 let lastFetchTime = 0;
 let cachedBalance = 0;
 let isCurrentlyFetching = false;
-const CACHE_DURATION = 60000; // 60 seconds (tăng từ 30s lên 60s)
-const AUTO_REFRESH_INTERVAL = 300000; // 5 minutes (tăng từ 2 phút lên 5 phút)
+const CACHE_DURATION = 10000; // 10 seconds (giảm từ 60s xuống 10s)
+const AUTO_REFRESH_INTERVAL = 15000; // 15 seconds (giảm từ 5 phút xuống 15 giây)
 
 interface BalanceProviderProps {
   children: ReactNode;
@@ -47,10 +47,16 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         return;
       }
 
+      // Luôn hiển thị cached balance trước để tránh hiển thị 0
+      if (cachedBalance > 0 && isMountedRef.current) {
+        setBalance(cachedBalance);
+      }
+
       // Kiểm tra cache nếu không force
       const now = Date.now();
-      if (!force && now - lastFetchTime < CACHE_DURATION && cachedBalance >= 0) {
+      if (!force && now - lastFetchTime < CACHE_DURATION && cachedBalance > 0) {
         if (isMountedRef.current) {
+          console.log('💰 Using cached balance:', cachedBalance);
           setBalance(cachedBalance);
           setLoading(false);
         }
@@ -79,6 +85,10 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
       try {
         if (isMountedRef.current) {
           setError(null);
+          // Không set loading = true nếu đã có cached balance để tránh UI nhấp nháy
+          if (cachedBalance === 0) {
+            setLoading(true);
+          }
         }
 
         // Sử dụng retry mechanism để thử lại 3 lần nếu lỗi
@@ -93,7 +103,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
             
             // Thêm timestamp để đảm bảo không bị cache
             const timestamp = new Date().getTime();
-            const response = await fetch(`/api/user/balance?t=${timestamp}`, {
+            const response = await fetch(`/api/user/balance?t=${timestamp}&force=${force}`, {
               method: 'GET',
               credentials: 'include',
               cache: 'no-cache', // Đảm bảo không cache ở browser level
@@ -105,13 +115,18 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
 
             if (response.ok) {
               const data = await response.json();
+              // Ensure balance is always a number
               const newBalance = typeof data.balance === 'number' ? data.balance : 0;
               
               // Clear loading timeout
               clearTimeout(loadingTimeout);
 
+              // Log cho debug
+              console.log(`💰 Balance API response:`, data);
+
               // Chỉ update state nếu component vẫn mounted
               if (isMountedRef.current) {
+                console.log(`💰 Setting balance to:`, newBalance);
                 setBalance(newBalance);
                 setLastUpdated(new Date());
                 setLoading(false);
@@ -119,11 +134,6 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
 
               cachedBalance = newBalance;
               lastFetchTime = now;
-
-              // Chỉ log khi không phải cached để giảm spam log
-              if (!data.cached) {
-                console.log(`💰 Balance updated: ${newBalance.toLocaleString('vi-VN')} VND`);
-              }
               
               success = true;
               break;
@@ -181,15 +191,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   );
 
   const refreshBalance = useCallback(async (): Promise<void> => {
-    if (isMountedRef.current) {
-      setLoading(true);
-    }
-    
-    // Delay slightly to ensure loading indicator shows
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // Force refresh from server
-    await fetchBalance(true);
+    await fetchBalance(true); // Force refresh
   }, [fetchBalance]);
 
   // Cleanup khi component unmount
@@ -202,6 +204,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   // Initial fetch khi user login - force fetch mỗi khi session/email thay đổi
   useEffect(() => {
     if (session?.user?.email && status === 'authenticated') {
+      console.log('🔄 Initial balance fetch for:', session.user.email);
       fetchBalance(true);
     } else if (status === 'unauthenticated') {
       setBalance(0);
@@ -216,9 +219,11 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   useEffect(() => {
     if (!session?.user?.email || status !== 'authenticated') return;
 
+    console.log('⏱️ Setting up auto refresh interval');
     const interval = setInterval(() => {
       // Chỉ refresh khi đã hết cache và user đang active
       if (document.visibilityState === 'visible' && isMountedRef.current) {
+        console.log('⏱️ Auto refresh triggered');
         fetchBalance(); // Sẽ dùng cache nếu chưa hết hạn
       }
     }, AUTO_REFRESH_INTERVAL);
@@ -230,6 +235,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && session?.user?.email && isMountedRef.current) {
+        console.log('📱 Visibility changed, refreshing balance');
         const now = Date.now();
         if (now - lastFetchTime > CACHE_DURATION) {
           fetchBalance();

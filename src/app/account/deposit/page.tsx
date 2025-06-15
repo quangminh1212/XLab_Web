@@ -43,11 +43,19 @@ export default function DepositPage() {
       // Set up periodic balance refresh
       const refreshInterval = setInterval(() => {
         refreshBalance();
-      }, 30000); // Refresh balance every 30 seconds
+      }, 15000); // Refresh balance every 15 seconds
+      
+      // Log số dư để debug
+      console.log('Current balance in component:', balance);
       
       return () => clearInterval(refreshInterval);
     }
   }, [session, status, router, refreshBalance]);
+
+  // Thêm useEffect để log khi balance thay đổi
+  useEffect(() => {
+    console.log('Balance updated in component:', balance);
+  }, [balance]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -154,12 +162,14 @@ export default function DepositPage() {
     if (typeof amount !== 'number' || isNaN(amount)) {
       amount = 0;
     }
+    // Ensure amount is a number and force it to be displayed correctly
+    const numAmount = Number(amount);
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,
     })
-      .format(amount)
+      .format(numAmount)
       .replace('₫', 'đ');
   };
 
@@ -359,10 +369,15 @@ export default function DepositPage() {
                     <p className="text-sm text-gray-500">Đang tải...</p>
                   </div>
                   {/* Hiển thị số dư mặc định để người dùng không phải chờ */}
-                  <p className="text-3xl font-bold text-gray-400">{formatCurrency(balance || 0)}</p>
+                  <p className="text-3xl font-bold text-gray-400">
+                    {formatCurrency(balance > 0 ? balance : 0)}
+                    <span className="text-sm text-gray-400 ml-1">{balance === 0 ? "(đang tải...)" : ""}</span>
+                  </p>
                 </div>
               ) : (
-                <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance || 0)}</p>
+                <p className="text-3xl font-bold text-teal-600">
+                  {formatCurrency(balance > 0 ? balance : 0)}
+                </p>
               )}
             </div>
 
