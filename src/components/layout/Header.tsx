@@ -378,7 +378,7 @@ const Header = () => {
                 <button
                   onClick={toggleVoucher}
                   className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
-                  aria-label="Voucher"
+                  aria-label={t('vouchers.label')}
                   aria-expanded={isVoucherOpen}
                   aria-haspopup="true"
                 >
@@ -526,7 +526,7 @@ const Header = () => {
                       ) : (
                         <div className="px-4 py-6 text-center">
                           <p className="text-xs sm:text-sm text-gray-500">
-                            Không có mã giảm giá nào
+                            {t('admin.coupons.empty')}
                           </p>
                         </div>
                       )}
@@ -541,7 +541,7 @@ const Header = () => {
                   <button
                     onClick={toggleNotification}
                     className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
-                    aria-label="Thông báo"
+                    aria-label={t('notifications.label')}
                     aria-expanded={isNotificationOpen}
                     aria-haspopup="true"
                   >
@@ -636,7 +636,7 @@ const Header = () => {
                 href="/cart"
                 className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
-                <span className="sr-only">View cart</span>
+                <span className="sr-only">{t('cart.viewCart')}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -765,7 +765,7 @@ const Header = () => {
                   href="/cart"
                   className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
                 >
-                  <span className="sr-only">View cart</span>
+                  <span className="sr-only">{t('cart.viewCart')}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"

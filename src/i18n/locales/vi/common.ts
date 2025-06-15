@@ -19,6 +19,17 @@ export default {
   // Common notifications
   'notification.copied': 'Đã sao chép mã: {code}',
   'notification.copyFailed': 'Không thể sao chép mã. Vui lòng thử lại.',
+  'notifications.label': 'Thông báo',
+  'notifications.title': 'Thông báo',
+  'notifications.none': 'Không có thông báo',
+  'notifications.markAllRead': 'Đánh dấu đã đọc',
+  'notifications.viewAll': 'Xem tất cả',
+  
+  // Cart
+  'cart.viewCart': 'Xem giỏ hàng',
+  
+  // Vouchers
+  'vouchers.label': 'Voucher',
   
   // Common buttons and labels
   'button.learnMore': 'Tìm hiểu thêm',
