@@ -12,10 +12,7 @@ export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { balance: balanceFromContext, loading, refreshBalance } = useBalance();
-  
-  // Sử dụng useState để lưu trữ balance nội bộ
-  const [localBalance, setLocalBalance] = useState<number>(57000);
+  const { balance, loading, refreshBalance } = useBalance();
 
   // Lấy thông tin từ URL params
   const suggestedAmount = searchParams?.get('amount');
@@ -39,9 +36,6 @@ export default function DepositPage() {
     if (status === 'unauthenticated') {
       router.push('/login');
     } else if (session?.user) {
-      // Set local balance ngay lập tức
-      setLocalBalance(57000);
-      
       generateTransactionCode();
       // Refresh balance immediately and force a reload from server
       refreshBalance();
@@ -52,24 +46,16 @@ export default function DepositPage() {
       }, 15000); // Refresh balance every 15 seconds
       
       // Log số dư để debug
-      console.log('[DEBUG] Current balance in component:', balanceFromContext);
-      console.log('[DEBUG] Using fixed balance:', 57000);
+      console.log('Current balance in component:', balance);
       
       return () => clearInterval(refreshInterval);
     }
   }, [session, status, router, refreshBalance]);
 
-  // Thêm useEffect để cập nhật localBalance khi balance từ context thay đổi
+  // Thêm useEffect để log khi balance thay đổi
   useEffect(() => {
-    console.log('[DEBUG] Balance from context updated:', balanceFromContext);
-    // Chỉ cập nhật nếu balance từ context > 0 để tránh hiển thị 0
-    if (balanceFromContext > 0) {
-      setLocalBalance(balanceFromContext);
-    } else {
-      // Đảm bảo luôn có số dư hiển thị
-      setLocalBalance(57000);
-    }
-  }, [balanceFromContext]);
+    console.log('Balance updated in component:', balance);
+  }, [balance]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -173,19 +159,17 @@ export default function DepositPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    // Đảm bảo amount luôn là số
     if (typeof amount !== 'number' || isNaN(amount)) {
-      console.log('[DEBUG] Invalid balance value, using default 57000');
-      amount = 57000;
+      amount = 0;
     }
-    
     // Ensure amount is a number and force it to be displayed correctly
+    const numAmount = Number(amount);
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,
     })
-      .format(amount)
+      .format(numAmount)
       .replace('₫', 'đ');
   };
 
@@ -369,11 +353,7 @@ export default function DepositPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
                 <button 
-                  onClick={() => {
-                    refreshBalance();
-                    // Đảm bảo luôn cập nhật local balance
-                    setLocalBalance(57000);
-                  }} 
+                  onClick={() => refreshBalance()} 
                   className="ml-auto text-teal-600 hover:text-teal-800 p-1"
                   title="Làm mới số dư"
                 >
@@ -382,10 +362,23 @@ export default function DepositPage() {
                   </svg>
                 </button>
               </div>
-              {/* Luôn hiển thị số dư cố định */}
-              <p className="text-3xl font-bold text-teal-600">
-                {formatCurrency(57000)}
-              </p>
+              {loading ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-teal-600"></div>
+                    <p className="text-sm text-gray-500">Đang tải...</p>
+                  </div>
+                  {/* Hiển thị số dư mặc định để người dùng không phải chờ */}
+                  <p className="text-3xl font-bold text-gray-400">
+                    {formatCurrency(balance > 0 ? balance : 0)}
+                    <span className="text-sm text-gray-400 ml-1">{balance === 0 ? "(đang tải...)" : ""}</span>
+                  </p>
+                </div>
+              ) : (
+                <p className="text-3xl font-bold text-teal-600">
+                  {formatCurrency(balance > 0 ? balance : 0)}
+                </p>
+              )}
             </div>
 
             {/* Transfer Information */}
