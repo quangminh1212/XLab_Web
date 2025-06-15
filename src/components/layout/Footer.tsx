@@ -6,7 +6,7 @@ import { siteConfig } from '@/config/siteConfig';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Lấy năm hiện tại từ một biến hằng để đảm bảo server và client render giống nhau
-const CURRENT_YEAR = 2025;
+const CURRENT_YEAR = "2025";
 // Tạo biến tĩnh cho cụm từ bản quyền để đảm bảo server và client render giống nhau
 const COPYRIGHT_TEXT = "Bản quyền thuộc về công ty";
 
