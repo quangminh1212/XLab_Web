@@ -297,8 +297,8 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
-              &copy; {currentYear} <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
-              {t('footer.copyright')} <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
+              <span>Bản quyền thuộc về công ty</span> <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
+              <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
             </p>
           </div>
 
