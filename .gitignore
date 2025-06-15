@@ -53,20 +53,13 @@ next-fix-all.log
 *.tsbuildinfo
 next-env.d.ts
 
-# data files
-/data/users/*
-!/data/users/.gitkeep
-/data/backups/*
-!/data/backups/.gitkeep
+/data/backups/
 
-# Generated files during runtime
-.cache/
-.temp/
-.tmp/
-.DS_Store
-Thumbs.db
-*.log
-*.lock
+# Generated files
+.next/
+.next/cache/
+.next/server/
+.next/static/
 
 # IDE
 .idea/
