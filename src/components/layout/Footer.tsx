@@ -8,14 +8,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 // Lấy năm hiện tại từ một biến hằng để đảm bảo server và client render giống nhau
 const CURRENT_YEAR = "2025";
-// Tạo biến tĩnh cho cụm từ bản quyền để đảm bảo server và client render giống nhau
-const COPYRIGHT_TEXT = "Bản quyền thuộc về công ty";
-// Tạo chuỗi copyright hoàn chỉnh để tránh hydration mismatch - chúng tôi thêm dấu chấm vào chuỗi tĩnh
-const FULL_COPYRIGHT = `© ${CURRENT_YEAR} XLab. ${COPYRIGHT_TEXT} XLab Technologies`;
 
 export default function Footer() {
   const { t } = useLanguage();
-  const CURRENT_YEAR = new Date().getFullYear();
   
   // Log to verify changes are applied
   console.log('Footer component rendered with fixed dot');
