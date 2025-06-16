@@ -372,11 +372,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <div className="relative">
-                <ClientOnly>
-                  <LanguageSwitcher />
-                </ClientOnly>
-              </div>
+              <LanguageSwitcher />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
