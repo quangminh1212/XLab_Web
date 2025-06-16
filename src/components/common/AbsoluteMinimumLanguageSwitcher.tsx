@@ -5,9 +5,16 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 // This component is only rendered on the client side via SuperStrict
 export default function AbsoluteMinimumLanguageSwitcher() {
+  // Start with null state values to avoid hydration mismatch
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage, t } = useLanguage();
+  
+  // Initialize state only after component is mounted on client
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   // Add click outside handler
   useEffect(() => {
@@ -23,8 +30,13 @@ export default function AbsoluteMinimumLanguageSwitcher() {
   
   const isVi = language === 'vi';
   
+  // Don't render interactive elements until client-side mounted
+  if (!isMounted) {
+    return <div className="h-8 w-16"></div>; // Placeholder with similar dimensions
+  }
+  
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
