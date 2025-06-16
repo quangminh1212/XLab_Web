@@ -4,34 +4,37 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 
-interface LanguageSwitcherProps {
-  className?: string;
-}
-
-export default function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
+export default function SimpleLanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
   const isVi = language === 'vi';
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const [isMounted, setIsMounted] = useState(false);
+  const containerRef = useRef(null);
+  
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    setIsMounted(true);
+    
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
-
+    
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
+  
+  // Don't render anything on the server
+  if (!isMounted) {
+    return null;
+  }
+  
   return (
-    <div className={className} style={{ position: 'relative' }}>
+    <div className="mr-2 relative" ref={containerRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
-        aria-expanded={isOpen}
       >
         <div className="relative w-6 h-4 mr-2">
           <Image
@@ -60,7 +63,7 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10" ref={dropdownRef}>
+        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
           <ul className="py-1">
             <li>
               <div
