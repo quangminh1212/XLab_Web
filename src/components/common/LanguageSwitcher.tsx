@@ -25,15 +25,51 @@ export default function LanguageSwitcher({ className = '' }: { className?: strin
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Get the default language from environment or context's initial state
+  // This avoids hydration mismatch between server and client
+  const defaultLanguage = language || 'en';
+  const isVi = defaultLanguage === 'vi';
+
   // For server-side rendering and initial client render before hydration,
-  // return the same structure that will be consistent across server and client
+  // return the same DOM structure but with non-interactive elements
   if (!mounted) {
-    return <div className={`relative ${className}`.trim()} ref={containerRef}></div>;
+    return (
+      <div id={containerId} className={`relative ${className}`.trim()} ref={containerRef}>
+        <button
+          className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
+          aria-expanded="false"
+          disabled
+        >
+          <div className="relative w-6 h-4 mr-2">
+            <img
+              src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
+              alt={isVi ? 'Tiếng Việt' : 'English'}
+              width={24}
+              height={16}
+              className="object-cover rounded-sm"
+            />
+          </div>
+          <span>{isVi ? 'VIE' : 'ENG'}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 ml-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      </div>
+    );
   }
 
   // Client-side only rendering after hydration
-  const isVi = language === 'vi';
-
   return (
     <div id={containerId} className={`relative ${className}`.trim()} ref={containerRef}>
       <button
