@@ -3,7 +3,6 @@ import path from 'path';
 import crypto from 'crypto';
 import { User } from '@/models/UserModel';
 import { Transaction } from '@/models/TransactionModel';
-import { safeLocalStorage } from './utils';
 
 // File paths cũ (fallback)
 const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
@@ -799,9 +798,8 @@ export async function migrateOrdersFromLocalStorage(email: string): Promise<void
     const userData = await ensureUserDataExists(email);
 
     // Lấy dữ liệu từ localStorage
-    const ordersKey = `orders_${email}`;
-    const localOrders = safeLocalStorage.getJSON<any[]>(ordersKey, []);
-    
+    const localOrders = JSON.parse(localStorage.getItem(`orders_${email}`) || '[]');
+
     if (localOrders.length > 0) {
       // Convert localStorage orders to our Order format
       const migratedOrders: Order[] = localOrders.map((localOrder: any) => ({

@@ -7,7 +7,6 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { safeLocalStorage } from '@/lib/utils';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -159,10 +158,10 @@ export default function AccountPage() {
 
       // Kiểm tra xem có thông tin đã lưu trong localStorage không
       try {
-        const profileKey = `user_profile_${session.user.email}`;
-        const parsedProfile = safeLocalStorage.getJSON(profileKey, null);
-        
-        if (parsedProfile) {
+        const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
+        if (savedProfile) {
+          const parsedProfile = JSON.parse(savedProfile);
+
           // Nếu session có customName = true, ưu tiên sử dụng name từ session
           if (session.user.customName) {
             setProfile({
@@ -188,12 +187,17 @@ export default function AccountPage() {
         }
 
         // Tải cài đặt thông báo từ localStorage
-        const notificationKey = `notification_settings_${session.user.email}`;
-        const parsedSettings = safeLocalStorage.getJSON(notificationKey, null);
-        
-        if (parsedSettings) {
-          setNotificationSettings(parsedSettings);
-          console.log('Đã tải cài đặt thông báo:', parsedSettings);
+        const savedNotificationSettings = localStorage.getItem(
+          `notification_settings_${session.user.email}`,
+        );
+        if (savedNotificationSettings) {
+          try {
+            const parsedSettings = JSON.parse(savedNotificationSettings);
+            setNotificationSettings(parsedSettings);
+            console.log('Đã tải cài đặt thông báo:', parsedSettings);
+          } catch (error) {
+            console.error('Lỗi khi parse cài đặt thông báo:', error);
+          }
         }
 
         // Fetch real purchase history from API và localStorage
@@ -208,8 +212,9 @@ export default function AccountPage() {
             }
 
             // Lấy đơn hàng từ localStorage
-            const ordersKey = `orders_${session.user.email}`;
-            const localOrders = safeLocalStorage.getJSON<any[]>(ordersKey, []);
+            const localOrders = JSON.parse(
+              localStorage.getItem(`orders_${session.user.email}`) || '[]',
+            );
 
             // Lấy đơn hàng từ API
             const res = await fetch('/api/orders/history', { cache: 'no-store' });
@@ -281,9 +286,9 @@ export default function AccountPage() {
                 productsData = data.products || [];
               }
 
-              const ordersKey = `orders_${session.user.email}`;
-              const localOrders = safeLocalStorage.getJSON<any[]>(ordersKey, []);
-
+              const localOrders = JSON.parse(
+                localStorage.getItem(`orders_${session.user.email}`) || '[]',
+              );
               const convertedOrders = localOrders.map((order: any) => ({
                 id: order.id,
                 date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
@@ -351,13 +356,15 @@ export default function AccountPage() {
     try {
       // Lưu thông tin vào localStorage
       if (session?.user?.email) {
-        const profileKey = `user_profile_${session.user.email}`;
-        safeLocalStorage.setJSON(profileKey, {
-          name: profile.name,
-          phone: profile.phone,
-          memberSince: profile.memberSince,
-          // Không lưu email và avatar vì sẽ lấy từ session
-        });
+        localStorage.setItem(
+          `user_profile_${session.user.email}`,
+          JSON.stringify({
+            name: profile.name,
+            phone: profile.phone,
+            memberSince: profile.memberSince,
+            // Không lưu email và avatar vì sẽ lấy từ session
+          }),
+        );
 
         // Cập nhật thông tin trong session (trong môi trường thực tế sẽ gọi API)
         /* Trong thực tế, bạn cần gọi API để cập nhật thông tin người dùng:

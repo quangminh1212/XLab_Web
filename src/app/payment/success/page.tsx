@@ -90,21 +90,9 @@ export default function PaymentSuccessPage() {
 
     try {
       // Lưu vào localStorage
-      const ordersKey = `orders_${session.user.email}`;
-      const localOrdersData = localStorage.getItem(ordersKey) || '[]';
-      let existingOrders = [];
-      
-      try {
-        if (localOrdersData && localOrdersData !== 'undefined' && localOrdersData !== 'null') {
-          const parsedOrders = JSON.parse(localOrdersData);
-          if (Array.isArray(parsedOrders)) {
-            existingOrders = parsedOrders;
-          }
-        }
-      } catch (parseError) {
-        console.error('Error parsing orders from localStorage:', parseError);
-        existingOrders = [];
-      }
+      const existingOrders = JSON.parse(
+        localStorage.getItem(`orders_${session.user.email}`) || '[]',
+      );
 
       // Kiểm tra xem đơn hàng đã tồn tại chưa
       const orderExists = existingOrders.some((order: any) => order.id === orderNumber);

@@ -20,7 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // Only execute on client-side
     if (typeof window !== 'undefined') {
       const savedState = localStorage.getItem('adminSidebarCollapsed');
-      if (savedState !== null && savedState !== 'undefined' && savedState !== 'null') {
+      if (savedState !== null) {
         setIsSidebarCollapsed(savedState === 'true');
       }
     }

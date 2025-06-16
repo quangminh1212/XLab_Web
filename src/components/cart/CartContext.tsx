@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { safeLocalStorage } from '@/lib/utils';
 
 // Constants
 const PLACEHOLDER_IMAGE = '/images/placeholder/product-placeholder.svg';
@@ -105,7 +104,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           console.log('🛒 Cart loaded from server:', result.cart);
           setItems(result.cart);
           // Backup to localStorage
-          safeLocalStorage.setJSON(STORAGE_KEY, result.cart);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(result.cart));
         }
       } else {
         console.error('Failed to load cart from server:', response.statusText);
@@ -162,15 +161,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         await loadCartFromServer();
       } else {
         // User is not logged in - load from localStorage
-        const parsedCart = safeLocalStorage.getJSON<CartItem[]>(STORAGE_KEY, []);
-        
-        if (parsedCart.length > 0) {
-          const cartWithUniqueKeys = parsedCart.map((item: CartItem) => ({
-            ...item,
-            uniqueKey: item.uniqueKey || generateUniqueKey(item),
-          }));
-          setItems(cartWithUniqueKeys);
-          console.log('🛒 Cart loaded from localStorage:', cartWithUniqueKeys);
+        const savedCart = localStorage.getItem(STORAGE_KEY);
+        if (savedCart) {
+          try {
+            const parsedCart = JSON.parse(savedCart);
+            const cartWithUniqueKeys = parsedCart.map((item: CartItem) => ({
+              ...item,
+              uniqueKey: item.uniqueKey || generateUniqueKey(item),
+            }));
+            setItems(cartWithUniqueKeys);
+            console.log('🛒 Cart loaded from localStorage:', cartWithUniqueKeys);
+          } catch (error) {
+            console.error('Failed to parse cart from localStorage:', error);
+          }
         }
       }
       setLoaded(true);
@@ -186,7 +189,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (!loaded) return;
 
     // Always save to localStorage
-    safeLocalStorage.setJSON(STORAGE_KEY, items);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 
     // If user is logged in, also save to server
     if (isAuthenticated) {
@@ -200,37 +203,43 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (isAuthenticated && loaded) {
       // Merge cart from localStorage with server
-      const parsedLocalCart = safeLocalStorage.getJSON<CartItem[]>(STORAGE_KEY, []);
-      
-      if (parsedLocalCart.length > 0) {
-        // Have cart in localStorage, merge with server
-        loadCartFromServer().then(() => {
-          // After loading server cart, merge with local cart if needed
-          const mergedCart = [...items];
-          parsedLocalCart.forEach((localItem: CartItem) => {
-            const existingIndex = mergedCart.findIndex(
-              (serverItem) => generateUniqueKey(serverItem) === generateUniqueKey(localItem)
-            );
-            if (existingIndex === -1) {
-              // Ensure the local item has all required properties
-              const safeLocalItem: CartItem = {
-                id: localItem.id || '',
-                name: localItem.name || '',
-                price: localItem.price || 0,
-                quantity: localItem.quantity || 1,
-                image: localItem.image,
-                options: localItem.options,
-                version: localItem.version,
-                uniqueKey: localItem.uniqueKey || generateUniqueKey(localItem)
-              };
-              mergedCart.push(safeLocalItem);
-            }
-          });
+      const localCart = localStorage.getItem(STORAGE_KEY);
+      if (localCart) {
+        try {
+          const parsedLocalCart = JSON.parse(localCart);
+          if (parsedLocalCart.length > 0) {
+            // Have cart in localStorage, merge with server
+            loadCartFromServer().then(() => {
+              // After loading server cart, merge with local cart if needed
+              const mergedCart = [...items];
+              parsedLocalCart.forEach((localItem: CartItem) => {
+                const existingIndex = mergedCart.findIndex(
+                  (serverItem) => generateUniqueKey(serverItem) === generateUniqueKey(localItem)
+                );
+                if (existingIndex === -1) {
+                  // Ensure the local item has all required properties
+                  const safeLocalItem: CartItem = {
+                    id: localItem.id || '',
+                    name: localItem.name || '',
+                    price: localItem.price || 0,
+                    quantity: localItem.quantity || 1,
+                    image: localItem.image,
+                    options: localItem.options,
+                    version: localItem.version,
+                    uniqueKey: localItem.uniqueKey || generateUniqueKey(localItem)
+                  };
+                  mergedCart.push(safeLocalItem);
+                }
+              });
 
-          if (mergedCart.length !== items.length) {
-            setItems(mergedCart);
+              if (mergedCart.length !== items.length) {
+                setItems(mergedCart);
+              }
+            });
           }
-        });
+        } catch (error) {
+          console.error('Error merging local cart:', error);
+        }
       }
     }
   }, [isAuthenticated, loaded, items, loadCartFromServer]);
