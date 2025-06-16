@@ -1,5 +1,4 @@
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface NewUserVoucherCardProps {
   minAmount: number;
@@ -12,17 +11,14 @@ export default function NewUserVoucherCard({
   usedCount,
   maxUsage,
 }: NewUserVoucherCardProps) {
-  const { t } = useLanguage();
   const usagePercentage = (usedCount / maxUsage) * 100;
 
   return (
     <div className="bg-teal-50 rounded-lg p-4 mb-4">
-      <h3 className="text-teal-800 font-medium mb-3">{t('vouchers.newUserOffer')}</h3>
+      <h3 className="text-teal-800 font-medium mb-3">Ưu đãi dành cho khách hàng đăng ký mới</h3>
 
       <div className="flex justify-between items-center text-xs mb-1">
-        <span className="text-teal-600 font-medium">
-          {t('vouchers.remaining', { count: maxUsage - usedCount })}
-        </span>
+        <span className="text-teal-600 font-medium">Còn {maxUsage - usedCount} lượt</span>
         <span className="text-gray-500">{usagePercentage.toFixed(0)}%</span>
       </div>
 

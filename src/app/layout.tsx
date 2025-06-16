@@ -90,7 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.className} bg-light-50`}>
+      <body className="font-sans antialiased">
         <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>

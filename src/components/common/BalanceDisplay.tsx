@@ -1,38 +1,17 @@
 'use client';
 
-import React, { memo, useMemo, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { memo, useMemo } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 
 interface BalanceDisplayProps {
   className?: string;
 }
 
-function BalanceDisplayContent() {
+function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
-  const { balance, loading, refreshBalance } = useBalance();
-  const [retryCount, setRetryCount] = useState(0);
-  const [isClient, setIsClient] = useState(false);
-
-  // Ensure component only renders on client side
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Attempt to refresh balance if it's 0 or loading fails
-  useEffect(() => {
-    // Only retry if logged in and balance is 0
-    if (session?.user && !loading && balance === 0 && retryCount < 3) {
-      const timer = setTimeout(() => {
-        console.log(`🔄 Retrying balance fetch (attempt ${retryCount + 1})...`);
-        refreshBalance();
-        setRetryCount(prev => prev + 1);
-      }, 1500 * (retryCount + 1)); // Exponential backoff
-      
-      return () => clearTimeout(timer);
-    }
-  }, [balance, loading, session?.user, retryCount, refreshBalance]);
+  const { balance, loading } = useBalance();
 
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
@@ -42,14 +21,14 @@ function BalanceDisplayContent() {
     }).format(balance);
   }, [balance]);
 
-  if (!isClient || !session?.user) {
+  if (!session?.user) {
     return null;
   }
 
   return (
     <Link
       href="/account/deposit"
-      className="group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300"
+      className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
       title="Số dư tài khoản - Click để nạp tiền"
     >
       <div className="flex items-center space-x-1.5 sm:space-x-2">
@@ -81,5 +60,4 @@ function BalanceDisplayContent() {
   );
 }
 
-// Export the component directly without the SuperStrictWrapper
-export default memo(BalanceDisplayContent);
+export default memo(BalanceDisplay);

@@ -180,7 +180,7 @@ export default function ProductCard({
     // Đảm bảo amount là số
     const safeAmount = isNaN(amount) ? 0 : amount;
     
-    return new Intl.NumberFormat(t('format.currency'), {
+    return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,

@@ -29,7 +29,6 @@
     "postinstall": "node scripts/fix-next-errors.js"
   },
   "dependencies": {
-    "@heroicons/react": "2.2.0",
     "@next/swc-wasm-nodejs": "15.3.2",
     "@radix-ui/react-slot": "1.1.2",
     "@tinymce/tinymce-react": "6.1.0",

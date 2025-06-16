@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback, useState, Suspense } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -9,9 +9,8 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import { useLanguage } from '@/contexts/LanguageContext';
-import ClientOnly from '@/components/common/ClientOnly';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -241,7 +240,7 @@ const Header = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(t('format.currency'), {
+    return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       maximumFractionDigits: 0,
@@ -254,7 +253,7 @@ const Header = () => {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString(t('format.date'));
+    ).toLocaleDateString('vi-VN');
   };
 
   const handleCopyVoucher = (code: string) => {
@@ -263,7 +262,7 @@ const Header = () => {
       .then(() => {
         // Use a more elegant notification method instead of alert
         setShowNotification(true);
-        setNotificationMessage(t('notification.copied', {code: code}));
+        setNotificationMessage(`Đã sao chép mã: ${code}`);
 
         // Hide notification after 2 seconds
         setTimeout(() => {
@@ -273,7 +272,7 @@ const Header = () => {
       .catch((err) => {
         console.error('Copy failed:', err);
         setShowNotification(true);
-        setNotificationMessage(t('notification.copyFailed'));
+        setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
 
         setTimeout(() => {
           setShowNotification(false);
@@ -397,21 +396,13 @@ const Header = () => {
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
               {/* Balance Display */}
               {session && (
-                <div className="hidden sm:block mr-6">
+                <div className="hidden sm:block">
                   <BalanceDisplay />
                 </div>
               )}
 
-<<<<<<< HEAD
-              {/* Language Switcher - Use client-only mounting */}
-              <div className="relative mr-2">
-                {/* This empty div acts as a server-side placeholder */}
-                <div id="language-switcher-mount-point" className="h-8 w-16"></div>
-              </div>
-=======
               {/* Language Switcher */}
               <LanguageSwitcher />
->>>>>>> 2dd7eab940a9e801d70f860c807175f6bd32f931
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -557,6 +548,8 @@ const Header = () => {
                                     ></div>
                                   </div>
                                 )}
+
+                                {/* Note section removed */}
                               </div>
                             </div>
                           ))}
@@ -564,7 +557,7 @@ const Header = () => {
                       ) : (
                         <div className="px-4 py-6 text-center">
                           <p className="text-xs sm:text-sm text-gray-500">
-                            {t('admin.coupons.empty')}
+                            Không có mã giảm giá nào
                           </p>
                         </div>
                       )}
@@ -799,6 +792,9 @@ const Header = () => {
 
               {/* Mobile menu button */}
               <div className="flex md:hidden items-center space-x-3">
+                {/* Language Switcher for Mobile */}
+                <LanguageSwitcher className="mr-0.5" />
+
                 <Link
                   href="/cart"
                   className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
