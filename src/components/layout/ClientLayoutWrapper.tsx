@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header, Footer } from '@/components/layout';
 import {
   Analytics,
@@ -20,6 +20,13 @@ interface ClientLayoutWrapperProps {
 }
 
 export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperProps) {
+  // Add hydration safety
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <SessionProvider>
       <LanguageProvider>
@@ -27,7 +34,8 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
           <BalanceProvider>
             <CartProvider>
               <div className="flex flex-col min-h-screen">
-                <Header />
+                {/* Only render Header after client-side hydration is complete */}
+                {isClient ? <Header /> : <div style={{ height: '64px' }} />}
                 <main className="flex-grow">{children}</main>
                 <Footer />
               </div>

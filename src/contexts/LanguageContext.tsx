@@ -23,10 +23,28 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 // Legacy translations - for backward compatibility
 const legacyTranslations: Record<Language, Record<string, string>> = {
   vi: {
-    // ... existing Vietnamese translations can remain here for fallback
+    // Essential navigation translations to prevent hydration mismatch
+    'nav.home': 'Trang chủ',
+    'nav.products': 'Sản phẩm',
+    'nav.about': 'Giới thiệu',
+    'nav.contact': 'Liên hệ',
+    'nav.warranty': 'Bảo hành',
+    'nav.login': 'Đăng nhập',
+    'nav.logout': 'Đăng xuất',
+    'nav.account': 'Tài khoản',
+    'nav.admin': 'Quản trị',
   },
   en: {
-    // ... existing English translations can remain here for fallback
+    // Essential navigation translations to prevent hydration mismatch
+    'nav.home': 'Home',
+    'nav.products': 'Products',
+    'nav.about': 'About',
+    'nav.contact': 'Contact',
+    'nav.warranty': 'Warranty',
+    'nav.login': 'Login',
+    'nav.logout': 'Logout',
+    'nav.account': 'Account',
+    'nav.admin': 'Admin',
   }
 };
 
@@ -75,14 +93,16 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Mặc định là tiếng Việt
   const [language, setLanguageState] = useState<Language>('vi');
   
-  // Translation cache for the current session
-  const [translations, setTranslations] = useState<Record<string, string>>({});
+  // Translation cache for the current session - initialize with legacy translations to prevent hydration mismatch
+  const [translations, setTranslations] = useState<Record<string, string>>(legacyTranslations['vi']);
 
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
       setLanguageState(savedLanguage);
+      // Immediately update translations with the language's legacy translations to prevent hydration mismatch
+      setTranslations(prev => ({...prev, ...legacyTranslations[savedLanguage as Language]}));
     }
   }, []);
 
@@ -242,4 +262,4 @@ export const useLanguage = (): LanguageContextType => {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
-}; 
+};
