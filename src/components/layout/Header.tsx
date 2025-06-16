@@ -11,6 +11,7 @@ import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import ClientOnly from '@/components/common/ClientOnly';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -371,7 +372,11 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <LanguageSwitcher />
+              <div className="relative">
+                <ClientOnly>
+                  <LanguageSwitcher />
+                </ClientOnly>
+              </div>
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>

@@ -6,16 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 export default function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Simple computed property
-  const isVi = mounted ? language === 'vi' : false;
-  
-  // Mount effect
-  useEffect(() => {
-    setMounted(true);
-  }, []);
   
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -29,27 +20,25 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
   
-  // Render a consistent structure regardless of mounted state
+  const isVi = language === 'vi';
+  
   return (
     <div className="relative mr-2" ref={containerRef}>
       <button
-        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
-        aria-expanded={mounted ? isOpen : undefined}
+        aria-expanded={isOpen}
       >
         <div className="relative w-6 h-4 mr-2">
-          {mounted && (
-            <img
-              src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
-              alt={isVi ? 'Tiếng Việt' : 'English'}
-              width={24}
-              height={16}
-              className="object-cover rounded-sm"
-            />
-          )}
+          <img
+            src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
+            alt={isVi ? 'Tiếng Việt' : 'English'}
+            width={24}
+            height={16}
+            className="object-cover rounded-sm"
+          />
         </div>
-        <span>{mounted ? (isVi ? 'VIE' : 'ENG') : ''}</span>
+        <span>{isVi ? 'VIE' : 'ENG'}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-4 w-4 ml-1"
@@ -66,8 +55,7 @@ export default function LanguageSwitcher() {
         </svg>
       </button>
 
-      {/* Only render dropdown when open and mounted */}
-      {isOpen && mounted && (
+      {isOpen && (
         <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
           <ul className="py-1">
             <li>
