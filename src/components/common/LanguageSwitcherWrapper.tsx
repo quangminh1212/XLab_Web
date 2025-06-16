@@ -3,6 +3,7 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface LanguageSwitcherWrapperProps {
   className?: string;
@@ -12,11 +13,11 @@ interface LanguageSwitcherWrapperProps {
 const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherWrapperProps) => {
   const { language, setLanguage, t } = useLanguage();
   const isVi = language === 'vi';
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [mounted, setMounted] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true);
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -29,12 +30,12 @@ const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherWrapperProp
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Return empty placeholder on server that matches the client DOM structure
+  // SSR: Return empty div with proper className to match client structure
   if (!mounted) {
-    return <div className={`relative ${className}`}></div>;
+    return <div className={className} aria-hidden="true" />;
   }
 
-  // Render chỉ ở client
+  // Client-only render
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
