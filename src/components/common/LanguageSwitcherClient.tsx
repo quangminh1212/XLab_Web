@@ -10,7 +10,13 @@ interface LanguageSwitcherClientProps {
 export default function LanguageSwitcherClient({ className = '' }: LanguageSwitcherClientProps) {
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Wait for client-side mounting to prevent hydration issues
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -20,9 +26,16 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
       }
     }
     
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (isMounted) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isMounted]);
+  
+  // If not mounted yet, show the placeholder with exact structure
+  if (!isMounted) {
+    return <div className={`relative mr-2 ${className}`.trim()} ref={containerRef}></div>;
+  }
   
   const isVi = language === 'vi';
   
