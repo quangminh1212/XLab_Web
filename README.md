@@ -55,6 +55,10 @@ src/
 ├── models/            # Data models and schemas
 ├── scripts/           # Utility scripts
 ├── shared/            # Shared utilities, types, constants
+│   ├── symbols/       # Symbol system (icons, characters, typography, colors)
+│   ├── constants/     # Application constants
+│   ├── types/         # Shared TypeScript types
+│   └── utils/         # Utility functions
 ├── styles/            # Global styles
 └── types/             # TypeScript type definitions
 ```
@@ -71,6 +75,9 @@ import { Button } from '@/components/common';
 
 // Import utilities
 import { formatCurrency } from '@/shared/utils';
+
+// Import from symbols system
+import { Icons, Characters, Colors } from '@/shared/symbols';
 ```
 
 ## 🚀 Technologies
@@ -167,6 +174,13 @@ npm run dev
    - Follow ESLint and Prettier configuration
    - Use explicit return types for functions
    - Document complex logic with comments
+
+4. **Symbols System Usage**:
+   - Use the symbols system for consistency in UI elements
+   - Import icons from `@/shared/symbols` rather than inline SVGs
+   - Use character constants from the symbols system instead of hardcoding
+   - Follow color palette defined in the symbols system
+   - View the symbols demo at `/symbols` for available symbols
 
 ## 📦 Deployment
 

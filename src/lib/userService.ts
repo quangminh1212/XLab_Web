@@ -437,6 +437,7 @@ export async function getUserTransactions(userEmail: string): Promise<Transactio
  * Đơn giản và nhanh hơn, không làm nhiều thao tác phức tạp
  */
 export async function syncUserBalance(email: string): Promise<number> {
+  console.log(`💰 syncUserBalance: Starting balance sync for ${email}`);
   try {
     // Log cho debug
     console.log(`🔄 Đang lấy số dư của: ${email}`);
@@ -457,6 +458,7 @@ export async function syncUserBalance(email: string): Promise<number> {
       balance = 0;
     }
 
+<<<<<<< HEAD
     // Log cho debug
     console.log(`💰 Số dư của ${email}: ${balance.toLocaleString('vi-VN')} VND`);
     
@@ -465,6 +467,144 @@ export async function syncUserBalance(email: string): Promise<number> {
     console.error('Lỗi lấy số dư:', error);
     // Trả về 0 thay vì throw error để đảm bảo UI không bị lỗi
     return 0;
+=======
+    // Read from both sources
+    let balanceFromUsers = 0;
+    let balanceFromBalances = 0;
+    let balanceFromUserFile = 0;
+    let errorMessages = [];
+    let userData: UserData | null = null;
+
+    // Get from user's individual file
+    try {
+      userData = await getUserDataFromFile(email);
+      if (userData) {
+        balanceFromUserFile = userData.profile.balance || 0;
+        console.log(`💰 syncUserBalance: From user file: ${balanceFromUserFile}`);
+      } else {
+        console.log(`💰 syncUserBalance: No user file found for ${email}`);
+      }
+    } catch (error) {
+      console.error('💰 syncUserBalance: Could not read from user file:', error);
+      errorMessages.push(`User file error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // Get from users.json
+    let user: User | null = null;
+    try {
+      const users = await getUsers();
+      user = users.find((u) => u.email === email) || null;
+      balanceFromUsers = user?.balance || 0;
+      console.log(`💰 syncUserBalance: From users.json: ${balanceFromUsers}`);
+    } catch (error) {
+      console.error('💰 syncUserBalance: Could not read from users.json:', error);
+      errorMessages.push(`users.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // Get from balances.json
+    try {
+      // Check if file exists first
+      try {
+        await fs.access(BALANCES_FILE);
+        const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
+        const balances: UserBalance = JSON.parse(balanceData);
+        balanceFromBalances = balances[email] || 0;
+        console.log(`💰 syncUserBalance: From balances.json: ${balanceFromBalances}`);
+      } catch (accessError) {
+        // Create empty balances file if it doesn't exist
+        await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
+        console.log('💰 syncUserBalance: Created new balances.json file');
+      }
+    } catch (error) {
+      console.error('💰 syncUserBalance: Could not read from balances.json:', error);
+      errorMessages.push(`balances.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // If no user data exists anywhere, create new user with fallback mechanism
+    if (!userData && !user) {
+      console.log(`💰 syncUserBalance: No user found, creating new user for ${email}`);
+      try {
+        user = await createNewUserFromEmail(email);
+        const newUserData = createDefaultUserData(user);
+        await saveUserDataToFile(email, newUserData);
+        console.log(`💰 syncUserBalance: New user created with 0 balance for ${email}`);
+        return 0; // New user has 0 balance
+      } catch (createError) {
+        console.error('💰 syncUserBalance: Failed to create new user:', createError);
+        errorMessages.push(`User creation error: ${createError instanceof Error ? createError.message : 'Unknown error'}`);
+        // Last resort fallback
+        return 0;
+      }
+    }
+
+    // If we have error messages but still have at least one balance value, continue
+    if (errorMessages.length > 0) {
+      console.warn(`💰 syncUserBalance: Continuing with partial data despite errors: ${errorMessages.join('; ')}`);
+    }
+
+    // Use the highest balance and sync
+    const finalBalance = Math.max(balanceFromUsers, balanceFromBalances, balanceFromUserFile);
+    console.log(`💰 syncUserBalance: Final balance determined: ${finalBalance} for ${email}`);
+
+    // Only update if there's a non-zero balance somewhere
+    const hasNonZeroBalance = balanceFromUsers > 0 || balanceFromBalances > 0 || balanceFromUserFile > 0;
+    
+    // Update all systems with the final balance - with error handling for each step
+    if (hasNonZeroBalance) {
+      console.log(`💰 syncUserBalance: Syncing non-zero balance across all systems`);
+      
+      try {
+        if (balanceFromUsers !== finalBalance) {
+          await updateUserBalanceInFile(email, finalBalance - balanceFromUsers);
+          console.log(`💰 syncUserBalance: Updated users.json to ${finalBalance}`);
+        }
+      } catch (updateError) {
+        console.error('💰 syncUserBalance: Failed to update users.json:', updateError);
+      }
+
+      try {
+        if (balanceFromBalances !== finalBalance) {
+          await updateBalanceInBalancesFile(email, finalBalance);
+          console.log(`💰 syncUserBalance: Updated balances.json to ${finalBalance}`);
+        }
+      } catch (updateError) {
+        console.error('💰 syncUserBalance: Failed to update balances.json:', updateError);
+      }
+
+      try {
+        if (balanceFromUserFile !== finalBalance) {
+          let userData = await getUserDataFromFile(email);
+          if (!userData) {
+            // Create user data if it doesn't exist
+            const users = await getUsers();
+            const existingUser = users.find((u) => u.email === email);
+            if (existingUser) {
+              userData = createDefaultUserData(existingUser);
+            } else if (user) {
+              userData = createDefaultUserData(user);
+            }
+          }
+          if (userData) {
+            userData.profile.balance = finalBalance;
+            await saveUserDataToFile(email, userData);
+            console.log(`💰 syncUserBalance: Updated user file to ${finalBalance}`);
+          }
+        }
+      } catch (updateError) {
+        console.error('💰 syncUserBalance: Failed to update user file:', updateError);
+      }
+    } else {
+      console.log(`💰 syncUserBalance: All balances are zero, no updates needed`);
+    }
+
+    console.log(`💰 syncUserBalance: Sync complete for ${email} with final balance ${finalBalance}`);
+    return finalBalance;
+  } catch (error) {
+    console.error('💰 syncUserBalance: Error syncing balance:', error);
+    // Rethrow with more context for better debugging
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to sync balance for ${email}: ${errorMessage}`);
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
   }
 }
 

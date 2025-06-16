@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 /**
  * HOC để bảo vệ các trang admin, chỉ cho phép người dùng đã đăng nhập và có quyền admin truy cập
@@ -14,6 +15,7 @@ export default function withAdminAuth(WrappedComponent) {
     const { data: session, status } = useSession();
     const router = useRouter();
     const loading = status === 'loading';
+    const { t } = useLanguage();
 
     useEffect(() => {
       // Nếu người dùng chưa đăng nhập hoặc không phải admin, chuyển hướng đến trang đăng nhập
@@ -27,8 +29,8 @@ export default function withAdminAuth(WrappedComponent) {
       return (
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <h2 className="text-xl font-semibold mb-2">Đang tải...</h2>
-            <p className="text-gray-500">Vui lòng đợi trong giây lát</p>
+            <h2 className="text-xl font-semibold mb-2">{t('loading.title')}</h2>
+            <p className="text-gray-500">{t('loading.pleaseWait')}</p>
           </div>
         </div>
       );

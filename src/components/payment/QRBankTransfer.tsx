@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { QRPay, BanksObject } from 'vietnam-qr-pay';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface QRBankTransferProps {
   amount: number;
@@ -18,6 +19,7 @@ interface BankInfo {
 }
 
 const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => {
+  const { t } = useLanguage();
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [transactionId, setTransactionId] = useState<string>('');
   const [isChecking, setIsChecking] = useState(false);
@@ -139,7 +141,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     // Show toast notification (you can implement this)
-    alert('Đã sao chép vào clipboard!');
+    alert(t('payment.qr.copied'));
   };
 
   return (
@@ -153,8 +155,8 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
             </svg>
           </div>
           <div>
-            <h2 className="text-2xl font-bold">Chuyển khoản QR</h2>
-            <p className="text-teal-100 text-sm">Quét mã QR để chuyển khoản tự động</p>
+            <h2 className="text-2xl font-bold">{t('payment.qr.title')}</h2>
+            <p className="text-teal-100 text-sm">{t('payment.qr.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -178,7 +180,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                 />
               </svg>
               <span className="text-yellow-800 font-medium">
-                Mã QR có hiệu lực: {formatTime(timeLeft)}
+                {t('payment.qr.valid')}: {formatTime(timeLeft)}
               </span>
             </div>
           </div>
@@ -200,14 +202,14 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
 
           {/* Bank Information */}
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h4 className="font-semibold text-gray-800 mb-3">Thông tin chuyển khoản</h4>
+            <h4 className="font-semibold text-gray-800 mb-3">{t('payment.qr.bankInfo')}</h4>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Ngân hàng:</span>
+                <span className="text-gray-600">{t('payment.qr.bank')}:</span>
                 <span className="font-medium text-gray-800">{bankInfo.bankName}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Số tài khoản:</span>
+                <span className="text-gray-600">{t('payment.qr.accountNumber')}:</span>
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-teal-600">
                     {bankInfo.accountNumber}
@@ -228,15 +230,15 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Chủ tài khoản:</span>
+                <span className="text-gray-600">{t('payment.qr.accountName')}:</span>
                 <span className="font-medium text-gray-800">{bankInfo.accountName}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Số tiền:</span>
+                <span className="text-gray-600">{t('payment.qr.amount')}:</span>
                 <span className="font-bold text-xl text-teal-800">{formatCurrency(amount)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Mã giao dịch:</span>
+                <span className="text-gray-600">{t('payment.qr.transactionId')}:</span>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs font-bold text-teal-600">{transactionId}</span>
                   <button
@@ -267,7 +269,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
               {isChecking ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                  <span>Đang kiểm tra giao dịch...</span>
+                  <span>{t('payment.qr.checking')}</span>
                 </>
               ) : (
                 <>
@@ -279,14 +281,14 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span>Kiểm tra thanh toán</span>
+                  <span>{t('payment.qr.checkPayment')}</span>
                 </>
               )}
             </button>
 
             {lastCheckTime && (
               <p className="text-gray-500 text-sm mt-2">
-                Lần kiểm tra cuối: {lastCheckTime.toLocaleTimeString('vi-VN')}
+                {t('payment.qr.lastCheck')}: {lastCheckTime.toLocaleTimeString('vi-VN')}
               </p>
             )}
           </div>
@@ -302,14 +304,14 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Hướng dẫn chuyển khoản:
+              {t('payment.qr.instructions.title')}
             </h5>
             <ol className="list-decimal list-inside space-y-1 text-xs text-teal-700">
-              <li>Mở app ngân hàng hoặc ví điện tử</li>
-              <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
-              <li>Kiểm tra số tiền và mã giao dịch</li>
-              <li>Xác nhận chuyển khoản</li>
-              <li className="font-semibold">Nhấn nút "Kiểm tra thanh toán"</li>
+              <li>{t('payment.qr.instructions.step1')}</li>
+              <li>{t('payment.qr.instructions.step2')}</li>
+              <li>{t('payment.qr.instructions.step3')}</li>
+              <li>{t('payment.qr.instructions.step4')}</li>
+              <li className="font-semibold">{t('payment.qr.instructions.step5')}</li>
             </ol>
             <div className="mt-2 text-xs text-teal-900 font-semibold flex items-center gap-1">
               <svg
@@ -325,8 +327,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
-              Nhớ <span className="underline">chụp màn hình giao dịch</span> để gửi khi cần hỗ trợ
-              kiểm tra nhanh!
+              <div dangerouslySetInnerHTML={{ __html: t('payment.qr.instructions.note') }} />
             </div>
           </div>
         </div>

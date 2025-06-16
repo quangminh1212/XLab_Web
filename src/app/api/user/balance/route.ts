@@ -21,6 +21,7 @@ setInterval(
       }
     });
 
+<<<<<<< HEAD
     // Clear any stuck pending requests
     pendingRequests.forEach((pending, key) => {
       // Clear any request pending for more than 30 seconds
@@ -33,6 +34,10 @@ setInterval(
 );
 
 export async function GET(request: Request) {
+=======
+export async function GET() {
+  console.log('📊 Balance API: Received request');
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
   try {
     const url = new URL(request.url);
     // Check for force refresh parameter
@@ -40,8 +45,10 @@ export async function GET(request: Request) {
     
     // Check authentication
     const session = await getServerSession(authOptions);
+    console.log('📊 Balance API: Session check', session ? 'authenticated' : 'no session');
 
     if (!session || !session.user || !session.user.email) {
+      console.log('📊 Balance API: Unauthorized access attempt');
       return NextResponse.json(
         { 
           error: 'Unauthorized', 
@@ -53,6 +60,7 @@ export async function GET(request: Request) {
     }
 
     const userEmail = session.user.email;
+<<<<<<< HEAD
     const requestId = `${userEmail}-${Date.now()}`;
     
     console.log(`📊 Balance request for ${userEmail}, force=${forceRefresh}`);
@@ -73,22 +81,46 @@ export async function GET(request: Request) {
       
       // Double-check - ensure balance is a valid number
       balance = typeof balance === 'number' && !isNaN(balance) ? balance : 0;
+=======
+    console.log(`📊 Balance API: Processing for user ${userEmail}`);
+
+    // Check cache first
+    const cached = balanceCache.get(userEmail);
+    if (cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
+      console.log(`📊 Balance API: Returning cached balance of ${cached.balance} for ${userEmail}`);
+      return NextResponse.json({
+        balance: cached.balance,
+        cached: true,
+      });
+    }
+
+    try {
+      console.log(`📊 Balance API: Fetching fresh balance for ${userEmail}`);
+      // Get synchronized balance from both systems
+      const balance = await syncUserBalance(userEmail);
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
 
       // Cache the result
       balanceCache.set(userEmail, { balance, timestamp: Date.now() });
       
       console.log(`Balance API: Retrieved balance for ${userEmail}: ${balance}`);
 
+      console.log(`📊 Balance API: Successfully fetched balance of ${balance} for ${userEmail}`);
       return NextResponse.json({
         balance: balance,
         cached: false,
       });
+<<<<<<< HEAD
     } catch (error) {
       console.error('Error fetching user balance:', error);
       
       // Vẫn trả về cached value nếu có lỗi
       const cachedFallback = balanceCache.get(userEmail);
 
+=======
+    } catch (syncError) {
+      console.error('📊 Balance API: Error syncing user balance:', syncError);
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
       return NextResponse.json(
         { 
           balance: cachedFallback ? cachedFallback.balance : 0,
@@ -98,7 +130,11 @@ export async function GET(request: Request) {
       );
     }
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error in balance API:', error);
+=======
+    console.error('📊 Balance API: Error in balance endpoint:', error);
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
     return NextResponse.json(
       { 
         balance: 0,

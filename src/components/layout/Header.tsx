@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import React, { useEffect, useRef, useCallback, useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -9,8 +9,9 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
+import ClientOnly from '@/components/common/ClientOnly';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -240,7 +241,7 @@ const Header = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
+    return new Intl.NumberFormat(t('format.currency'), {
       style: 'currency',
       currency: 'VND',
       maximumFractionDigits: 0,
@@ -248,6 +249,7 @@ const Header = () => {
   };
 
   const formatDate = (dateString: string) => {
+<<<<<<< HEAD
     // Use a consistent format that won't cause hydration mismatch
     try {
       const date = new Date(dateString);
@@ -258,6 +260,14 @@ const Header = () => {
     } catch (error) {
       return dateString;
     }
+=======
+    const date = new Date(dateString);
+    return new Date(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+    ).toLocaleDateString(t('format.date'));
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
   };
 
   const handleCopyVoucher = (code: string) => {
@@ -266,7 +276,7 @@ const Header = () => {
       .then(() => {
         // Use a more elegant notification method instead of alert
         setShowNotification(true);
-        setNotificationMessage(`Đã sao chép mã: ${code}`);
+        setNotificationMessage(t('notification.copied', {code: code}));
 
         // Hide notification after 2 seconds
         setTimeout(() => {
@@ -276,7 +286,7 @@ const Header = () => {
       .catch((err) => {
         console.error('Copy failed:', err);
         setShowNotification(true);
-        setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
+        setNotificationMessage(t('notification.copyFailed'));
 
         setTimeout(() => {
           setShowNotification(false);
@@ -368,14 +378,23 @@ const Header = () => {
             {/* Right Side - Balance + Auth + Cart */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
               {/* Balance Display */}
+<<<<<<< HEAD
               {session?.user && (
                 <div className="hidden lg:flex lg:items-center">
                   <BalanceDisplay className="mr-4" />
+=======
+              {session && (
+                <div className="hidden sm:block mr-6">
+                  <BalanceDisplay />
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
                 </div>
               )}
 
-              {/* Language Switcher */}
-              <LanguageSwitcher className="mr-2" />
+              {/* Language Switcher - Use client-only mounting */}
+              <div className="relative mr-2">
+                {/* This empty div acts as a server-side placeholder */}
+                <div id="language-switcher-mount-point" className="h-8 w-16"></div>
+              </div>
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -521,8 +540,6 @@ const Header = () => {
                                     ></div>
                                   </div>
                                 )}
-
-                                {/* Note section removed */}
                               </div>
                             </div>
                           ))}
@@ -530,7 +547,7 @@ const Header = () => {
                       ) : (
                         <div className="px-4 py-6 text-center">
                           <p className="text-xs sm:text-sm text-gray-500">
-                            Không có mã giảm giá nào
+                            {t('admin.coupons.empty')}
                           </p>
                         </div>
                       )}
@@ -762,9 +779,6 @@ const Header = () => {
 
               {/* Mobile menu button */}
               <div className="flex md:hidden items-center space-x-3">
-                {/* Language Switcher for Mobile */}
-                <LanguageSwitcher className="mr-0.5" />
-
                 <Link
                   href="/cart"
                   className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"

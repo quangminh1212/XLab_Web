@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import Image from 'next/image';
+import React from 'react';
+import dynamic from 'next/dynamic';
 
+<<<<<<< HEAD
 interface LanguageSwitcherProps {
   className?: string;
 }
@@ -36,88 +36,22 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     setLanguage(lang);
     setIsOpen(false);
   };
+=======
+// Use a simpler client-only implementation with no SSR
+const NoSSRLanguageSwitcher = dynamic(
+  () => import('./NoHydrationLanguageSwitcher'),
+  { 
+    ssr: false,
+    loading: () => <div className="h-8 w-16 bg-gray-100 rounded"></div>
+  }
+);
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
 
+// This component is intentionally simple to avoid hydration mismatches
+export default function LanguageSwitcher({ className = '' }: { className?: string }) {
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
-        aria-expanded={isOpen}
-      >
-        {language === 'vi' ? (
-          <>
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/vn.svg" 
-                alt="Tiếng Việt" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>VIE</span>
-          </>
-        ) : (
-          <>
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/gb.svg" 
-                alt="English" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>ENG</span>
-          </>
-        )}
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          className="h-4 w-4 ml-1" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-
-      {isOpen && (
-        <div className="absolute right-0 mt-2 py-1 w-28 bg-white rounded-md shadow-lg z-20 border border-gray-200">
-          <button
-            onClick={() => changeLanguage('vi')}
-            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'vi' ? 'bg-gray-100' : ''}`}
-          >
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/vn.svg" 
-                alt="Tiếng Việt" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>VIE</span>
-          </button>
-          <button
-            onClick={() => changeLanguage('en')}
-            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'en' ? 'bg-gray-100' : ''}`}
-          >
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/gb.svg" 
-                alt="English" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>ENG</span>
-          </button>
-        </div>
-      )}
+    <div className={className}>
+      <NoSSRLanguageSwitcher />
     </div>
   );
-};
-
-export default LanguageSwitcher; 
+} 

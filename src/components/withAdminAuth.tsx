@@ -4,12 +4,14 @@ import { useEffect, ComponentType } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Higher Order Component để bảo vệ các trang admin
 function withAdminAuth<P extends object>(Component: ComponentType<P>) {
   return function WithAdminAuth(props: P) {
     const { data: session, status } = useSession();
     const router = useRouter();
+    const { t } = useLanguage();
 
     useEffect(() => {
       // Kiểm tra nếu người dùng đang tải
@@ -42,13 +44,13 @@ function withAdminAuth<P extends object>(Component: ComponentType<P>) {
     if (session.user && !session.user.isAdmin) {
       return (
         <div className="flex flex-col justify-center items-center min-h-screen p-4">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Truy cập bị từ chối</h1>
-          <p className="text-gray-600 mb-4">Bạn không có quyền truy cập vào trang này.</p>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">{t('admin.auth.accessDenied')}</h1>
+          <p className="text-gray-600 mb-4">{t('admin.auth.noPermission')}</p>
           <button
             onClick={() => router.push('/')}
             className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded hover:from-primary-700 hover:to-primary-800"
           >
-            Quay về trang chủ
+            {t('common.backToHome')}
           </button>
         </div>
       );

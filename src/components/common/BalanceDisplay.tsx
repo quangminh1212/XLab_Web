@@ -1,22 +1,50 @@
 'use client';
 
+import React, { memo, useMemo, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+<<<<<<< HEAD
 import { memo, useMemo, useEffect, useState } from 'react';
+=======
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
 import { useBalance } from '@/contexts/BalanceContext';
 
 interface BalanceDisplayProps {
   className?: string;
 }
 
-function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
+function BalanceDisplayContent() {
   const { data: session } = useSession();
   const { balance, loading, refreshBalance } = useBalance();
+<<<<<<< HEAD
   
   // Thêm state để lấy balance trực tiếp từ API
   const [directBalance, setDirectBalance] = useState<number | null>(null);
   const [isDirectLoading, setIsDirectLoading] = useState(false);
   const [forceRefresh, setForceRefresh] = useState(0);
+=======
+  const [retryCount, setRetryCount] = useState(0);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure component only renders on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Attempt to refresh balance if it's 0 or loading fails
+  useEffect(() => {
+    // Only retry if logged in and balance is 0
+    if (session?.user && !loading && balance === 0 && retryCount < 3) {
+      const timer = setTimeout(() => {
+        console.log(`🔄 Retrying balance fetch (attempt ${retryCount + 1})...`);
+        refreshBalance();
+        setRetryCount(prev => prev + 1);
+      }, 1500 * (retryCount + 1)); // Exponential backoff
+      
+      return () => clearTimeout(timer);
+    }
+  }, [balance, loading, session?.user, retryCount, refreshBalance]);
+>>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
 
   // Add debug log
   useEffect(() => {
@@ -77,14 +105,14 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
     }).format(value);
   }, [displayBalance]);
 
-  if (!session?.user) {
+  if (!isClient || !session?.user) {
     return null;
   }
 
   return (
     <Link
       href="/account/deposit"
-      className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
+      className="group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300"
       title="Số dư tài khoản - Click để nạp tiền"
       onClick={() => {
         fetchDirectBalance();
@@ -120,4 +148,5 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   );
 }
 
-export default memo(BalanceDisplay);
+// Export the component directly without the SuperStrictWrapper
+export default memo(BalanceDisplayContent);
