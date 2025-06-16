@@ -431,43 +431,14 @@ export async function getUserTransactions(userEmail: string): Promise<Transactio
   return userData.transactions || [];
 }
 
-// Đồng bộ và trả về số dư của người dùng
-/**
- * Đồng bộ và trả về số dư của người dùng
- * Đơn giản và nhanh hơn, không làm nhiều thao tác phức tạp
- */
+// Sync balance between users.json and balances.json
 export async function syncUserBalance(email: string): Promise<number> {
   console.log(`💰 syncUserBalance: Starting balance sync for ${email}`);
   try {
-    // Log cho debug
-    console.log(`🔄 Đang lấy số dư của: ${email}`);
-
-    // Đơn giản hóa: chỉ lấy dữ liệu từ file người dùng và users.json
-    const userData = await getUserDataFromFile(email);
-    
-    // Lấy từ users.json để đảm bảo đồng bộ
-    const users = await getUsers();
-    const userFromJson = users.find(u => u.email === email);
-    
-    // Ưu tiên dữ liệu từ users.json
-    let balance = userFromJson?.balance || userData?.profile?.balance || 0;
-    
-    // Đảm bảo là số
-    if (typeof balance !== 'number' || isNaN(balance)) {
-      console.log(`💰 Balance không hợp lệ: ${balance}, đặt về 0`);
-      balance = 0;
+    if (!email) {
+      throw new Error('Email is required for syncUserBalance');
     }
 
-<<<<<<< HEAD
-    // Log cho debug
-    console.log(`💰 Số dư của ${email}: ${balance.toLocaleString('vi-VN')} VND`);
-    
-    return balance;
-  } catch (error) {
-    console.error('Lỗi lấy số dư:', error);
-    // Trả về 0 thay vì throw error để đảm bảo UI không bị lỗi
-    return 0;
-=======
     // Read from both sources
     let balanceFromUsers = 0;
     let balanceFromBalances = 0;
@@ -604,7 +575,6 @@ export async function syncUserBalance(email: string): Promise<number> {
     // Rethrow with more context for better debugging
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to sync balance for ${email}: ${errorMessage}`);
->>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
   }
 }
 

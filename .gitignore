@@ -52,8 +52,10 @@ cypress/screenshots
 # misc
 .DS_Store
 *.pem
+.env
 .env.development
 .env.production
+.env.test
 
 # debug
 npm-debug.log*
@@ -62,13 +64,9 @@ yarn-error.log*
 lerna-debug.log*
 next.config.log
 next-fix-all.log
-<<<<<<< HEAD
-
-=======
 *.log
 logs/
 next-setup.log
->>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
 
 # vercel
 .vercel
@@ -77,17 +75,11 @@ next-setup.log
 *.tsbuildinfo
 next-env.d.ts
 
-/data/backups/
-<<<<<<< HEAD
+# User generated data files (runtime data) - cho phép commit dữ liệu cơ bản
+/data/transactions.json
 
-# Generated files
-.next/
-.next/cache/
-.next/server/
-.next/static/
-.next/**/*
-=======
->>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
+# Secure user data - NEVER commit these!
+/data/backups/
 
 # IDE
 .idea/

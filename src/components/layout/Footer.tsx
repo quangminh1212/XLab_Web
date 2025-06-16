@@ -1,19 +1,13 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-// Lấy năm hiện tại từ một biến hằng để đảm bảo server và client render giống nhau
-const CURRENT_YEAR = "2025";
-
 export default function Footer() {
   const { t } = useLanguage();
-  
-  // Log to verify changes are applied
-  console.log('Footer component rendered with fixed dot');
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden">
@@ -115,7 +109,7 @@ export default function Footer() {
                   {t('footer.years')}
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
-                  {t('footer.support247')}
+                  {t('footer.support')}
                 </span>
               </div>
             </div>
@@ -303,7 +297,8 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
-              © {CURRENT_YEAR} <span className="text-white font-medium">XLab</span>. <span className="text-primary-400">XLab Technologies</span>
+              &copy; {currentYear} <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
+              {t('footer.copyright')} <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
             </p>
           </div>
 

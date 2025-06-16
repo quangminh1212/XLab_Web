@@ -249,25 +249,12 @@ const Header = () => {
   };
 
   const formatDate = (dateString: string) => {
-<<<<<<< HEAD
-    // Use a consistent format that won't cause hydration mismatch
-    try {
-      const date = new Date(dateString);
-      const day = date.getUTCDate().toString().padStart(2, '0');
-      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-      const year = date.getUTCFullYear();
-      return `${day}/${month}/${year}`;
-    } catch (error) {
-      return dateString;
-    }
-=======
     const date = new Date(dateString);
     return new Date(
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
     ).toLocaleDateString(t('format.date'));
->>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
   };
 
   const handleCopyVoucher = (code: string) => {
@@ -378,15 +365,9 @@ const Header = () => {
             {/* Right Side - Balance + Auth + Cart */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
               {/* Balance Display */}
-<<<<<<< HEAD
-              {session?.user && (
-                <div className="hidden lg:flex lg:items-center">
-                  <BalanceDisplay className="mr-4" />
-=======
               {session && (
                 <div className="hidden sm:block mr-6">
                   <BalanceDisplay />
->>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
                 </div>
               )}
 

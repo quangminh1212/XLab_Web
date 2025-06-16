@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import translations from '@/locales';
 
 type Language = 'vi' | 'en';
 
@@ -18,8 +17,6 @@ interface LanguageProviderProps {
 // Tạo một context mới
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-<<<<<<< HEAD
-=======
 // Translations
 const translations: Record<Language, Record<string, string>> = {
   vi: {
@@ -1568,7 +1565,6 @@ const translations: Record<Language, Record<string, string>> = {
   },
 };
 
->>>>>>> 062098a9c758cf94a27183b5874dd22c4d66a9f2
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Mặc định là tiếng Việt
   const [language, setLanguageState] = useState<Language>('vi');
@@ -1598,8 +1594,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       }
       
       // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-      const langTranslations = translations[language] as Record<string, string>;
-      let text = langTranslations[key] || key;
+      let text = translations[language]?.[key] || key;
       
       // Thay thế tham số nếu có
       if (params && typeof params === 'object' && Object.keys(params).length > 0) {

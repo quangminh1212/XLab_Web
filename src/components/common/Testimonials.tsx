@@ -192,13 +192,11 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        return 'Undefined';
-      }
-      const day = date.getUTCDate().toString().padStart(2, '0');
-      const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-      const year = date.getUTCFullYear();
-      return `${day}/${month}/${year}`;
+      return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
     } catch (error) {
       return dateString;
     }
