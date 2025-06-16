@@ -7,7 +7,7 @@ const ClientOnly = dynamic(
   () => import('./PureClientLanguageSwitcher'),
   { 
     ssr: false,
-    loading: () => null
+    loading: () => <div className="relative mr-2"></div> // Return an empty placeholder with consistent structure
   }
 );
 

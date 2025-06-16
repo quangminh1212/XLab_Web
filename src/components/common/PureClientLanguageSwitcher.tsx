@@ -22,9 +22,9 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Don't render anything until component is mounted on client
+  // Don't render interactive elements until client-side hydration is complete
   if (!mounted) {
-    return null;
+    return <div className={`relative ${className}`} ref={containerRef}></div>;
   }
 
   const isVi = language === 'vi';
