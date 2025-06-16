@@ -1,23 +1,29 @@
 'use client';
 
-import { useEffect, useState, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
-interface ClientOnlyProps {
-  children: ReactNode;
-  fallback?: ReactNode;
-}
-
-export default function ClientOnly({ children, fallback }: ClientOnlyProps) {
-  const [mounted, setMounted] = useState(false);
+/**
+ * Component that only renders its children on the client-side
+ * This completely prevents hydration mismatches by not rendering anything during SSR
+ */
+export default function ClientOnly({ 
+  children,
+  fallback = null
+}: { 
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}) {
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setIsClient(true);
   }, []);
 
-  if (!mounted) {
-    // Return an empty fragment to allow React to clean up the placeholder
-    return fallback || null;
+  // Return fallback (or null) during SSR and first render cycle
+  if (!isClient) {
+    return fallback;
   }
 
+  // Only render children on client after hydration is complete
   return <>{children}</>;
 } 

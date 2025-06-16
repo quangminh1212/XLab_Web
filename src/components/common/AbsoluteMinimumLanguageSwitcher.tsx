@@ -23,7 +23,7 @@ export default function AbsoluteMinimumLanguageSwitcher({ className = '' }: { cl
   const isVi = language === 'vi';
   
   return (
-    <div className={`relative ${className}`} ref={containerRef}>
+    <div className={`${className}`} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
