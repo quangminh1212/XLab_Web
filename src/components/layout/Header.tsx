@@ -366,15 +366,13 @@ const Header = () => {
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
               {/* Balance Display */}
               {session && (
-                <div className="mr-6">
+                <div className="hidden sm:block mr-6">
                   <BalanceDisplay />
                 </div>
               )}
 
               {/* Language Switcher */}
-              <div className="mr-2">
-                <LanguageSwitcher />
-              </div>
+              <LanguageSwitcher className="relative mr-2" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>

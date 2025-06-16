@@ -3,27 +3,35 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Component that renders ABSOLUTELY NOTHING on the server
- * This completely avoids hydration mismatches by not rendering anything during SSR
+ * SuperStrict ensures absolutely no hydration mismatch by:
+ * 1. Rendering nothing (null) during server-side rendering
+ * 2. Continuing to render nothing during the first client render (hydration phase)
+ * 3. Only rendering children after hydration is complete via useEffect
  */
 export default function SuperStrict({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Use state to track if we're on the client
+  // Only render after client-side hydration is complete
   const [isMounted, setIsMounted] = useState(false);
 
-  // This effect runs once after hydration
+  // Use useEffect to guarantee we only render after hydration
   useEffect(() => {
-    setIsMounted(true);
+    // Using setTimeout to ensure we're completely past hydration
+    // This is extra safe to avoid any chance of hydration mismatch
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
+    
+    return () => clearTimeout(timer);
   }, []);
 
-  // Return null during SSR and initial client render
+  // Return null during SSR and during initial client render
   if (!isMounted) {
     return null;
   }
 
-  // Only render children after hydration is complete
+  // Only render children after hydration is fully complete
   return <>{children}</>;
 } 

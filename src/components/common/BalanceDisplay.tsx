@@ -1,5 +1,6 @@
 'use client';
 
+import SuperStrictWrapper from './SuperStrictWrapper';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { memo, useMemo } from 'react';
@@ -9,7 +10,7 @@ interface BalanceDisplayProps {
   className?: string;
 }
 
-function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
+function BalanceDisplayContent() {
   const { data: session } = useSession();
   const { balance, loading } = useBalance();
 
@@ -28,7 +29,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   return (
     <Link
       href="/account/deposit"
-      className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
+      className="group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300"
       title="Số dư tài khoản - Click để nạp tiền"
     >
       <div className="flex items-center space-x-1.5 sm:space-x-2">
@@ -57,6 +58,16 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
         )}
       </div>
     </Link>
+  );
+}
+
+// Wrapper component that prevents hydration mismatches
+function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
+  // Use SuperStrictWrapper to handle client-only rendering with proper container
+  return (
+    <SuperStrictWrapper className={className}>
+      <BalanceDisplayContent />
+    </SuperStrictWrapper>
   );
 }
 

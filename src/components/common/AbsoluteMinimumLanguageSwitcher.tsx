@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-// This component renders ONLY on the client side
+// This component is only rendered on the client side via SuperStrict
 export default function AbsoluteMinimumLanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,9 +23,8 @@ export default function AbsoluteMinimumLanguageSwitcher() {
   
   const isVi = language === 'vi';
   
-  // Render directly without any className dependencies
   return (
-    <div className="relative" ref={containerRef}>
+    <div ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
