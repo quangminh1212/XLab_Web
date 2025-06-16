@@ -8,7 +8,9 @@
     "login": "Login",
     "logout": "Logout",
     "account": "Account",
-    "admin": "Admin"
+    "admin": "Admin",
+    "copyright": "© {year} XLab. All rights reserved.",
+    "acceptedPayments": "We accept payments through"
   },
   "auth": {
     "signOut": "Sign Out",

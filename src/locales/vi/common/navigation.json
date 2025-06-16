@@ -8,7 +8,9 @@
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
     "account": "Tài khoản",
-    "admin": "Quản trị"
+    "admin": "Quản trị",
+    "copyright": "© {year} XLab. Đã đăng ký bản quyền.",
+    "acceptedPayments": "Chấp nhận thanh toán qua"
   },
   "auth": {
     "signOut": "Đăng xuất",

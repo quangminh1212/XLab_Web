@@ -72,7 +72,7 @@ const deepMerge = (target: any, source: any): any => {
 const buildTranslations = () => {
   // Tiếng Việt
   const vi = {
-    nav: viNavigation.nav || {},
+    nav: viNavigation && viNavigation.nav ? viNavigation.nav : {},
     footer: viFooter || {},
     common: {
       navigation: viNavigation || {},
@@ -100,7 +100,7 @@ const buildTranslations = () => {
 
   // Tiếng Anh - chỉ có một số module được dịch
   const en = {
-    nav: enNavigation.nav || {},
+    nav: enNavigation && enNavigation.nav ? enNavigation.nav : {},
     footer: enFooter || {},
     common: {
       navigation: enNavigation || {},

@@ -604,6 +604,17 @@ export async function cleanupOldFiles(): Promise<void> {
 
     // Cleanup backup directory
     try {
+      // Kiểm tra xem thư mục backup có tồn tại không
+      try {
+        await fs.access(backupDir);
+      } catch (error) {
+        // Nếu thư mục không tồn tại, tạo mới
+        await ensureDirectoryExists(backupDir);
+        console.log(`✅ Created backup directory: ${backupDir}`);
+        // Không cần đọc thư mục vì vừa mới tạo và chưa có file nào
+        return;
+      }
+      
       const backupFiles = await fs.readdir(backupDir);
       const now = Date.now();
       const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
