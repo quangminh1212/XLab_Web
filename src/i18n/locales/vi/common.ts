@@ -116,14 +116,4 @@ export default {
 
   // Orders
   'orders.myOrders': 'Đơn hàng của tôi',
-  
-  // Metadata
-  'meta.homeTitle': 'XLab - Phần mềm và Dịch vụ',
-  'meta.homeDescription': 'XLab cung cấp phần mềm và dịch vụ chất lượng cao cho nhu cầu kinh doanh của bạn',
-  'meta.aboutTitle': 'Giới thiệu | XLab',
-  'meta.aboutDescription': 'Tìm hiểu thêm về XLab và sứ mệnh của chúng tôi trong việc cung cấp phần mềm và dịch vụ tốt nhất',
-  'meta.contactTitle': 'Liên hệ | XLab',
-  'meta.contactDescription': 'Liên hệ với đội ngũ của chúng tôi để được hỗ trợ và giải đáp thắc mắc',
-  'meta.productsTitle': 'Sản phẩm | XLab',
-  'meta.productsDescription': 'Khám phá các sản phẩm phần mềm và dịch vụ được thiết kế cho doanh nghiệp của bạn',
 }; 

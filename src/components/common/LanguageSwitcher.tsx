@@ -1,76 +1,118 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { locales, localeNames, type Locale } from '@/i18n/config';
-import { useLocale } from 'next-intl';
-import Link from 'next/link';
+import { useState, useRef, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import Image from 'next/image';
 
 interface LanguageSwitcherProps {
   className?: string;
 }
 
-export default function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
+const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
+  const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const locale = useLocale() as Locale;
-  const pathname = usePathname();
-  
-  // Create paths for each language
-  const getLocalizedPathname = (locale: Locale): string => {
-    const pathSegments = pathname.split('/');
-    
-    // Check if the current path already has a locale
-    const currentLocaleIndex = locales.findIndex(loc => 
-      pathSegments[1] === loc
-    );
-    
-    if (currentLocaleIndex !== -1) {
-      // Replace the existing locale
-      pathSegments[1] = locale;
-    } else {
-      // Add the locale at the beginning
-      pathSegments.splice(1, 0, locale);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Xử lý click bên ngoài dropdown để đóng dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
     }
     
-    return pathSegments.join('/');
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const changeLanguage = (lang: 'vi' | 'en') => {
+    setLanguage(lang);
+    setIsOpen(false);
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center justify-center rounded-md p-1 text-gray-600 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
         aria-expanded={isOpen}
-        aria-haspopup="true"
       >
-        <span className="sr-only">Chọn ngôn ngữ</span>
-        <span className="text-xs font-medium">{locale.toUpperCase()}</span>
+        {language === 'vi' ? (
+          <>
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/vn.svg" 
+                alt="Tiếng Việt" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>VIE</span>
+          </>
+        ) : (
+          <>
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/gb.svg" 
+                alt="English" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ENG</span>
+          </>
+        )}
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          className="h-4 w-4 ml-1" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
 
       {isOpen && (
-        <div
-          className="absolute right-0 mt-2 w-36 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-          role="menu"
-          aria-orientation="vertical"
-          tabIndex={-1}
-        >
-          <div className="py-1" role="none">
-            {locales.map((localeOption) => (
-              <Link
-                key={localeOption}
-                href={getLocalizedPathname(localeOption)}
-                className={`block w-full px-4 py-2 text-left text-sm ${
-                  locale === localeOption ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700'
-                } hover:bg-gray-50`}
-                onClick={() => setIsOpen(false)}
-                role="menuitem"
-              >
-                {localeNames[localeOption]}
-              </Link>
-            ))}
-          </div>
+        <div className="absolute right-0 mt-2 py-1 w-28 bg-white rounded-md shadow-lg z-20 border border-gray-200">
+          <button
+            onClick={() => changeLanguage('vi')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'vi' ? 'bg-gray-100' : ''}`}
+          >
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/vn.svg" 
+                alt="Tiếng Việt" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>VIE</span>
+          </button>
+          <button
+            onClick={() => changeLanguage('en')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'en' ? 'bg-gray-100' : ''}`}
+          >
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/gb.svg" 
+                alt="English" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ENG</span>
+          </button>
         </div>
       )}
     </div>
   );
-} 
+};
+
+export default LanguageSwitcher; 

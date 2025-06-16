@@ -45,17 +45,6 @@ cypress/screenshots
 .next/cache/webpack/edge-server-development/*.pack.gz
 .next/static/css/app-layout.css
 
-# next-intl generated files
-.next/server/app/[locale]/
-.next/server/middleware-manifest.json
-.next/server/middleware-build-manifest.js
-.next/server/middleware-react-loadable-manifest.js
-.next/build-manifest.json
-.next/prerender-manifest.json
-.next/required-server-files.json
-# next-intl caches
-.next/build-manifest-plugin.json
-
 # production
 /build
 /dist

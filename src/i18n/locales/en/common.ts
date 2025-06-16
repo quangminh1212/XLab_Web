@@ -52,14 +52,4 @@ export default {
   // Settings
   'settings.title': 'System Settings',
   'settings.errors': 'Errors occurred',
-
-  // Metadata
-  'meta.homeTitle': 'XLab - Software and Services',
-  'meta.homeDescription': 'XLab provides high-quality software and services for your business needs',
-  'meta.aboutTitle': 'About Us | XLab',
-  'meta.aboutDescription': 'Learn more about XLab and our mission to provide the best software and services',
-  'meta.contactTitle': 'Contact Us | XLab',
-  'meta.contactDescription': 'Get in touch with our team for any inquiries or support',
-  'meta.productsTitle': 'Products | XLab',
-  'meta.productsDescription': 'Explore our range of software and services designed for your business',
 }; 
