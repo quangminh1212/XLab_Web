@@ -372,7 +372,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher */}
-              <div className="relative mr-2">
+              <div className="mr-2">
                 <LanguageSwitcher />
               </div>
 

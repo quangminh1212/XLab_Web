@@ -1,16 +1,16 @@
 'use client';
 
-import ClientOnly from './ClientOnly';
+import SuperStrict from './SuperStrict';
 import AbsoluteMinimumLanguageSwitcher from './AbsoluteMinimumLanguageSwitcher';
 
 export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  // Use null as fallback to ensure no hydration mismatch
-  // This means nothing will be rendered during SSR and initial client render
+  // Empty div for SSR, replaced with actual content on client
+  // Container div provided outside to maintain layout during SSR
   return (
     <div className={className}>
-      <ClientOnly fallback={null}>
+      <SuperStrict>
         <AbsoluteMinimumLanguageSwitcher />
-      </ClientOnly>
+      </SuperStrict>
     </div>
   );
 } 
