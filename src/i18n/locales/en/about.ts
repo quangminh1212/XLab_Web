@@ -33,5 +33,5 @@ export default {
   'value3': 'Collaboration',
   'value3Desc': 'Building long-term partnerships based on respect and mutually beneficial cooperation',
   'value4': 'Responsibility',
-  'value4Desc': 'Working with high responsibility, committed to fulfilling all commitments to customers',
+  'value4Desc': 'Working with high responsibility, committed to fulfilling all commitments to customers'
 }; 
