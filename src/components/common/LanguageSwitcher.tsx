@@ -46,10 +46,10 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             alt={isVi ? 'Tiếng Việt' : 'English'}
             width={24}
             height={16}
-            className="rounded"
+            className="object-cover rounded-sm"
           />
         </div>
-        <span className="hidden md:inline">{isVi ? 'Tiếng Việt' : 'English'}</span>
+        <span>{isVi ? 'VIE' : 'ENG'}</span>
       </button>
 
       {isOpen && (
@@ -68,7 +68,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
                     alt="Tiếng Việt"
                     width={24}
                     height={16}
-                    className="rounded"
+                    className="object-cover rounded-sm"
                   />
                 </div>
                 <span>{t('language.vietnamese')}</span>
@@ -87,7 +87,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
                     alt="English"
                     width={24}
                     height={16}
-                    className="rounded"
+                    className="object-cover rounded-sm"
                   />
                 </div>
                 <span>{t('language.english')}</span>
