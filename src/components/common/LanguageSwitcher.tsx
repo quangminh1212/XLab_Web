@@ -31,35 +31,27 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Empty placeholder for server rendering with consistent dimensions
-  if (!isClient) {
-    return <div className={`inline-block h-8 ${className}`}></div>;
-  }
-
-  // Actual component for client rendering
+  // Use the same HTML structure for both server and client rendering
+  // The only difference is that on server, we don't attach event handlers
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      <div
+      <button
+        onClick={isClient ? () => setIsOpen(!isOpen) : undefined}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            setIsOpen(!isOpen);
-          }
-        }}
+        aria-expanded={isOpen}
       >
         <div className="relative w-6 h-4 mr-2">
-          <Image
-            src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
-            alt={isVi ? 'Tiếng Việt' : 'English'}
-            width={24}
-            height={16}
-            className="object-cover rounded-sm"
-          />
+          {isClient && (
+            <Image
+              src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
+              alt={isVi ? 'Tiếng Việt' : 'English'}
+              width={24}
+              height={16}
+              className="object-cover rounded-sm"
+            />
+          )}
         </div>
-        <span>{isVi ? 'VIE' : 'ENG'}</span>
+        {isClient && <span>{isVi ? 'VIE' : 'ENG'}</span>}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-4 w-4 ml-1"
@@ -74,9 +66,9 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
             d="M19 9l-7 7-7-7"
           />
         </svg>
-      </div>
+      </button>
 
-      {isOpen && (
+      {isClient && isOpen && (
         <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
           <ul className="py-1">
             <li>
