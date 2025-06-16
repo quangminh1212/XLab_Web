@@ -52,4 +52,31 @@ export default {
   // Settings
   'settings.title': 'System Settings',
   'settings.errors': 'Errors occurred',
+  
+  // Loading screen
+  'loading': {
+    'pleaseWait': 'Please wait a moment'
+  },
+  
+  // Language switcher
+  'language': {
+    'vietnamese': 'VIE',
+    'english': 'ENG'
+  },
+  
+  // Sync status
+  'sync': {
+    'title': 'Data Sync Status',
+    'email': 'Email',
+    'balance': 'Balance',
+    'cartItems': 'Cart Items',
+    'transactions': 'Transactions',
+    'lastUpdate': 'Last Update',
+    'recommendation': 'Recommendation'
+  },
+  
+  // Vouchers
+  'vouchers': {
+    'remaining': '{{count}} uses left'
+  }
 }; 

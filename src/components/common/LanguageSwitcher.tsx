@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 
@@ -8,110 +8,73 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
-const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
-  const { language, setLanguage } = useLanguage();
+const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = '' }) => {
+  const { language, changeLanguage, t } = useLanguage();
+  const isVi = language === 'vi';
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Xử lý click bên ngoài dropdown để đóng dropdown
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
-    }
-    
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  const changeLanguage = (lang: 'vi' | 'en') => {
-    setLanguage(lang);
-    setIsOpen(false);
-  };
-
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
-        aria-expanded={isOpen}
-      >
-        {language === 'vi' ? (
-          <>
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/vn.svg" 
-                alt="Tiếng Việt" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>VIE</span>
-          </>
+    <>
+      {/* Mobile */}
+      <div className="md:hidden flex items-center">
+        {isVi ? (
+          <button
+            onClick={() => changeLanguage('en')}
+            className="flex items-center px-2 py-1 text-xs rounded bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+          >
+            <span>{t('language.vietnamese')}</span>
+          </button>
         ) : (
-          <>
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/gb.svg" 
-                alt="English" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>ENG</span>
-          </>
-        )}
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          className="h-4 w-4 ml-1" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-
-      {isOpen && (
-        <div className="absolute right-0 mt-2 py-1 w-28 bg-white rounded-md shadow-lg z-20 border border-gray-200">
           <button
             onClick={() => changeLanguage('vi')}
-            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'vi' ? 'bg-gray-100' : ''}`}
+            className="flex items-center px-2 py-1 text-xs rounded bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
           >
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/vn.svg" 
-                alt="Tiếng Việt" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>VIE</span>
+            <span>{t('language.english')}</span>
+          </button>
+        )}
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden md:flex items-center">
+        <div className="flex items-center space-x-1 border border-gray-200 rounded-md">
+          <button
+            onClick={() => changeLanguage('vi')}
+            className={`flex items-center px-2 py-1 text-xs rounded-l ${
+              isVi
+                ? 'bg-primary-100 text-primary-700'
+                : 'text-gray-700 hover:bg-gray-100'
+            } transition-colors`}
+          >
+            <span>{t('language.vietnamese')}</span>
           </button>
           <button
             onClick={() => changeLanguage('en')}
-            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'en' ? 'bg-gray-100' : ''}`}
+            className={`flex items-center px-2 py-1 text-xs rounded-r ${
+              !isVi
+                ? 'bg-primary-100 text-primary-700'
+                : 'text-gray-700 hover:bg-gray-100'
+            } transition-colors`}
           >
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/gb.svg" 
-                alt="English" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>ENG</span>
+            <span>{t('language.english')}</span>
           </button>
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

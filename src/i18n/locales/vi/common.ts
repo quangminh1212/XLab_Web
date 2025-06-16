@@ -116,4 +116,24 @@ export default {
 
   // Orders
   'orders.myOrders': 'Đơn hàng của tôi',
+
+  'loading': {
+    'pleaseWait': 'Vui lòng đợi trong giây lát'
+  },
+  'language': {
+    'vietnamese': 'VIE',
+    'english': 'ENG'
+  },
+  'sync': {
+    'title': 'Trạng thái đồng bộ dữ liệu',
+    'email': 'Email',
+    'balance': 'Số dư',
+    'cartItems': 'Sản phẩm trong giỏ',
+    'transactions': 'Giao dịch',
+    'lastUpdate': 'Cập nhật cuối',
+    'recommendation': 'Khuyến nghị'
+  },
+  'vouchers': {
+    'remaining': 'Còn {{count}} lượt'
+  },
 }; 
