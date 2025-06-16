@@ -1,26 +1,26 @@
 export default {
   'qr': {
-    'title': 'QR Bank Transfer',
-    'subtitle': 'Scan QR code for automatic bank transfer',
-    'bankInfo': 'Transfer Information',
+    'title': 'Bank Transfer Payment',
+    'subtitle': 'Scan QR code with your banking app',
+    'valid': 'Valid for',
+    'bankInfo': 'Bank Information',
     'bank': 'Bank',
     'accountNumber': 'Account Number',
-    'accountName': 'Account Holder',
+    'accountName': 'Account Name',
     'amount': 'Amount',
     'transactionId': 'Transaction ID',
-    'checkPayment': 'Check Payment',
-    'checking': 'Checking transaction...',
-    'lastCheck': 'Last check',
-    'instructions': {
-      'title': 'Transfer Instructions:',
-      'step1': 'Open your banking app or e-wallet',
-      'step2': 'Scan QR code or enter account details',
-      'step3': 'Verify amount and transaction ID',
-      'step4': 'Confirm the transfer',
-      'step5': 'Click "Check Payment" button',
-      'note': 'Remember to <span class="underline">take a screenshot</span> of the transaction for quick support if needed!'
-    },
-    'valid': 'QR code valid for',
-    'copied': 'Copied to clipboard!'
+    'content': 'Transfer Content',
+    'copied': 'Copied!',
+    'instructions': 'Instructions',
+    'checkTransaction': 'Check Transaction',
+    'checking': 'Checking...',
+    'notFound': 'Transaction not found. Please check again after completing the transfer.',
+    'error': 'Error checking transaction. Please try again.',
+    'steps': {
+      'step1': 'Open your banking app on your phone',
+      'step2': 'Scan the QR code or transfer manually',
+      'step3': 'Verify transaction details and confirm',
+      'step4': 'After successful transfer, click the check transaction button'
+    }
   }
 }; 
