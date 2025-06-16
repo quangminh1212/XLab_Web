@@ -35,7 +35,6 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
             width={24}
             height={16}
             className="object-cover rounded-sm"
-            style={{ color: 'transparent' }}
           />
         </div>
         <span>{isVi ? 'VIE' : 'ENG'}</span>
@@ -75,7 +74,6 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
                     width={24}
                     height={16}
                     className="object-cover rounded-sm"
-                    style={{ color: 'transparent' }}
                   />
                 </div>
                 <span>{t('language.vietnamese')}</span>
@@ -98,7 +96,6 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
                     width={24}
                     height={16}
                     className="object-cover rounded-sm"
-                    style={{ color: 'transparent' }}
                   />
                 </div>
                 <span>{t('language.english')}</span>

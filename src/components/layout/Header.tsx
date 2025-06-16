@@ -11,7 +11,7 @@ import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ClientOnly from '@/components/common/ClientOnly';
-import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import LanguageSwitcher from '@/components/common/SuperSafeLanguageSwitcher';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
