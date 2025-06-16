@@ -1,19 +1,21 @@
 'use client';
 
-import NoSSR from './NoSSR';
+import { useState, useEffect } from 'react';
 import PureClientLanguageSwitcher from './PureClientLanguageSwitcher';
 
-/**
- * This is a server-safe language switcher component.
- * It uses the NoSSR wrapper to prevent any rendering on the server,
- * completely avoiding hydration mismatches.
- */
 export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  // The placeholder is an empty div with the same class structure
-  // This ensures the layout doesn't shift during hydration
-  return (
-    <NoSSR fallback={<div className={`relative ${className}`}></div>}>
-      <PureClientLanguageSwitcher className={className} />
-    </NoSSR>
-  );
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  // Always render the same simple structure on the server
+  // This ensures hydration consistency
+  if (!isMounted) {
+    return <div className={`relative ${className}`} style={{ minWidth: '60px', minHeight: '24px' }}></div>;
+  }
+  
+  // Only render the actual component on the client after hydration
+  return <PureClientLanguageSwitcher className={className} />;
 } 
