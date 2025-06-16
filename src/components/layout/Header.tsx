@@ -371,9 +371,9 @@ const Header = () => {
                 </div>
               )}
 
-              {/* Language Switcher - Shared for both desktop and mobile */}
-              <div className="mr-2">
-                <LanguageSwitcher />
+              {/* Language Switcher placeholder - completely empty during SSR */}
+              <div id="language-switcher-root" className="mr-2">
+                {/* Will be filled by client-side JavaScript */}
               </div>
               
               {/* Voucher Icon */}

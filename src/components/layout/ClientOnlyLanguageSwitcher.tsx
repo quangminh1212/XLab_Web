@@ -13,11 +13,12 @@ export default function ClientOnly({ children }: ClientOnlyProps) {
     setHasMounted(true);
   }, []);
 
-  // Don't render anything on the server
+  // During server rendering or before hydration is complete,
+  // render an empty div with no content and no attributes
   if (!hasMounted) {
-    return null;
+    return <div data-ssr-placeholder></div>;
   }
 
-  // Render children only on the client side
+  // Render children only on the client side after hydration
   return <>{children}</>;
 } 
