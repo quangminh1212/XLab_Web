@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { safeLocalStorage } from '@/lib/utils';
 
 // Khai báo kiểu dữ liệu
 interface OrderItem {
@@ -132,19 +133,14 @@ export default function OrdersPage() {
       setTimeout(() => {
         // Kiểm tra dữ liệu từ localStorage
         if (session.user.email) {
-          const savedPurchases = localStorage.getItem(`purchases_${session.user.email}`);
-
-          if (savedPurchases) {
-            try {
-              const parsedPurchases = JSON.parse(savedPurchases);
-              setPurchaseHistory(parsedPurchases);
-            } catch (e) {
-              console.error('Lỗi khi parse dữ liệu mua hàng:', e);
-              setPurchaseHistory([]);
-            }
+          const purchasesKey = `purchases_${session.user.email}`;
+          const parsedPurchases = safeLocalStorage.getJSON<Order[]>(purchasesKey, []);
+          
+          if (parsedPurchases.length > 0) {
+            setPurchaseHistory(parsedPurchases);
           } else {
             // Hiển thị dữ liệu mẫu nếu không có dữ liệu thực
-            const showDemo = localStorage.getItem('show_demo_data') === 'true';
+            const showDemo = safeLocalStorage.getItem('show_demo_data') === 'true';
             if (showDemo) {
               setPurchaseHistory(samplePurchaseHistory);
             } else {

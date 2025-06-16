@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { safeLocalStorage } from '@/lib/utils';
 
 interface Notification {
   id: string;
@@ -261,13 +262,9 @@ function NotificationsPage() {
     fetchNotifications();
 
     // Load notification settings từ localStorage
-    const savedSettings = localStorage.getItem('admin_notification_settings');
-    if (savedSettings) {
-      try {
-        setNotificationSettings(JSON.parse(savedSettings));
-      } catch (error) {
-        console.error('Error parsing notification settings:', error);
-      }
+    const parsedSettings = safeLocalStorage.getJSON('admin_notification_settings', null);
+    if (parsedSettings) {
+      setNotificationSettings(parsedSettings);
     }
   }, []);
 
@@ -284,7 +281,7 @@ function NotificationsPage() {
 
   // Save settings
   const handleSaveSettings = () => {
-    localStorage.setItem('admin_notification_settings', JSON.stringify(notificationSettings));
+    safeLocalStorage.setJSON('admin_notification_settings', notificationSettings);
     setSuccessMessage(t('admin.notifications.settingsSaved'));
     setTimeout(() => setSuccessMessage(''), 3000);
   };
