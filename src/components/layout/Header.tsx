@@ -11,6 +11,7 @@ import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ClientOnly from '@/components/common/ClientOnly';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -370,10 +371,8 @@ const Header = () => {
                 </div>
               )}
 
-              {/* Language Switcher placeholder - completely empty during SSR */}
-              <div id="language-switcher-root" className="mr-2">
-                {/* Will be filled by client-side JavaScript */}
-              </div>
+              {/* Language Switcher */}
+                <LanguageSwitcher className="mr-2" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>

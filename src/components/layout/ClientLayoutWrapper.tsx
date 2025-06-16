@@ -28,11 +28,10 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
           <BalanceProvider>
             <CartProvider>
               <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow">{children}</main>
-                <Footer />
+                              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
               </div>
-              <ClientLanguageSwitcherMount />
               <Analytics />
               <CompileIndicator />
               <StyleLoader />
