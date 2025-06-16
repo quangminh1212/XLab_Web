@@ -120,4 +120,8 @@ export default {
   'admin.coupons.used': 'Đã sử dụng',
   'admin.coupons.remaining': 'Còn lại',
   'admin.coupons.noLimit': 'Không giới hạn',
+  'auth': {
+    'accessDenied': 'Truy cập bị từ chối',
+    'noPermission': 'Bạn không có quyền truy cập vào trang này.'
+  },
 }; 

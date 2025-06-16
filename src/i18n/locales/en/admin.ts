@@ -58,4 +58,9 @@ export default {
   'notifications.deleteError': 'An error occurred while deleting notification',
   'notifications.connectionError': 'An error occurred while connecting to server',
   'people': 'people',
+  
+  'auth': {
+    'accessDenied': 'Access Denied',
+    'noPermission': 'You do not have permission to access this page.'
+  }
 }; 
