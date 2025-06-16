@@ -55,6 +55,7 @@ export default {
   
   // Loading screen
   'loading': {
+    'title': 'Loading...',
     'pleaseWait': 'Please wait a moment'
   },
   

@@ -118,6 +118,7 @@ export default {
   'orders.myOrders': 'Đơn hàng của tôi',
 
   'loading': {
+    'title': 'Đang tải...',
     'pleaseWait': 'Vui lòng đợi trong giây lát'
   },
   'language': {
