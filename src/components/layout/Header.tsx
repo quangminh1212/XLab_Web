@@ -370,8 +370,10 @@ const Header = () => {
                 </div>
               )}
 
-              {/* Language Switcher */}
-              <LanguageSwitcher className="mr-2" />
+              {/* Language Switcher - Shared for both desktop and mobile */}
+              <div className="block">
+                <LanguageSwitcher className="mr-2" />
+              </div>
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -758,9 +760,6 @@ const Header = () => {
 
               {/* Mobile menu button */}
               <div className="flex md:hidden items-center space-x-3">
-                {/* Language Switcher for Mobile */}
-                <LanguageSwitcher className="mr-0.5" />
-
                 <Link
                   href="/cart"
                   className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
