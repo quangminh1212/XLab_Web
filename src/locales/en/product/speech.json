@@ -1,0 +1,10 @@
+{
+  "title": "Voice Recognition Demo",
+  "listening": "Listening...",
+  "startPrompt": "Click the microphone button to start",
+  "emptyPrompt": "Say something...",
+  "copySuccess": "Copied to clipboard!",
+  "featureTitle": "VoiceTyping features:",
+  "notSupported": "Your browser doesn't support speech recognition.",
+  "tryDifferentBrowser": "Please try Chrome or Edge to experience this feature."
+} 

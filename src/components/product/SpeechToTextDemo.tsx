@@ -2,33 +2,38 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-declare global {
-  interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
-  }
+interface SpeechToTextDemoProps {
+  onTranscriptChange?: (transcript: string) => void;
 }
 
-const SpeechToTextDemo = () => {
-  const [isListening, setIsListening] = useState(false);
+const SpeechToTextDemo = ({ onTranscriptChange }: SpeechToTextDemoProps) => {
+  const { t } = useLanguage();
   const [transcript, setTranscript] = useState('');
-  const [isSupported, setIsSupported] = useState(true);
+  const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    // Kiểm tra xem trình duyệt có hỗ trợ Web Speech API không
+    // Check if browser supports SpeechRecognition
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      setIsSupported(false);
       return;
     }
 
+    // Initialize speech recognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognitionRef.current = new SpeechRecognition();
-
     recognitionRef.current.continuous = true;
     recognitionRef.current.interimResults = true;
-    recognitionRef.current.lang = 'vi-VN'; // Mặc định là tiếng Việt
+    recognitionRef.current.lang = 'vi-VN'; // Set to Vietnamese
+
+    recognitionRef.current.onstart = () => {
+      setIsRecording(true);
+    };
+
+    recognitionRef.current.onend = () => {
+      setIsRecording(false);
+    };
 
     recognitionRef.current.onresult = (event: any) => {
       let interimTranscript = '';
@@ -42,104 +47,102 @@ const SpeechToTextDemo = () => {
         }
       }
 
-      setTranscript(finalTranscript || interimTranscript);
+      const fullTranscript = finalTranscript || interimTranscript;
+      setTranscript(fullTranscript);
+      
+      if (onTranscriptChange) {
+        onTranscriptChange(fullTranscript);
+      }
     };
 
     recognitionRef.current.onerror = (event: any) => {
       console.error('Speech recognition error', event.error);
-      setIsListening(false);
+      setIsRecording(false);
     };
 
-    recognitionRef.current.onend = () => {
-      // Nếu người dùng vẫn đang muốn lắng nghe, khởi động lại recognition
-      if (isListening) {
-        recognitionRef.current.start();
-      }
-    };
-
-    // Cleanup
+    // Cleanup function
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
     };
-  }, [isListening]);
+  }, [onTranscriptChange]);
 
-  const toggleListening = () => {
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      try {
+  const toggleRecording = () => {
+    if (!recognitionRef.current) return;
+
+    try {
+      if (isRecording) {
+        recognitionRef.current.stop();
+      } else {
+        setTranscript('');
         recognitionRef.current.start();
-        setIsListening(true);
-      } catch (error) {
-        console.error('Error starting speech recognition:', error);
       }
+    } catch (error) {
+      console.error('Error starting speech recognition:', error);
     }
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(transcript)
-      .then(() => {
-        alert('Đã sao chép vào clipboard!');
-      })
-      .catch((err) => {
-        console.error('Không thể sao chép: ', err);
-      });
+    if (!transcript) return;
+    
+    try {
+      navigator.clipboard.writeText(transcript);
+      alert(t('product.speech.copySuccess'));
+    } catch (err) {
+      console.error('Không thể sao chép: ', err);
+    }
   };
 
-  const clearTranscript = () => {
-    setTranscript('');
-  };
-
-  if (!isSupported) {
+  // If browser doesn't support speech recognition
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     return (
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="text-center text-red-500 mb-4">
-          <p>Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.</p>
-          <p>Vui lòng sử dụng Chrome, Edge hoặc Safari phiên bản mới nhất.</p>
+          <p>{t('product.speech.notSupported')}</p>
+          <p>{t('product.speech.tryDifferentBrowser')}</p>
         </div>
-        <Image
-          src="/images/speech-to-text/microphone.svg"
-          alt="Speech Recognition"
-          width={200}
-          height={200}
-          className="mx-auto opacity-50"
-        />
+        <div className="flex justify-center">
+          <Image 
+            src="/images/speech-to-text/microphone.svg"
+            alt="Speech Recognition"
+            width={64}
+            height={64}
+            className="mx-auto opacity-50"
+          />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4 text-center">Demo Nhận Dạng Giọng Nói</h2>
+      <h2 className="text-xl font-semibold mb-4 text-center">{t('product.speech.title')}</h2>
 
       <div className="flex justify-center mb-6">
         <button
-          onClick={toggleListening}
-          className={`p-4 rounded-full transition-all ${
-            isListening
+          onClick={toggleRecording}
+          className={`w-16 h-16 rounded-full flex items-center justify-center transition-colors ${
+            isRecording
               ? 'bg-red-500 text-white animate-pulse'
               : 'bg-blue-500 text-white hover:bg-blue-600'
           }`}
         >
-          <Image
-            src="/images/speech-to-text/microphone.svg"
-            alt="Microphone"
-            width={48}
-            height={48}
-            className="w-12 h-12 object-contain"
+          <Image 
+            src="/images/speech-to-text/microphone.svg" 
+            alt="Microphone" 
+            width={32} 
+            height={32} 
+            className="w-12 h-12 object-contain" 
           />
         </button>
       </div>
-
+      
       <div className="text-center mb-2">
-        {isListening ? (
-          <p className="text-red-500 font-medium">Đang lắng nghe...</p>
+        {isRecording ? (
+          <p className="text-red-500 font-medium">{t('product.speech.listening')}</p>
         ) : (
-          <p className="text-gray-600">Nhấn nút micro để bắt đầu</p>
+          <p className="text-gray-600">{t('product.speech.startPrompt')}</p>
         )}
       </div>
 
@@ -147,35 +150,35 @@ const SpeechToTextDemo = () => {
         {transcript ? (
           <p className="whitespace-pre-wrap">{transcript}</p>
         ) : (
-          <p className="text-gray-400 italic text-center">Nói điều gì đó...</p>
+          <p className="text-gray-400 italic text-center">{t('product.speech.emptyPrompt')}</p>
         )}
       </div>
 
       <div className="flex justify-between">
         <button
-          onClick={clearTranscript}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors disabled:opacity-50"
+          onClick={() => setTranscript('')}
           disabled={!transcript}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors disabled:opacity-50"
         >
-          Xóa
+          Clear
         </button>
-
         <button
           onClick={copyToClipboard}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
           disabled={!transcript}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
         >
-          Sao chép
+          Copy
         </button>
       </div>
 
       <div className="mt-6 border-t pt-4 border-gray-200">
-        <h3 className="text-sm font-medium mb-2">Chức năng của VoiceTyping:</h3>
+        <h3 className="text-sm font-medium mb-2">{t('product.speech.featureTitle')}</h3>
         <ul className="text-sm text-gray-600 space-y-1 list-disc pl-5">
-          <li>Nhận dạng giọng nói tiếng Việt và các ngôn ngữ khác</li>
-          <li>Tự động định dạng và chỉnh sửa văn bản</li>
-          <li>Tích hợp với Microsoft Office và các ứng dụng văn phòng</li>
-          <li>Hoạt động cả online và offline</li>
+          <li>Nhận dạng và chuyển giọng nói thành văn bản</li>
+          <li>Hỗ trợ nhiều ngôn ngữ khác nhau</li>
+          <li>Tốc độ nhận dạng nhanh, độ chính xác cao</li>
+          <li>Không giới hạn thời gian nói</li>
+          <li>Dễ dàng sao chép văn bản để sử dụng ở nơi khác</li>
         </ul>
       </div>
     </div>
