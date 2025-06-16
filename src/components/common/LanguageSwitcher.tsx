@@ -1,16 +1,19 @@
-import dynamic from 'next/dynamic';
+'use client';
 
-// Import the component with ssr: false to completely skip server-side rendering
-const ClientOnlyLanguageSwitcher = dynamic(
-  () => import('./ClientOnlyLanguageSwitcher'),
-  { 
-    ssr: false,
-    // Return an empty div with the same class structure during SSR
-    loading: () => <div className="relative"></div>
-  }
-);
+import NoSSR from './NoSSR';
+import PureClientLanguageSwitcher from './PureClientLanguageSwitcher';
 
-// Simple wrapper component to pass props
+/**
+ * This is a server-safe language switcher component.
+ * It uses the NoSSR wrapper to prevent any rendering on the server,
+ * completely avoiding hydration mismatches.
+ */
 export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  return <ClientOnlyLanguageSwitcher className={className} />;
+  // The placeholder is an empty div with the same class structure
+  // This ensures the layout doesn't shift during hydration
+  return (
+    <NoSSR fallback={<div className={`relative ${className}`}></div>}>
+      <PureClientLanguageSwitcher className={className} />
+    </NoSSR>
+  );
 } 

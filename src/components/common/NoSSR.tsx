@@ -1,21 +1,22 @@
 'use client';
 
-import React, { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 
 interface NoSSRProps {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
-export default function NoSSR({ children }: NoSSRProps) {
-  const [mounted, setMounted] = useState(false);
+/**
+ * A component that completely prevents its children from rendering during SSR
+ * and only renders them on the client after hydration.
+ */
+export default function NoSSR({ children, fallback = null }: NoSSRProps) {
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setIsClient(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
-
-  return <>{children}</>;
+  return isClient ? <>{children}</> : <>{fallback}</>;
 } 
