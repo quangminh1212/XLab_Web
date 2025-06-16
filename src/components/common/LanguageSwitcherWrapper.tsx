@@ -4,20 +4,22 @@ import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 
 interface LanguageSwitcherProps {
   className?: string;
 }
 
-// Component chính chỉ chạy ở client
-const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
+// Component ngôn ngữ đơn giản
+const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage, t } = useLanguage();
   const isVi = language === 'vi';
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setIsMounted(true);
+    
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -28,6 +30,12 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Không render gì trên server
+  if (!isMounted) {
+    return null;
+  }
+
+  // Chỉ render ở client
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
@@ -130,10 +138,5 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     </div>
   );
 };
-
-// Sử dụng dynamic import với ssr: false để ngăn hoàn toàn server rendering
-const LanguageSwitcherWrapper = dynamic(() => Promise.resolve(LanguageSwitcher), {
-  ssr: false
-});
 
 export default LanguageSwitcherWrapper; 

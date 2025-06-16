@@ -10,6 +10,7 @@ import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import LanguageSwitcherWrapper from '@/components/common/LanguageSwitcherWrapper';
+import NoSSR from '@/components/common/NoSSR';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Thêm interface cho voucher
@@ -371,8 +372,10 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <div className="mr-2 no-ssr">
-                <LanguageSwitcherWrapper />
+              <div className="mr-2">
+                <NoSSR>
+                  <LanguageSwitcherWrapper />
+                </NoSSR>
               </div>
 
               {/* Voucher Icon */}
