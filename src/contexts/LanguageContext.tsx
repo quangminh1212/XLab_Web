@@ -72,43 +72,47 @@ const deepMerge = (target: any, source: any): any => {
 const buildTranslations = () => {
   // Tiếng Việt
   const vi = {
+    nav: viNavigation.nav || {},
+    footer: viFooter || {},
     common: {
-      navigation: viNavigation,
-      footer: viFooter
+      navigation: viNavigation || {},
+      footer: viFooter || {}
     },
     product: {
-      ...viProduct,
-      featured: viFeatured,
-      loader: viLoader,
-      speech: viSpeech
+      ...viProduct || {},
+      featured: viFeatured || {},
+      loader: viLoader || {},
+      speech: viSpeech || {}
     },
     home: {
-      ...viHome,
-      features: viFeatures,
-      faq: viFaq
+      ...viHome || {},
+      features: viFeatures || {},
+      faq: viFaq || {}
     },
     about: {
-      ...viAbout,
-      company: viCompany
+      ...viAbout || {},
+      company: viCompany || {}
     },
     admin: {
-      notifications: viAdminNotifications
+      notifications: viAdminNotifications || {}
     }
   };
 
   // Tiếng Anh - chỉ có một số module được dịch
   const en = {
+    nav: enNavigation.nav || {},
+    footer: enFooter || {},
     common: {
-      navigation: enNavigation,
-      footer: enFooter
+      navigation: enNavigation || {},
+      footer: enFooter || {}
     },
     product: {
-      featured: enFeatured,
-      loader: enLoader,
-      speech: enSpeech
+      featured: enFeatured || {},
+      loader: enLoader || {},
+      speech: enSpeech || {}
     },
     home: {
-      features: enFeatures
+      features: enFeatures || {}
     }
   };
 
