@@ -8,7 +8,6 @@ import {
   StyleLoader,
   CssErrorHandler,
   GlobalStyles,
-  ClientLanguageSwitcherMount,
 } from '@/components/common';
 import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
@@ -28,9 +27,9 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
           <BalanceProvider>
             <CartProvider>
               <div className="flex flex-col min-h-screen">
-                              <Header />
-              <main className="flex-grow">{children}</main>
-              <Footer />
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
               </div>
               <Analytics />
               <CompileIndicator />

@@ -1,13 +1,21 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-
-// Import with SSR disabled to prevent hydration errors
-const DynamicSwitcher = dynamic(() => import('./DynamicLanguageSwitcher'), {
-  ssr: false,
-  loading: () => <div className="relative mr-2" aria-hidden="true" /> // Matches client structure
-});
+import React, { useEffect, useState } from 'react';
+import AbsoluteMinimumLanguageSwitcher from './AbsoluteMinimumLanguageSwitcher';
 
 export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  return <DynamicSwitcher className={className} />;
+  // Use state to track whether we're on the client
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // On server or initial client render, return the placeholder with the same structure
+  if (!isMounted) {
+    return <div className="relative mr-2" aria-hidden="true" />;
+  }
+  
+  // Only render the actual component after client-side hydration is complete
+  return <AbsoluteMinimumLanguageSwitcher className={className} />;
 } 
