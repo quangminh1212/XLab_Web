@@ -28,7 +28,7 @@ export default function SafeLanguageSwitcher({ className = '' }: { className?: s
   // This is what will be rendered on the server - just an empty container
   if (!mounted) {
     return (
-      <div id={containerId} className={`relative mr-2 ${className}`.trim()}>
+      <div id={containerId} className={`relative ${className}`.trim()}>
         {/* Server-side placeholder - will be replaced on client */}
       </div>
     );
@@ -38,7 +38,7 @@ export default function SafeLanguageSwitcher({ className = '' }: { className?: s
   const isVi = language === 'vi';
 
   return (
-    <div id={containerId} className={`relative mr-2 ${className}`.trim()} ref={containerRef}>
+    <div id={containerId} className={`relative ${className}`.trim()} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"

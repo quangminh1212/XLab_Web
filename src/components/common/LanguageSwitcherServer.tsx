@@ -13,7 +13,7 @@ const ClientLanguageSwitcher = dynamic(
 export default function LanguageSwitcherServer({ className = '' }: { className?: string }) {
   // On the server, just render a simple div with the right class
   return (
-    <div className={`relative mr-2 ${className || ''}`.trim()}>
+    <div className={`relative ${className || ''}`.trim()}>
       <Suspense>
         {/* This will only be rendered on the client */}
         <ClientLanguageSwitcher className={className} />
