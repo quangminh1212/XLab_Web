@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Component that ensures content is only rendered on the client-side
+ * Component that ensures content is ONLY rendered on the client-side after hydration
  * Uses the strictest possible approach to prevent hydration mismatches
  */
 export default function ClientOnly({ 
@@ -13,18 +13,19 @@ export default function ClientOnly({
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }) {
-  const [isMounted, setIsMounted] = useState(false);
+  // Using a ref would be more efficient but useState works too for this purpose
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // This effect will only run once after client hydration is complete
+  // Effect runs after hydration is complete
   useEffect(() => {
-    setIsMounted(true);
+    setHasMounted(true);
   }, []);
 
-  // During SSR and initial client render, return fallback or null
-  if (!isMounted) {
+  // During SSR and initial client render before hydration completes, return fallback (usually null)
+  if (!hasMounted) {
     return fallback;
   }
 
-  // After hydration is complete on client, render children
+  // Only when we're fully mounted on the client, render the children
   return <>{children}</>;
 } 

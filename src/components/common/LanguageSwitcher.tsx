@@ -4,11 +4,13 @@ import ClientOnly from './ClientOnly';
 import AbsoluteMinimumLanguageSwitcher from './AbsoluteMinimumLanguageSwitcher';
 
 export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  // Use ClientOnly with a simple empty span as fallback
-  // This ensures there's no complex structure during SSR that could cause hydration mismatches
+  // Use null as fallback to ensure no hydration mismatch
+  // This means nothing will be rendered during SSR and initial client render
   return (
-    <ClientOnly fallback={<span className="mr-2" />}>
-      <AbsoluteMinimumLanguageSwitcher className={className} />
-    </ClientOnly>
+    <div className={className}>
+      <ClientOnly fallback={null}>
+        <AbsoluteMinimumLanguageSwitcher />
+      </ClientOnly>
+    </div>
   );
 } 
