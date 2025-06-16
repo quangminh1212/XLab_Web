@@ -6,7 +6,10 @@ import dynamic from 'next/dynamic';
 // Import the client component with SSR disabled
 const DynamicLanguageSwitcherClient = dynamic(
   () => import('./LanguageSwitcherClient'),
-  { ssr: false }
+  { 
+    ssr: false,
+    loading: () => <div className="relative mr-2"></div>
+  }
 );
 
 export default function LanguageSwitcherWrapper({ className = '' }: { className?: string }) {
@@ -16,10 +19,10 @@ export default function LanguageSwitcherWrapper({ className = '' }: { className?
     setIsMounted(true);
   }, []);
   
-  // Use data-suppresshydrationwarning attribute to avoid hydration mismatch errors
+  // Use suppressHydrationWarning attribute to avoid hydration mismatch errors
   return (
-    <div data-suppresshydrationwarning="true">
-      {isMounted ? <DynamicLanguageSwitcherClient className={className} /> : null}
+    <div data-suppresshydrationwarning="true" suppressHydrationWarning>
+      <DynamicLanguageSwitcherClient className={className} />
     </div>
   );
 } 

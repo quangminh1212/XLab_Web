@@ -1,10 +1,9 @@
-import { Suspense } from 'react';
+import React from 'react';
 
-// This is a server component that renders a Suspense fallback
+// This is a server component that provides a consistent shell with client
 export default function LanguageSwitcher({ className }: { className?: string }): JSX.Element {
+  // Return a simple div that matches the client structure 
   return (
-    <Suspense fallback={<div className="relative mr-2"></div>}>
-      <div className="relative mr-2"></div>
-    </Suspense>
+    <div className={`relative mr-2 ${className || ''}`.trim()}></div>
   );
 } 
