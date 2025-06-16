@@ -24,12 +24,14 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
       }
     }
     
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (mounted) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [mounted]);
   
   if (!mounted) {
-    return null;
+    return <div className={`relative mr-2 ${className}`.trim()}></div>;
   }
   
   const isVi = language === 'vi';
