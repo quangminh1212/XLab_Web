@@ -372,168 +372,169 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              {/* Language Switcher - Shared for both desktop and mobile */}
+              <div suppressHydrationWarning>
                 <ClientOnly fallback={<div className="relative mr-2"></div>}>
                   <LanguageSwitcherWrapper className="mr-2" />
                 </ClientOnly>
+              </div>
               
-                {/* Voucher Icon */}
-                <div className="relative" ref={voucherRef}>
-                  <button
-                    onClick={toggleVoucher}
-                    className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
-                    aria-label="Voucher"
-                    aria-expanded={isVoucherOpen}
-                    aria-haspopup="true"
+              {/* Voucher Icon */}
+              <div className="relative" ref={voucherRef}>
+                <button
+                  onClick={toggleVoucher}
+                  className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                  aria-label="Voucher"
+                  aria-expanded={isVoucherOpen}
+                  aria-haspopup="true"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 sm:h-5 sm:w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 sm:h-5 sm:w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
-                      />
-                    </svg>
-                    {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                        {userCoupons.filter((v) => !v.isPublic).length}
-                      </span>
-                    )}
-                  </button>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                    />
+                  </svg>
+                  {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                      {userCoupons.filter((v) => !v.isPublic).length}
+                    </span>
+                  )}
+                </button>
 
-                  {/* Voucher Dropdown */}
-                  {isVoucherOpen && (
-                    <div
-                      className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10"
-                      tabIndex={0}
-                      role="menu"
-                      aria-orientation="vertical"
-                    >
-                      <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                        <h3 className="text-base font-semibold text-gray-900">{t('voucher.title')}</h3>
-                        <Link
-                          href="/vouchers/public"
-                          className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
-                        >
-                          {t('voucher.viewAll')}
-                        </Link>
-                      </div>
+                {/* Voucher Dropdown */}
+                {isVoucherOpen && (
+                  <div
+                    className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10"
+                    tabIndex={0}
+                    role="menu"
+                    aria-orientation="vertical"
+                  >
+                    <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="text-base font-semibold text-gray-900">{t('voucher.title')}</h3>
+                      <Link
+                        href="/vouchers/public"
+                        className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
+                      >
+                        {t('voucher.viewAll')}
+                      </Link>
+                    </div>
 
-                      <div className="max-h-80 overflow-y-auto">
-                        {loadingCoupons ? (
-                          <div className="py-6 text-center">
-                            <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
-                            <p className="text-xs sm:text-sm text-gray-500 mt-2">{t('voucher.loading')}</p>
-                          </div>
-                        ) : getDisplayVouchers().length > 0 ? (
-                          <>
-                            {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
-                              <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
-                                <h4 className="text-xs font-medium text-teal-700">{t('voucher.yourVouchers')}</h4>
-                              </div>
-                            )}
+                    <div className="max-h-80 overflow-y-auto">
+                      {loadingCoupons ? (
+                        <div className="py-6 text-center">
+                          <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
+                          <p className="text-xs sm:text-sm text-gray-500 mt-2">{t('voucher.loading')}</p>
+                        </div>
+                      ) : getDisplayVouchers().length > 0 ? (
+                        <>
+                          {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
+                            <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
+                              <h4 className="text-xs font-medium text-teal-700">{t('voucher.yourVouchers')}</h4>
+                            </div>
+                          )}
 
-                            {getDisplayVouchers().map((coupon, index) => (
-                              <div key={coupon.id}>
-                                <div
-                                  className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
-                                  role="menuitem"
-                                >
-                                  <div className="flex justify-between items-start">
-                                    <div className="flex items-center gap-2 mb-1">
-                                      <div className="flex items-center">
-                                        <span
-                                          onClick={() => handleCopyVoucher(coupon.code)}
-                                          className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
-                                          title="Nhấn để sao chép mã"
-                                        >
-                                          {coupon.code}
-                                        </span>
-                                      </div>
+                          {getDisplayVouchers().map((coupon, index) => (
+                            <div key={coupon.id}>
+                              <div
+                                className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
+                                role="menuitem"
+                              >
+                                <div className="flex justify-between items-start">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <div className="flex items-center">
                                       <span
-                                        className={`text-xs font-medium ${coupon.type === 'percentage' ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}
+                                        onClick={() => handleCopyVoucher(coupon.code)}
+                                        className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
+                                        title="Nhấn để sao chép mã"
                                       >
-                                        {coupon.type === 'percentage'
-                                          ? `${coupon.value}%`
-                                          : formatCurrency(coupon.value)}
+                                        {coupon.code}
                                       </span>
                                     </div>
-                                    <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
-                                      {t('voucher.expiryDate')} {formatDate(coupon.endDate)}
+                                    <span
+                                      className={`text-xs font-medium ${coupon.type === 'percentage' ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}
+                                    >
+                                      {coupon.type === 'percentage'
+                                        ? `${coupon.value}%`
+                                        : formatCurrency(coupon.value)}
                                     </span>
                                   </div>
-                                  <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                                    {coupon.name}
-                                  </h4>
-                                  {coupon.description && (
-                                    <div className="flex justify-between items-center mt-1">
-                                      <p className="text-xs text-gray-600 line-clamp-2">
-                                        {coupon.description}
-                                      </p>
-                                      {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                        <span className="text-xs font-medium text-teal-600">
-                                          {t('voucher.usesLeft', { 
-                                            count: coupon.userUsage && 
-                                                   typeof coupon.userUsage.limit === 'number' && 
-                                                   typeof coupon.userUsage.current === 'number' 
-                                                   ? coupon.userUsage.limit - coupon.userUsage.current 
-                                                   : 0
-                                          })}
-                                        </span>
-                                      )}
-                                    </div>
-                                  )}
-                                  <div className="mt-2 flex justify-between items-center text-xs mb-1">
-                                    <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
-                                      {coupon.minOrder
-                                        ? `${t('voucher.minOrder')} ${formatCurrency(coupon.minOrder)}`
-                                        : t('voucher.noLimit')}
-                                    </span>
+                                  <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
+                                    {t('voucher.expiryDate')} {formatDate(coupon.endDate)}
+                                  </span>
+                                </div>
+                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">
+                                  {coupon.name}
+                                </h4>
+                                {coupon.description && (
+                                  <div className="flex justify-between items-center mt-1">
+                                    <p className="text-xs text-gray-600 line-clamp-2">
+                                      {coupon.description}
+                                    </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                      <span className="text-gray-500">
-                                        {Math.min(
-                                          100,
-                                          Math.round(
-                                            (coupon.userUsage.current / coupon.userUsage.limit) * 100,
-                                          ),
-                                        )}
-                                        %
+                                      <span className="text-xs font-medium text-teal-600">
+                                        {t('voucher.usesLeft', { 
+                                          count: coupon.userUsage && 
+                                                 typeof coupon.userUsage.limit === 'number' && 
+                                                 typeof coupon.userUsage.current === 'number' 
+                                                 ? coupon.userUsage.limit - coupon.userUsage.current 
+                                                 : 0
+                                        })}
                                       </span>
                                     )}
                                   </div>
+                                )}
+                                <div className="mt-2 flex justify-between items-center text-xs mb-1">
+                                  <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
+                                    {coupon.minOrder
+                                      ? `${t('voucher.minOrder')} ${formatCurrency(coupon.minOrder)}`
+                                      : t('voucher.noLimit')}
+                                  </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-                                      <div
-                                        className={`h-full rounded-full ${
-                                          coupon.userUsage.current >= coupon.userUsage.limit
-                                            ? 'bg-gradient-to-r from-red-500 to-red-600'
-                                            : 'bg-gradient-to-r from-teal-500 to-emerald-600'
-                                        }`}
-                                        style={{
-                                          width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%`,
-                                        }}
-                                      ></div>
-                                    </div>
+                                    <span className="text-gray-500">
+                                      {Math.min(
+                                        100,
+                                        Math.round(
+                                          (coupon.userUsage.current / coupon.userUsage.limit) * 100,
+                                        ),
+                                      )}
+                                      %
+                                    </span>
                                   )}
-
-                                  {/* Note section removed */}
                                 </div>
+                                {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                  <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                                    <div
+                                      className={`h-full rounded-full ${
+                                        coupon.userUsage.current >= coupon.userUsage.limit
+                                          ? 'bg-gradient-to-r from-red-500 to-red-600'
+                                          : 'bg-gradient-to-r from-teal-500 to-emerald-600'
+                                      }`}
+                                      style={{
+                                        width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%`,
+                                      }}
+                                    ></div>
+                                  </div>
+                                )}
+
+                                {/* Note section removed */}
                               </div>
-                            ))}
-                          </>
-                        ) : (
-                          <div className="px-4 py-6 text-center">
-                            <p className="text-xs sm:text-sm text-gray-500">
-                              {t('admin.coupons.empty')}
-                            </p>
-                          </div>
-                        )}
+                            </div>
+                          ))}
+                        </>
+                      ) : (
+                        <div className="px-4 py-6 text-center">
+                          <p className="text-xs sm:text-sm text-gray-500">
+                            {t('admin.coupons.empty')}
+                          </p>
+                        </div>
+                      )}
                                              </div>
                      </div>
                    )}

@@ -32,9 +32,9 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
     }
   }, [isMounted]);
   
-  // If not mounted yet, show the placeholder with exact structure
+  // Don't render anything until client-side
   if (!isMounted) {
-    return <div className={`relative mr-2 ${className}`.trim()} ref={containerRef}></div>;
+    return null;
   }
   
   const isVi = language === 'vi';

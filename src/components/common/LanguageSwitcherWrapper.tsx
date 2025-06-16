@@ -6,10 +6,7 @@ import dynamic from 'next/dynamic';
 // Import the client component with SSR disabled
 const DynamicLanguageSwitcherClient = dynamic(
   () => import('./LanguageSwitcherClient'),
-  { 
-    ssr: false,
-    loading: () => <div className="relative mr-2"></div>
-  }
+  { ssr: false }
 );
 
 export default function LanguageSwitcherWrapper({ className = '' }: { className?: string }) {
@@ -19,9 +16,10 @@ export default function LanguageSwitcherWrapper({ className = '' }: { className?
     setIsMounted(true);
   }, []);
   
-  if (!isMounted) {
-    return <div className={`relative mr-2 ${className}`.trim()}></div>;
-  }
-  
-  return <DynamicLanguageSwitcherClient className={className} />;
+  // Use suppressHydrationWarning to avoid hydration mismatch errors
+  return (
+    <div suppressHydrationWarning>
+      {isMounted ? <DynamicLanguageSwitcherClient className={className} /> : null}
+    </div>
+  );
 } 
