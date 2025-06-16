@@ -4,22 +4,20 @@ import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
-interface LanguageSwitcherWrapperProps {
+interface LanguageSwitcherProps {
   className?: string;
 }
 
-// Component chỉ chạy ở client để tránh hydration mismatch
-const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherWrapperProps) => {
+// Component chính chỉ chạy ở client
+const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage, t } = useLanguage();
   const isVi = language === 'vi';
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMounted(true);
-
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -30,12 +28,6 @@ const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherWrapperProp
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // SSR: Return empty div with proper className to match client structure
-  if (!mounted) {
-    return <div className={className} aria-hidden="true" />;
-  }
-
-  // Client-only render
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
@@ -138,5 +130,10 @@ const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherWrapperProp
     </div>
   );
 };
+
+// Sử dụng dynamic import với ssr: false để ngăn hoàn toàn server rendering
+const LanguageSwitcherWrapper = dynamic(() => Promise.resolve(LanguageSwitcher), {
+  ssr: false
+});
 
 export default LanguageSwitcherWrapper; 

@@ -371,7 +371,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <div className="mr-2">
+              <div className="mr-2 no-ssr">
                 <LanguageSwitcherWrapper />
               </div>
 
