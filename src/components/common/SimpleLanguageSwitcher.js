@@ -6,13 +6,15 @@ import { useState, useRef, useEffect } from 'react';
 
 export default function SimpleLanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
-  const isVi = language === 'vi';
+  const [isVi, setIsVi] = useState(false); // Initialize without value to prevent hydration mismatch
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef(null);
   
   useEffect(() => {
+    // Set initial state after component mounts on client
     setIsMounted(true);
+    setIsVi(language === 'vi');
     
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -22,11 +24,11 @@ export default function SimpleLanguageSwitcher() {
     
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [language]);
   
-  // Don't render anything on the server
+  // Don't render anything during server-side rendering or initial client render
   if (!isMounted) {
-    return null;
+    return <div className="mr-2 relative" ref={containerRef}></div>;
   }
   
   return (
@@ -69,6 +71,7 @@ export default function SimpleLanguageSwitcher() {
               <div
                 onClick={() => {
                   setLanguage('vi');
+                  setIsVi(true);
                   setIsOpen(false);
                 }}
                 className={`flex items-center w-full px-4 py-2 text-sm cursor-pointer ${
@@ -79,6 +82,7 @@ export default function SimpleLanguageSwitcher() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     setLanguage('vi');
+                    setIsVi(true);
                     setIsOpen(false);
                   }
                 }}
@@ -99,6 +103,7 @@ export default function SimpleLanguageSwitcher() {
               <div
                 onClick={() => {
                   setLanguage('en');
+                  setIsVi(false);
                   setIsOpen(false);
                 }}
                 className={`flex items-center w-full px-4 py-2 text-sm cursor-pointer ${
@@ -109,6 +114,7 @@ export default function SimpleLanguageSwitcher() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     setLanguage('en');
+                    setIsVi(false);
                     setIsOpen(false);
                   }
                 }}
