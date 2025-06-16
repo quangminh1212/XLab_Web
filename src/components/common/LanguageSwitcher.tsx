@@ -30,9 +30,10 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Return empty placeholder on server
+  // Return empty placeholder on server that matches the client DOM structure
   if (!mounted) {
-    return <div className={`inline-block ${className}`}></div>;
+    // Using a div structure that matches the client structure to prevent hydration mismatch
+    return <div className={`relative ${className}`}></div>;
   }
 
   // Render only on client
