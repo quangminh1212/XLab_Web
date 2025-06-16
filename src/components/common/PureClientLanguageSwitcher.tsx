@@ -24,12 +24,13 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Don't render anything until mounted
+  // Don't render anything until mounted - just an empty div with the same structure
+  // This MUST match the server-side placeholder exactly
   if (!mounted) {
     return <div className={`relative ${className}`}></div>;
   }
 
-  // Client-side only logic
+  // Client-side only logic after mounting
   const isVi = language === 'vi';
 
   return (

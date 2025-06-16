@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-// This is just a placeholder div used while the real component loads
-// It will be server-rendered and then replaced by client component
+// This is a placeholder div used during server rendering
+// It MUST match the initial structure that the client component will render
 function PlaceholderDiv({ className }: { className?: string }) {
   return <div className={`relative ${className}`}></div>;
 }
@@ -19,6 +18,6 @@ const ClientLanguageSwitcher = dynamic(
 );
 
 export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  // The client will replace the placeholder with ClientLanguageSwitcher after hydration
-  return <ClientLanguageSwitcher className={className} />;
+  // Use the placeholder during server rendering, which will be replaced by the client component
+  return <PlaceholderDiv className={className} />;
 } 
