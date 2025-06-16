@@ -8,25 +8,30 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
-const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = '' }) => {
-  const { language, changeLanguage, t } = useLanguage();
+const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
+  const { language, setLanguage, t } = useLanguage();
   const isVi = language === 'vi';
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Xử lý click bên ngoài dropdown để đóng dropdown
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
-    };
+    }
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const changeLanguage = (lang: 'vi' | 'en') => {
+    setLanguage(lang);
+    setIsOpen(false);
+  };
 
   return (
     <>
