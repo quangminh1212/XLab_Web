@@ -35,6 +35,7 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
   // Always render the same structure, even when not mounted
   const isVi = isMounted ? language === 'vi' : false;
   
+  // Use suppressHydrationWarning to prevent mismatch errors
   return (
     <div 
       className={`relative mr-2 ${className}`.trim()} 
