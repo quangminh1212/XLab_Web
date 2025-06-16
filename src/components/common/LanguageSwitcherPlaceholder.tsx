@@ -1,8 +1,8 @@
 /**
- * Empty placeholder for LanguageSwitcher
- * This component renders nothing on the server
- * This ensures no hydration mismatch when the client-side component loads
+ * Empty placeholder for LanguageSwitcher during server-side rendering
+ * Using an empty span with only a class ensures no hydration mismatch
  */
 export default function LanguageSwitcherPlaceholder() {
-  return <div className="mr-2" style={{ width: '80px', height: '24px' }} />;
+  // Return absolutely nothing visible during SSR
+  return <span className="mr-2" />;
 } 

@@ -372,7 +372,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher */}
-                <LanguageSwitcher className="mr-2" />
+                <LanguageSwitcher className="relative mr-2" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
