@@ -1,41 +1,123 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-
-// Static placeholder that matches the structure exactly
-const StaticPlaceholder = ({ className = '' }: { className?: string }) => (
-  <div className={`relative ${className}`}>
-    <button
-      className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
-      aria-expanded={false}
-    >
-      <div className="relative w-6 h-4 mr-2"></div>
-      <span></span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-4 w-4 ml-1"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 9l-7 7-7-7"
-        />
-      </svg>
-    </button>
-  </div>
-);
-
-// Import the client component with no SSR
-const ClientComponent = dynamic(() => import('./PureClientLanguageSwitcher'), {
-  ssr: false,
-  loading: () => <StaticPlaceholder />
-});
+import { useState, useEffect, useRef } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function SuperSafeLanguageSwitcher({ className = '' }: { className?: string }) {
-  // Just use the static placeholder during SSR and the dynamic component on client
-  return <ClientComponent className={className} />;
+  const [isMounted, setIsMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Only run this effect on the client
+  useEffect(() => {
+    setIsMounted(true);
+    
+    // Add click outside handler
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  // During SSR, render absolutely nothing
+  if (!isMounted) {
+    return null;
+  }
+  
+  // Only render on the client side after hydration is complete
+  const { language, setLanguage, t } = useLanguage();
+  const isVi = language === 'vi';
+  
+  return (
+    <div className={`relative ${className}`} ref={containerRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
+        aria-expanded={isOpen}
+      >
+        <div className="relative w-6 h-4 mr-2">
+          <img
+            src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
+            alt={isVi ? 'Tiếng Việt' : 'English'}
+            width={24}
+            height={16}
+            className="object-cover rounded-sm"
+            style={{color: "transparent"}}
+          />
+        </div>
+        <span>{isVi ? 'VIE' : 'ENG'}</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 ml-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+          <ul className="py-1">
+            <li>
+              <button
+                onClick={() => {
+                  setLanguage('vi');
+                  setIsOpen(false);
+                }}
+                className={`flex items-center w-full px-4 py-2 text-sm text-left cursor-pointer ${
+                  isVi ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <div className="relative w-6 h-4 mr-3">
+                  <img
+                    src="/images/flags/vn.svg"
+                    alt="Tiếng Việt"
+                    width={24}
+                    height={16}
+                    className="object-cover rounded-sm"
+                    style={{color: "transparent"}}
+                  />
+                </div>
+                <span>{t('language.vietnamese')}</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  setLanguage('en');
+                  setIsOpen(false);
+                }}
+                className={`flex items-center w-full px-4 py-2 text-sm text-left cursor-pointer ${
+                  !isVi ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <div className="relative w-6 h-4 mr-3">
+                  <img
+                    src="/images/flags/us.svg"
+                    alt="English"
+                    width={24}
+                    height={16}
+                    className="object-cover rounded-sm"
+                    style={{color: "transparent"}}
+                  />
+                </div>
+                <span>{t('language.english')}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 } 
