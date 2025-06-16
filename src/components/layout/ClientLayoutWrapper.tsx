@@ -8,6 +8,7 @@ import {
   StyleLoader,
   CssErrorHandler,
   GlobalStyles,
+  ClientLanguageSwitcherMount,
 } from '@/components/common';
 import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
@@ -31,6 +32,7 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
                 <main className="flex-grow">{children}</main>
                 <Footer />
               </div>
+              <ClientLanguageSwitcherMount />
               <Analytics />
               <CompileIndicator />
               <StyleLoader />

@@ -4,12 +4,6 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { siteConfig } from '@/config/siteConfig';
 import { ClientLayoutWrapper } from '@/components/layout';
-import MainLayout from '@/components/layout/MainLayout';
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import { NotificationProvider } from '@/contexts/NotificationContext';
-import { BalanceProvider } from '@/contexts/BalanceContext';
-import { CartProvider } from '@/components/cart/CartContext';
-import { SessionProvider } from '@/components/auth';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -97,19 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${inter.className} bg-light-50`}>
-        <SessionProvider>
-          <LanguageProvider>
-            <NotificationProvider>
-              <BalanceProvider>
-                <CartProvider>
-                  <MainLayout>
-                    <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
-                  </MainLayout>
-                </CartProvider>
-              </BalanceProvider>
-            </NotificationProvider>
-          </LanguageProvider>
-        </SessionProvider>
+        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>
   );
