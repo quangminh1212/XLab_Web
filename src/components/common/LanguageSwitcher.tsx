@@ -3,7 +3,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
+
+// Sử dụng dynamic import với ssr: false để đảm bảo component chỉ chạy ở client
+const ClientImage = dynamic(() => import('next/image'), { ssr: false });
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -42,7 +45,7 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
       >
         <div className="relative w-6 h-4 mr-2">
           {isClient && (
-            <Image
+            <ClientImage
               src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
               alt={isVi ? 'Tiếng Việt' : 'English'}
               width={24}
@@ -90,7 +93,7 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
                 }}
               >
                 <div className="relative w-6 h-4 mr-3">
-                  <Image
+                  <ClientImage
                     src="/images/flags/vn.svg"
                     alt="Tiếng Việt"
                     width={24}
@@ -120,7 +123,7 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
                 }}
               >
                 <div className="relative w-6 h-4 mr-3">
-                  <Image
+                  <ClientImage
                     src="/images/flags/us.svg"
                     alt="English"
                     width={24}
