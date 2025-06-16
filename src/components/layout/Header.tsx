@@ -341,9 +341,9 @@ const Header = () => {
                 <Image
                   src="/images/logo.jpg"
                   alt="XLab Logo"
-                  width={100}
-                  height={60}
-                  className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
+                  width={120}
+                  height={72}
+                  className="w-auto h-10 sm:h-11 md:h-12 lg:h-14"
                 />
               </Link>
             </div>
@@ -352,7 +352,7 @@ const Header = () => {
             <nav className="hidden lg:flex lg:space-x-8 mx-auto">
               <Link
                 href="/"
-                className={`flex items-center text-sm font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
+                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
                   '/',
                 )}`}
               >
@@ -360,7 +360,7 @@ const Header = () => {
               </Link>
               <Link
                 href="/products"
-                className={`flex items-center text-sm font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
+                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
                   '/products',
                 )}`}
               >
@@ -368,7 +368,7 @@ const Header = () => {
               </Link>
               <Link
                 href="/about"
-                className={`flex items-center text-sm font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
+                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
                   '/about',
                 )}`}
               >
@@ -376,7 +376,7 @@ const Header = () => {
               </Link>
               <Link
                 href="/contact"
-                className={`flex items-center text-sm font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
+                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
                   '/contact',
                 )}`}
               >
@@ -384,7 +384,7 @@ const Header = () => {
               </Link>
               <Link
                 href="/warranty"
-                className={`flex items-center text-sm font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
+                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
                   '/warranty',
                 )}`}
               >
@@ -876,7 +876,7 @@ const Header = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`${isActive(link.href)} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
+                className={`${isActive(link.href)} block px-4 py-2 text-lg font-medium rounded-md hover:bg-gray-50`}
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
