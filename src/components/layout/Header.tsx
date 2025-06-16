@@ -341,55 +341,24 @@ const Header = () => {
                 <Image
                   src="/images/logo.jpg"
                   alt="XLab Logo"
-                  width={120}
-                  height={72}
-                  className="w-auto h-10 sm:h-11 md:h-12 lg:h-14"
+                  width={100}
+                  height={60}
+                  className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
                 />
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex lg:space-x-8 mx-auto">
-              <Link
-                href="/"
-                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
-                  '/',
-                )}`}
-              >
-                {t('common.navigation.nav.home')}
-              </Link>
-              <Link
-                href="/products"
-                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
-                  '/products',
-                )}`}
-              >
-                {t('common.navigation.nav.products')}
-              </Link>
-              <Link
-                href="/about"
-                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
-                  '/about',
-                )}`}
-              >
-                {t('common.navigation.nav.about')}
-              </Link>
-              <Link
-                href="/contact"
-                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
-                  '/contact',
-                )}`}
-              >
-                {t('common.navigation.nav.contact')}
-              </Link>
-              <Link
-                href="/warranty"
-                className={`flex items-center text-base font-medium hover:text-primary-600 px-3 py-2 rounded-md transition-colors ${isActive(
-                  '/warranty',
-                )}`}
-              >
-                {t('common.navigation.nav.warranty')}
-              </Link>
+            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`${isActive(link.href)} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
@@ -402,7 +371,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher */}
-              <LanguageSwitcher />
+              <LanguageSwitcher className="mr-2" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -724,13 +693,10 @@ const Header = () => {
                   </button>
                 ) : (
                   <button
-                    onClick={() => signIn('credentials')}
-                    className="ml-8 inline-flex items-center justify-center px-4 py-2 border border-transparent 
-                    text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 
-                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors
-                    shadow-sm"
+                    onClick={() => signIn()}
+                    className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    {t('common.navigation.auth.signIn')}
+                    {t('auth.signIn')}
                   </button>
                 )}
 
@@ -876,7 +842,7 @@ const Header = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`${isActive(link.href)} block px-4 py-2 text-lg font-medium rounded-md hover:bg-gray-50`}
+                className={`${isActive(link.href)} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}

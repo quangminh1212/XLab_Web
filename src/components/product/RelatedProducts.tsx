@@ -80,7 +80,7 @@ export default function RelatedProducts({
 
   if (loading) {
     return (
-      <div className="mt-12 py-8 text-center text-gray-500">{t('product.loader.loadingRelatedProducts')}</div>
+      <div className="mt-12 py-8 text-center text-gray-500">Đang tải sản phẩm liên quan...</div>
     );
   }
 
@@ -160,8 +160,8 @@ export default function RelatedProducts({
     <div className="mt-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <ProductGrid
         products={mappedProducts}
-        title={t('product.featured.relatedProducts')}
-        subtitle={t('product.featured.relatedProductsSubtitle')}
+        title={t('product.relatedProducts')}
+        subtitle={t('product.relatedProductsSubtitle')}
         columns={3}
       />
     </div>

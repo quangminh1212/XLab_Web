@@ -220,8 +220,8 @@ function HomePage() {
                       />
                     </svg>
                   }
-                  title={t('home.features.domesticProduct')}
-                  description={t('home.features.vietnamDevs')}
+                  title={t('home.domesticProduct')}
+                  description={t('home.vietnamDevs')}
                 />
                 
                 <FeatureCard
@@ -235,8 +235,8 @@ function HomePage() {
                       <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
                     </svg>
                   }
-                  title={t('home.features.support247')}
-                  description={t('home.features.supportTeam')}
+                  title={t('home.support247')}
+                  description={t('home.supportTeam')}
                 />
                 
                 <FeatureCard
@@ -254,8 +254,8 @@ function HomePage() {
                       />
                     </svg>
                   }
-                  title={t('home.features.highSecurity')}
-                  description={t('home.features.encryptedData')}
+                  title={t('home.highSecurity')}
+                  description={t('home.encryptedData')}
                 />
                 
                 <FeatureCard
@@ -274,8 +274,8 @@ function HomePage() {
                       />
                     </svg>
                   }
-                  title={t('home.features.reasonablePrice')}
-                  description={t('home.features.budgetOptions')}
+                  title={t('home.reasonablePrice')}
+                  description={t('home.budgetOptions')}
                 />
                 
                 <FeatureCard
@@ -286,16 +286,11 @@ function HomePage() {
                       fill="currentColor"
                       className="w-6 h-6 text-primary-600"
                     >
-                      <path d="M16.5 7.5h-9v9h9v-9z" />
-                      <path
-                        fillRule="evenodd"
-                        d="M8.25 2.25A.75.75 0 019 3v.75h2.25V3a.75.75 0 011.5 0v.75H15V3a.75.75 0 011.5 0v.75h.75a3 3 0 013 3v.75H21A.75.75 0 0121 9h-.75v2.25H21a.75.75 0 010 1.5h-.75V15H21a.75.75 0 010 1.5h-.75v.75a3 3 0 01-3 3h-.75V21a.75.75 0 01-1.5 0v-.75h-2.25V21a.75.75 0 01-1.5 0v-.75H9V21a.75.75 0 01-1.5 0v-.75h-.75a3 3 0 01-3-3v-.75H3A.75.75 0 013 15h.75v-2.25H3a.75.75 0 010-1.5h.75V9H3a.75.75 0 010-1.5h.75v-.75a3 3 0 013-3h.75V3a.75.75 0 01.75-.75zM6 6.75A.75.75 0 016.75 6h10.5a.75.75 0 01.75.75v10.5a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75V6.75z"
-                        clipRule="evenodd"
-                      />
+                      <path d="M6 12a.75.75 0 01-.75-.75v-7.5a.75.75 0 111.5 0v7.5A.75.75 0 016 12zM18 12a.75.75 0 01-.75-.75v-7.5a.75.75 0 011.5 0v7.5A.75.75 0 0118 12zM6.75 20.25v-1.5a.75.75 0 00-1.5 0v1.5a.75.75 0 001.5 0zM18.75 18.75v1.5a.75.75 0 01-1.5 0v-1.5a.75.75 0 011.5 0zM12.75 5.25v-1.5a.75.75 0 00-1.5 0v1.5a.75.75 0 001.5 0zM12 21a.75.75 0 01-.75-.75v-7.5a.75.75 0 011.5 0v7.5A.75.75 0 0112 21zM3.75 15a2.25 2.25 0 104.5 0 2.25 2.25 0 00-4.5 0zM12 11.25a2.25 2.25 0 110-4.5 2.25 2.25 0 010 4.5zM15.75 15a2.25 2.25 0 104.5 0 2.25 2.25 0 00-4.5 0z" />
                     </svg>
                   }
-                  title={t('home.features.aiIntegration')}
-                  description={t('home.features.aiSupport')}
+                  title={t('home.aiIntegration')}
+                  description={t('home.aiSupport')}
                 />
                 
                 <FeatureCard
@@ -308,13 +303,13 @@ function HomePage() {
                     >
                       <path
                         fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+                        d="M12 5.25c1.213 0 2.415.046 3.605.135a3.256 3.256 0 013.01 3.01c.044.583.077 1.17.1 1.759L17.03 8.47a.75.75 0 10-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 00-1.06-1.06l-1.752 1.751c-.023-.65-.06-1.296-.108-1.939a4.756 4.756 0 00-4.392-4.392 49.422 49.422 0 00-7.436 0A4.756 4.756 0 003.89 8.282c-.017.224-.033.447-.046.672a.75.75 0 101.497.092c.013-.217.028-.434.044-.651a3.256 3.256 0 013.01-3.01c1.19-.09 2.392-.135 3.605-.135zm-6.97 6.22a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.752-1.751c.023.65.06 1.296.108 1.939a4.756 4.756 0 004.392 4.392 49.413 49.413 0 007.436 0 4.756 4.756 0 004.392-4.392c.017-.223.032-.447.046-.672a.75.75 0 00-1.497-.092c-.013.217-.028.434-.044.651a3.256 3.256 0 01-3.01 3.01 47.953 47.953 0 01-7.21 0 3.256 3.256 0 01-3.01-3.01 47.759 47.759 0 01-.1-1.759L6.97 15.53a.75.75 0 001.06-1.06l-3-3z"
                         clipRule="evenodd"
                       />
                     </svg>
                   }
-                  title={t('home.features.continuousUpdates')}
-                  description={t('home.features.newFeatures')}
+                  title={t('home.continuousUpdates')}
+                  description={t('home.newFeatures')}
                 />
               </div>
             </section>
