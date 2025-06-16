@@ -91,25 +91,25 @@ export default function Footer() {
           {/* Giới thiệu */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.aboutLink')}</span>
+              <span className="relative z-10">{t('common.footer.aboutLink')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <div className="space-y-3 text-center sm:text-left">
               <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                {t('footer.companyDescription1')}
+                {t('common.footer.companyDescription1')}
               </p>
               <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                {t('footer.companyDescription2')}
+                {t('common.footer.companyDescription2')}
               </p>
               <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 mt-3">
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
-                  {t('footer.customers')}
+                  {t('common.footer.customers')}
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
-                  {t('footer.years')}
+                  {t('common.footer.years')}
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
-                  {t('footer.support')}
+                  {t('common.footer.support')}
                 </span>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function Footer() {
           {/* Sản phẩm & Dịch vụ + Điều hướng */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.productsAndServices')}</span>
+              <span className="relative z-10">{t('common.footer.productsAndServices')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
@@ -128,7 +128,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.products')}
+                  {t('common.footer.products')}
                 </Link>
               </li>
               <li>
@@ -137,7 +137,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.services')}
+                  {t('common.footer.services')}
                 </Link>
               </li>
               <li>
@@ -146,7 +146,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.testimonials')}
+                  {t('common.footer.testimonials')}
                 </Link>
               </li>
             </ul>
@@ -154,7 +154,7 @@ export default function Footer() {
             {/* Điều hướng */}
             <div className="pt-4 border-t border-slate-700 w-full">
               <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
-                {t('footer.navigationLinks')}
+                {t('common.footer.navigationLinks')}
               </h4>
               <div className="space-y-3 text-center sm:text-left">
                 <Link
@@ -162,7 +162,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('nav.home')}
+                  {t('common.navigation.nav.home')}
                 </Link>
                 <br />
                 <Link
@@ -170,7 +170,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('nav.about')}
+                  {t('common.navigation.nav.about')}
                 </Link>
                 <br />
                 <Link
@@ -178,7 +178,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.pricing')}
+                  {t('common.footer.pricing')}
                 </Link>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function Footer() {
           {/* Thông tin liên hệ */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.contactLink')}</span>
+              <span className="relative z-10">{t('common.footer.contactLink')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-3 sm:space-y-4 text-center sm:text-left mb-4">
@@ -375,6 +375,41 @@ export default function Footer() {
                   </svg>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer bottom row */}
+      <div className="relative container max-w-7xl mx-auto px-4 md:px-8 pt-8 border-t border-slate-800/80">
+        <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+          <div className="text-sm text-slate-400">
+            {t('common.footer.copyright', { year: currentYear })}
+          </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-xs text-slate-500">{t('common.footer.acceptedPayments')}</span>
+            <div className="flex items-center space-x-2">
+              <Image
+                src="/images/payment/visa.svg"
+                alt="Visa"
+                width={32}
+                height={10}
+                className="h-6 w-auto opacity-80 hover:opacity-100 transition-opacity"
+              />
+              <Image
+                src="/images/payment/mastercard.svg"
+                alt="Mastercard"
+                width={32}
+                height={20}
+                className="h-6 w-auto opacity-80 hover:opacity-100 transition-opacity"
+              />
+              <Image
+                src="/images/payment/paypal.svg"
+                alt="PayPal"
+                width={64}
+                height={16}
+                className="h-6 w-auto opacity-80 hover:opacity-100 transition-opacity"
+              />
             </div>
           </div>
         </div>

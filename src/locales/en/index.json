@@ -1,0 +1,22 @@
+{
+  "common": {
+    "navigation": {
+      "import": "./common/navigation.json"
+    }
+  },
+  "admin": {},
+  "home": {},
+  "product": {
+    "featured": {
+      "import": "./product/featured.json"
+    },
+    "loader": {
+      "import": "./product/loader.json"
+    },
+    "speech": {
+      "import": "./product/speech.json"
+    }
+  },
+  "about": {},
+  "contact": {}
+} 

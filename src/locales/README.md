@@ -1,37 +1,49 @@
-# Hướng dẫn tổ chức file ngôn ngữ
+# Cấu trúc tổ chức file ngôn ngữ
 
-Thư mục này chứa các file ngôn ngữ cho tất cả các chuỗi văn bản trong ứng dụng, phục vụ cho việc quốc tế hóa (i18n).
+Thư mục này chứa các file ngôn ngữ cho việc quốc tế hóa (i18n) trong ứng dụng, được tổ chức theo cấu trúc module để dễ dàng bảo trì.
 
-## Cấu trúc file
+## Cấu trúc thư mục
 
-Mỗi ngôn ngữ được lưu trong một file JSON riêng biệt, tuân theo quy ước đặt tên ISO language code:
-
-- `vi.json`: Tiếng Việt (mặc định)
-- `en.json`: Tiếng Anh
-- Các ngôn ngữ khác trong tương lai: `fr.json`, `de.json`, v.v...
-
-## Cấu trúc dữ liệu
-
-Các chuỗi được tổ chức theo cấu trúc phân cấp để dễ quản lý:
-
-```json
-{
-  "section1": {
-    "key1": "Giá trị 1",
-    "key2": "Giá trị 2",
-    "subsection": {
-      "key3": "Giá trị 3"
-    }
-  },
-  "section2": {
-    "key1": "Giá trị khác 1"
-  }
-}
+```
+locales/
+├── vi/                     # Tiếng Việt (ngôn ngữ mặc định)
+│   ├── index.json          # File chỉ mục cho tiếng Việt
+│   ├── common/             # Các chuỗi dùng chung
+│   │   ├── navigation.json # Điều hướng, menu
+│   ├── admin/              # Module quản trị
+│   │   ├── notifications.json # Chuỗi quản lý thông báo 
+│   ├── home/               # Module trang chủ
+│   │   ├── index.json      # Chuỗi chính trên trang chủ
+│   │   ├── features.json   # Tính năng trên trang chủ
+│   │   ├── faq.json        # Câu hỏi thường gặp
+│   ├── product/            # Module sản phẩm
+│   │   ├── index.json      # Chuỗi chung về sản phẩm
+│   │   ├── featured.json   # Sản phẩm nổi bật
+│   │   ├── loader.json     # Chuỗi hiển thị khi đang tải
+│   │   ├── speech.json     # Chuỗi cho tính năng nhận dạng giọng nói
+│   ├── about/              # Module giới thiệu
+│   │   ├── index.json      # Chuỗi chung trang giới thiệu
+│   │   ├── company.json    # Thông tin công ty
+│   ├── contact/            # Module liên hệ
+│
+├── en/                     # Tiếng Anh
+│   ├── index.json          # File chỉ mục tiếng Anh
+│   └── ... (cấu trúc tương tự)
+│
+├── README.md               # Tài liệu này
+└── GUIDE_FOR_DEVS.md       # Hướng dẫn cho dev
 ```
 
-## Sử dụng trong ứng dụng
+## Nguyên tắc tổ chức
 
-Để sử dụng các chuỗi đã được định nghĩa, sử dụng hook `useLanguage`:
+1. **Mỗi ngôn ngữ một thư mục riêng**: Giúp dễ dàng thêm ngôn ngữ mới
+2. **Tách theo module chức năng**: Giúp dễ quản lý, phát triển và bảo trì hơn
+3. **Cấu trúc phân cấp**: Sử dụng cấu trúc dữ liệu phân cấp với các khóa lồng nhau
+4. **Nhất quán về tên key**: Sử dụng camelCase và dấu chấm (.) để đặt tên key
+
+## Cách sử dụng
+
+Trong component, sử dụng hook `useLanguage`:
 
 ```jsx
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -41,31 +53,25 @@ const MyComponent = () => {
   
   return (
     <div>
-      <h1>{t('section1.key1')}</h1>
-      <p>{t('section1.subsection.key3')}</p>
+      <h1>{t('product.featured.title')}</h1>
+      <p>{t('product.featured.relatedProducts')}</p>
     </div>
   );
 };
 ```
 
-## Quy tắc đặt tên key
+## Sử dụng tham số
 
-- Sử dụng camelCase cho key
-- Sử dụng dấu chấm (`.`) để phân tách các cấp
-- Đặt tên theo cấu trúc `[component/feature].[element].[specific]`
-- Ví dụ: `product.details.price`, `auth.login.welcomeMessage`
+Để truyền tham số vào chuỗi:
 
-## Thông tin bổ sung
+```jsx
+// Trong file ngôn ngữ: "greeting": "Xin chào, {name}!"
+t('greeting', { name: 'John' }) // => "Xin chào, John!"
+```
 
-- Không bao giờ đưa các giá trị chuỗi cứng vào code, luôn sử dụng keys
-- Tham số động có thể truyền vào bằng cách sử dụng `{paramName}` trong chuỗi:
-  ```jsx
-  // Trong file ngôn ngữ: "welcome": "Xin chào, {name}!"
-  t('welcome', { name: 'John' }) // => "Xin chào, John!"
-  ```
+## Quy tắc khi thêm mới
 
-## Quy trình cập nhật
-
-1. Khi thêm tính năng mới, thêm key mới vào TẤT CẢ các file ngôn ngữ
-2. Không xóa key nếu tính năng vẫn còn được sử dụng ở nơi khác
-3. Thêm comment cho các key phức tạp hoặc đặc biệt 
+1. Thêm khóa mới vào thư mục tương ứng với chức năng
+2. Luôn thêm cả tiếng Việt và tiếng Anh (nếu cần)
+3. Đảm bảo tên key nhất quán với các key hiện có
+4. Cập nhật file chỉ mục nếu tạo file module mới 

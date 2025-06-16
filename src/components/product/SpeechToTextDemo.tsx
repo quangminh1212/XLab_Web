@@ -8,6 +8,14 @@ interface SpeechToTextDemoProps {
   onTranscriptChange?: (transcript: string) => void;
 }
 
+// Add types for the web speech API
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
 const SpeechToTextDemo = ({ onTranscriptChange }: SpeechToTextDemoProps) => {
   const { t } = useLanguage();
   const [transcript, setTranscript] = useState('');
