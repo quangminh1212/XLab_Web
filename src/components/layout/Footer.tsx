@@ -154,8 +154,8 @@ export default function Footer() {
             {/* Điều hướng */}
             <div className="pt-4 border-t border-slate-700 w-full">
               <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
-                {t('footer.navigationLinks')}
-              </h4>
+                              {t('footer.navigationLinks')}
+            </h4>
               <div className="space-y-3 text-center sm:text-left">
                 <Link
                   href="/"
@@ -298,13 +298,13 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
               &copy; {currentYear} <span className="text-white font-medium">{siteConfig.name}</span>.{' '}
-              {t('footer.copyright')} <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
+              {t('nav.copyright')} <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-6">
             <span className="text-xs sm:text-sm text-slate-400 font-medium">
-              {t('footer.acceptedPayments')}
+              {t('nav.acceptedPayments')}
             </span>
             <div className="flex items-center space-x-2 sm:space-x-2.5">
               {/* Visa */}
@@ -375,6 +375,41 @@ export default function Footer() {
                   </svg>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer bottom row */}
+      <div className="relative container max-w-7xl mx-auto px-4 md:px-8 pt-8 border-t border-slate-800/80">
+        <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+          <div className="text-sm text-slate-400">
+            {t('nav.copyright', { year: currentYear })}
+          </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-xs text-slate-500">{t('nav.acceptedPayments')}</span>
+            <div className="flex items-center space-x-2">
+              <Image
+                src="/images/payment/visa.svg"
+                alt="Visa"
+                width={32}
+                height={10}
+                className="h-6 w-auto opacity-80 hover:opacity-100 transition-opacity"
+              />
+              <Image
+                src="/images/payment/mastercard.svg"
+                alt="Mastercard"
+                width={32}
+                height={20}
+                className="h-6 w-auto opacity-80 hover:opacity-100 transition-opacity"
+              />
+              <Image
+                src="/images/payment/paypal.svg"
+                alt="PayPal"
+                width={64}
+                height={16}
+                className="h-6 w-auto opacity-80 hover:opacity-100 transition-opacity"
+              />
             </div>
           </div>
         </div>

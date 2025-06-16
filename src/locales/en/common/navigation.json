@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About",
+    "contact": "Contact",
+    "warranty": "Warranty",
+    "login": "Login",
+    "logout": "Logout",
+    "account": "Account",
+    "admin": "Admin",
+    "copyright": "© {year} XLab. All rights reserved.",
+    "acceptedPayments": "We accept payments through"
+  },
+  "auth": {
+    "signOut": "Sign Out",
+    "signIn": "Sign In"
+  }
+} 

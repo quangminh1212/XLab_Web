@@ -279,25 +279,11 @@ export interface CartItem {
 
 // Cart utility functions
 export const getCartFromLocalStorage = (): CartItem[] => {
-  if (typeof window === 'undefined') return [];
-
-  try {
-    const cartData = localStorage.getItem('cart');
-    return cartData ? JSON.parse(cartData) : [];
-  } catch (error) {
-    console.error('Error getting cart from localStorage:', error);
-    return [];
-  }
+  return safeLocalStorage.getJSON<CartItem[]>('cart', []);
 };
 
 export const saveCartToLocalStorage = (cart: CartItem[]): void => {
-  if (typeof window === 'undefined') return;
-
-  try {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  } catch (error) {
-    console.error('Error saving cart to localStorage:', error);
-  }
+  safeLocalStorage.setJSON('cart', cart);
 };
 
 export const addItemToCart = (cart: CartItem[], item: CartItem): CartItem[] => {
@@ -344,4 +330,66 @@ export const calculateCartTotals = (cart: CartItem[]) => {
   const total = subtotal; // Tổng cộng bằng tạm tính
 
   return { subtotal, tax, total };
+};
+
+// Safe localStorage utilities
+export const safeLocalStorage = {
+  getItem: (key: string): string | null => {
+    try {
+      return typeof window !== 'undefined' ? localStorage.getItem(key) : null;
+    } catch (error) {
+      console.error(`Error accessing localStorage for key ${key}:`, error);
+      return null;
+    }
+  },
+  
+  setItem: (key: string, value: string): boolean => {
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(key, value);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`Error setting localStorage for key ${key}:`, error);
+      return false;
+    }
+  },
+  
+  removeItem: (key: string): boolean => {
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(key);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(`Error removing localStorage for key ${key}:`, error);
+      return false;
+    }
+  },
+  
+  getJSON: <T>(key: string, defaultValue: T): T => {
+    try {
+      const item = safeLocalStorage.getItem(key);
+      if (!item || item === 'undefined' || item === 'null') {
+        return defaultValue;
+      }
+      return JSON.parse(item) as T;
+    } catch (error) {
+      console.error(`Error parsing JSON from localStorage for key ${key}:`, error);
+      safeLocalStorage.removeItem(key); // Clear invalid data
+      return defaultValue;
+    }
+  },
+  
+  setJSON: <T>(key: string, value: T): boolean => {
+    try {
+      const serialized = JSON.stringify(value);
+      return safeLocalStorage.setItem(key, serialized);
+    } catch (error) {
+      console.error(`Error stringifying JSON for localStorage key ${key}:`, error);
+      return false;
+    }
+  }
 };
