@@ -22,7 +22,7 @@ export default function ClientOnly({
   }, []);
 
   if (!hasMounted) {
-    return <>{fallback}</>;
+    return fallback === null ? null : <>{fallback}</>;
   }
 
   return <>{children}</>;

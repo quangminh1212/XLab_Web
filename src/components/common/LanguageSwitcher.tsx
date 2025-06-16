@@ -26,8 +26,9 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
   }, []);
 
   return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
+    <div className={className} style={{ position: 'relative' }}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
         aria-expanded={isOpen}
@@ -59,7 +60,7 @@ export default function LanguageSwitcher({ className = '' }: LanguageSwitcherPro
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10" ref={dropdownRef}>
           <ul className="py-1">
             <li>
               <div

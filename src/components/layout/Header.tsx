@@ -372,9 +372,11 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <ClientOnly>
-                <LanguageSwitcher className="mr-2" />
-              </ClientOnly>
+              <div data-testid="language-switcher-container" className="mr-2">
+                <ClientOnly>
+                  <LanguageSwitcher />
+                </ClientOnly>
+              </div>
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
