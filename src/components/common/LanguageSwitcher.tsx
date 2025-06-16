@@ -1,25 +1,20 @@
 'use client';
 
-import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface LanguageSwitcherProps {
   className?: string;
 }
 
-// Component ngôn ngữ đơn giản
-const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherProps) => {
+export default function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
   const { language, setLanguage, t } = useLanguage();
   const isVi = language === 'vi';
   const [isOpen, setIsOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setIsMounted(true);
-    
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -30,12 +25,6 @@ const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Không render gì trên server
-  if (!isMounted) {
-    return null;
-  }
-
-  // Chỉ render ở client
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
@@ -137,6 +126,4 @@ const LanguageSwitcherWrapper = ({ className = '' }: LanguageSwitcherProps) => {
       )}
     </div>
   );
-};
-
-export default LanguageSwitcherWrapper; 
+} 
