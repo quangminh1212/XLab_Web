@@ -10,13 +10,9 @@ interface LanguageSwitcherClientProps {
 export default function LanguageSwitcherClient({ className = '' }: LanguageSwitcherClientProps) {
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  
+  // Handle click outside to close dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -24,15 +20,9 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
       }
     }
     
-    if (mounted) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [mounted]);
-  
-  if (!mounted) {
-    return <div className={`relative mr-2 ${className}`.trim()}></div>;
-  }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   
   const isVi = language === 'vi';
   
