@@ -9,11 +9,9 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
   const containerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   
-  // Wait for component to be mounted before rendering anything
   useEffect(() => {
     setMounted(true);
     
-    // Handle clicks outside to close dropdown
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -24,13 +22,11 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Don't render anything until mounted - just an empty div with the same structure
-  // This MUST match the server-side placeholder exactly
+  // Don't render anything until component is mounted on client
   if (!mounted) {
-    return <div className={`relative ${className}`}></div>;
+    return null;
   }
 
-  // Client-side only logic after mounting
   const isVi = language === 'vi';
 
   return (
