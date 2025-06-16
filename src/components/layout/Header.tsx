@@ -518,8 +518,6 @@ const Header = () => {
                                     ></div>
                                   </div>
                                 )}
-
-                                {/* Note section removed */}
                               </div>
                             </div>
                           ))}
@@ -531,12 +529,12 @@ const Header = () => {
                           </p>
                         </div>
                       )}
-                                             </div>
-                     </div>
-                   )}
-                 </div>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                {/* Notification Icon */}
+              {/* Notification Icon */}
               {session && (
                 <div className="relative" ref={notificationRef}>
                   <button

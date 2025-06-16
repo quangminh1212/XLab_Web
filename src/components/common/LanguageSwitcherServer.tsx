@@ -11,13 +11,10 @@ const ClientLanguageSwitcher = dynamic(
 // This is a server component that renders a simple container
 // and then loads the client component dynamically
 export default function LanguageSwitcherServer({ className = '' }: { className?: string }) {
-  // On the server, just render a simple div with the right class
+  // Wrap the entire component in Suspense, not just the client component
   return (
-    <div className={`relative ${className || ''}`.trim()}>
-      <Suspense>
-        {/* This will only be rendered on the client */}
-        <ClientLanguageSwitcher className={className} />
-      </Suspense>
-    </div>
+    <Suspense fallback={<div className={`relative ${className || ''}`.trim()}></div>}>
+      <ClientLanguageSwitcher className={className} />
+    </Suspense>
   );
 } 

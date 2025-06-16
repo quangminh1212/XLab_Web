@@ -25,13 +25,9 @@ export default function SafeLanguageSwitcher({ className = '' }: { className?: s
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // This is what will be rendered on the server - just an empty container
+  // Early return empty div with the same structure until client-side hydration is complete
   if (!mounted) {
-    return (
-      <div id={containerId} className={`relative ${className}`.trim()}>
-        {/* Server-side placeholder - will be replaced on client */}
-      </div>
-    );
+    return <div className={`relative ${className}`.trim()}></div>;
   }
 
   // Client-side only rendering after hydration
