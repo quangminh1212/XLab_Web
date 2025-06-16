@@ -1,21 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import PureClientLanguageSwitcher from './PureClientLanguageSwitcher';
+import dynamic from 'next/dynamic';
+
+// This is just a placeholder div used while the real component loads
+// It will be server-rendered and then replaced by client component
+function PlaceholderDiv({ className }: { className?: string }) {
+  return <div className={`relative ${className}`}></div>;
+}
+
+// Import the client component with ssr:false option to completely skip server rendering
+const ClientLanguageSwitcher = dynamic(
+  () => import('./PureClientLanguageSwitcher'),
+  { 
+    ssr: false,
+    loading: () => <PlaceholderDiv />
+  }
+);
 
 export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  const [isMounted, setIsMounted] = useState(false);
-  
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  
-  // Always render the same simple structure on the server
-  // This ensures hydration consistency
-  if (!isMounted) {
-    return <div className={`relative ${className}`} style={{ minWidth: '60px', minHeight: '24px' }}></div>;
-  }
-  
-  // Only render the actual component on the client after hydration
-  return <PureClientLanguageSwitcher className={className} />;
+  // The client will replace the placeholder with ClientLanguageSwitcher after hydration
+  return <ClientLanguageSwitcher className={className} />;
 } 

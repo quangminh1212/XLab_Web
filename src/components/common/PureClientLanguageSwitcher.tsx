@@ -1,18 +1,19 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function PureClientLanguageSwitcher({ className = '' }: { className?: string }) {
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
   
-  // Client-side only logic
-  const isVi = language === 'vi';
-  
-  // Close dropdown when clicking outside
-  React.useEffect(() => {
+  // Wait for component to be mounted before rendering anything
+  useEffect(() => {
+    setMounted(true);
+    
+    // Handle clicks outside to close dropdown
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -22,6 +23,14 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Don't render anything until mounted
+  if (!mounted) {
+    return <div className={`relative ${className}`}></div>;
+  }
+
+  // Client-side only logic
+  const isVi = language === 'vi';
 
   return (
     <div className={`relative ${className}`} ref={containerRef}>
