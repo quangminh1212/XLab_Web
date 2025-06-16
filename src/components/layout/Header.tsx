@@ -373,7 +373,7 @@ const Header = () => {
 
               {/* Language Switcher - Shared for both desktop and mobile */}
               {/* Language Switcher - Shared for both desktop and mobile */}
-                <ClientOnly>
+                <ClientOnly fallback={<div className="relative mr-2"></div>}>
                   <LanguageSwitcherWrapper className="mr-2" />
                 </ClientOnly>
               
