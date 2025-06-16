@@ -8,22 +8,16 @@ interface ClientOnlyProps {
 }
 
 export default function ClientOnly({ children, fallback }: ClientOnlyProps) {
-  const [isMounted, setIsMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    setMounted(true);
   }, []);
 
-  // Hydration-safe rendering
-  if (!isMounted) {
-    // Simplest possible fallback
-    return fallback ? (
-      <div data-suppresshydrationwarning="true">{fallback}</div>
-    ) : (
-      <div data-suppresshydrationwarning="true"></div>
-    );
+  if (!mounted) {
+    // Return an empty fragment to allow React to clean up the placeholder
+    return fallback || null;
   }
 
-  // Wrap in a div with data-suppresshydrationwarning
-  return <div data-suppresshydrationwarning="true">{children}</div>;
+  return <>{children}</>;
 } 

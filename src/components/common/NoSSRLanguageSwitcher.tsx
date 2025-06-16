@@ -1,18 +1,16 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import ClientOnly from './ClientOnly';
 
-// Import the client component with SSR disabled
-const NoSSRLanguageSwitcherClient = dynamic(
+// Import the client component with SSR disabled and no loading component
+const LanguageSwitcherClient = dynamic(
   () => import('./LanguageSwitcherClient'),
-  { ssr: false }
+  { 
+    ssr: false,
+    loading: () => null 
+  }
 );
 
 export default function NoSSRLanguageSwitcher({ className = '' }: { className?: string }) {
-  return (
-    <ClientOnly>
-      <NoSSRLanguageSwitcherClient className={className} />
-    </ClientOnly>
-  );
+  return <LanguageSwitcherClient className={className} />;
 } 

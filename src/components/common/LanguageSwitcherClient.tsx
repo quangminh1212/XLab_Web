@@ -34,7 +34,7 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
   
   // Don't render anything until client-side
   if (!isMounted) {
-    return null;
+    return <div className={`relative mr-2 ${className}`.trim()}></div>;
   }
   
   const isVi = language === 'vi';
