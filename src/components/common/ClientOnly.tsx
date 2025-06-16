@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, ReactNode, isValidElement, cloneElement } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 
 interface ClientOnlyProps {
   children: ReactNode;
@@ -14,23 +14,16 @@ export default function ClientOnly({ children, fallback }: ClientOnlyProps) {
     setIsMounted(true);
   }, []);
 
-  // Add suppressHydrationWarning to avoid hydration mismatches
+  // Hydration-safe rendering
   if (!isMounted) {
-    // If a fallback is provided, use it
-    if (fallback) {
-      return <div suppressHydrationWarning>{fallback}</div>;
-    }
-    
-    // For LanguageSwitcher specifically, we know the structure needed
-    if (isValidElement(children) && 
-        (children.type as any)?.name === 'LanguageSwitcherWrapper') {
-      // Return a matching div structure with suppressHydrationWarning
-      return <div suppressHydrationWarning className="relative mr-2"></div>;
-    }
-    
-    // For other components, return null with suppressHydrationWarning
-    return <div suppressHydrationWarning style={{ display: 'none' }}></div>;
+    // Simplest possible fallback
+    return fallback ? (
+      <div data-suppresshydrationwarning="true">{fallback}</div>
+    ) : (
+      <div data-suppresshydrationwarning="true"></div>
+    );
   }
 
-  return <div suppressHydrationWarning>{children}</div>;
+  // Wrap in a div with data-suppresshydrationwarning
+  return <div data-suppresshydrationwarning="true">{children}</div>;
 } 

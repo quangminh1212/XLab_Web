@@ -16,9 +16,9 @@ export default function LanguageSwitcherWrapper({ className = '' }: { className?
     setIsMounted(true);
   }, []);
   
-  // Use suppressHydrationWarning to avoid hydration mismatch errors
+  // Use data-suppresshydrationwarning attribute to avoid hydration mismatch errors
   return (
-    <div suppressHydrationWarning>
+    <div data-suppresshydrationwarning="true">
       {isMounted ? <DynamicLanguageSwitcherClient className={className} /> : null}
     </div>
   );

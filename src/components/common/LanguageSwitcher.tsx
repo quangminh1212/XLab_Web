@@ -1,5 +1,5 @@
-// This is a server component that renders a placeholder
-export default function LanguageSwitcher({ className = '' }: { className?: string }) {
-  // Using an empty div with suppressHydrationWarning to avoid hydration mismatches
-  return <div suppressHydrationWarning></div>;
+// This is a server component that renders nothing
+export default function LanguageSwitcher(): null {
+  // Return a completely empty div with no props or children
+  return null;
 } 

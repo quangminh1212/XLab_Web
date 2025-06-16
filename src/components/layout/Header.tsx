@@ -10,8 +10,8 @@ import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcherWrapper from '@/components/common/LanguageSwitcherWrapper';
 import ClientOnly from '@/components/common/ClientOnly';
+import NoSSRLanguageSwitcher from '@/components/common/NoSSRLanguageSwitcher';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -372,11 +372,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <div suppressHydrationWarning>
-                <ClientOnly fallback={<div className="relative mr-2"></div>}>
-                  <LanguageSwitcherWrapper className="mr-2" />
-                </ClientOnly>
-              </div>
+              <NoSSRLanguageSwitcher className="mr-2" />
               
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>

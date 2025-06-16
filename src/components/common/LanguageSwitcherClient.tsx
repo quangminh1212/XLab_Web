@@ -40,7 +40,10 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
   const isVi = language === 'vi';
   
   return (
-    <div className={`relative mr-2 ${className}`.trim()} ref={containerRef}>
+    <div 
+      className={`relative mr-2 ${className}`.trim()} 
+      ref={containerRef}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
