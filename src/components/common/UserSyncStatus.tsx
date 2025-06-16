@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SyncStatus {
   hasUserFile: boolean;
@@ -20,6 +21,7 @@ interface SyncResponse {
 
 export default function UserSyncStatus() {
   const { data: session } = useSession();
+  const { t } = useLanguage();
   const [syncStatus, setSyncStatus] = useState<SyncResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -94,15 +96,15 @@ export default function UserSyncStatus() {
   };
 
   const getStatusText = () => {
-    if (!syncStatus?.syncStatus.hasUserFile) return 'Chưa đồng bộ';
-    if (syncStatus.recommendations.length > 0) return 'Cần cập nhật';
-    return 'Đã đồng bộ';
+    if (!syncStatus?.syncStatus.hasUserFile) return t('sync.status.notSynced');
+    if (syncStatus.recommendations.length > 0) return t('sync.status.needsUpdate');
+    return t('sync.status.synced');
   };
 
   return (
     <div className="p-4 bg-white border rounded-lg shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Trạng thái đồng bộ dữ liệu</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t('sync.title')}</h3>
         <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor()}`}>
           {getStatusText()}
         </span>
@@ -112,28 +114,28 @@ export default function UserSyncStatus() {
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-500">Email:</span>
+              <span className="text-gray-500">{t('sync.email')}:</span>
               <span className="ml-2 font-medium">{syncStatus.email}</span>
             </div>
             <div>
-              <span className="text-gray-500">Số dư:</span>
+              <span className="text-gray-500">{t('sync.balance')}:</span>
               <span className="ml-2 font-medium">
                 {syncStatus.syncStatus.balance.toLocaleString('vi-VN')} VND
               </span>
             </div>
             <div>
-              <span className="text-gray-500">Sản phẩm trong giỏ:</span>
+              <span className="text-gray-500">{t('sync.cartItems')}:</span>
               <span className="ml-2 font-medium">{syncStatus.syncStatus.cartItems}</span>
             </div>
             <div>
-              <span className="text-gray-500">Giao dịch:</span>
+              <span className="text-gray-500">{t('sync.transactions')}:</span>
               <span className="ml-2 font-medium">{syncStatus.syncStatus.transactionCount}</span>
             </div>
           </div>
 
           {syncStatus.syncStatus.lastUpdated && (
             <div className="text-sm">
-              <span className="text-gray-500">Cập nhật cuối:</span>
+              <span className="text-gray-500">{t('sync.lastUpdate')}:</span>
               <span className="ml-2 font-medium">
                 {new Date(syncStatus.syncStatus.lastUpdated).toLocaleString('vi-VN')}
               </span>
@@ -142,7 +144,7 @@ export default function UserSyncStatus() {
 
           {lastSyncTime && (
             <div className="text-sm">
-              <span className="text-gray-500">Đồng bộ cuối:</span>
+              <span className="text-gray-500">{t('sync.lastSync')}:</span>
               <span className="ml-2 font-medium text-green-600">
                 {new Date(lastSyncTime).toLocaleString('vi-VN')}
               </span>
@@ -151,7 +153,7 @@ export default function UserSyncStatus() {
 
           {syncStatus.recommendations.length > 0 && (
             <div className="mt-3 p-3 bg-yellow-50 rounded-lg">
-              <h4 className="text-sm font-medium text-yellow-800 mb-1">Khuyến nghị:</h4>
+              <h4 className="text-sm font-medium text-yellow-800 mb-1">{t('sync.recommendation')}:</h4>
               <ul className="text-sm text-yellow-700 space-y-1">
                 {syncStatus.recommendations.map((rec, index) => (
                   <li key={index}>• {rec}</li>
@@ -166,14 +168,14 @@ export default function UserSyncStatus() {
               disabled={isLoading}
               className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 disabled:opacity-50"
             >
-              {isLoading ? 'Đang kiểm tra...' : 'Kiểm tra lại'}
+              {isLoading ? t('sync.checking') : t('sync.checkAgain')}
             </button>
             <button
               onClick={forceSyncData}
               disabled={isSyncing}
               className="px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
-              {isSyncing ? 'Đang đồng bộ...' : 'Đồng bộ ngay'}
+              {isSyncing ? t('sync.syncing') : t('sync.syncNow')}
             </button>
           </div>
         </div>

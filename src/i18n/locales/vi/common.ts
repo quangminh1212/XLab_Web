@@ -131,9 +131,22 @@ export default {
     'cartItems': 'Sản phẩm trong giỏ',
     'transactions': 'Giao dịch',
     'lastUpdate': 'Cập nhật cuối',
-    'recommendation': 'Khuyến nghị'
+    'lastSync': 'Đồng bộ cuối',
+    'recommendation': 'Khuyến nghị',
+    'checking': 'Đang kiểm tra...',
+    'checkAgain': 'Kiểm tra lại',
+    'syncing': 'Đang đồng bộ...',
+    'syncNow': 'Đồng bộ ngay',
+    'status': {
+      'notSynced': 'Chưa đồng bộ',
+      'needsUpdate': 'Cần cập nhật',
+      'synced': 'Đã đồng bộ'
+    }
   },
   'vouchers': {
-    'remaining': 'Còn {{count}} lượt'
+    'remaining': 'Còn {{count}} lượt',
+    'newUserOffer': 'Ưu đãi dành cho khách hàng đăng ký mới'
   },
+  // Common buttons
+  'backToHome': 'Quay về trang chủ',
 }; 

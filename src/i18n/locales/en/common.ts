@@ -72,11 +72,25 @@ export default {
     'cartItems': 'Cart Items',
     'transactions': 'Transactions',
     'lastUpdate': 'Last Update',
-    'recommendation': 'Recommendation'
+    'lastSync': 'Last Sync',
+    'recommendation': 'Recommendation',
+    'checking': 'Checking...',
+    'checkAgain': 'Check Again',
+    'syncing': 'Syncing...',
+    'syncNow': 'Sync Now',
+    'status': {
+      'notSynced': 'Not Synced',
+      'needsUpdate': 'Needs Update',
+      'synced': 'Synced'
+    }
   },
   
   // Vouchers
   'vouchers': {
-    'remaining': '{{count}} uses left'
-  }
+    'remaining': '{{count}} uses left',
+    'newUserOffer': 'Offer for newly registered customers'
+  },
+  
+  // Common buttons
+  'backToHome': 'Back to Home',
 }; 
