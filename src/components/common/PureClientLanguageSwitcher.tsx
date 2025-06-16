@@ -7,11 +7,8 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
-    setMounted(true);
-    
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -21,11 +18,6 @@ export default function PureClientLanguageSwitcher({ className = '' }: { classNa
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  // Don't render interactive elements until client-side hydration is complete
-  if (!mounted) {
-    return <div className={`relative ${className}`} ref={containerRef}></div>;
-  }
 
   const isVi = language === 'vi';
 
