@@ -3,10 +3,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import dynamic from 'next/dynamic';
-
-// Sử dụng dynamic import với ssr: false để đảm bảo component chỉ chạy ở client
-const ClientImage = dynamic(() => import('next/image'), { ssr: false });
+import Image from 'next/image';
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -17,12 +14,11 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
   const { language, setLanguage, t } = useLanguage();
   const isVi = language === 'vi';
   const [isOpen, setIsOpen] = useState(false);
-  const [isClient, setIsClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // This will only execute on the client
-    setIsClient(true);
+    setMounted(true);
 
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -34,27 +30,29 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Use the same HTML structure for both server and client rendering
-  // The only difference is that on server, we don't attach event handlers
+  // Return empty placeholder on server
+  if (!mounted) {
+    return <div className={`inline-block ${className}`}></div>;
+  }
+
+  // Render only on client
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
-        onClick={isClient ? () => setIsOpen(!isOpen) : undefined}
+        onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
         aria-expanded={isOpen}
       >
         <div className="relative w-6 h-4 mr-2">
-          {isClient && (
-            <ClientImage
-              src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
-              alt={isVi ? 'Tiếng Việt' : 'English'}
-              width={24}
-              height={16}
-              className="object-cover rounded-sm"
-            />
-          )}
+          <Image
+            src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
+            alt={isVi ? 'Tiếng Việt' : 'English'}
+            width={24}
+            height={16}
+            className="object-cover rounded-sm"
+          />
         </div>
-        {isClient && <span>{isVi ? 'VIE' : 'ENG'}</span>}
+        <span>{isVi ? 'VIE' : 'ENG'}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-4 w-4 ml-1"
@@ -71,7 +69,7 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
         </svg>
       </button>
 
-      {isClient && isOpen && (
+      {isOpen && (
         <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
           <ul className="py-1">
             <li>
@@ -93,7 +91,7 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
                 }}
               >
                 <div className="relative w-6 h-4 mr-3">
-                  <ClientImage
+                  <Image
                     src="/images/flags/vn.svg"
                     alt="Tiếng Việt"
                     width={24}
@@ -123,7 +121,7 @@ const LanguageSwitcher = React.memo(({ className = '' }: LanguageSwitcherProps) 
                 }}
               >
                 <div className="relative w-6 h-4 mr-3">
-                  <ClientImage
+                  <Image
                     src="/images/flags/us.svg"
                     alt="English"
                     width={24}
