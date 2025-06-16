@@ -9,8 +9,7 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import LanguageSwitcher from '@/components/common/LanguageSwitcher';
-import ClientOnly from '@/components/common/ClientOnly';
+import DynamicLanguageSwitcher from '@/components/common/DynamicLanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Thêm interface cho voucher
@@ -372,10 +371,8 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <div data-testid="language-switcher-container" className="mr-2">
-                <ClientOnly>
-                  <LanguageSwitcher />
-                </ClientOnly>
+              <div className="mr-2">
+                <DynamicLanguageSwitcher />
               </div>
 
               {/* Voucher Icon */}
