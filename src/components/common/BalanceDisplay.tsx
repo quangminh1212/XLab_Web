@@ -1,9 +1,8 @@
 'use client';
 
-import SuperStrictWrapper from './SuperStrictWrapper';
+import React, { memo, useMemo, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { memo, useMemo } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 
 interface BalanceDisplayProps {
@@ -12,7 +11,28 @@ interface BalanceDisplayProps {
 
 function BalanceDisplayContent() {
   const { data: session } = useSession();
-  const { balance, loading } = useBalance();
+  const { balance, loading, refreshBalance } = useBalance();
+  const [retryCount, setRetryCount] = useState(0);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure component only renders on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Attempt to refresh balance if it's 0 or loading fails
+  useEffect(() => {
+    // Only retry if logged in and balance is 0
+    if (session?.user && !loading && balance === 0 && retryCount < 3) {
+      const timer = setTimeout(() => {
+        console.log(`🔄 Retrying balance fetch (attempt ${retryCount + 1})...`);
+        refreshBalance();
+        setRetryCount(prev => prev + 1);
+      }, 1500 * (retryCount + 1)); // Exponential backoff
+      
+      return () => clearTimeout(timer);
+    }
+  }, [balance, loading, session?.user, retryCount, refreshBalance]);
 
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
@@ -22,7 +42,7 @@ function BalanceDisplayContent() {
     }).format(balance);
   }, [balance]);
 
-  if (!session?.user) {
+  if (!isClient || !session?.user) {
     return null;
   }
 
@@ -61,14 +81,5 @@ function BalanceDisplayContent() {
   );
 }
 
-// Wrapper component that prevents hydration mismatches
-function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
-  // Use SuperStrictWrapper to handle client-only rendering with proper container
-  return (
-    <SuperStrictWrapper className={className}>
-      <BalanceDisplayContent />
-    </SuperStrictWrapper>
-  );
-}
-
-export default memo(BalanceDisplay);
+// Export the component directly without the SuperStrictWrapper
+export default memo(BalanceDisplayContent);

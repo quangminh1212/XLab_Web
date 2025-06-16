@@ -22,11 +22,14 @@ setInterval(
 ); // 10 minutes
 
 export async function GET() {
+  console.log('📊 Balance API: Received request');
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
+    console.log('📊 Balance API: Session check', session ? 'authenticated' : 'no session');
 
     if (!session || !session.user || !session.user.email) {
+      console.log('📊 Balance API: Unauthorized access attempt');
       return NextResponse.json(
         { 
           error: 'Unauthorized', 
@@ -37,10 +40,12 @@ export async function GET() {
     }
 
     const userEmail = session.user.email;
+    console.log(`📊 Balance API: Processing for user ${userEmail}`);
 
     // Check cache first
     const cached = balanceCache.get(userEmail);
     if (cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
+      console.log(`📊 Balance API: Returning cached balance of ${cached.balance} for ${userEmail}`);
       return NextResponse.json({
         balance: cached.balance,
         cached: true,
@@ -48,18 +53,20 @@ export async function GET() {
     }
 
     try {
+      console.log(`📊 Balance API: Fetching fresh balance for ${userEmail}`);
       // Get synchronized balance from both systems
       const balance = await syncUserBalance(userEmail);
 
       // Cache the result
       balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
+      console.log(`📊 Balance API: Successfully fetched balance of ${balance} for ${userEmail}`);
       return NextResponse.json({
         balance: balance,
         cached: false,
       });
     } catch (syncError) {
-      console.error('Error syncing user balance:', syncError);
+      console.error('📊 Balance API: Error syncing user balance:', syncError);
       return NextResponse.json(
         { 
           error: 'Balance Sync Error', 
@@ -70,7 +77,7 @@ export async function GET() {
       );
     }
   } catch (error) {
-    console.error('Error fetching user balance:', error);
+    console.error('📊 Balance API: Error in balance endpoint:', error);
     return NextResponse.json(
       { 
         error: 'Internal Server Error', 
