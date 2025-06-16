@@ -371,8 +371,11 @@ const Header = () => {
                 </div>
               )}
 
-              {/* Language Switcher */}
-              <LanguageSwitcher className="relative mr-2" />
+              {/* Language Switcher - Use client-only mounting */}
+              <div className="relative mr-2">
+                {/* This empty div acts as a server-side placeholder */}
+                <div id="language-switcher-mount-point" className="h-8 w-16"></div>
+              </div>
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>

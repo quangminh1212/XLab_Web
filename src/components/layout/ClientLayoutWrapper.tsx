@@ -14,6 +14,7 @@ import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import LanguageSwitcherMounter from '@/components/common/LanguageSwitcherMounter';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
               <StyleLoader />
               <CssErrorHandler />
               <GlobalStyles />
+              <LanguageSwitcherMounter />
             </CartProvider>
           </BalanceProvider>
         </NotificationProvider>
