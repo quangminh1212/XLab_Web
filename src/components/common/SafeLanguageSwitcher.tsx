@@ -1,51 +1,44 @@
 'use client';
 
+import React, { useId, useEffect, useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useState, useRef, useEffect } from 'react';
 
-interface LanguageSwitcherClientProps {
-  className?: string;
-}
-
-export default function LanguageSwitcherClient({ className = '' }: LanguageSwitcherClientProps) {
+export default function SafeLanguageSwitcher({ className = '' }: { className?: string }) {
+  const id = useId();
+  const containerId = `language-switcher-${id}`;
+  const [mounted, setMounted] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Wait for client-side mounting to prevent hydration issues
+
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    setMounted(true);
+
+    // Handle clicks outside to close dropdown
+    const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
-    }
-    
-    if (isMounted) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isMounted]);
-  
-  // Important: Always render only the container div on first render
-  // to match the server-rendered structure
-  if (!isMounted) {
-    return <div className={`relative mr-2 ${className}`.trim()} />;
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // This is what will be rendered on the server - just an empty container
+  if (!mounted) {
+    return (
+      <div id={containerId} className={`relative mr-2 ${className}`.trim()}>
+        {/* Server-side placeholder - will be replaced on client */}
+      </div>
+    );
   }
-  
-  // After mounting, render the full interactive component
+
+  // Client-side only rendering after hydration
   const isVi = language === 'vi';
-  
+
   return (
-    <div 
-      className={`relative mr-2 ${className}`.trim()} 
-      ref={containerRef}
-    >
+    <div id={containerId} className={`relative mr-2 ${className}`.trim()} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
