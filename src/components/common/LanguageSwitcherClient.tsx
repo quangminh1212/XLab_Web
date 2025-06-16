@@ -32,100 +32,100 @@ export default function LanguageSwitcherClient({ className = '' }: LanguageSwitc
     }
   }, [isMounted]);
   
-  // Always render the same structure, even when not mounted
-  const isVi = isMounted ? language === 'vi' : false;
+  // Important: Always render only the container div on first render
+  // to match the server-rendered structure
+  if (!isMounted) {
+    return <div className={`relative mr-2 ${className}`.trim()} />;
+  }
   
-  // Use suppressHydrationWarning to prevent mismatch errors
+  // After mounting, render the full interactive component
+  const isVi = language === 'vi';
+  
   return (
     <div 
       className={`relative mr-2 ${className}`.trim()} 
       ref={containerRef}
-      suppressHydrationWarning
     >
-      {isMounted && (
-        <>
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
-            aria-expanded={isOpen}
-          >
-            <div className="relative w-6 h-4 mr-2">
-              <img
-                src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
-                alt={isVi ? 'Tiếng Việt' : 'English'}
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>{isVi ? 'VIE' : 'ENG'}</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 ml-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors cursor-pointer"
+        aria-expanded={isOpen}
+      >
+        <div className="relative w-6 h-4 mr-2">
+          <img
+            src={`/images/flags/${isVi ? 'vn' : 'us'}.svg`}
+            alt={isVi ? 'Tiếng Việt' : 'English'}
+            width={24}
+            height={16}
+            className="object-cover rounded-sm"
+          />
+        </div>
+        <span>{isVi ? 'VIE' : 'ENG'}</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 ml-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
 
-          {isOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-              <ul className="py-1">
-                <li>
-                  <button
-                    onClick={() => {
-                      setLanguage('vi');
-                      setIsOpen(false);
-                    }}
-                    className={`flex items-center w-full px-4 py-2 text-sm text-left cursor-pointer ${
-                      isVi ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <div className="relative w-6 h-4 mr-3">
-                      <img
-                        src="/images/flags/vn.svg"
-                        alt="Tiếng Việt"
-                        width={24}
-                        height={16}
-                        className="object-cover rounded-sm"
-                      />
-                    </div>
-                    <span>{t('language.vietnamese')}</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      setLanguage('en');
-                      setIsOpen(false);
-                    }}
-                    className={`flex items-center w-full px-4 py-2 text-sm text-left cursor-pointer ${
-                      !isVi ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <div className="relative w-6 h-4 mr-3">
-                      <img
-                        src="/images/flags/us.svg"
-                        alt="English"
-                        width={24}
-                        height={16}
-                        className="object-cover rounded-sm"
-                      />
-                    </div>
-                    <span>{t('language.english')}</span>
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
-        </>
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+          <ul className="py-1">
+            <li>
+              <button
+                onClick={() => {
+                  setLanguage('vi');
+                  setIsOpen(false);
+                }}
+                className={`flex items-center w-full px-4 py-2 text-sm text-left cursor-pointer ${
+                  isVi ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <div className="relative w-6 h-4 mr-3">
+                  <img
+                    src="/images/flags/vn.svg"
+                    alt="Tiếng Việt"
+                    width={24}
+                    height={16}
+                    className="object-cover rounded-sm"
+                  />
+                </div>
+                <span>{t('language.vietnamese')}</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  setLanguage('en');
+                  setIsOpen(false);
+                }}
+                className={`flex items-center w-full px-4 py-2 text-sm text-left cursor-pointer ${
+                  !isVi ? 'bg-primary-50 text-primary-700' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <div className="relative w-6 h-4 mr-3">
+                  <img
+                    src="/images/flags/us.svg"
+                    alt="English"
+                    width={24}
+                    height={16}
+                    className="object-cover rounded-sm"
+                  />
+                </div>
+                <span>{t('language.english')}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
       )}
     </div>
   );

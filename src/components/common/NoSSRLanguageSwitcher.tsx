@@ -1,22 +1,22 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import React from 'react';
+import dynamic from 'next/dynamic';
 
-// Import the client component with SSR disabled and no loading component
-const LanguageSwitcherClient = dynamic(
+// Use a simple placeholder matching the exact structure of the client component
+const DynamicLanguageSwitcherClient = dynamic(
   () => import('./LanguageSwitcherClient'),
   { 
     ssr: false,
-    loading: () => <div className="relative mr-2"></div>
+    // Return an empty div with the exact same structure as the initial client render
+    loading: () => (
+      <div className="relative mr-2">
+        {/* No content rendered server-side */}
+      </div>
+    )
   }
 );
 
 export default function NoSSRLanguageSwitcher({ className = '' }: { className?: string }) {
-  // Add suppressHydrationWarning to prevent hydration mismatch errors
-  return (
-    <div suppressHydrationWarning>
-      <LanguageSwitcherClient className={className} />
-    </div>
-  );
+  return <DynamicLanguageSwitcherClient className={className} />;
 } 
