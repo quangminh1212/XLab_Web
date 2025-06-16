@@ -9,8 +9,8 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import ClientLanguageSwitcher from '@/components/common/ClientLanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -371,7 +371,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher - Shared for both desktop and mobile */}
-              <ClientLanguageSwitcher />
+              <LanguageSwitcher />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
