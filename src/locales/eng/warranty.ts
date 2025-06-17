@@ -28,8 +28,6 @@ export const warranty = {
   'warranty.formSubmit': 'Submit Request',
   'warranty.formError': 'There was an error submitting your request. Please try again.',
   'warranty.submitSuccess': 'Your warranty support request has been submitted successfully! Our team will contact you within 24-48 hours.',
-  'warranty.supportInfo1': 'Our dedicated support team is here to help with any warranty-related issues.',
-  'warranty.supportInfo2': 'For fastest service, please use the form on this page. If you prefer other contact methods:',
   'warranty.address': 'Address',
   'warranty.workingHours': 'Working Hours',
   'warranty.ourMission': 'Our Support Mission',
