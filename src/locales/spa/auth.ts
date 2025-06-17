@@ -18,4 +18,22 @@ export const auth = {
   'auth.passwordMismatch': 'Las contraseñas no coinciden',
   'auth.passwordResetSent': 'Correo de restablecimiento de contraseña enviado',
   'auth.invalidCredentials': 'Credenciales inválidas',
+  
+  // Añadiendo claves faltantes del archivo en inglés
+  'login.welcome': '¡Bienvenido de nuevo!',
+  'login.continue': 'Para continuar usando los servicios de XLab',
+  'login.connect': 'Conéctate de forma segura con tu cuenta de Google',
+  'login.google': 'Continuar con Google',
+  'login.secure': '100% Seguro',
+  'login.terms': 'Al continuar, aceptas nuestros',
+  'login.termsLink': 'Términos de servicio',
+  'login.and': 'y',
+  'login.privacyLink': 'Política de privacidad',
+  'login.ourCompany': '.',
+  'auth.login.title': 'Iniciar sesión',
+  'auth.register.title': 'Crear una nueva cuenta',
+  'auth.register.or': 'O regístrate con',
+  'auth.register.newsletter': 'Recibir ofertas especiales y notificaciones',
+  'auth.register.haveAccount': '¿Ya tienes una cuenta?',
+  'auth.login.forgotPassword': '¿Olvidaste tu contraseña?'
 }; 
