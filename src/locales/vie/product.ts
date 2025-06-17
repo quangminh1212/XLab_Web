@@ -1,0 +1,33 @@
+export const product = {
+  'product.details': 'Chi tiết sản phẩm',
+  'product.description': 'Mô tả',
+  'product.specifications': 'Thông số kỹ thuật',
+  'product.reviews': 'Đánh giá',
+  'product.relatedProducts': 'Sản phẩm liên quan',
+  'product.addToCart': 'Thêm vào giỏ hàng',
+  'product.buyNow': 'Mua ngay',
+  'product.outOfStock': 'Hết hàng',
+  'product.inStock': 'Còn hàng',
+  'product.warranty': 'Chính sách bảo hành',
+  'product.warranty.days': 'Bảo hành 30 ngày',
+  'product.warranty.description': 'Hoàn tiền hoặc đổi sản phẩm nếu không hài lòng trong vòng 30 ngày',
+  'product.support': 'Hỗ trợ 24/7',
+  'product.support.description': 'Đội ngũ hỗ trợ kỹ thuật luôn sẵn sàng giúp đỡ bạn mọi lúc',
+  'product.documentation': 'Tài liệu đầy đủ',
+  'product.documentation.description': 'Hướng dẫn sử dụng chi tiết và tài liệu tham khảo đầy đủ',
+  'product.needHelp': 'Cần hỗ trợ thêm về sản phẩm?',
+  'product.supportDescription': 'Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ bạn',
+  'product.supportEmail': 'Email hỗ trợ',
+  'product.emailResponse': 'Phản hồi trong vòng 24 giờ',
+  'product.supportPhone': 'Hotline',
+  'product.phoneHours': 'Hỗ trợ từ 8h-22h hàng ngày',
+  'product.liveChat': 'Live Chat',
+  'product.chatDescription': 'Chat trực tiếp với nhân viên hỗ trợ',
+  'product.startChat': 'Bắt đầu chat',
+  
+  // ChatGPT and Grok descriptions
+  'product.chatgpt.description': 'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.',
+  'product.grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực.',
+  'product.purchasesPerWeek': '{count}/tuần',
+  'product.totalSold': '{count} đã bán'
+}; 

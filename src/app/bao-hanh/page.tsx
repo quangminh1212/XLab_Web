@@ -10,10 +10,7 @@ export default function WarrantyPage() {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     phone: '',
-    orderCode: '',
-    accountName: '',
     problem: '',
   });
 
@@ -42,10 +39,7 @@ export default function WarrantyPage() {
       setSubmitSuccess(true);
       setFormData({
         name: '',
-        email: '',
         phone: '',
-        orderCode: '',
-        accountName: '',
         problem: '',
       });
     } catch (error) {
@@ -140,160 +134,99 @@ export default function WarrantyPage() {
       {/* Warranty Form & Info */}
       <section className="py-10">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             {/* Warranty Form */}
-            <div>
+            <div className="h-full flex flex-col">
               <h2 className="text-2xl font-bold mb-6">{t('warranty.supportRequestTitle')}</h2>
-              {submitSuccess ? (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                  <p>{t('warranty.submitSuccess')}</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {submitError && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                      <p>{submitError}</p>
-                    </div>
-                  )}
+              <div className="bg-white p-6 rounded-lg shadow-sm flex-grow">
+                {submitSuccess ? (
+                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    <p>{t('warranty.submitSuccess')}</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {submitError && (
+                      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        <p>{submitError}</p>
+                      </div>
+                    )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label
+                          htmlFor="name"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                          {t('warranty.formName')} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          required
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="phone"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                          {t('warranty.formPhone')} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          required
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                    </div>
+
                     <div>
                       <label
-                        htmlFor="name"
+                        htmlFor="problem"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        {t('warranty.formName')} <span className="text-red-500">*</span>
+                        {t('warranty.formProblem')} <span className="text-red-500">*</span>
                       </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
+                      <textarea
+                        id="problem"
+                        name="problem"
+                        rows={5}
                         required
-                        value={formData.name}
+                        value={formData.problem}
                         onChange={handleChange}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                      />
+                        placeholder={t('warranty.formProblemPlaceholder')}
+                      ></textarea>
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="text-white bg-primary-600 hover:bg-primary-700 rounded-lg px-8 py-3 transition-colors font-medium shadow-sm"
                       >
-                        {t('warranty.formEmail')} <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                      />
+                        {isSubmitting ? t('warranty.formSubmitting') : t('warranty.formSubmit')}
+                      </button>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label
-                        htmlFor="phone"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        {t('warranty.formPhone')} <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        required
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="orderCode"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        {t('warranty.formOrderCode')}
-                      </label>
-                      <input
-                        type="text"
-                        id="orderCode"
-                        name="orderCode"
-                        value={formData.orderCode}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="accountName"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t('warranty.formAccountName')}
-                    </label>
-                    <input
-                      type="text"
-                      id="accountName"
-                      name="accountName"
-                      value={formData.accountName}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="problem"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      {t('warranty.formProblem')} <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="problem"
-                      name="problem"
-                      rows={5}
-                      required
-                      value={formData.problem}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                      placeholder={t('warranty.formProblemPlaceholder')}
-                    ></textarea>
-                  </div>
-
-                  <div>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="text-white bg-primary-600 hover:bg-primary-700 rounded-lg px-8 py-3 transition-colors font-medium shadow-sm"
-                    >
-                      {isSubmitting ? t('warranty.formSubmitting') : t('warranty.formSubmit')}
-                    </button>
-                  </div>
-                </form>
-              )}
+                  </form>
+                )}
+              </div>
             </div>
 
             {/* Warranty Information */}
-            <div>
+            <div className="h-full flex flex-col">
               <h2 className="text-2xl font-bold mb-6">{t('warranty.contactInfoTitle')}</h2>
-
-              <div className="bg-gray-50 p-6 rounded-lg mb-8">
-                <div className="text-gray-700 mb-4">
-                  <RichTextContent content={t('warranty.supportInfo1')} />
-                </div>
-
-                <div className="text-gray-700 mb-6">
-                  <RichTextContent content={t('warranty.supportInfo2')} />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-gray-50 p-6 rounded-lg shadow-sm flex-grow">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div className="space-y-4">
                     <div className="flex items-start">
                       <div className="flex-shrink-0 mt-1">
@@ -396,26 +329,26 @@ export default function WarrantyPage() {
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="bg-primary-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('warranty.ourMission')}</h3>
-                <p className="text-gray-700 mb-4">
-                  {t('warranty.missionDescription')}
-                </p>
-                <div className="flex space-x-4 mt-4">
-                  <Link
-                    href="/contact"
-                    className="text-primary-600 hover:text-primary-800 font-medium"
-                  >
-                    {t('warranty.contactNow')}
-                  </Link>
-                  <Link
-                    href="/faqs"
-                    className="text-primary-600 hover:text-primary-800 font-medium"
-                  >
-                    {t('warranty.faq')}
-                  </Link>
+                <div className="pt-4 mt-4 border-t border-gray-200">
+                  <h3 className="text-lg font-semibold mb-3 text-gray-800">{t('warranty.ourMission')}</h3>
+                  <p className="text-gray-700 mb-4">
+                    {t('warranty.missionDescription')}
+                  </p>
+                  <div className="flex space-x-4 mt-3">
+                    <Link
+                      href="/contact"
+                      className="text-primary-600 hover:text-primary-800 font-medium"
+                    >
+                      {t('warranty.contactNow')}
+                    </Link>
+                    <Link
+                      href="/faqs"
+                      className="text-primary-600 hover:text-primary-800 font-medium"
+                    >
+                      {t('warranty.faq')}
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

@@ -57,8 +57,13 @@ export default function ProductCard({
 
   // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
   useEffect(() => {
+    // Nếu có mã định danh sản phẩm đặc biệt (chatgpt, grok), sử dụng bản dịch từ file
+    if (id === 'chatgpt' || id === 'grok') {
+      setTranslatedDescription(t(`product.${id}.description`) || description);
+      setTranslatedName(name); // Giữ nguyên tên
+    } 
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    else if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
@@ -95,7 +100,7 @@ export default function ProductCard({
       setTranslatedDescription(description);
       setTranslatedName(name);
     }
-  }, [description, name, language, id]);
+  }, [description, name, language, id, t]);
 
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
@@ -550,7 +555,7 @@ export default function ProductCard({
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                <span className="font-semibold">{totalSold}</span>
+                <span className="font-semibold">{t('product.totalSold', { count: totalSold })}</span>
               </div>
             )}
           </div>

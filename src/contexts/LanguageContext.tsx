@@ -1,25 +1,44 @@
 'use client';
 
+<<<<<<< HEAD
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 // Import language mapping
 import languageMap from '@/locales/languageMap.json';
 
 type Language = 'vi' | 'en';
 type NewLanguage = 'vie' | 'eng';
+=======
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { LanguageKeys, defaultLanguage, getTranslation } from '../locales';
+>>>>>>> 5fa788a5d0e9f0fc7fca59989857761b344f5155
 
 type LanguageContextType = {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: (key: string, params?: Record<string, any>) => string;
+  language: LanguageKeys;
+  setLanguage: (lang: LanguageKeys) => void;
+  t: (key: string, params?: Record<string, string | number>) => string;
+  availableLanguages: LanguageKeys[];
 };
+
+const LanguageContext = createContext<LanguageContextType>({
+  language: defaultLanguage,
+  setLanguage: () => {},
+  t: (key: string) => key,
+  availableLanguages: ['vie', 'eng'],
+});
 
 interface LanguageProviderProps {
   children: ReactNode;
 }
 
-// Tạo một context mới
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
+  // Initialize with defaultLanguage for both server and client
+  const [language, setLanguageState] = useState<LanguageKeys>(defaultLanguage);
+  // Track whether component is mounted to avoid hydration mismatch
+  const [isMounted, setIsMounted] = useState(false);
+  
+  const availableLanguages: LanguageKeys[] = ['vie', 'eng'];
 
+<<<<<<< HEAD
 // Legacy translations - for backward compatibility
 const legacyTranslations: Record<Language, Record<string, string>> = {
   vi: {
@@ -79,22 +98,35 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [translations, setTranslations] = useState<Record<string, string>>(legacyTranslations['vi']);
 
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
+=======
+>>>>>>> 5fa788a5d0e9f0fc7fca59989857761b344f5155
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+    // This will only run on the client side after hydration
+    setIsMounted(true);
+    
+    // Check for saved language preference after component is mounted
+    const savedLanguage = localStorage.getItem('language') as LanguageKeys;
+    if (savedLanguage && availableLanguages.includes(savedLanguage)) {
       setLanguageState(savedLanguage);
       // Immediately update translations with the language's legacy translations to prevent hydration mismatch
       setTranslations(prev => ({...prev, ...legacyTranslations[savedLanguage as Language]}));
     }
   }, []);
 
-  // Lưu ngôn ngữ vào localStorage khi thay đổi
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('language', lang);
-    document.documentElement.lang = lang;
+  useEffect(() => {
+    // Only update localStorage after mounting to prevent hydration mismatch
+    if (isMounted) {
+      localStorage.setItem('language', language);
+    }
+  }, [language, isMounted]);
+
+  const setLanguage = (lang: LanguageKeys) => {
+    if (availableLanguages.includes(lang)) {
+      setLanguageState(lang);
+    }
   };
 
+<<<<<<< HEAD
   // Hàm dịch văn bản
   const t = (key: string, params?: Record<string, any>): string => {
     try {
@@ -146,8 +178,22 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     } catch (error) {
       console.error('Translation error:', error);
       return typeof key === 'string' ? key : '';
+=======
+  const t = (key: string, params?: Record<string, string | number>) => {
+    // Get translation string or return key if not found
+    let text = getTranslation(key, language);
+
+    // Replace parameters if any
+    if (params && typeof params === 'object' && Object.keys(params).length > 0) {
+      Object.keys(params).forEach((param) => {
+        text = text.replace(`{${param}}`, String(params[param]));
+      });
+>>>>>>> 5fa788a5d0e9f0fc7fca59989857761b344f5155
     }
+
+    return text;
   };
+<<<<<<< HEAD
   
   // Preload translations for commonly used namespaces and dynamically requested ones
   useEffect(() => {
@@ -229,14 +275,17 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       return '';
     }
   }
+=======
+>>>>>>> 5fa788a5d0e9f0fc7fca59989857761b344f5155
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, availableLanguages }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
+<<<<<<< HEAD
 // Hook để sử dụng context này
 export const useLanguage = (): LanguageContextType => {
   const context = useContext(LanguageContext);
@@ -245,3 +294,6 @@ export const useLanguage = (): LanguageContextType => {
   }
   return context;
 };
+=======
+export const useLanguage = () => useContext(LanguageContext);
+>>>>>>> 5fa788a5d0e9f0fc7fca59989857761b344f5155

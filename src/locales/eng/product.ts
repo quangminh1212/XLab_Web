@@ -1,0 +1,33 @@
+export const product = {
+  'product.details': 'Product Details',
+  'product.description': 'Description',
+  'product.specifications': 'Specifications',
+  'product.reviews': 'Reviews',
+  'product.relatedProducts': 'Related Products',
+  'product.addToCart': 'Add to Cart',
+  'product.buyNow': 'Buy Now',
+  'product.outOfStock': 'Out of Stock',
+  'product.inStock': 'In Stock',
+  'product.warranty': 'Warranty Policy',
+  'product.warranty.days': '30-day Warranty',
+  'product.warranty.description': 'Money back or product replacement if not satisfied within 30 days',
+  'product.support': '24/7 Support',
+  'product.support.description': 'Our technical support team is always ready to help you',
+  'product.documentation': 'Complete Documentation',
+  'product.documentation.description': 'Detailed user guides and reference materials',
+  'product.needHelp': 'Need more help with this product?',
+  'product.supportDescription': 'Our team of experts is always ready to assist you',
+  'product.supportEmail': 'Support Email',
+  'product.emailResponse': 'Response within 24 hours',
+  'product.supportPhone': 'Hotline',
+  'product.phoneHours': 'Support from 8am-10pm daily',
+  'product.liveChat': 'Live Chat',
+  'product.chatDescription': 'Chat directly with our support staff',
+  'product.startChat': 'Start chat',
+  
+  // ChatGPT and Grok descriptions
+  'product.chatgpt.description': 'ChatGPT is a powerful AI chatbot that can answer a wide range of questions in both English and Vietnamese, providing support from Front-end to Back-end programming.',
+  'product.grok.description': 'Grok AI helps automatically analyze and process large datasets quickly, supporting accurate decision-making and saving time. Widely applicable across many fields.',
+  'product.purchasesPerWeek': '{count}/week',
+  'product.totalSold': '{count} sold'
+}; 

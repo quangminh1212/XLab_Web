@@ -1,0 +1,23 @@
+export const orders = {
+  'orders.title': 'My Orders',
+  'orders.orderNumber': 'Order #',
+  'orders.date': 'Date',
+  'orders.status': 'Status',
+  'orders.total': 'Total',
+  'orders.details': 'View Details',
+  'orders.noOrders': 'You have no orders yet',
+  'orders.history': 'Your Order History',
+  'orders.orderCode': 'Order Code',
+  'orders.orderDate': 'Order Date',
+  'orders.quantity': 'Quantity',
+  'orders.completed': 'Completed',
+  'orders.pending': 'Pending',
+  'orders.processing': 'Processing',
+  'orders.cancelled': 'Cancelled',
+  'orders.refunded': 'Refunded',
+  'orders.exploreProducts': 'Browse Products',
+  'orders.noOrdersDesc': 'Explore our products and place an order now!',
+  'orders.needLogin': 'Login Required',
+  'orders.needLoginDesc': 'Please login to view your order history',
+  'orders.login': 'Login'
+}; 

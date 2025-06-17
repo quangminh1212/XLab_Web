@@ -3,13 +3,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
+import { LanguageKeys } from '@/locales';
 
 interface LanguageSwitcherProps {
   className?: string;
 }
 
 const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, availableLanguages } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -27,7 +28,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     };
   }, []);
 
-  const changeLanguage = (lang: 'vi' | 'en') => {
+  const changeLanguage = (lang: LanguageKeys) => {
     setLanguage(lang);
     setIsOpen(false);
   };
@@ -39,7 +40,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
         aria-expanded={isOpen}
       >
-        {language === 'vi' ? (
+        {language === 'vie' ? (
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -80,8 +81,8 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
       {isOpen && (
         <div className="absolute right-0 mt-2 py-1 w-28 bg-white rounded-md shadow-lg z-20 border border-gray-200">
           <button
-            onClick={() => changeLanguage('vi')}
-            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'vi' ? 'bg-gray-100' : ''}`}
+            onClick={() => changeLanguage('vie')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'vie' ? 'bg-gray-100' : ''}`}
           >
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -95,8 +96,8 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             <span>VIE</span>
           </button>
           <button
-            onClick={() => changeLanguage('en')}
-            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'en' ? 'bg-gray-100' : ''}`}
+            onClick={() => changeLanguage('eng')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'eng' ? 'bg-gray-100' : ''}`}
           >
             <div className="relative w-6 h-4 mr-2">
               <Image 
