@@ -13,6 +13,11 @@ export const common = {
   'nav.about': 'Giới thiệu',
   'nav.contact': 'Liên hệ',
   'nav.warranty': 'Bảo hành',
+  'nav.login': 'Đăng nhập',
+  'nav.logout': 'Đăng xuất',
+  'nav.account': 'Tài khoản',
+  'nav.admin': 'Quản trị',
+  'nav.pricing': 'Bảng giá',
 
   'common.loading': 'Đang tải...',
   'common.save': 'Lưu',
