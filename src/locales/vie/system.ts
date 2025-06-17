@@ -15,5 +15,6 @@ export const system = {
   'system.productNotFound': 'Không tìm thấy sản phẩm',
   'system.serviceNotFound': 'Không tìm thấy dịch vụ',
   'system.srOnly.viewCart': 'Xem giỏ hàng',
-  'system.srOnly.openMenu': 'Mở menu'
+  'system.srOnly.openMenu': 'Mở menu',
+  'system.pleaseWait': 'Vui lòng đợi trong giây lát'
 }; 

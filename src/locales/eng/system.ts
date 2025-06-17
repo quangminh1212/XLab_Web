@@ -15,5 +15,6 @@ export const system = {
   'system.productNotFound': 'Product not found',
   'system.serviceNotFound': 'Service not found',
   'system.srOnly.viewCart': 'View cart',
-  'system.srOnly.openMenu': 'Open menu'
+  'system.srOnly.openMenu': 'Open menu',
+  'system.pleaseWait': 'Please wait a moment'
 }; 
