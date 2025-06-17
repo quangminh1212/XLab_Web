@@ -18,4 +18,7 @@ export function CartLayoutClient({ children }: { children: ReactNode }) {
   }, [t]);
   
   return <>{children}</>;
-} 
+}
+
+// Add a default export
+export default CartLayoutClient; 
