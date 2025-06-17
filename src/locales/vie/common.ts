@@ -5,7 +5,7 @@ export const common = {
   'button.addToCart': 'Thêm vào giỏ hàng',
   'button.buyNow': 'Mua ngay',
   'button.download': 'Tải xuống',
-  'button.contactUs': 'Liên hệ',
+  'button.contactUs': 'Liên hệ với chúng tôi',
   'button.viewAll': 'Xem tất cả',
   
   'nav.home': 'Trang chủ',
@@ -17,7 +17,7 @@ export const common = {
   'nav.logout': 'Đăng xuất',
   'nav.account': 'Tài khoản',
   'nav.admin': 'Quản trị',
-  'nav.pricing': 'Bảng giá',
+  'nav.pricing': 'Báo giá',
 
   'common.loading': 'Đang tải...',
   'common.save': 'Lưu',
@@ -41,17 +41,18 @@ export const common = {
   'common.less': 'Thu gọn',
   'common.yes': 'Có',
   'common.no': 'Không',
+  'common.softwareAndServices': 'Phần mềm và Dịch vụ',
   
   // Footer categories
   'footer.products': 'Sản phẩm',
   'footer.allProducts': 'Tất cả sản phẩm',
-  'footer.newReleases': 'Mới phát hành',
+  'footer.newReleases': 'Sản phẩm mới',
   'footer.mostPopular': 'Phổ biến nhất',
-  'footer.onSale': 'Khuyến mãi',
+  'footer.onSale': 'Đang giảm giá',
   
   'footer.support': 'Hỗ trợ',
   'footer.contact': 'Liên hệ',
-  'footer.faq': 'FAQ',
+  'footer.faq': 'Câu hỏi thường gặp',
   'footer.userGuides': 'Hướng dẫn sử dụng',
   'footer.reportBug': 'Báo lỗi',
   
@@ -65,10 +66,14 @@ export const common = {
   'footer.termsOfService': 'Điều khoản dịch vụ',
   'footer.privacyPolicy': 'Chính sách bảo mật',
   'footer.refundPolicy': 'Chính sách hoàn tiền',
-  'footer.intellectualProperty': 'Quyền sở hữu trí tuệ',
+  'footer.intellectualProperty': 'Sở hữu trí tuệ',
   
   // Newsletter
-  'newsletter.title': 'Đăng ký nhận thông tin mới',
+  'newsletter.title': 'Đăng ký nhận tin',
   'newsletter.description': 'Nhận thông tin về sản phẩm mới, khuyến mãi và cập nhật từ XLab',
-  'newsletter.privacyText': 'Chúng tôi tôn trọng quyền riêng tư của bạn. Xem Chính sách Bảo mật của chúng tôi.'
+  'newsletter.placeholder': 'Nhập email của bạn',
+  'newsletter.button': 'Đăng ký',
+  'newsletter.privacyText': 'Chúng tôi tôn trọng quyền riêng tư của bạn. Xem Chính sách Bảo mật.',
+  'newsletter.successMessage': 'Cảm ơn bạn đã đăng ký!',
+  'newsletter.errorMessage': 'Đã xảy ra lỗi. Vui lòng thử lại.',
 }; 

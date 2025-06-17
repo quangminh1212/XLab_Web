@@ -44,5 +44,6 @@ export const cart = {
   'cart.discount20percentXLab': 'Giảm 20% cho sản phẩm XLab',
   'cart.code': 'Mã',
   'cart.cancel': 'Hủy',
-  'cart.productsYouMayLike': 'Sản phẩm bạn có thể quan tâm'
+  'cart.productsYouMayLike': 'Sản phẩm bạn có thể quan tâm',
+  'cart.metaDescription': 'Xem và quản lý giỏ hàng của bạn tại XLab - Phần mềm và Dịch vụ'
 }; 

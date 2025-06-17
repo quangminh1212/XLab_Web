@@ -21,6 +21,7 @@ import { payment } from './payment';
 import { voucher } from './voucher';
 import { about } from './about';
 import { coupon } from './coupon';
+import { services } from './services';
 
 export const vie = {
   ...auth,
@@ -45,5 +46,6 @@ export const vie = {
   ...payment,
   ...voucher,
   ...about,
-  ...coupon
+  ...coupon,
+  ...services
 }; 

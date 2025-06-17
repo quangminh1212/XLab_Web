@@ -44,18 +44,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       setLanguageState('vie');
       localStorage.setItem('language', 'vie');
     }
-    
-    // Force language refresh
-    document.documentElement.lang = savedLanguage === 'eng' ? 'en' : 'vi';
   }, []);
 
   useEffect(() => {
     // Only update localStorage after mounting to prevent hydration mismatch
     if (isMounted) {
       localStorage.setItem('language', language);
-      
-      // Update HTML lang attribute when language changes
-      document.documentElement.lang = language === 'eng' ? 'en' : 'vi';
       
       // Force a rerender of critical components by setting a data attribute
       document.documentElement.setAttribute('data-language', language);

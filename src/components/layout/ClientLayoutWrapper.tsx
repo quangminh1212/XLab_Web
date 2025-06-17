@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Header, Footer } from '@/components/layout';
 import {
   Analytics,
@@ -13,10 +13,30 @@ import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
+}
+
+// Inner component that has access to language context
+function InnerLayout({ children }: { children: React.ReactNode }) {
+  const { language } = useLanguage();
+  
+  // Update HTML lang attribute when language changes
+  useEffect(() => {
+    if (language) {
+      document.documentElement.lang = language === 'eng' ? 'en' : 'vi';
+    }
+  }, [language]);
+  
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-grow">{children}</main>
+      <Footer />
+    </div>
+  );
 }
 
 export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperProps) {
@@ -26,11 +46,7 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
         <NotificationProvider>
           <BalanceProvider>
             <CartProvider>
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow">{children}</main>
-                <Footer />
-              </div>
+              <InnerLayout>{children}</InnerLayout>
               <Analytics />
               <CompileIndicator />
               <StyleLoader />

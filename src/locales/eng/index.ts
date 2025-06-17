@@ -21,6 +21,7 @@ import { payment } from './payment';
 import { voucher } from './voucher';
 import { about } from './about';
 import { coupon } from './coupon';
+import { services } from './services';
 
 export const eng = {
   ...auth,
@@ -45,5 +46,6 @@ export const eng = {
   ...payment,
   ...voucher,
   ...about,
-  ...coupon
+  ...coupon,
+  ...services
 }; 

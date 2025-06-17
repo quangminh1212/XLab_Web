@@ -41,6 +41,7 @@ export const common = {
   'common.less': 'Less',
   'common.yes': 'Yes',
   'common.no': 'No',
+  'common.softwareAndServices': 'Software and Services',
   
   // Footer categories
   'footer.products': 'Products',
@@ -69,6 +70,10 @@ export const common = {
   
   // Newsletter
   'newsletter.title': 'Subscribe to our newsletter',
-  'newsletter.description': 'Receive information about new products, promotions, and updates from XLab',
-  'newsletter.privacyText': 'We respect your privacy. See our Privacy Policy.'
+  'newsletter.description': 'Get updates on new products and promotions',
+  'newsletter.placeholder': 'Enter your email',
+  'newsletter.button': 'Subscribe',
+  'newsletter.privacyText': 'We respect your privacy. See our Privacy Policy.',
+  'newsletter.successMessage': 'Thank you for subscribing!',
+  'newsletter.errorMessage': 'An error occurred. Please try again.',
 }; 

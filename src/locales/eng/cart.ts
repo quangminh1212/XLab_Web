@@ -44,5 +44,6 @@ export const cart = {
   'cart.discount20percentXLab': '20% off for XLab products',
   'cart.code': 'Code',
   'cart.cancel': 'Cancel',
-  'cart.productsYouMayLike': 'Products you may like'
+  'cart.productsYouMayLike': 'Products you may like',
+  'cart.metaDescription': 'View and manage your cart at XLab - Software and Services'
 }; 
