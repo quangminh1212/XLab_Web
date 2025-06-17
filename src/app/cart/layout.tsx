@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
-// Import the client component with dynamic import to avoid SSR issues
-const CartLayoutClient = dynamic(() => import('./layout.client'), { ssr: false });
+// Import the client component with dynamic import
+const CartLayoutClient = dynamic(() => import('./layout.client'));
 
 // Static metadata for server-side rendering
 export const metadata: Metadata = {
