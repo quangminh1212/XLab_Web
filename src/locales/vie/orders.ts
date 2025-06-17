@@ -1,0 +1,20 @@
+export const orders = {
+  'orders.history': 'Lịch sử đơn hàng của bạn',
+  'orders.orderCode': 'Mã đơn hàng',
+  'orders.orderDate': 'Ngày đặt',
+  'orders.quantity': 'Số lượng',
+  'orders.status': 'Trạng thái',
+  'orders.total': 'Tổng cộng',
+  'orders.viewDetails': 'Xem chi tiết',
+  'orders.completed': 'Hoàn thành',
+  'orders.pending': 'Chờ xử lý',
+  'orders.processing': 'Đang xử lý',
+  'orders.cancelled': 'Đã hủy',
+  'orders.refunded': 'Hoàn tiền',
+  'orders.noOrders': 'Bạn chưa có đơn hàng nào',
+  'orders.exploreProducts': 'Xem sản phẩm',
+  'orders.noOrdersDesc': 'Hãy khám phá các sản phẩm của chúng tôi và đặt hàng ngay!',
+  'orders.needLogin': 'Bạn cần đăng nhập',
+  'orders.needLoginDesc': 'Vui lòng đăng nhập để xem lịch sử đơn hàng của bạn',
+  'orders.login': 'Đăng nhập'
+}; 
