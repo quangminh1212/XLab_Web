@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useCart } from '@/components/cart/CartContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 // import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 import {
   AiOutlineShoppingCart,
@@ -31,6 +32,7 @@ interface CartItemWithVersion {
 // Danh sách mã giảm giá sẽ được lấy từ API
 
 export default function CartPage() {
+  const { t } = useLanguage();
   const {
     items: cartItems,
     removeItem: removeItemFromCart,
@@ -239,9 +241,9 @@ export default function CartPage() {
         <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white py-10 md:py-16">
           <div className="container mx-auto px-4">
             <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
+              <h1 className="text-3xl md:text-4xl font-bold">{t('cart.title')}</h1>
               <p className="text-base md:text-lg max-w-3xl opacity-90">
-                Đang tải thông tin sản phẩm...
+                {t('system.loading')}
               </p>
             </div>
           </div>
@@ -268,10 +270,9 @@ export default function CartPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
+            <h1 className="text-3xl md:text-4xl font-bold">{t('cart.yourCart')}</h1>
             <p className="text-base md:text-lg max-w-3xl opacity-90 whitespace-nowrap">
-              Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng
-              tôi.
+              {t('cart.emptyMessage')}
             </p>
           </motion.div>
         </div>
@@ -292,10 +293,10 @@ export default function CartPage() {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 mb-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg md:text-xl font-semibold text-gray-800">
-                      Sản phẩm trong giỏ
+                      {t('cart.title')}
                     </h2>
                     <span className="px-2.5 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-medium">
-                      {cart.length} sản phẩm
+                      {t('cart.itemsInCart', { count: cart.length })}
                     </span>
                   </div>
 
@@ -333,7 +334,7 @@ export default function CartPage() {
                               </h3>
                               {item.version && (
                                 <span className="text-xs text-gray-500 block mt-0.5">
-                                  Phiên bản: {item.version}
+                                  {t('product.version')}: {item.version}
                                 </span>
                               )}
                               {item.description && (
@@ -359,7 +360,7 @@ export default function CartPage() {
                                         item.quantity - 1,
                                       )
                                     }
-                                    aria-label="Giảm số lượng"
+                                    aria-label={t('cart.remove')}
                                   >
                                     <AiOutlineMinus className="w-3 h-3" />
                                   </button>
@@ -377,7 +378,7 @@ export default function CartPage() {
                                         item.quantity + 1,
                                       )
                                     }
-                                    aria-label="Tăng số lượng"
+                                    aria-label={t('cart.quantity')}
                                   >
                                     <AiOutlinePlus className="w-3 h-3" />
                                   </button>
@@ -385,7 +386,7 @@ export default function CartPage() {
                                 <button
                                   className="text-red-500 hover:text-red-700 transition-colors p-1"
                                   onClick={() => removeItemFromCart(item.uniqueKey || item.id)}
-                                  aria-label="Xóa sản phẩm"
+                                  aria-label={t('cart.remove')}
                                 >
                                   <AiOutlineDelete className="w-4 h-4" />
                                 </button>
@@ -403,14 +404,14 @@ export default function CartPage() {
                     href="/accounts"
                     className="border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 px-4 py-2 rounded text-xs font-medium transition-colors text-center"
                   >
-                    Tiếp tục mua sắm
+                    {t('cart.continueShopping')}
                   </Link>
                   <button
                     className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-4 py-2 rounded text-xs font-medium transition-colors flex items-center justify-center"
                     onClick={() => clearCart()}
                   >
                     <AiOutlineDelete className="w-3 h-3 mr-1" />
-                    Xóa giỏ hàng
+                    {t('cart.clearCart')}
                   </button>
                 </div>
               </motion.div>
@@ -424,14 +425,12 @@ export default function CartPage() {
               >
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 sticky top-20">
                   <h2 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-100 text-gray-800">
-                    Tóm tắt đơn hàng
+                    {t('cart.orderSummary')}
                   </h2>
 
                   <div className="space-y-3 mb-5">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">
-                        Tạm tính ({cart.reduce((total, item) => total + item.quantity, 0)} sản phẩm)
-                      </span>
+                      <span className="text-gray-600">{t('cart.subtotal')}</span>
                       <span className="font-medium">{formatCurrency(subtotal)}</span>
                     </div>
 
@@ -440,14 +439,14 @@ export default function CartPage() {
                       <div className="flex items-center justify-between mb-2">
                         <label htmlFor="coupon" className="flex items-center text-sm font-medium">
                           <AiOutlineTag className="mr-2" />
-                          Mã khuyến mãi
+                          {t('cart.applyCoupon')}
                         </label>
                         <button
                           className="text-xs text-primary-600 hover:text-primary-700 flex items-center"
                           onClick={() => setShowCouponInfo(!showCouponInfo)}
                         >
                           <AiOutlineInfoCircle className="mr-1" />
-                          Mã khuyến mãi
+                          {t('cart.promotionCodes')}
                         </button>
                       </div>
 
@@ -458,23 +457,23 @@ export default function CartPage() {
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                         >
-                          <p className="font-medium">Mã khuyến mãi có sẵn:</p>
+                          <p className="font-medium">{t('cart.availableCoupons')}:</p>
                           <div className="space-y-1">
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">WELCOME50</span>
-                              <span>Giảm 50.000đ (tối thiểu 200.000đ)</span>
+                              <span>{t('cart.discount50k')}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">WELCOME10</span>
-                              <span>Giảm 10% cho đơn hàng đầu tiên</span>
+                              <span>{t('cart.discount10percent')}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">FREESHIP</span>
-                              <span>Miễn phí vận chuyển (30.000đ)</span>
+                              <span>{t('cart.freeShipping30k')}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="font-mono text-primary-700">XLAB20</span>
-                              <span>Giảm 20% cho sản phẩm XLab</span>
+                              <span>{t('cart.discount20percentXLab')}</span>
                             </div>
                           </div>
                         </motion.div>
@@ -486,13 +485,13 @@ export default function CartPage() {
                             <p className="font-medium text-green-700 text-sm">
                               {appliedCoupon.name}
                             </p>
-                            <p className="text-green-600 text-xs mt-1">Mã: {appliedCoupon.code}</p>
+                            <p className="text-green-600 text-xs mt-1">{t('cart.code')}: {appliedCoupon.code}</p>
                           </div>
                           <button
                             onClick={() => setAppliedCoupon(null)}
                             className="text-red-500 hover:text-red-700 text-xs"
                           >
-                            Hủy
+                            {t('cart.cancel')}
                           </button>
                         </div>
                       ) : (
@@ -500,16 +499,17 @@ export default function CartPage() {
                           <input
                             type="text"
                             id="coupon"
-                            placeholder="Nhập mã khuyến mãi"
+                            placeholder={t('cart.couponCode')}
                             className="flex-grow border rounded-l-md px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary-600 focus:border-primary-600"
                             value={couponCode}
                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                            onKeyPress={(e) => e.key === 'Enter' && applyPromoCode()}
                           />
                           <button
                             className="bg-primary-600 text-white px-4 py-2.5 rounded-r-md text-sm whitespace-nowrap hover:bg-primary-700 transition-colors"
                             onClick={applyPromoCode}
                           >
-                            Áp dụng
+                            {t('cart.apply')}
                           </button>
                         </div>
                       )}
@@ -520,12 +520,12 @@ export default function CartPage() {
 
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Tạm tính</span>
+                      <span className="text-gray-600 text-sm">{t('cart.subtotal')}</span>
                       <span className="whitespace-nowrap text-sm">{formatCurrency(subtotal)}</span>
                     </div>
                     {appliedCoupon && (
                       <div className="flex justify-between items-center text-green-600">
-                        <span className="text-sm">Giảm giá</span>
+                        <span className="text-sm">{t('cart.discount')}</span>
                         <span className="whitespace-nowrap text-sm">
                           -{formatCurrency(couponDiscount)}
                         </span>
@@ -535,7 +535,7 @@ export default function CartPage() {
 
                   <div className="border-t border-b border-gray-100 py-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-base font-semibold">Tổng cộng</span>
+                      <span className="text-base font-semibold">{t('cart.total')}</span>
                       <span className="text-lg font-bold text-primary-600 whitespace-nowrap">
                         {formatCurrency(total)}
                       </span>
@@ -546,43 +546,42 @@ export default function CartPage() {
                     href="/checkout?skipInfo=true"
                     className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-4 block text-center py-4 rounded-lg text-base font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
                   >
-                    🚀 Tiến hành thanh toán
+                    🚀 {t('cart.proceedToCheckout')}
                   </Link>
                 </div>
               </motion.div>
             </div>
           ) : (
-            /* Thiết kế mới cho giỏ hàng trống */
             <motion.div
-              className="max-w-xl mx-auto"
+              className="text-center py-10 px-4 max-w-md mx-auto bg-white rounded-lg shadow-sm border border-gray-100"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
             >
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 md:p-8 mb-4 text-center">
-                <EmptyCartIcon />
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
-                  Giỏ hàng của bạn đang trống
-                </h2>
-                <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                  Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá các sản phẩm của chúng tôi
-                  và bắt đầu mua sắm ngay.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link
-                    href="/accounts"
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded text-sm font-medium transition-colors shadow-sm"
-                  >
-                    Xem danh sách sản phẩm
-                  </Link>
-                  <Link
-                    href="/categories"
-                    className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-5 py-2.5 rounded text-sm font-medium transition-colors"
-                  >
-                    Xem danh mục
-                  </Link>
-                </div>
-              </div>
+              <EmptyCartIcon />
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">{t('cart.empty')}</h2>
+              <p className="text-gray-600 mb-6">{t('cart.emptyCartMessage')}</p>
+
+              <Link
+                href="/products"
+                className="inline-flex items-center bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+                {t('cart.exploreProducts')}
+              </Link>
             </motion.div>
           )}
         </div>
@@ -592,7 +591,7 @@ export default function CartPage() {
       <section className="py-8 md:py-12 bg-gray-100">
         <div className="container mx-auto px-4">
           <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">
-            {cart.length > 0 ? 'Sản phẩm bạn có thể quan tâm' : 'Sản phẩm đề xuất cho bạn'}
+            {cart.length > 0 ? t('cart.productsYouMayLike') : t('cart.recommendedProducts')}
           </h2>
 
           <motion.div
@@ -699,7 +698,7 @@ export default function CartPage() {
                       }
                     >
                       <AiOutlinePlus className="mr-1 w-3 h-3" />
-                      Thêm
+                      {t('common.add')}
                     </button>
                   </div>
                 </div>
