@@ -46,6 +46,54 @@ export const account = {
   'account.endSession': 'Kết thúc phiên hiện tại',
   'account.accountDetails': 'Chi tiết tài khoản',
   
+  // Các bản dịch cho phần Purchased Products
+  'account.purchasedProducts': 'Sản phẩm đã mua',
+  'account.price': 'Giá',
+  'account.savingsFromSale': 'Tiết kiệm từ giảm giá',
+  'account.purchaseDate': 'Ngày mua',
+  'account.savingsFromVoucher': 'Tiết kiệm từ voucher',
+  'account.licenseExpiry': 'Ngày hết hạn',
+  'account.download': 'Tải xuống',
+  'account.viewDetails': 'Xem chi tiết',
+  'account.noProducts': 'Chưa có sản phẩm',
+  'account.noProductsDescription': 'Bạn chưa mua sản phẩm nào. Khám phá sản phẩm của chúng tôi để bắt đầu.',
+  'account.exploreProducts': 'Khám phá sản phẩm',
+  'account.product': 'Sản phẩm',
+  'account.licenseKey': 'Mã giấy phép',
+  'account.activationDate': 'Ngày kích hoạt',
+  'account.expiryDate': 'Ngày hết hạn',
+  'account.status': 'Trạng thái',
+  'account.actions': 'Thao tác',
+  
+  // Phần Quick Stats
+  'account.quickStats': 'Thống kê nhanh',
+  'account.purchasedOrders': 'Đơn hàng đã mua',
+  'account.totalProducts': 'Tổng sản phẩm đã mua',
+  
+  // Phần Thao tác
+  'account.active': 'Đang hoạt động',
+  'account.copy': 'Sao chép',
+  'account.extend': 'Gia hạn',
+  
+  // Phần Lịch sử mua hàng
+  'account.viewAllOrders': 'Xem tất cả đơn hàng',
+  'account.order': 'Đơn hàng {id}',
+  'account.orderDate': 'Ngày đặt: {date}',
+  'account.noOrders': 'Chưa có đơn hàng',
+  'account.noOrdersDescription': 'Bạn chưa thực hiện giao dịch nào. Hãy khám phá sản phẩm của chúng tôi.',
+  'account.buyNow': 'Mua ngay',
+  'account.viewOrder': 'Xem chi tiết đơn hàng',
+  'account.downloadPDF': 'Tải hóa đơn PDF',
+  'account.totalPayment': 'Tổng thanh toán: {amount}',
+  'account.orderHistory': 'Lịch sử đơn hàng',
+  'account.version': 'Phiên bản: {version} (Cập nhật: {date})',
+  'account.updateInfo': 'Cập nhật thông tin',
+  'account.saving': 'Đang lưu...',
+  'account.infoUpdated': 'Thông tin đã được cập nhật thành công!',
+  'account.allActive': 'Tất cả đang hoạt động',
+  'account.totalPaid': 'Tổng số tiền đã thanh toán',
+  'account.throughOrders': 'Qua {count} đơn hàng',
+  
   // Deposit page translations
   'account.deposit': 'Nạp tiền',
   'account.deposit.title': 'Nạp tiền vào tài khoản',

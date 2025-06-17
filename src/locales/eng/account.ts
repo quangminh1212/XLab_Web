@@ -94,6 +94,16 @@ export const account = {
   'account.usedVouchers': 'Used Vouchers',
   'account.orderHistory': 'Order History',
   
+  // Additional translations
+  'account.viewAllOrders': 'View all orders',
+  'account.order': 'Order {id}',
+  'account.orderDate': 'Date: {date}',
+  'account.actions': 'Actions',
+  'account.price': 'Price',
+  'account.active': 'Active',
+  'account.copy': 'Copy',
+  'account.extend': 'Extend',
+  
   // Deposit page translations
   'account.deposit.title': 'Deposit to Account',
   'account.deposit.subtitle': 'Scan QR code or transfer using the information below',
