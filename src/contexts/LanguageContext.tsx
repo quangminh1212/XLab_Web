@@ -22,21 +22,30 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguageState] = useState<LanguageKeys>(() => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language') as LanguageKeys;
-      return savedLanguage || defaultLanguage;
-    }
-    return defaultLanguage;
-  });
+  // Initialize with defaultLanguage for both server and client
+  const [language, setLanguageState] = useState<LanguageKeys>(defaultLanguage);
+  // Track whether component is mounted to avoid hydration mismatch
+  const [isMounted, setIsMounted] = useState(false);
   
   const availableLanguages: LanguageKeys[] = ['vie', 'eng'];
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    // This will only run on the client side after hydration
+    setIsMounted(true);
+    
+    // Check for saved language preference after component is mounted
+    const savedLanguage = localStorage.getItem('language') as LanguageKeys;
+    if (savedLanguage && availableLanguages.includes(savedLanguage)) {
+      setLanguageState(savedLanguage);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Only update localStorage after mounting to prevent hydration mismatch
+    if (isMounted) {
       localStorage.setItem('language', language);
     }
-  }, [language]);
+  }, [language, isMounted]);
 
   const setLanguage = (lang: LanguageKeys) => {
     if (availableLanguages.includes(lang)) {

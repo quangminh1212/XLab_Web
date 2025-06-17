@@ -11,69 +11,75 @@ export const defaultLanguage: LanguageKeys = 'vie';
 
 export function getTranslation(key: string, language: LanguageKeys = defaultLanguage): string {
   try {
-    // Special case for nav.home in footer context - this is a common issue
-    if (key === 'nav.home') {
-      // @ts-ignore: The translations object might have nested structure
-      return translations[language]['nav.home'] || translations.eng['nav.home'] || 'Home';
-    }
-
-    // Handle nested keys (e.g., 'nav.home')
-    const keys = key.split('.');
-    let translation = translations[language];
+    // Ensure language is valid
+    const safeLanguage: LanguageKeys = translations[language] ? language : 'eng';
     
-    // Navigate through nested objects
-    for (const k of keys) {
-      // @ts-ignore: The translations object might have nested structure
-      translation = translation[k];
-      
-      // If we hit undefined at any level, break early
-      if (translation === undefined) break;
-    }
-    
-    if (translation === undefined) {
-      // Try direct access with the full key
+    // Direct access approach - most reliable
+    if (key.includes('.')) {
+      // For keys with dots, try direct access first
       // @ts-ignore: The translations object might not have all the keys
-      const directTranslation = translations[language][key];
-      if (directTranslation !== undefined) {
-        return directTranslation;
+      const directResult = translations[safeLanguage][key];
+      if (directResult !== undefined) {
+        return directResult;
       }
       
-      console.warn(`Translation missing for key: ${key} in ${language}`);
-      
-      // Try to fall back to English if Vietnamese translation is missing
-      if (language !== 'eng') {
-        // Try direct access with the full key in English
+      // If direct access fails and we're using Vietnamese, try English
+      if (safeLanguage === 'vie') {
         // @ts-ignore: The translations object might not have all the keys
-        const directEnglishTranslation = translations.eng[key];
-        if (directEnglishTranslation !== undefined) {
-          return directEnglishTranslation;
+        const engDirectResult = translations.eng[key];
+        if (engDirectResult !== undefined) {
+          return engDirectResult;
         }
-        
-        let fallbackTranslation = translations.eng;
-        let fallbackFound = true;
-        
-        // Navigate through nested objects for fallback
-        for (const k of keys) {
-          // @ts-ignore: The translations object might have nested structure
-          fallbackTranslation = fallbackTranslation[k];
+      }
+    }
+
+    // Special cases for commonly used keys
+    if (key === 'nav.home') return translations[safeLanguage]['nav.home'] || 'Home';
+    if (key === 'auth.signIn') return translations[safeLanguage]['auth.signIn'] || 'Sign In';
+    if (key === 'auth.signOut') return translations[safeLanguage]['auth.signOut'] || 'Sign Out';
+    if (key === 'orders.myOrders') return translations[safeLanguage]['orders.myOrders'] || 'My Orders';
+
+    // Handle nested keys approach (less reliable)
+    const keys = key.split('.');
+    let result = translations[safeLanguage];
+    
+    // Navigate through nested objects safely
+    for (let i = 0; i < keys.length; i++) {
+      const k = keys[i];
+      // @ts-ignore: The translations object might have nested structure
+      if (result && typeof result === 'object' && result[k] !== undefined) {
+        // @ts-ignore: The translations object might have nested structure
+        result = result[k];
+      } else {
+        // If we hit undefined at any level, try English fallback
+        if (safeLanguage !== 'eng') {
+          let engResult = translations.eng;
+          let engFound = true;
           
-          // If we hit undefined at any level, break early
-          if (fallbackTranslation === undefined) {
-            fallbackFound = false;
-            break;
+          // Try to navigate the same path in English translations
+          for (let j = 0; j <= i; j++) {
+            const engKey = keys[j];
+            // @ts-ignore: The translations object might have nested structure
+            if (engResult && typeof engResult === 'object' && engResult[engKey] !== undefined) {
+              // @ts-ignore: The translations object might have nested structure
+              engResult = engResult[engKey];
+            } else {
+              engFound = false;
+              break;
+            }
+          }
+          
+          if (engFound) {
+            return engResult;
           }
         }
         
-        if (fallbackFound) {
-          return fallbackTranslation;
-        }
+        console.warn(`Translation missing for key: ${key} in ${safeLanguage}`);
+        return key; // Return the key if translation not found
       }
-      
-      // If all else fails, just return the key
-      return key;
     }
     
-    return translation;
+    return typeof result === 'string' ? result : key;
   } catch (error) {
     console.error(`Error getting translation for key: ${key}`, error);
     return key;
