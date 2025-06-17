@@ -15,5 +15,6 @@ export const notifications = {
   'notifications.empty': 'No hay notificaciones',
   'notifications.allRead': 'Has leído todas las notificaciones',
   'notifications.backToHome': 'Volver a inicio',
-  'notifications.loading': 'Cargando notificaciones...'
+  'notifications.loading': 'Cargando notificaciones...',
+  'notifications.none': 'No hay notificaciones'
 }; 

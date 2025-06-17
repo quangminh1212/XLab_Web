@@ -15,5 +15,6 @@ export const notifications = {
   'notifications.empty': 'Không có thông báo',
   'notifications.allRead': 'Bạn đã đọc tất cả thông báo',
   'notifications.backToHome': 'Quay lại trang chủ',
-  'notifications.loading': 'Đang tải thông báo...'
+  'notifications.loading': 'Đang tải thông báo...',
+  'notifications.none': 'Không có thông báo'
 }; 
