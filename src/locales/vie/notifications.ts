@@ -1,11 +1,19 @@
 export const notifications = {
   'notifications.title': 'Thông báo',
-  'notifications.markAllAsRead': 'Đánh dấu tất cả là đã đọc',
+  'notifications.markAllRead': 'Đánh dấu tất cả là đã đọc',
   'notifications.viewAll': 'Xem tất cả',
   'notifications.noNotifications': 'Không có thông báo mới',
   'notifications.new': 'Mới',
   'notifications.type.promotion': 'Khuyến mãi',
   'notifications.type.update': 'Cập nhật',
   'notifications.type.order': 'Đơn hàng',
-  'notifications.type.system': 'Hệ thống'
+  'notifications.type.system': 'Hệ thống',
+  'notifications.all': 'Tất cả',
+  'notifications.unread': 'Chưa đọc',
+  'notifications.viewDetails': 'Xem chi tiết',
+  'notifications.viewNow': 'Xem ngay',
+  'notifications.empty': 'Không có thông báo',
+  'notifications.allRead': 'Bạn đã đọc tất cả thông báo',
+  'notifications.backToHome': 'Quay lại trang chủ',
+  'notifications.loading': 'Đang tải thông báo...'
 }; 

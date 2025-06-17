@@ -1,11 +1,19 @@
 export const notifications = {
   'notifications.title': 'Notifications',
-  'notifications.markAllAsRead': 'Mark all as read',
+  'notifications.markAllRead': 'Mark all as read',
   'notifications.viewAll': 'View all',
   'notifications.noNotifications': 'No new notifications',
   'notifications.new': 'New',
   'notifications.type.promotion': 'Promotion',
   'notifications.type.update': 'Update',
   'notifications.type.order': 'Order',
-  'notifications.type.system': 'System'
+  'notifications.type.system': 'System',
+  'notifications.all': 'All',
+  'notifications.unread': 'Unread',
+  'notifications.viewDetails': 'View details',
+  'notifications.viewNow': 'View now',
+  'notifications.empty': 'No notifications',
+  'notifications.allRead': 'You have read all notifications',
+  'notifications.backToHome': 'Back to home',
+  'notifications.loading': 'Loading notifications...'
 }; 
