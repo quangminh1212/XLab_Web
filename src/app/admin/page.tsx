@@ -78,7 +78,11 @@ function AdminDashboard() {
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-4">
-          {language === 'vi' ? 'Thống kê tổng quan' : 'Overview Statistics'}
+          {language === 'vie' 
+            ? 'Thống kê tổng quan' 
+            : language === 'spa'
+              ? 'Estadísticas generales'
+              : 'Overview Statistics'}
         </h2>
 
         {isLoading ? (
@@ -89,53 +93,85 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {language === 'vi' ? 'Sản phẩm' : 'Products'}
+                {language === 'vie' 
+                  ? 'Sản phẩm' 
+                  : language === 'spa'
+                    ? 'Productos'
+                    : 'Products'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.products}</p>
               <Link
                 href="/admin/products"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {language === 'vi' ? 'Quản lý →' : 'Manage →'}
+                {language === 'vie' 
+                  ? 'Quản lý →' 
+                  : language === 'spa'
+                    ? 'Administrar →'
+                    : 'Manage →'}
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {language === 'vi' ? 'Người dùng' : 'Users'}
+                {language === 'vie' 
+                  ? 'Người dùng' 
+                  : language === 'spa'
+                    ? 'Usuarios'
+                    : 'Users'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.users}</p>
               <Link
                 href="/admin/users"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {language === 'vi' ? 'Quản lý →' : 'Manage →'}
+                {language === 'vie' 
+                  ? 'Quản lý →' 
+                  : language === 'spa'
+                    ? 'Administrar →'
+                    : 'Manage →'}
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {language === 'vi' ? 'Đơn hàng' : 'Orders'}
+                {language === 'vie' 
+                  ? 'Đơn hàng' 
+                  : language === 'spa'
+                    ? 'Pedidos'
+                    : 'Orders'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.orders}</p>
               <Link
                 href="/admin/orders"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {language === 'vi' ? 'Quản lý →' : 'Manage →'}
+                {language === 'vie' 
+                  ? 'Quản lý →' 
+                  : language === 'spa'
+                    ? 'Administrar →'
+                    : 'Manage →'}
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {language === 'vi' ? 'Doanh thu' : 'Revenue'}
+                {language === 'vie' 
+                  ? 'Doanh thu' 
+                  : language === 'spa'
+                    ? 'Ingresos'
+                    : 'Revenue'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{formatCurrency(stats.revenue)}</p>
               <Link
                 href="/admin/orders"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {language === 'vi' ? 'Xem chi tiết →' : 'View details →'}
+                {language === 'vie' 
+                  ? 'Xem chi tiết →' 
+                  : language === 'spa'
+                    ? 'Ver detalles →'
+                    : 'View details →'}
               </Link>
             </div>
           </div>
@@ -145,7 +181,11 @@ function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">
-            {language === 'vi' ? 'Sản phẩm mới nhất' : 'Latest Products'}
+            {language === 'vie' 
+              ? 'Sản phẩm mới nhất' 
+              : language === 'spa'
+                ? 'Últimos productos'
+                : 'Latest Products'}
           </h2>
           {isLoading ? (
             <div className="flex justify-center items-center h-32">
@@ -165,11 +205,19 @@ function AdminDashboard() {
                     <div>
                       {product.isPublished ? (
                         <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                          {language === 'vi' ? 'Công khai' : 'Public'}
+                          {language === 'vie' 
+                            ? 'Công khai' 
+                            : language === 'spa'
+                              ? 'Público'
+                              : 'Public'}
                         </span>
                       ) : (
                         <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
-                          {language === 'vi' ? 'Nháp' : 'Draft'}
+                          {language === 'vie' 
+                            ? 'Nháp' 
+                            : language === 'spa'
+                              ? 'Borrador'
+                              : 'Draft'}
                         </span>
                       )}
                     </div>
@@ -179,14 +227,22 @@ function AdminDashboard() {
             </ul>
           ) : (
             <p className="text-gray-500 text-center py-4">
-              {language === 'vi' ? 'Chưa có sản phẩm nào' : 'No products yet'}
+              {language === 'vie' 
+                ? 'Chưa có sản phẩm nào' 
+                : language === 'spa'
+                  ? 'No hay productos todavía'
+                  : 'No products yet'}
             </p>
           )}
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">
-            {language === 'vi' ? 'Tác vụ nhanh' : 'Quick Actions'}
+            {language === 'vie' 
+              ? 'Tác vụ nhanh' 
+              : language === 'spa'
+                ? 'Acciones rápidas'
+                : 'Quick Actions'}
           </h2>
           <div className="space-y-3">
             <Link
@@ -210,12 +266,18 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {language === 'vi' ? 'Thêm sản phẩm mới' : 'Add New Product'}
+                    {language === 'vie' 
+                      ? 'Thêm sản phẩm mới' 
+                      : language === 'spa'
+                        ? 'Añadir nuevo producto'
+                        : 'Add New Product'}
                   </h3>
                   <p className="text-sm">
-                    {language === 'vi' 
+                    {language === 'vie' 
                       ? 'Tạo và quản lý sản phẩm của bạn' 
-                      : 'Create and manage your products'}
+                      : language === 'spa'
+                        ? 'Crear y gestionar tus productos'
+                        : 'Create and manage your products'}
                   </p>
                 </div>
               </div>
@@ -242,12 +304,18 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {language === 'vi' ? 'Thêm thông báo' : 'Add Notification'}
+                    {language === 'vie' 
+                      ? 'Thêm thông báo' 
+                      : language === 'spa'
+                        ? 'Añadir notificación'
+                        : 'Add Notification'}
                   </h3>
                   <p className="text-sm">
-                    {language === 'vi' 
+                    {language === 'vie' 
                       ? 'Tạo thông báo mới cho người dùng' 
-                      : 'Create new notifications for users'}
+                      : language === 'spa'
+                        ? 'Crear nuevas notificaciones para usuarios'
+                        : 'Create new notifications for users'}
                   </p>
                 </div>
               </div>
@@ -274,12 +342,18 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {language === 'vi' ? 'Thêm mã giảm giá' : 'Add Coupon'}
+                    {language === 'vie' 
+                      ? 'Thêm mã giảm giá' 
+                      : language === 'spa'
+                        ? 'Añadir cupón'
+                        : 'Add Coupon'}
                   </h3>
                   <p className="text-sm">
-                    {language === 'vi' 
+                    {language === 'vie' 
                       ? 'Tạo mã giảm giá mới cho hệ thống' 
-                      : 'Create new coupons for the system'}
+                      : language === 'spa'
+                        ? 'Crear nuevos cupones para el sistema'
+                        : 'Create new coupons for the system'}
                   </p>
                 </div>
               </div>
@@ -306,12 +380,18 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {language === 'vi' ? 'Quản lý đơn hàng' : 'Manage Orders'}
+                    {language === 'vie' 
+                      ? 'Quản lý đơn hàng' 
+                      : language === 'spa'
+                        ? 'Gestionar pedidos'
+                        : 'Manage Orders'}
                   </h3>
                   <p className="text-sm">
-                    {language === 'vi' 
+                    {language === 'vie' 
                       ? 'Xem và xử lý đơn hàng của khách hàng' 
-                      : 'View and process customer orders'}
+                      : language === 'spa'
+                        ? 'Ver y procesar pedidos de clientes'
+                        : 'View and process customer orders'}
                   </p>
                 </div>
               </div>
@@ -344,12 +424,18 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {language === 'vi' ? 'Cài đặt hệ thống' : 'System Settings'}
+                    {language === 'vie' 
+                      ? 'Cài đặt hệ thống' 
+                      : language === 'spa'
+                        ? 'Configuración del sistema'
+                        : 'System Settings'}
                   </h3>
                   <p className="text-sm">
-                    {language === 'vi' 
+                    {language === 'vie' 
                       ? 'Cấu hình và quản lý hệ thống' 
-                      : 'Configure and manage system'}
+                      : language === 'spa'
+                        ? 'Configurar y administrar el sistema'
+                        : 'Configure and manage system'}
                   </p>
                 </div>
               </div>
@@ -359,7 +445,11 @@ function AdminDashboard() {
               href="/"
               className="px-4 py-2 bg-white text-teal-600 rounded hover:bg-gray-100 transition-colors duration-200"
             >
-              {language === 'vi' ? 'Về trang chính' : 'Back to main page'}
+              {language === 'vie' 
+                ? 'Về trang chính' 
+                : language === 'spa'
+                  ? 'Volver a la página principal'
+                  : 'Back to main page'}
             </Link>
           </div>
         </div>
