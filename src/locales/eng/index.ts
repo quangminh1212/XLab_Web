@@ -20,6 +20,7 @@ import { support } from './support';
 import { payment } from './payment';
 import { voucher } from './voucher';
 import { about } from './about';
+import { coupon } from './coupon';
 
 export const eng = {
   ...auth,
@@ -43,5 +44,6 @@ export const eng = {
   ...support,
   ...payment,
   ...voucher,
-  ...about
+  ...about,
+  ...coupon
 }; 
