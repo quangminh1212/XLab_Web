@@ -33,5 +33,15 @@ export const voucher = {
   'voucher.newUser.usesLeft': '{usesLeft} uses left',
   
   // User sync status
-  'voucher.sync.lastSync': 'Last sync:'
+  'voucher.sync.lastSync': 'Last sync:',
+  
+  // Welcome50 voucher
+  'voucher.welcome50.title': 'Welcome offer for new members',
+  'voucher.welcome50.description': 'Welcome offer for new members',
+  'voucher.welcome50.expires': 'Expires: {date}',
+  'voucher.welcome50.used': 'Used: {used}/{total}',
+  'voucher.welcome50.timesPerUser': '{times} times/user',
+  'voucher.welcome50.unlimited': 'No limit',
+  'voucher.welcome50.minOrder': 'Minimum order: {amount}',
+  'voucher.welcome50.usesRemaining': '{count} uses remaining'
 }; 

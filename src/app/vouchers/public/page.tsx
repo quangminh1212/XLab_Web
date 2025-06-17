@@ -393,7 +393,15 @@ export default function PublicVouchersPage() {
                           />
                         </svg>
                         <span>
-                          Used: {voucher.userUsage.current}/{voucher.userUsage.limit}
+                          {t('voucher.welcome50.used', { 
+                            used: voucher.userUsage ? voucher.userUsage.current : 0, 
+                            total: voucher.userUsage ? voucher.userUsage.limit : 1 
+                          })} | {' '}
+                          {t('voucher.usesLeft', {
+                            count: voucher.userUsage
+                              ? voucher.userUsage.limit - voucher.userUsage.current
+                              : 1
+                          })}
                         </span>
                       </div>
                     )}
@@ -434,7 +442,7 @@ export default function PublicVouchersPage() {
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <span>{voucher.userLimit} times/user</span>
+                        <span>{t('voucher.welcome50.timesPerUser', { times: voucher.userLimit })}</span>
                       </div>
                     ) : (
                       <div className="flex items-center text-xs text-gray-600">
@@ -452,7 +460,7 @@ export default function PublicVouchersPage() {
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <span>Unlimited uses/user</span>
+                        <span>{t('voucher.welcome50.unlimited')}</span>
                       </div>
                     )}
                   </div>
@@ -504,7 +512,7 @@ export default function PublicVouchersPage() {
                             d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
                           />
                         </svg>
-                        <span>Số lượng: Không giới hạn</span>
+                        <span>{t('voucher.welcome50.unlimited')}</span>
                       </div>
                     </div>
                   )}
@@ -522,7 +530,7 @@ export default function PublicVouchersPage() {
                     voucher.userUsage.current >= voucher.userUsage.limit &&
                     activeTab === 'available' && (
                       <div className="mt-auto mb-2 text-xs px-3 py-2 bg-red-50 rounded-md text-center text-red-600 font-medium">
-                        Bạn đã sử dụng hết số lần cho phép
+                        {t('voucher.public.noUsesLeft')}
                       </div>
                     )}
                 </div>
@@ -538,14 +546,9 @@ export default function PublicVouchersPage() {
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
                         {t('voucher.minOrder')} {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} |
-                        Đã dùng:{' '}
-                        {voucher.userUsage
-                          ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
-                          : '0/1'} | {' '}
-                        {t('voucher.newUser.usesLeft', {
-                          usesLeft: voucher.userUsage
-                            ? voucher.userUsage.limit - voucher.userUsage.current
-                            : 1
+                        {t('voucher.welcome50.used', { 
+                          used: voucher.userUsage ? voucher.userUsage.current : 0, 
+                          total: voucher.userUsage ? voucher.userUsage.limit : 1 
                         })}
                       </span>
                       <span className="text-gray-500">
@@ -573,15 +576,10 @@ export default function PublicVouchersPage() {
                           {voucher.minOrder
                             ? `${t('voucher.minOrder')} ${formatCurrency(voucher.minOrder)}`
                             : ''}
-                          {voucher.minOrder ? ' | ' : ''}Đã dùng:{' '}
-                          {voucher.userUsage
-                            ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
-                            : '0/1'}{' '}
-                          | {' '}
-                          {t('voucher.usesLeft', {
-                            count: voucher.userUsage
-                              ? voucher.userUsage.limit - voucher.userUsage.current
-                              : 1
+                          {voucher.minOrder ? ' | ' : ''}
+                          {t('voucher.welcome50.used', { 
+                            used: voucher.userUsage ? voucher.userUsage.current : 0, 
+                            total: voucher.userUsage ? voucher.userUsage.limit : 1 
                           })}
                         </span>
                         <span className="text-gray-500">
@@ -611,22 +609,18 @@ export default function PublicVouchersPage() {
                         {voucher.minOrder
                           ? `${t('voucher.minOrder')} ${formatCurrency(voucher.minOrder)}`
                           : ''}
-                        {voucher.minOrder ? ' | ' : ''}Đã dùng:{' '}
-                        {voucher.userUsage
-                          ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
-                          : '1/1'}{' '}
-                        | <span className="text-orange-600 font-medium">{t('voucher.public.noUsesLeft')}</span>
+                        {voucher.minOrder ? ' | ' : ''}
+                        {t('voucher.welcome50.used', { 
+                          used: voucher.userUsage ? voucher.userUsage.current : 0, 
+                          total: voucher.userUsage ? voucher.userUsage.limit : 1 
+                        })} | <span className="text-orange-600 font-medium">{t('voucher.public.noUsesLeft')}</span>
                       </span>
-                      <span className="text-orange-600">100%</span>
                     </div>
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                       <div
                         className="h-full rounded-full bg-orange-500"
                         style={{ width: '100%' }}
                       ></div>
-                    </div>
-                                          <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-orange-700 bg-orange-50">
-                      Đã sử dụng hết số lần cho phép
                     </div>
                   </div>
                 )}

@@ -33,5 +33,15 @@ export const voucher = {
   'voucher.newUser.usesLeft': 'Còn {usesLeft} lượt',
   
   // User sync status
-  'voucher.sync.lastSync': 'Đồng bộ cuối:'
+  'voucher.sync.lastSync': 'Đồng bộ cuối:',
+  
+  // Welcome50 voucher
+  'voucher.welcome50.title': 'Ưu đãi chào mừng thành viên mới',
+  'voucher.welcome50.description': 'Ưu đãi chào mừng thành viên mới',
+  'voucher.welcome50.expires': 'Hết hạn: {date}',
+  'voucher.welcome50.used': 'Đã dùng: {used}/{total}',
+  'voucher.welcome50.timesPerUser': '{times} lần/người dùng',
+  'voucher.welcome50.unlimited': 'Không giới hạn',
+  'voucher.welcome50.minOrder': 'Đơn hàng tối thiểu: {amount}',
+  'voucher.welcome50.usesRemaining': 'Còn {count} lượt sử dụng'
 }; 
