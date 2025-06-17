@@ -5,7 +5,7 @@ export const warranty = {
   'warranty.policyTitle': 'Warranty Policy',
   'warranty.refundPolicyTitle': 'Refund Policy',
   'warranty.periodTitle': 'Warranty Period',
-  'warranty.period': 'Digital products are covered by lifetime warranty according to each product\'s specific requirements, covering functionality, account issues, and product defects.',
+  'warranty.period': 'Digital products are covered by lifetime warranty according to each product\'s specific requirements.',
   'warranty.processTitle': 'Warranty Process',
   'warranty.process': '<ol class="list-decimal pl-4 space-y-2"><li>Contact support via email or form below.</li><li>Provide order details and issue description.</li><li>Our team will assess within 24-48 hours.</li><li>If validated, we\'ll provide a solution or replacement.</li></ol>',
   'warranty.conditionsTitle': 'Warranty Conditions',

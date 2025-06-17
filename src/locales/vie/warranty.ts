@@ -5,7 +5,7 @@ export const warranty = {
   'warranty.policyTitle': 'Chính sách bảo hành',
   'warranty.refundPolicyTitle': 'Chính sách hoàn tiền',
   'warranty.periodTitle': 'Thời hạn bảo hành',
-  'warranty.period': 'Sản phẩm kỹ thuật số được bảo hành toàn thời gian sử dụng theo yêu cầu riêng của từng sản phẩm, bao gồm lỗi chức năng, tài khoản và sản phẩm.',
+  'warranty.period': 'Sản phẩm kỹ thuật số được bảo hành toàn thời gian sử dụng theo yêu cầu riêng của từng sản phẩm.',
   'warranty.processTitle': 'Quy trình bảo hành',
   'warranty.process': '<ol class="list-decimal pl-4 space-y-2"><li>Liên hệ đội hỗ trợ qua email hoặc biểu mẫu.</li><li>Cung cấp thông tin đơn hàng và mô tả vấn đề.</li><li>Đội kỹ thuật đánh giá trong 24-48 giờ.</li><li>Nếu xác nhận, chúng tôi sẽ cung cấp giải pháp hoặc thay thế.</li></ol>',
   'warranty.conditionsTitle': 'Điều kiện bảo hành',
