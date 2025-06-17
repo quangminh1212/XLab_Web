@@ -6,6 +6,7 @@ import { cart } from './cart';
 import { footer } from './footer';
 import { home } from './home';
 import { product } from './product';
+import { products } from './products';
 import { admin } from './admin';
 import { terms } from './terms';
 import { warranty } from './warranty';
@@ -28,6 +29,7 @@ export const vie = {
   ...footer,
   ...home,
   ...product,
+  ...products,
   ...admin,
   ...terms,
   ...warranty,
