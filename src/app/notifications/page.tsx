@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useNotifications, type Notification } from '@/contexts/NotificationContext';
-import NotificationDemo from './demo';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const NotificationsPage = () => {
@@ -247,9 +246,6 @@ const NotificationsPage = () => {
               )}
             </div>
           </div>
-
-          {/* Component Demo thông báo */}
-          <NotificationDemo />
 
           <div className="mt-6 text-center">
             <Link href="/" className="text-sm text-primary-600 hover:text-primary-800">
