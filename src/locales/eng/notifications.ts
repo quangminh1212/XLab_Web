@@ -17,5 +17,6 @@ export const notifications = {
   'notifications.backToHome': 'Back to home',
   'notifications.loading': 'Loading notifications...',
   'notifications.none': 'No notifications',
-  'notifications.viewDetailsLink': 'View details'
+  'notifications.viewDetailsLink': 'View details',
+  'notifications.justNow': 'Just now'
 }; 

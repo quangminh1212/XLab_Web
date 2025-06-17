@@ -17,5 +17,6 @@ export const notifications = {
   'notifications.backToHome': 'Quay lại trang chủ',
   'notifications.loading': 'Đang tải thông báo...',
   'notifications.none': 'Không có thông báo',
-  'notifications.viewDetailsLink': 'Xem chi tiết'
+  'notifications.viewDetailsLink': 'Xem chi tiết',
+  'notifications.justNow': 'Vừa xong'
 }; 
