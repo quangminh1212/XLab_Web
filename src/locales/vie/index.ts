@@ -19,6 +19,7 @@ import { test } from './test';
 import { support } from './support';
 import { payment } from './payment';
 import { voucher } from './voucher';
+import { about } from './about';
 
 export const vie = {
   ...auth,
@@ -41,5 +42,6 @@ export const vie = {
   ...test,
   ...support,
   ...payment,
-  ...voucher
+  ...voucher,
+  ...about
 }; 
