@@ -126,8 +126,16 @@ export async function GET(request: Request) {
         const demoNotifications = [
           {
             id: 'demo-1',
-            title: 'Chào mừng đến với XLab!',
-            content: 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
+            title: language === 'eng' 
+              ? 'Welcome to XLab!' 
+              : language === 'spa' 
+                ? '¡Bienvenido a XLab!' 
+                : 'Chào mừng đến với XLab!',
+            content: language === 'eng' 
+              ? 'This is a demo notification. Please login to see real notifications.' 
+              : language === 'spa' 
+                ? 'Esta es una notificación de demostración. Inicie sesión para ver notificaciones reales.' 
+                : 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
             type: 'system',
             time: formatTimeAgo(new Date().toISOString(), language as string),
             isRead: false,
@@ -156,16 +164,49 @@ export async function GET(request: Request) {
         }
         return true;
       })
-      .map((notification) => ({
-        id: notification.id,
-        title: notification.title,
-        content: notification.content,
-        type: notification.type,
-        time: formatTimeAgo(notification.createdAt, language as string),
-        isRead: notification.isRead[userId] || false,
-        link: notification.link,
-        priority: notification.priority,
-      }))
+      .map((notification) => {
+        // Translate notification content based on language
+        let title = notification.title;
+        let content = notification.content;
+
+        // Translate system notifications based on ID
+        if (notification.id === '1') {
+          if (language === 'eng') {
+            title = 'Special Promotion';
+            content = '50% off all software products this week!';
+          } else if (language === 'spa') {
+            title = 'Promoción Especial';
+            content = '¡50% de descuento en todos los productos de software esta semana!';
+          }
+        } else if (notification.id === '2') {
+          if (language === 'eng') {
+            title = 'New Update';
+            content = 'Version 2.0 has been released with many new features';
+          } else if (language === 'spa') {
+            title = 'Nueva Actualización';
+            content = 'La versión 2.0 ha sido lanzada con muchas nuevas características';
+          }
+        } else if (notification.id === '3') {
+          if (language === 'eng') {
+            title = 'System Notification';
+            content = 'The system will undergo maintenance at 22:00 tonight. Sorry for the inconvenience.';
+          } else if (language === 'spa') {
+            title = 'Notificación del Sistema';
+            content = 'El sistema estará en mantenimiento a las 22:00 esta noche. Disculpe las molestias.';
+          }
+        }
+
+        return {
+          id: notification.id,
+          title: title,
+          content: content,
+          type: notification.type,
+          time: formatTimeAgo(notification.createdAt, language as string),
+          isRead: notification.isRead[userId] || false,
+          link: notification.link,
+          priority: notification.priority,
+        };
+      })
       .sort((a, b) => {
         // Sắp xếp theo độ ưu tiên và thời gian
         const priorityOrder = { high: 3, medium: 2, low: 1 };
