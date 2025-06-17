@@ -14,5 +14,11 @@ export const auth = {
   'nav.login': 'Đăng nhập',
   'nav.logout': 'Đăng xuất',
   'nav.account': 'Tài khoản',
-  'nav.admin': 'Quản trị'
+  'nav.admin': 'Quản trị',
+  'auth.login.title': 'Đăng nhập',
+  'auth.register.title': 'Tạo tài khoản mới',
+  'auth.register.or': 'Hoặc đăng ký với',
+  'auth.register.newsletter': 'Nhận các ưu đãi và thông báo đặc biệt',
+  'auth.register.haveAccount': 'Đã có tài khoản?',
+  'auth.login.forgotPassword': 'Quên mật khẩu?'
 }; 

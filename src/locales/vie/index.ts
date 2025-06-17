@@ -12,6 +12,12 @@ import { warranty } from './warranty';
 import { testimonials } from './testimonials';
 import { notifications } from './notifications';
 import { orders } from './orders';
+import { system } from './system';
+import { placeholder } from './placeholder';
+import { test } from './test';
+import { support } from './support';
+import { payment } from './payment';
+import { voucher } from './voucher';
 
 export const vie = {
   ...auth,
@@ -27,5 +33,11 @@ export const vie = {
   ...warranty,
   ...testimonials,
   ...notifications,
-  ...orders
+  ...orders,
+  ...system,
+  ...placeholder,
+  ...test,
+  ...support,
+  ...payment,
+  ...voucher
 }; 
