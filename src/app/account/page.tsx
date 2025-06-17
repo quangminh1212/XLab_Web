@@ -45,21 +45,18 @@ interface Coupon {
   endDate: string;
 }
 
-// This would normally come from a database or API
-const userProfile = {
-  name: 'Nguyễn Văn A',
-  email: 'nguyenvana@example.com',
-  avatar: '/images/avatar-placeholder.svg',
-  memberSince: '01/01/2023',
-  licenseCount: 0, // Đặt thành 0 vì chưa có sản phẩm
-  phone: '',
-};
-
 export default function AccountPage() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
   const [imageError, setImageError] = useState(false);
-  const [profile, setProfile] = useState(userProfile);
+  const [profile, setProfile] = useState({
+    name: '',
+    email: '',
+    avatar: '/images/avatar-placeholder.svg',
+    memberSince: new Date().toLocaleDateString('vi-VN'),
+    licenseCount: 0,
+    phone: '',
+  });
   const [isSaving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [purchaseHistory, setPurchaseHistory] = useState<Order[]>([]);
@@ -146,13 +143,12 @@ export default function AccountPage() {
 
       // Khởi tạo thông tin cơ bản từ session
       const updatedProfile = {
-        ...userProfile,
-        name: session.user.name || userProfile.name,
-        email: session.user.email || userProfile.email,
+        name: session.user.name || '',
+        email: session.user.email || '',
         avatar: session.user.image || '/images/avatar-placeholder.svg',
-        // Sử dụng thông tin bổ sung từ session nếu có
-        phone: session.user.phone || userProfile.phone,
-        memberSince: session.user.memberSince || userProfile.memberSince,
+        memberSince: session.user.memberSince || new Date().toLocaleDateString('vi-VN'),
+        licenseCount: 0,
+        phone: session.user.phone || '',
       };
 
       // Kiểm tra xem có thông tin đã lưu trong localStorage không

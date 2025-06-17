@@ -114,7 +114,7 @@ export async function GET() {
           id: 'XL-' + Math.floor(100000 + Math.random() * 900000).toString(),
           userId: 'mock-user',
           userName: 'Test User',
-          userEmail: 'test@example.com',
+          userEmail: 'xlab.rnd@gmail.com',
           items: [
             {
               productId: 'chatgpt',
@@ -135,7 +135,7 @@ export async function GET() {
           id: 'XL-' + Math.floor(100000 + Math.random() * 900000).toString(),
           userId: 'mock-user',
           userName: 'Test User',
-          userEmail: 'test@example.com',
+          userEmail: 'xlab.rnd@gmail.com',
           items: [
             {
               productId: 'grok',
