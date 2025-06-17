@@ -35,20 +35,36 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     
     // Check for saved language preference after component is mounted
     const savedLanguage = localStorage.getItem('language') as LanguageKeys;
+    
+    // Ensure we use a valid language or fallback to Vietnamese
     if (savedLanguage && availableLanguages.includes(savedLanguage)) {
       setLanguageState(savedLanguage);
+    } else {
+      // Explicitly set to Vietnamese if no valid language is saved
+      setLanguageState('vie');
+      localStorage.setItem('language', 'vie');
     }
+    
+    // Force language refresh
+    document.documentElement.lang = savedLanguage === 'eng' ? 'en' : 'vi';
   }, []);
 
   useEffect(() => {
     // Only update localStorage after mounting to prevent hydration mismatch
     if (isMounted) {
       localStorage.setItem('language', language);
+      
+      // Update HTML lang attribute when language changes
+      document.documentElement.lang = language === 'eng' ? 'en' : 'vi';
+      
+      // Force a rerender of critical components by setting a data attribute
+      document.documentElement.setAttribute('data-language', language);
     }
   }, [language, isMounted]);
 
   const setLanguage = (lang: LanguageKeys) => {
     if (availableLanguages.includes(lang)) {
+      console.log('Changing language to:', lang);
       setLanguageState(lang);
     }
   };
