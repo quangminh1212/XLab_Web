@@ -51,7 +51,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
                 className="object-cover rounded-sm"
               />
             </div>
-            <span>VIE</span>
+            <span>Tiếng Việt</span>
           </>
         ) : (
           <>
@@ -64,7 +64,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
                 className="object-cover rounded-sm"
               />
             </div>
-            <span>ENG</span>
+            <span>English</span>
           </>
         )}
         <svg 
@@ -79,7 +79,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 py-1 w-28 bg-white rounded-md shadow-lg z-20 border border-gray-200">
+        <div className="absolute right-0 mt-2 py-1 w-40 bg-white rounded-md shadow-lg z-20 border border-gray-200">
           <button
             onClick={() => changeLanguage('vie')}
             className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'vie' ? 'bg-gray-100' : ''}`}
@@ -93,7 +93,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
                 className="object-cover rounded-sm"
               />
             </div>
-            <span>VIE</span>
+            <span>Tiếng Việt</span>
           </button>
           <button
             onClick={() => changeLanguage('eng')}
@@ -108,7 +108,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
                 className="object-cover rounded-sm"
               />
             </div>
-            <span>ENG</span>
+            <span>English</span>
           </button>
         </div>
       )}
