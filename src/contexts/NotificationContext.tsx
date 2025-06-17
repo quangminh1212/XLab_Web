@@ -37,7 +37,7 @@ export const useNotifications = () => {
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Tính toán số thông báo chưa đọc
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -45,7 +45,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Tải thông báo từ API
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('/api/notifications');
+      const response = await fetch(`/api/notifications?language=${language}`);
       if (response.ok) {
         const data = await response.json();
         setNotifications(data.notifications || []);
@@ -116,10 +116,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setNotifications((prev) => [newNotification, ...prev]);
   };
 
-  // Tải thông báo khi component mount
+  // Tải thông báo khi component mount hoặc khi ngôn ngữ thay đổi
   useEffect(() => {
     fetchNotifications();
-  }, []);
+  }, [language]);
 
   const value = {
     notifications,

@@ -81,21 +81,33 @@ async function saveNotifications(notifications: Notification[]) {
 }
 
 // Format thời gian hiển thị
-function formatTimeAgo(dateString: string): string {
+function formatTimeAgo(dateString: string, language: string = 'vie'): string {
   const now = new Date();
   const date = new Date(dateString);
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   if (diffInSeconds < 60) {
+    // Vừa xong / Just now / Ahora mismo
+    if (language === 'eng') return 'Just now';
+    if (language === 'spa') return 'Ahora mismo';
     return 'Vừa xong';
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
+    // X phút trước / X minutes ago / Hace X minutos
+    if (language === 'eng') return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    if (language === 'spa') return `Hace ${minutes} minuto${minutes !== 1 ? 's' : ''}`;
     return `${minutes} phút trước`;
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
+    // X giờ trước / X hours ago / Hace X horas
+    if (language === 'eng') return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    if (language === 'spa') return `Hace ${hours} hora${hours !== 1 ? 's' : ''}`;
     return `${hours} giờ trước`;
   } else {
     const days = Math.floor(diffInSeconds / 86400);
+    // X ngày trước / X days ago / Hace X días
+    if (language === 'eng') return `${days} day${days !== 1 ? 's' : ''} ago`;
+    if (language === 'spa') return `Hace ${days} día${days !== 1 ? 's' : ''}`;
     return `${days} ngày trước`;
   }
 }
@@ -104,6 +116,8 @@ function formatTimeAgo(dateString: string): string {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+    const url = new URL(request.url);
+    const language = url.searchParams.get('language') || 'vie';
 
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
@@ -115,7 +129,7 @@ export async function GET(request: Request) {
             title: 'Chào mừng đến với XLab!',
             content: 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
             type: 'system',
-            time: 'Vừa xong',
+            time: formatTimeAgo(new Date().toISOString(), language as string),
             isRead: false,
             priority: 'medium',
           },
@@ -147,7 +161,7 @@ export async function GET(request: Request) {
         title: notification.title,
         content: notification.content,
         type: notification.type,
-        time: formatTimeAgo(notification.createdAt),
+        time: formatTimeAgo(notification.createdAt, language as string),
         isRead: notification.isRead[userId] || false,
         link: notification.link,
         priority: notification.priority,
