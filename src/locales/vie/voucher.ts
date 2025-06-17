@@ -24,7 +24,7 @@ export const voucher = {
   'voucher.yourVouchers': 'Voucher của bạn',
   'voucher.viewAll': 'Xem tất cả',
   'voucher.expiryDate': 'Hết hạn:',
-  'voucher.usesLeft': 'Còn {count}/{limit} lần sử dụng',
+  'voucher.usesLeft': 'Còn {count} lượt sử dụng',
   'voucher.minOrder': 'Đơn hàng tối thiểu:',
   'voucher.noLimit': 'Không giới hạn',
   

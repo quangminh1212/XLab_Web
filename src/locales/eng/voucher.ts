@@ -24,7 +24,7 @@ export const voucher = {
   'voucher.yourVouchers': 'Your Vouchers',
   'voucher.viewAll': 'View all',
   'voucher.expiryDate': 'Expires:',
-  'voucher.usesLeft': '{count}/{limit} uses left',
+  'voucher.usesLeft': '{count} uses left',
   'voucher.minOrder': 'Minimum order:',
   'voucher.noLimit': 'No limit',
   
