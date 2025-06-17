@@ -17,6 +17,7 @@ interface OrderItem {
   originalPrice: number;
   licenseKey: string;
   expiryDate: string;
+  quantity?: number;
 }
 
 interface Order {
@@ -899,6 +900,10 @@ export default function AccountPage() {
                               <span className="font-semibold">{formatCurrency(item.price)}</span>
                             </div>
                             <div className="flex justify-between items-center mb-2">
+                              <span className="text-gray-600">{t('account.quantity')}</span>
+                              <span className="font-semibold">{item.quantity || 1}</span>
+                            </div>
+                            <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.savingsFromSale')}</span>
                               <span className="font-semibold text-green-600">
                                 {formatCurrency(item.originalPrice - item.price)}
@@ -1027,6 +1032,12 @@ export default function AccountPage() {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
+                            {t('account.quantity')}
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             {t('account.activationDate')}
                           </th>
                           <th
@@ -1067,6 +1078,11 @@ export default function AccountPage() {
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-900 font-mono">
                                   {item.licenseKey}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-900">
+                                  {item.quantity || 1}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
@@ -1163,27 +1179,18 @@ export default function AccountPage() {
                           </div>
                         </div>
                         <div className="p-4">
-                          <div className="divide-y divide-gray-200">
+                          <div className="space-y-4">
                             {order.items.map((item, itemIndex) => (
-                              <div
-                                key={itemIndex}
-                                className="py-3 flex flex-col md:flex-row md:justify-between md:items-center"
-                              >
-                                <div className="mb-2 md:mb-0">
+                              <div key={itemIndex} className="flex flex-col sm:flex-row sm:items-center justify-between">
+                                <div className="space-y-1">
                                   <div className="font-medium">{item.name}</div>
-                                  <div className="text-sm text-gray-600">{item.version}</div>
+                                  <div className="text-sm text-gray-500">{item.version}</div>
+                                  <div className="text-sm text-gray-500">
+                                    {t('account.quantity')}: {item.quantity || 1}
+                                  </div>
                                 </div>
-                                <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
-                                  <div className="text-sm">
-                                    <span className="text-gray-600">{t('account.price')}: </span>
-                                    <span className="font-semibold">
-                                      {formatCurrency(item.price)}
-                                    </span>
-                                  </div>
-                                  <div className="text-sm">
-                                    <span className="text-gray-600">{t('account.expiryDate')}: </span>
-                                    <span className="font-semibold">{item.expiryDate}</span>
-                                  </div>
+                                <div className="text-right mt-2 sm:mt-0">
+                                  <div className="font-semibold">{formatCurrency(item.price)}</div>
                                 </div>
                               </div>
                             ))}
