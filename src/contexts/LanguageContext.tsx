@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { translations, LanguageKeys, defaultLanguage, getTranslation } from '../locales';
+import { LanguageKeys, defaultLanguage, getTranslation } from '../locales';
 
 type LanguageContextType = {
   language: LanguageKeys;
