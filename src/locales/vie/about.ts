@@ -1,4 +1,5 @@
 export const about = {
+  'about.title': 'Về XLab',
   'about.pageTitle': 'Về XLab',
   'about.pageSubtitle': 'Chúng tôi đang xây dựng tương lai của các giải pháp công nghệ',
   'about.ourStory': 'Câu chuyện của chúng tôi',

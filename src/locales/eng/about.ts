@@ -1,4 +1,5 @@
 export const about = {
+  'about.title': 'About XLab',
   'about.pageTitle': 'About XLab',
   'about.pageSubtitle': 'We are building the future of technology solutions',
   'about.ourStory': 'Our Story',
