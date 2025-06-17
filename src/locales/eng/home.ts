@@ -1,7 +1,8 @@
 export const home = {
-  'home.slogan': 'Optimize efficiency, minimize cost!',
-  'home.search': 'Search for software, applications...',
-  'home.loadMore': 'Load More',
-  'home.testimonials': 'Customer Reviews',
-  'home.viewAllTestimonials': 'View All Reviews'
+  'home.title': 'Welcome to XLab',
+  'home.subtitle': 'Advanced software solutions for modern businesses',
+  'home.featuredProducts': 'Featured Products',
+  'home.viewAll': 'View All Products',
+  'home.testimonials': 'What Our Customers Say',
+  'home.services': 'Our Services'
 }; 

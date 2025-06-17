@@ -26,5 +26,15 @@ export const footer = {
   'footer.blog': 'Blog',
   'footer.documentation': 'Documentation',
   'footer.faq': 'FAQ',
-  'footer.followUs': 'Follow Us'
+  'footer.followUs': 'Follow Us',
+  'footer.allRightsReserved': 'All rights reserved',
+  'footer.privacyPolicy': 'Privacy Policy',
+  'footer.termsOfService': 'Terms of Service',
+  'footer.contactUs': 'Contact Us',
+  'footer.subscribe': 'Subscribe to our newsletter',
+  'footer.subscribeDescription': 'Get the latest news and updates',
+  'footer.yourEmail': 'Your email',
+  'footer.subscribeButton': 'Subscribe',
+  'footer.about': 'About',
+  'footer.contact': 'Contact'
 }; 

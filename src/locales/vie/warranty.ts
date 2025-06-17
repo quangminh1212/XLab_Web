@@ -1,4 +1,4 @@
 export const warranty = {
-  'warranty.title': 'Bảo Hành',
-  'warranty.subtitle': 'XLab sẵn sàng hỗ trợ tư vấn và xử lý bảo hành suốt 365 ngày!'
+  'warranty.title': 'Chính sách bảo hành',
+  'warranty.description': 'Chính sách bảo hành và chi tiết dịch vụ của chúng tôi'
 }; 

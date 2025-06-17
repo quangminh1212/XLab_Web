@@ -1,16 +1,10 @@
 export const cart = {
-  'cart.title': 'Shopping Cart',
+  'cart.title': 'Your Cart',
   'cart.empty': 'Your cart is empty',
-  'cart.continueShopping': 'Continue Shopping',
   'cart.checkout': 'Checkout',
   'cart.subtotal': 'Subtotal',
-  'cart.discount': 'Discount',
   'cart.total': 'Total',
-  'cart.remove': 'Remove',
-  'cart.quantity': 'Quantity',
-  'cart.price': 'Price',
-  'cart.voucher': 'Discount Code',
-  'cart.applyVoucher': 'Apply',
+  'cart.discount': 'Discount',
   'cart.apply': 'Apply',
-  'cart.enterCoupon': 'Enter coupon code'
+  'cart.continue': 'Continue Shopping'
 }; 

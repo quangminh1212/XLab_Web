@@ -1,7 +1,7 @@
 export const cart = {
-  'cart.title': 'Giỏ hàng',
+  'cart.title': 'Giỏ hàng của bạn',
   'cart.empty': 'Giỏ hàng của bạn đang trống',
-  'cart.continueShopping': 'Tiếp tục mua sắm',
+  'cart.continue': 'Tiếp tục mua sắm',
   'cart.checkout': 'Thanh toán',
   'cart.subtotal': 'Tạm tính',
   'cart.discount': 'Giảm giá',

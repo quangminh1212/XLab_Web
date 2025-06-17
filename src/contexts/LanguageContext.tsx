@@ -1,108 +1,68 @@
 'use client';
 
-import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { locales } from '../locales';
-
-type Language = 'vi' | 'en';
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { translations, LanguageKeys, defaultLanguage, getTranslation } from '../locales';
 
 type LanguageContextType = {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: (key: string, params?: Record<string, any>) => string;
+  language: LanguageKeys;
+  setLanguage: (lang: LanguageKeys) => void;
+  t: (key: string, params?: Record<string, string | number>) => string;
+  availableLanguages: LanguageKeys[];
 };
+
+const LanguageContext = createContext<LanguageContextType>({
+  language: defaultLanguage,
+  setLanguage: () => {},
+  t: (key: string) => key,
+  availableLanguages: ['vie', 'eng'],
+});
 
 interface LanguageProviderProps {
   children: ReactNode;
 }
 
-// Create a context
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-// Use the imported translations
-const translations: Record<Language, Record<string, string>> = locales;
-
-export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  // Default to Vietnamese
-  const [language, setLanguageState] = useState<Language>('vi');
-
-  // Initialize language from localStorage when component is mounted
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
-      setLanguageState(savedLanguage);
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
+  const [language, setLanguageState] = useState<LanguageKeys>(() => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('language') as LanguageKeys;
+      return savedLanguage || defaultLanguage;
     }
-  }, []);
-
-  // Save language to localStorage when changed
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('language', lang);
-    document.documentElement.lang = lang;
-  };
-
-  // Translation function
-  const t = (key: string, params?: Record<string, any>): string => {
-    try {
-      // Check for valid key
-      if (typeof key !== 'string' || !key) {
-        console.warn('Invalid translation key:', key);
-        return '';
-      }
-      
-      // Get translation string or return key if not found
-      let text = translations[language]?.[key] || key;
-      
-      // Replace parameters if any
-      if (params && typeof params === 'object' && Object.keys(params).length > 0) {
-        Object.entries(params).forEach(([param, value]) => {
-          const regex = new RegExp(`\\{${param}\\}`, 'g');
-          const strValue = convertValueToString(value, param);
-          text = text.replace(regex, strValue);
-        });
-      }
-      
-      return text;
-    } catch (error) {
-      console.error('Translation error:', error);
-      return typeof key === 'string' ? key : '';
-    }
-  };
+    return defaultLanguage;
+  });
   
-  // Helper function to safely convert values to string
-  function convertValueToString(value: any, paramName: string): string {
-    if (value === undefined || value === null) {
-      return '';
+  const availableLanguages: LanguageKeys[] = ['vie', 'eng'];
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', language);
     }
-    
-    if (typeof value === 'object') {
-      try {
-        return String(value);
-      } catch (err) {
-        console.warn(`Error converting object param ${paramName}:`, err);
-        return '';
-      }
+  }, [language]);
+
+  const setLanguage = (lang: LanguageKeys) => {
+    if (availableLanguages.includes(lang)) {
+      setLanguageState(lang);
     }
-    
-    try {
-      return String(value);
-    } catch (err) {
-      console.warn(`Error converting param ${paramName}:`, err);
-      return '';
+  };
+
+  const t = (key: string, params?: Record<string, string | number>) => {
+    // Get translation string or return key if not found
+    let text = getTranslation(key, language);
+
+    // Replace parameters if any
+    if (params && typeof params === 'object' && Object.keys(params).length > 0) {
+      Object.keys(params).forEach((param) => {
+        text = text.replace(`{${param}}`, String(params[param]));
+      });
     }
-  }
+
+    return text;
+  };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, availableLanguages }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
-// Hook to use this context
-export const useLanguage = (): LanguageContextType => {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
+export const useLanguage = () => useContext(LanguageContext);

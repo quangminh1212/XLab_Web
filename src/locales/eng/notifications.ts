@@ -1,7 +1,9 @@
 export const notifications = {
   'notifications.title': 'Notifications',
-  'notifications.markAllRead': 'Mark all as read',
-  'notifications.none': 'No notifications',
+  'notifications.markAllAsRead': 'Mark all as read',
+  'notifications.viewAll': 'View all',
+  'notifications.noNotifications': 'No new notifications',
+  'notifications.new': 'New',
   'notifications.type.promotion': 'Promotion',
   'notifications.type.update': 'Update',
   'notifications.type.order': 'Order',

@@ -1,7 +1,9 @@
 export const notifications = {
   'notifications.title': 'Thông báo',
-  'notifications.markAllRead': 'Đánh dấu tất cả đã đọc',
-  'notifications.none': 'Không có thông báo nào',
+  'notifications.markAllAsRead': 'Đánh dấu tất cả là đã đọc',
+  'notifications.viewAll': 'Xem tất cả',
+  'notifications.noNotifications': 'Không có thông báo mới',
+  'notifications.new': 'Mới',
   'notifications.type.promotion': 'Khuyến mãi',
   'notifications.type.update': 'Cập nhật',
   'notifications.type.order': 'Đơn hàng',

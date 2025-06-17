@@ -25,5 +25,8 @@ export const contact = {
   'contact.connectWithUs': 'Connect With Us',
   'contact.required': 'Required',
   'contact.successMessage': 'Thank you for contacting us! We will respond as soon as possible.',
-  'contact.errorMessage': 'An error occurred while submitting the form. Please try again later.'
+  'contact.errorMessage': 'An error occurred while submitting the form. Please try again later.',
+  'contact.form.name': 'Your Name',
+  'contact.form.subject': 'Subject',
+  'contact.hours': 'Business Hours'
 }; 
