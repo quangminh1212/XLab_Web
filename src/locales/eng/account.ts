@@ -103,6 +103,28 @@ export const account = {
   'account.active': 'Active',
   'account.copy': 'Copy',
   'account.extend': 'Extend',
+  'account.completed': 'Completed',
+  'account.taiHoaDonPDF': 'Download PDF invoice',
+  
+  // Order page translations
+  'orders.pending': 'Pending',
+  'orders.processing': 'Processing',
+  'orders.completed': 'Completed',
+  'orders.cancelled': 'Cancelled',
+  'orders.refunded': 'Refunded',
+  'orders.needLogin': 'Please sign in',
+  'orders.needLoginDesc': 'You need to sign in to view your order history',
+  'orders.login': 'Sign in',
+  'orders.history': 'Order History',
+  'orders.noOrders': 'No orders yet',
+  'orders.noOrdersDesc': 'You haven\'t made any transactions yet. Explore our products.',
+  'orders.exploreProducts': 'Explore Products',
+  'orders.orderCode': 'Order Code',
+  'orders.orderDate': 'Order Date',
+  'orders.quantity': 'Quantity',
+  'orders.total': 'Total',
+  'orders.viewDetails': 'View Details',
+  'orders.totalSavings': 'Total savings',
   
   // Deposit page translations
   'account.deposit.title': 'Deposit to Account',
