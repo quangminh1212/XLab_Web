@@ -20,5 +20,5 @@ export const products = {
   'products.pageTitle': 'Products | XLab',
   'products.noProducts': 'No matching products found.',
   'products.search': 'Search products',
-  'products.purchasesPerWeek': '/week'
+  'products.purchasesPerWeek': '{count}/week'
 }; 
