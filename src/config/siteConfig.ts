@@ -1,23 +1,23 @@
 /**
- * Cấu hình thông tin trang web
- * File này chứa các thông tin cá nhân và cấu hình chung cho trang web XLab
+ * Website Configuration
+ * This file contains personal information and general configuration for XLab website
  */
 
 export const siteConfig = {
-  // Thông tin cơ bản
+  // Basic information
   name: 'XLab',
-  description: 'Tối ưu hiệu quả, tối thiểu chi phí!',
+  description: 'Optimize efficiency, minimize costs!',
   url: 'https://xlab.vn',
 
-  // Thông tin liên hệ
+  // Contact information
   contact: {
     email: 'xlab.rnd@gmail.com',
-    phone: '+84 866 528 014', // Thay đổi thành số điện thoại thật
-    address: 'Long Biên, Hà Nội',
+    phone: '+84 866 528 014', // Change to real phone number
+    address: 'Long Bien, Hanoi',
     workingHours: ' 24/7',
   },
 
-  // Mạng xã hội
+  // Social media
   social: {
     facebook: 'https://facebook.com/xlabvn',
     twitter: 'https://twitter.com/xlabvn',
@@ -25,82 +25,82 @@ export const siteConfig = {
     linkedin: 'https://linkedin.com/company/xlabvn',
   },
 
-  // Cấu hình pháp lý
+  // Legal configuration
   legal: {
     companyName: 'XLab Technologies',
-    taxId: '0123456789', // Thay đổi thành mã số thuế thật
-    registrationNumber: 'REG123456789', // Thay đổi thành số đăng ký kinh doanh thật
+    taxId: '0123456789', // Change to real tax ID
+    registrationNumber: 'REG123456789', // Change to real business registration number
     termsLastUpdated: '28/03/2025',
     privacyLastUpdated: '28/03/2025',
   },
 
-  // Cấu hình SEO
+  // SEO configuration
   seo: {
     titleTemplate: '%s | XLab',
-    defaultTitle: 'XLab - Tối ưu hiệu quả, tối thiểu chi phí!',
+    defaultTitle: 'XLab - Optimize efficiency, minimize costs!',
     defaultDescription:
-      'XLab cung cấp các ứng dụng, phần mềm chất lượng cao cho cá nhân và doanh nghiệp.',
+      'XLab provides high-quality applications and software for individuals and businesses.',
     twitterHandle: '@xlabvn',
     ogImage: '/images/og-image.jpg',
   },
 
-  // Cấu hình thanh toán
+  // Payment configuration
   payment: {
     currency: 'VND',
     supportedMethods: ['visa', 'mastercard', 'momo', 'zalopay', 'banking'],
-    vatRate: 10, // Thuế VAT tính theo %
+    vatRate: 10, // VAT rate in percentage
   },
 
-  // Mã đối tác và tracking
+  // Partner and tracking codes
   analytics: {
-    googleAnalyticsId: '', // Thêm Google Analytics ID
-    facebookPixelId: '', // Thêm Facebook Pixel ID
+    googleAnalyticsId: '', // Add Google Analytics ID
+    facebookPixelId: '', // Add Facebook Pixel ID
   },
 };
 
-// Danh sách các trang trong footer
+// List of pages in footer
 export const footerLinks = [
   {
-    title: 'Sản phẩm',
+    title: 'Products',
     links: [
-      { name: 'Tất cả sản phẩm', href: '/products' },
-      { name: 'Mới phát hành', href: '/products?sort=newest' },
-      { name: 'Phổ biến nhất', href: '/products?sort=popular' },
-      { name: 'Khuyến mãi', href: '/products?onSale=true' },
+      { name: 'All Products', href: '/products' },
+      { name: 'New Releases', href: '/products?sort=newest' },
+      { name: 'Most Popular', href: '/products?sort=popular' },
+      { name: 'On Sale', href: '/products?onSale=true' },
     ],
   },
   {
-    title: 'Hỗ trợ',
+    title: 'Support',
     links: [
-      { name: 'Liên hệ', href: '/contact' },
+      { name: 'Contact', href: '/contact' },
       { name: 'FAQ', href: '/faq' },
-      { name: 'Hướng dẫn sử dụng', href: '/guides' },
-      { name: 'Báo lỗi', href: '/support' },
+      { name: 'User Guides', href: '/guides' },
+      { name: 'Report Bug', href: '/support' },
     ],
   },
   {
-    title: 'Về chúng tôi',
+    title: 'About Us',
     links: [
-      { name: 'Giới thiệu', href: '/about' },
+      { name: 'About', href: '/about' },
       { name: 'Blog', href: '/blog' },
-      { name: 'Tuyển dụng', href: '/careers' },
-      { name: 'Đối tác', href: '/partners' },
+      { name: 'Careers', href: '/careers' },
+      { name: 'Partners', href: '/partners' },
     ],
   },
   {
-    title: 'Pháp lý',
+    title: 'Legal',
     links: [
-      { name: 'Điều khoản dịch vụ', href: '/terms' },
-      { name: 'Chính sách bảo mật', href: '/privacy' },
-      { name: 'Chính sách hoàn tiền', href: '/refund-policy' },
-      { name: 'Quyền sở hữu trí tuệ', href: '/ip-rights' },
+      { name: 'Terms of Service', href: '/terms' },
+      { name: 'Privacy Policy', href: '/privacy' },
+      { name: 'Refund Policy', href: '/refund-policy' },
+      { name: 'Intellectual Property', href: '/ip-rights' },
     ],
   },
 ];
 
-// Cấu hình đăng ký nhận tin
+// Newsletter subscription configuration
 export const newsletterConfig = {
-  title: 'Đăng ký nhận thông tin mới',
-  description: 'Nhận thông tin về sản phẩm mới, khuyến mãi và cập nhật từ XLab',
-  privacyText: 'Chúng tôi tôn trọng quyền riêng tư của bạn. Xem Chính sách Bảo mật của chúng tôi.',
+  title: 'Subscribe to our newsletter',
+  description: 'Receive information about new products, promotions, and updates from XLab',
+  privacyText: 'We respect your privacy. See our Privacy Policy.',
 };

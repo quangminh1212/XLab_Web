@@ -40,5 +40,35 @@ export const common = {
   'common.more': 'More',
   'common.less': 'Less',
   'common.yes': 'Yes',
-  'common.no': 'No'
+  'common.no': 'No',
+  
+  // Footer categories
+  'footer.products': 'Products',
+  'footer.allProducts': 'All Products',
+  'footer.newReleases': 'New Releases',
+  'footer.mostPopular': 'Most Popular',
+  'footer.onSale': 'On Sale',
+  
+  'footer.support': 'Support',
+  'footer.contact': 'Contact',
+  'footer.faq': 'FAQ',
+  'footer.userGuides': 'User Guides',
+  'footer.reportBug': 'Report Bug',
+  
+  'footer.aboutUs': 'About Us',
+  'footer.about': 'About',
+  'footer.blog': 'Blog',
+  'footer.careers': 'Careers',
+  'footer.partners': 'Partners',
+  
+  'footer.legal': 'Legal',
+  'footer.termsOfService': 'Terms of Service',
+  'footer.privacyPolicy': 'Privacy Policy',
+  'footer.refundPolicy': 'Refund Policy',
+  'footer.intellectualProperty': 'Intellectual Property',
+  
+  // Newsletter
+  'newsletter.title': 'Subscribe to our newsletter',
+  'newsletter.description': 'Receive information about new products, promotions, and updates from XLab',
+  'newsletter.privacyText': 'We respect your privacy. See our Privacy Policy.'
 }; 

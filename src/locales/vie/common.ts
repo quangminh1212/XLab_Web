@@ -2,7 +2,7 @@ export const common = {
   'button.getStarted': 'Bắt đầu',
   'button.learnMore': 'Tìm hiểu thêm',
   'button.viewDetails': 'Xem chi tiết',
-  'button.addToCart': 'Thêm vào giỏ',
+  'button.addToCart': 'Thêm vào giỏ hàng',
   'button.buyNow': 'Mua ngay',
   'button.download': 'Tải xuống',
   'button.contactUs': 'Liên hệ',
@@ -26,7 +26,7 @@ export const common = {
   'common.edit': 'Sửa',
   'common.close': 'Đóng',
   'common.add': 'Thêm',
-  'common.remove': 'Xóa bỏ',
+  'common.remove': 'Xóa',
   'common.back': 'Quay lại',
   'common.next': 'Tiếp theo',
   'common.submit': 'Gửi',
@@ -40,5 +40,35 @@ export const common = {
   'common.more': 'Xem thêm',
   'common.less': 'Thu gọn',
   'common.yes': 'Có',
-  'common.no': 'Không'
+  'common.no': 'Không',
+  
+  // Footer categories
+  'footer.products': 'Sản phẩm',
+  'footer.allProducts': 'Tất cả sản phẩm',
+  'footer.newReleases': 'Mới phát hành',
+  'footer.mostPopular': 'Phổ biến nhất',
+  'footer.onSale': 'Khuyến mãi',
+  
+  'footer.support': 'Hỗ trợ',
+  'footer.contact': 'Liên hệ',
+  'footer.faq': 'FAQ',
+  'footer.userGuides': 'Hướng dẫn sử dụng',
+  'footer.reportBug': 'Báo lỗi',
+  
+  'footer.aboutUs': 'Về chúng tôi',
+  'footer.about': 'Giới thiệu',
+  'footer.blog': 'Blog',
+  'footer.careers': 'Tuyển dụng',
+  'footer.partners': 'Đối tác',
+  
+  'footer.legal': 'Pháp lý',
+  'footer.termsOfService': 'Điều khoản dịch vụ',
+  'footer.privacyPolicy': 'Chính sách bảo mật',
+  'footer.refundPolicy': 'Chính sách hoàn tiền',
+  'footer.intellectualProperty': 'Quyền sở hữu trí tuệ',
+  
+  // Newsletter
+  'newsletter.title': 'Đăng ký nhận thông tin mới',
+  'newsletter.description': 'Nhận thông tin về sản phẩm mới, khuyến mãi và cập nhật từ XLab',
+  'newsletter.privacyText': 'Chúng tôi tôn trọng quyền riêng tư của bạn. Xem Chính sách Bảo mật của chúng tôi.'
 }; 

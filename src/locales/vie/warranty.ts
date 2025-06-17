@@ -33,5 +33,7 @@ export const warranty = {
   'warranty.ourMission': 'Cam kết hỗ trợ',
   'warranty.missionDescription': 'Chúng tôi cam kết cung cấp dịch vụ xuất sắc và đảm bảo sự hài lòng với sản phẩm. Đội ngũ chuyên gia sẽ nỗ lực giải quyết mọi vấn đề của bạn.',
   'warranty.contactNow': 'Liên hệ ngay',
-  'warranty.faq': 'Câu hỏi thường gặp'
+  'warranty.faq': 'Câu hỏi thường gặp',
+  'warranty.zaloHotline': 'Zalo/Hotline',
+  'warranty.email': 'Email'
 }; 

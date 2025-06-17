@@ -33,5 +33,7 @@ export const warranty = {
   'warranty.ourMission': 'Our Support Commitment',
   'warranty.missionDescription': 'We are committed to exceptional service and your satisfaction. Our expert team will work to resolve any issues you encounter.',
   'warranty.contactNow': 'Contact Us',
-  'warranty.faq': 'FAQs'
+  'warranty.faq': 'FAQs',
+  'warranty.zaloHotline': 'Zalo/Hotline',
+  'warranty.email': 'Email'
 }; 

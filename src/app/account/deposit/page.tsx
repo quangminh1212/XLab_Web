@@ -7,14 +7,16 @@ import Link from 'next/link';
 import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
 import { useBalance } from '@/contexts/BalanceContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { balance, refreshBalance } = useBalance();
+  const { t } = useLanguage();
 
-  // Lấy thông tin từ URL params
+  // Get information from URL params
   const suggestedAmount = searchParams?.get('amount');
   const redirectPath = searchParams?.get('redirect');
 
@@ -27,7 +29,7 @@ export default function DepositPage() {
 
   // Bank info constants
   const BANK_INFO = {
-    bankName: 'MBBank (Ngân hàng Quân đội)',
+    bankName: 'MBBank (Military Bank)',
     accountNumber: '669912122000',
     accountName: 'BACH MINH QUANG',
   };
@@ -67,19 +69,19 @@ export default function DepositPage() {
       if (response.ok && data.success) {
         console.log('✅ Transaction found and processed!', data);
 
-        // Refresh balance từ context
+        // Refresh balance from context
         await refreshBalance();
 
         // Show success message
         alert(
-          `Giao dịch thành công! Đã nạp ${data.transaction.amount.toLocaleString('vi-VN')} VND vào tài khoản.`,
+          t('account.deposit.success', { amount: data.transaction.amount.toLocaleString() })
         );
 
-        // Redirect về checkout nếu có tham số redirect
+        // Redirect to checkout if redirect parameter exists
         if (redirectPath === 'checkout') {
           router.push('/checkout?skipInfo=true');
         } else {
-          // Generate new transaction code nếu không redirect
+          // Generate new transaction code if not redirecting
           generateTransactionCode();
         }
         setNotFound(false);
@@ -89,7 +91,7 @@ export default function DepositPage() {
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
-      alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
+      alert(t('account.deposit.transactionNotFound'));
     } finally {
       setIsChecking(false);
     }
@@ -98,22 +100,22 @@ export default function DepositPage() {
   const generateTransactionCode = () => {
     if (!session?.user?.email) return;
 
-    // Tạo timestamp và thêm suffix XLab
+    // Create timestamp and add XLab suffix
     const timestamp = Date.now();
     const txId = `${timestamp}XLABRND`;
     setTransactionId(txId);
 
-    // Tạo QR với mã giao dịch
+    // Create QR with transaction code
     generateQRCode(txId);
   };
 
   const generateQRCode = async (txId: string) => {
     try {
-      // Sử dụng thư viện vietnam-qr-pay để tạo VietQR chuẩn cho MBBank
+      // Use vietnam-qr-pay library to create standard VietQR for MBBank
       const qrPay = QRPay.initVietQR({
         bankBin: '970422', // MBBank bin code
         bankNumber: BANK_INFO.accountNumber,
-        purpose: txId, // Sử dụng transaction ID làm nội dung chuyển tiền
+        purpose: txId, // Use transaction ID as transfer content
       });
 
       const qrContent = qrPay.build();
@@ -133,7 +135,7 @@ export default function DepositPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,
@@ -144,13 +146,13 @@ export default function DepositPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert('Đã sao chép vào clipboard!');
+    alert(t('account.deposit.copiedToClipboard'));
   };
 
   const formatTimestamp = (timestamp: string) => {
     const epochTime = parseInt(timestamp);
     const date = new Date(epochTime);
-    return date.toLocaleString('vi-VN', {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -187,10 +189,10 @@ export default function DepositPage() {
                 />
               </svg>
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('account.deposit.title')}</h1>
           </div>
           <div>
-            <p className="text-gray-600">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
+            <p className="text-gray-600">{t('account.deposit.subtitle')}</p>
             {suggestedAmount && (
               <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm bg-teal-100 text-teal-800">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,7 +203,7 @@ export default function DepositPage() {
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Số tiền cần nạp: {formatCurrency(parseInt(suggestedAmount))}
+                {t('account.deposit.amountToDeposit')}: {formatCurrency(parseInt(suggestedAmount))}
               </div>
             )}
           </div>
@@ -219,7 +221,7 @@ export default function DepositPage() {
                       <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM19 13h-2v2h2v-2zM19 17h-2v2h2v-2zM17 13h-2v2h2v-2zM15 15h-2v2h2v-2zM17 17h-2v2h2v-2zM13 13h2v2h-2v-2zM13 17h2v2h-2v-2zM15 19h2v2h-2v-2zM13 19h2v2h-2v-2zM19 15h2v2h-2v-2zM21 13h2v2h-2v-2zM19 19h2v2h-2v-2z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Quét mã QR để chuyển khoản</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{t('account.deposit.scanQRTitle')}</h3>
                 </div>
 
                 {/* QR Code */}
@@ -243,7 +245,7 @@ export default function DepositPage() {
                     {isChecking ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                        <span>Đang kiểm tra giao dịch...</span>
+                        <span>{t('account.deposit.checkingPayment')}</span>
                       </>
                     ) : (
                       <>
@@ -260,20 +262,19 @@ export default function DepositPage() {
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        <span>Kiểm tra thanh toán</span>
+                        <span>{t('account.deposit.checkPayment')}</span>
                       </>
                     )}
                   </button>
 
                   {lastCheckTime && (
                     <p className="text-gray-500 text-sm mt-2">
-                      Lần kiểm tra cuối: {lastCheckTime.toLocaleTimeString('vi-VN')}
+                      {t('account.deposit.lastCheck')}: {lastCheckTime.toLocaleTimeString()}
                     </p>
                   )}
                   {notFound && (
                     <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded p-2">
-                      Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản
-                      hoặc liên hệ hỗ trợ.
+                      {t('account.deposit.transactionNotFound')}
                     </div>
                   )}
                 </div>
@@ -289,11 +290,11 @@ export default function DepositPage() {
                       />
                     </svg>
                     <span className="text-sm font-medium">
-                      Nhấn "Kiểm tra thanh toán" sau khi chuyển khoản
+                      {t('account.deposit.checkAfterTransfer')}
                     </span>
                   </div>
                   <div className="mt-2 text-center text-xs text-teal-700">
-                    Nếu lỗi, liên hệ Zalo <b>0866 528 014</b> để được hỗ trợ nhanh nhất.
+                    {t('account.deposit.supportContact', { phone: '0866 528 014' })}
                   </div>
                 </div>
               </div>
@@ -320,7 +321,7 @@ export default function DepositPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('account.deposit.currentBalance')}</h3>
               </div>
               <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
             </div>
@@ -343,17 +344,17 @@ export default function DepositPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Thông tin chuyển khoản</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('account.deposit.transferInfo')}</h3>
               </div>
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Ngân hàng</span>
+                  <span className="text-gray-600">{t('account.deposit.bank')}</span>
                   <span className="font-medium">{BANK_INFO.bankName}</span>
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Số tài khoản</span>
+                  <span className="text-gray-600">{t('account.deposit.accountNumber')}</span>
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-teal-600">
                       {BANK_INFO.accountNumber}
@@ -380,12 +381,12 @@ export default function DepositPage() {
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Chủ tài khoản</span>
+                  <span className="text-gray-600">{t('account.deposit.accountHolder')}</span>
                   <span className="font-medium">{BANK_INFO.accountName}</span>
                 </div>
 
                 <div className="flex justify-between items-center py-2">
-                  <span className="text-gray-600">Mã giao dịch</span>
+                  <span className="text-gray-600">{t('account.deposit.transactionID')}</span>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm font-bold text-teal-600">
                       {transactionId}
@@ -424,20 +425,20 @@ export default function DepositPage() {
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Hướng dẫn nạp tiền
+                {t('account.deposit.instructions')}
               </h4>
               <ol className="list-decimal list-inside space-y-1 text-xs text-teal-800">
-                <li>Mở app ngân hàng hoặc ví điện tử</li>
-                <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
-                <li>Nhập số tiền muốn nạp (tối thiểu 10.000đ)</li>
+                <li>{t('account.deposit.step1')}</li>
+                <li>{t('account.deposit.step2')}</li>
+                <li>{t('account.deposit.step3')}</li>
                 <li>
-                  Nhập nội dung:{' '}
+                  {t('account.deposit.step4')}{' '}
                   <span className="font-mono bg-teal-100 px-1 rounded text-xs">
                     {transactionId}
                   </span>
                 </li>
-                <li>Xác nhận chuyển khoản</li>
-                <li className="font-semibold text-teal-900">Nhấn nút "Kiểm tra thanh toán"</li>
+                <li>{t('account.deposit.step5')}</li>
+                <li className="font-semibold text-teal-900">{t('account.deposit.step6')}</li>
               </ol>
               <div className="mt-2 text-xs text-teal-900 font-semibold flex items-center gap-1">
                 <svg
@@ -453,8 +454,7 @@ export default function DepositPage() {
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                   />
                 </svg>
-                Nhớ <span className="underline">chụp màn hình giao dịch</span> để gửi khi cần hỗ trợ
-                kiểm tra nhanh!
+                {t('account.deposit.screenshotReminder')}
               </div>
             </div>
           </div>

@@ -246,7 +246,7 @@ export default function WarrantyPage() {
                         </svg>
                       </div>
                       <div className="ml-3">
-                        <p className="text-gray-800 font-medium">Zalo/Hotline</p>
+                        <p className="text-gray-800 font-medium">{t('warranty.zaloHotline')}</p>
                         <p className="text-gray-600">{siteConfig.contact.phone}</p>
                       </div>
                     </div>
@@ -269,7 +269,7 @@ export default function WarrantyPage() {
                         </svg>
                       </div>
                       <div className="ml-3">
-                        <p className="text-gray-800 font-medium">Email</p>
+                        <p className="text-gray-800 font-medium">{t('warranty.email')}</p>
                         <p className="text-gray-600">{siteConfig.contact.email}</p>
                       </div>
                     </div>
