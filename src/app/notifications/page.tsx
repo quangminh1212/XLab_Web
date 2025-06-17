@@ -208,7 +208,7 @@ const NotificationsPage = () => {
                       {notification.link && (
                         <div className="mt-2">
                           <span className="text-sm text-primary-600 hover:text-primary-800">
-                            {notification.isRead ? t('notifications.viewDetails') : t('notifications.viewNow')}
+                            {notification.isRead ? t('notifications.viewDetailsLink') : t('notifications.viewNow')}
                           </span>
                         </div>
                       )}
