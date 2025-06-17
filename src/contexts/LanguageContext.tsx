@@ -66,25 +66,7 @@ const loadTranslation = async (language: NewLanguage, namespace: string) => {
   } catch (error) {
     console.warn(`Failed to load translation: ${language}/${namespace}`, error);
     
-    // Try to load from old locale format if new one fails
-    if (language === 'eng') {
-      try {
-        const oldTranslationModule = await import(`@/locales/en/${namespace}.json`);
-        translationCache[cacheKey] = oldTranslationModule.default || oldTranslationModule;
-        return translationCache[cacheKey];
-      } catch (oldError) {
-        console.warn(`Failed to load from old locale path as well: en/${namespace}`, oldError);
-      }
-    } else if (language === 'vie') {
-      try {
-        const oldTranslationModule = await import(`@/locales/vi/${namespace}.json`);
-        translationCache[cacheKey] = oldTranslationModule.default || oldTranslationModule;
-        return translationCache[cacheKey];
-      } catch (oldError) {
-        console.warn(`Failed to load from old locale path as well: vi/${namespace}`, oldError);
-      }
-    }
-    
+    // If translation not found, return empty object; legacy paths removed to avoid build errors
     return {};
   }
 };
