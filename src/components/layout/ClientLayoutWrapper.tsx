@@ -14,6 +14,7 @@ import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import TitleUpdater from '@/components/TitleUpdater';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ function InnerLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
+      <TitleUpdater />
       <main className="flex-grow">{children}</main>
       <Footer />
     </div>

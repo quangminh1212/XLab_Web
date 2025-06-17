@@ -75,7 +75,16 @@ export default function PublicVouchersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState<{ [key: string]: boolean }>({});
   const [activeTab, setActiveTab] = useState<'available' | 'used' | 'expired'>('available');
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  // Force Vietnamese title
+  useEffect(() => {
+    const titleValue = `${t('voucher.title')} | XLab - ${t('common.softwareAndServices')}`;
+    document.title = titleValue;
+    // Thêm log để debug
+    console.log('Setting title in page.tsx:', titleValue);
+    console.log('Current language:', language);
+  }, [t, language]);
 
   useEffect(() => {
     const fetchVouchers = async () => {
