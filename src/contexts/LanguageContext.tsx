@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { LanguageKeys, defaultLanguage, getTranslation } from '../locales';
+import { LanguageKeys, defaultLanguage, getTranslation, translations } from '../locales';
 
 type LanguageContextType = {
   language: LanguageKeys;
@@ -10,11 +10,16 @@ type LanguageContextType = {
   availableLanguages: LanguageKeys[];
 };
 
+// Get available languages from translations object
+const availableLanguagesArray = Object.keys(translations).filter(
+  lang => translations[lang as keyof typeof translations]
+) as LanguageKeys[];
+
 const LanguageContext = createContext<LanguageContextType>({
   language: defaultLanguage,
   setLanguage: () => {},
   t: (key: string) => key,
-  availableLanguages: ['vie', 'eng'],
+  availableLanguages: availableLanguagesArray,
 });
 
 interface LanguageProviderProps {
@@ -26,8 +31,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const [language, setLanguageState] = useState<LanguageKeys>(defaultLanguage);
   // Track whether component is mounted to avoid hydration mismatch
   const [isMounted, setIsMounted] = useState(false);
-  
-  const availableLanguages: LanguageKeys[] = ['vie', 'eng'];
 
   useEffect(() => {
     // This will only run on the client side after hydration
@@ -37,7 +40,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     const savedLanguage = localStorage.getItem('language') as LanguageKeys;
     
     // Ensure we use a valid language or fallback to Vietnamese
-    if (savedLanguage && availableLanguages.includes(savedLanguage)) {
+    if (savedLanguage && availableLanguagesArray.includes(savedLanguage)) {
       setLanguageState(savedLanguage);
     } else {
       // Explicitly set to Vietnamese if no valid language is saved
@@ -57,7 +60,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   }, [language, isMounted]);
 
   const setLanguage = (lang: LanguageKeys) => {
-    if (availableLanguages.includes(lang)) {
+    if (availableLanguagesArray.includes(lang)) {
       console.log('Changing language to:', lang);
       setLanguageState(lang);
     }
@@ -78,7 +81,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, availableLanguages }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, availableLanguages: availableLanguagesArray }}>
       {children}
     </LanguageContext.Provider>
   );

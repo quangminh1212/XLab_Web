@@ -1,9 +1,11 @@
 import { eng } from './eng';
 import { vie } from './vie';
+import { spa } from './spa';
 
 export const translations = {
   eng,
-  vie
+  vie,
+  spa
 };
 
 export type LanguageKeys = keyof typeof translations;
@@ -37,11 +39,11 @@ export function getTranslation(key: string, language: LanguageKeys = defaultLang
       }
       
       // If direct access fails and we're using Vietnamese, try English as fallback
-      if (safeLanguage === 'vie') {
+      if (safeLanguage === 'vie' || safeLanguage === 'spa') {
         // @ts-ignore: The translations object might not have all the keys
         const engDirectResult = translations.eng[key];
         if (engDirectResult !== undefined) {
-          logMissingTranslation(key, 'vie');
+          logMissingTranslation(key, safeLanguage);
           return engDirectResult;
         }
       }
@@ -112,4 +114,4 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   };
 }
 
-export { eng, vie }; 
+export { eng, vie, spa }; 
