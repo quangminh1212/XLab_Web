@@ -11,7 +11,7 @@ export const warranty = {
   'warranty.conditionsTitle': 'Điều kiện bảo hành',
   'warranty.conditions': '<ul class="list-disc pl-4 space-y-2"><li>Chỉ áp dụng cho người mua ban đầu.</li><li>Sản phẩm không được chỉnh sửa trái phép.</li><li>Lỗi người dùng có thể không được bảo hành.</li><li>Bảo hành tài khoản gồm vấn đề truy cập và tính năng.</li><li>Không bảo hành thay đổi từ bên thứ ba.</li></ul>',
   'warranty.refundPeriodTitle': 'Thời hạn hoàn tiền',
-  'warranty.refundPeriod': 'Chúng tôi có <strong>chính sách hoàn tiền {days} ngày</strong> nếu không hài lòng với sản phẩm.',
+  'warranty.refundPeriod': 'Chúng tôi hoàn tiền khi không bảo hành được theo điều khoản sản phẩm.',
   'warranty.refundConditionsTitle': 'Điều kiện hoàn tiền',
   'warranty.refundConditions': '<ul class="list-disc pl-4 space-y-2"><li>Yêu cầu trong vòng 7 ngày sau khi mua.</li><li>Có thể yêu cầu thông tin về vấn đề gặp phải.</li><li>Xác minh tài khoản chưa sử dụng nhiều.</li><li>Hoàn tiền qua phương thức thanh toán ban đầu.</li></ul>',
   'warranty.refundProcessTitle': 'Quy trình hoàn tiền',

@@ -11,7 +11,7 @@ export const warranty = {
   'warranty.conditionsTitle': 'Warranty Conditions',
   'warranty.conditions': '<ul class="list-disc pl-4 space-y-2"><li>Valid only for original purchaser.</li><li>Product must not be modified.</li><li>User errors may not be covered.</li><li>For accounts, covers access issues and promised features.</li><li>Does not cover third-party service changes.</li></ul>',
   'warranty.refundPeriodTitle': 'Refund Period',
-  'warranty.refundPeriod': 'We offer a <strong>{days}-day money-back guarantee</strong> if you\'re not satisfied with your purchase.',
+  'warranty.refundPeriod': 'We offer refunds when products cannot be warranted according to the product terms.',
   'warranty.refundConditionsTitle': 'Refund Conditions',
   'warranty.refundConditions': '<ul class="list-disc pl-4 space-y-2"><li>Requests must be submitted within 7 days of purchase.</li><li>May require information about issues experienced.</li><li>We verify minimal service usage for accounts.</li><li>Refunds processed via original payment method.</li></ul>',
   'warranty.refundProcessTitle': 'Refund Process',
