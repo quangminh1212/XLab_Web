@@ -28,5 +28,6 @@ export const product = {
   // ChatGPT and Grok descriptions
   'product.chatgpt.description': 'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.',
   'product.grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực.',
-  'product.purchasesPerWeek': '{count}/tuần'
+  'product.purchasesPerWeek': '{count}/tuần',
+  'product.totalSold': '{count} đã bán'
 }; 
