@@ -23,5 +23,10 @@ export const product = {
   'product.phoneHours': 'Support from 8am-10pm daily',
   'product.liveChat': 'Live Chat',
   'product.chatDescription': 'Chat directly with our support staff',
-  'product.startChat': 'Start chat'
+  'product.startChat': 'Start chat',
+  
+  // ChatGPT and Grok descriptions
+  'product.chatgpt.description': 'ChatGPT is a powerful AI chatbot that can answer a wide range of questions in both English and Vietnamese, providing support from Front-end to Back-end programming.',
+  'product.grok.description': 'Grok AI helps automatically analyze and process large datasets quickly, supporting accurate decision-making and saving time. Widely applicable across many fields.',
+  'product.purchasesPerWeek': 'purchases/week'
 }; 

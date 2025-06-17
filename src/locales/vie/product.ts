@@ -23,5 +23,10 @@ export const product = {
   'product.phoneHours': 'Hỗ trợ từ 8h-22h hàng ngày',
   'product.liveChat': 'Live Chat',
   'product.chatDescription': 'Chat trực tiếp với nhân viên hỗ trợ',
-  'product.startChat': 'Bắt đầu chat'
+  'product.startChat': 'Bắt đầu chat',
+  
+  // ChatGPT and Grok descriptions
+  'product.chatgpt.description': 'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.',
+  'product.grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực.',
+  'product.purchasesPerWeek': '/tuần'
 }; 
