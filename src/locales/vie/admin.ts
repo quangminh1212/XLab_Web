@@ -34,6 +34,14 @@ export const admin = {
   'admin.coupons.createTab': 'Tạo mã giảm giá',
   'admin.coupons.editTab': 'Sửa mã giảm giá',
   'admin.coupons.listTab': 'Danh sách',
+  'admin.coupons.percentageType': 'Giảm theo phần trăm',
+  'admin.coupons.fixedType': 'Giảm số tiền cố định',
+  'admin.coupons.usageCount': 'lần dùng',
+  'admin.coupons.active': 'Đang hoạt động',
+  'admin.coupons.expired': 'Đã hết hạn',
+  'admin.coupons.edit': 'Sửa',
+  'admin.coupons.stop': 'Dừng',
+  'admin.coupons.delete': 'Xóa',
   'admin.notifications.connectionError': 'Lỗi kết nối. Vui lòng thử lại.',
   
   // Products Management

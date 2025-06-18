@@ -18,5 +18,6 @@ export const coupon = {
   'coupon.xlab20': 'XLab 20% Discount',
   'coupon.xlab20.description': 'Special discount for XLab products',
   'coupon.first10': 'First Order 10% Off',
-  'coupon.first10.description': '10% off on your first order'
+  'coupon.first10.description': '10% off on your first order',
+  'coupon.member100k': 'Member Exclusive Discount'
 }; 

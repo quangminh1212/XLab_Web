@@ -34,6 +34,14 @@ export const admin = {
   'admin.coupons.createTab': 'Create Coupon',
   'admin.coupons.editTab': 'Edit Coupon',
   'admin.coupons.listTab': 'List',
+  'admin.coupons.percentageType': 'Percentage Discount',
+  'admin.coupons.fixedType': 'Fixed Amount',
+  'admin.coupons.usageCount': 'uses',
+  'admin.coupons.active': 'Active',
+  'admin.coupons.expired': 'Expired',
+  'admin.coupons.edit': 'Edit',
+  'admin.coupons.stop': 'Deactivate',
+  'admin.coupons.delete': 'Delete',
   'admin.notifications.connectionError': 'Connection error. Please try again.',
   
   // Products Management
