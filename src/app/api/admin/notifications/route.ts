@@ -17,6 +17,17 @@ interface Notification {
   link?: string;
   priority: 'low' | 'medium' | 'high';
   expiresAt?: string;
+  metadata?: {
+    es?: {
+      title?: string;
+      content?: string;
+    };
+    en?: {
+      title?: string;
+      content?: string;
+    };
+    readCount?: number;
+  };
 }
 
 // Đảm bảo thư mục data tồn tại

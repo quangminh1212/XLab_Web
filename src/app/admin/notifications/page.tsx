@@ -16,6 +16,17 @@ interface Notification {
   link?: string;
   priority: 'low' | 'medium' | 'high';
   expiresAt?: string;
+  metadata?: {
+    es?: {
+      title?: string;
+      content?: string;
+    };
+    en?: {
+      title?: string;
+      content?: string;
+    };
+    readCount?: number;
+  };
 }
 
 interface NotificationForm {
@@ -224,6 +235,11 @@ function NotificationsPage() {
 
   // Đếm số người đã đọc
   const getReadCount = (notification: Notification) => {
+    // Use metadata.readCount if available
+    if (notification.metadata?.readCount !== undefined) {
+      return notification.metadata.readCount;
+    }
+    // Fallback to counting the isRead entries
     return Object.values(notification.isRead).filter(Boolean).length;
   };
 
@@ -419,6 +435,24 @@ function NotificationsPage() {
                             </span>
                           </div>
                           <p className="text-gray-600 mb-2">{notification.content}</p>
+                          
+                          {/* Display multilingual content if available */}
+                          {notification.metadata && (
+                            <div className="mt-2 space-y-1">
+                              {notification.metadata.en?.title && (
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-0.5 rounded">EN</span>
+                                  <p className="text-sm text-gray-600">{notification.metadata.en.title}</p>
+                                </div>
+                              )}
+                              {notification.metadata.es?.title && (
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-xs font-medium bg-orange-100 text-orange-800 px-2 py-0.5 rounded">ES</span>
+                                  <p className="text-sm text-gray-600">{notification.metadata.es.title}</p>
+                                </div>
+                              )}
+                            </div>
+                          )}
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
                             <span>{t('admin.notifications.created')}: {formatDate(notification.createdAt)}</span>
                             <span>{t('admin.notifications.readCount')}: {getReadCount(notification)} {t('admin.notifications.people')}</span>

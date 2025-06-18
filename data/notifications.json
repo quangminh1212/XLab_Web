@@ -7,9 +7,19 @@
     "isRead": {
       "xlab.rnd@gmail.com": true
     },
-    "createdAt": "2025-05-28T19:06:10.590Z",
+    "createdAt": "2025-05-29T02:06:10.000Z",
     "link": "/products/1",
-    "priority": "medium"
+    "priority": "medium",
+    "metadata": {
+      "es": {
+        "title": "Actualización",
+        "content": "Phiên bản 2.0 đã ra mắt với nhiều tính năng mới"
+      },
+      "en": {
+        "title": "Media"
+      },
+      "readCount": 1
+    }
   },
   {
     "id": "3",
@@ -19,7 +29,17 @@
     "isRead": {
       "xlab.rnd@gmail.com": true
     },
-    "createdAt": "2025-05-27T19:06:10.590Z",
-    "priority": "high"
+    "createdAt": "2025-05-28T02:06:10.000Z",
+    "priority": "high",
+    "metadata": {
+      "es": {
+        "title": "Sistema",
+        "content": "Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này."
+      },
+      "en": {
+        "title": "Alta"
+      },
+      "readCount": 1
+    }
   }
 ]

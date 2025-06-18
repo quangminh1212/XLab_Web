@@ -18,6 +18,17 @@ interface Notification {
   priority: 'low' | 'medium' | 'high';
   expiresAt?: string;
   updatedAt?: string;
+  metadata?: {
+    es?: {
+      title?: string;
+      content?: string;
+    };
+    en?: {
+      title?: string;
+      content?: string;
+    };
+    readCount?: number;
+  };
 }
 
 // Đảm bảo thư mục data tồn tại
@@ -91,7 +102,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { title, content, type, link, priority, expiresAt, targetUsers } = body;
+    const { title, content, type, link, priority, expiresAt, targetUsers, metadata } = body;
 
     // Validation
     if (!title || !content || !type || !priority) {
@@ -119,6 +130,11 @@ export async function PUT(
       expiresAt: expiresAt || undefined,
       targetUsers: targetUsers || [],
       updatedAt: new Date().toISOString(),
+      // Preserve existing metadata and merge with any new metadata
+      metadata: {
+        ...notifications[notificationIndex].metadata,
+        ...(metadata || {}),
+      },
     };
 
     notifications[notificationIndex] = updatedNotification;
