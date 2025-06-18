@@ -3,6 +3,7 @@ export const account = {
   'account.profile': 'Hồ sơ cá nhân',
   'account.orders': 'Đơn hàng',
   'account.balance': 'Số dư',
+  'account.balanceTooltip': 'Số dư tài khoản - Click để nạp tiền',
   'account.settings': 'Cài đặt',
   'account.logout': 'Đăng xuất',
   'account.myAccount': 'Tài khoản của tôi',

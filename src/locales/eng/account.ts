@@ -3,6 +3,7 @@ export const account = {
   'account.profile': 'Profile',
   'account.orders': 'Orders',
   'account.balance': 'Balance',
+  'account.balanceTooltip': 'Account balance - Click to deposit',
   'account.settings': 'Settings',
   'account.logout': 'Log out',
   'account.myAccount': 'My Account',

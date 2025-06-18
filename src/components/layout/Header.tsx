@@ -11,6 +11,7 @@ import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -249,12 +250,14 @@ const Header = () => {
     if (isNotificationOpen) setIsNotificationOpen(false);
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      maximumFractionDigits: 0,
-    }).format(amount);
+  const formatCouponValue = (coupon: PublicCoupon) => {
+    if (coupon.type === 'percentage') {
+      return `${coupon.value}%`;
+    } else {
+      // Convert to appropriate currency based on language
+      const convertedAmount = convertCurrency(coupon.value, language);
+      return formatCurrency(convertedAmount, language);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -465,9 +468,7 @@ const Header = () => {
                                     <span
                                       className={`text-xs font-medium ${coupon.type === 'percentage' ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}
                                     >
-                                      {coupon.type === 'percentage'
-                                        ? `${coupon.value}%`
-                                        : formatCurrency(coupon.value)}
+                                      {formatCouponValue(coupon)}
                                     </span>
                                   </div>
                                   <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
@@ -506,7 +507,7 @@ const Header = () => {
                                 <div className="mt-2 flex justify-between items-center text-xs mb-1">
                                   <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                     {coupon.minOrder
-                                      ? `${t('voucher.minOrder')} ${formatCurrency(coupon.minOrder)}`
+                                      ? `${t('voucher.minOrder')} ${formatCurrency(convertCurrency(coupon.minOrder, language), language)}`
                                       : t('voucher.noLimit')}
                                   </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (

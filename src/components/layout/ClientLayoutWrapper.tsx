@@ -8,6 +8,7 @@ import {
   StyleLoader,
   CssErrorHandler,
   GlobalStyles,
+  ErrorPatcher
 } from '@/components/common';
 import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
@@ -54,6 +55,7 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
               <StyleLoader />
               <CssErrorHandler />
               <GlobalStyles />
+              <ErrorPatcher />
             </CartProvider>
           </BalanceProvider>
         </NotificationProvider>

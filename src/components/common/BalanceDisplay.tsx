@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { memo, useMemo } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 interface BalanceDisplayProps {
   className?: string;
@@ -13,15 +14,14 @@ interface BalanceDisplayProps {
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading } = useBalance();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const formattedBalance = useMemo(() => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      maximumFractionDigits: 0,
-    }).format(balance);
-  }, [balance]);
+    // First convert the amount to the appropriate currency based on language
+    const convertedAmount = convertCurrency(balance, language);
+    // Then format the converted amount with proper currency format
+    return formatCurrency(convertedAmount, language);
+  }, [balance, language]);
 
   if (!session?.user) {
     return null;
@@ -31,7 +31,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
     <Link
       href="/account/deposit"
       className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
-      title="Số dư tài khoản - Click để nạp tiền"
+      title={t('account.balanceTooltip')}
     >
       <div className="flex items-center space-x-1.5 sm:space-x-2">
         <svg
