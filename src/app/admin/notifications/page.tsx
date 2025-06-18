@@ -469,7 +469,7 @@ function NotificationsPage() {
                                 href={notification.link}
                                 className="text-primary-600 hover:text-primary-700 text-sm"
                               >
-                                {t('admin.notifications.viewDetails')} →
+                                {t('notifications.viewDetailsLink')} →
                               </a>
                             </div>
                           )}
