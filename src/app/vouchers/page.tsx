@@ -23,11 +23,10 @@ interface Coupon {
 }
 
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    maximumFractionDigits: 0,
-  }).format(amount);
+  const { formatCurrency: formatCurrencyWithLang } = require('@/shared/utils/formatCurrency');
+  
+  const { language } = useLanguage();
+  return formatCurrencyWithLang(amount, language);
 };
 
 const formatDate = (dateString: string) => {

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { User, UserStats } from '@/models/UserModel';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 interface UserWithOrderStats extends User {
   purchasedProducts?: number;
@@ -23,7 +24,11 @@ function UsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive' | 'admin'>('all');
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  const formatAmount = (amount: number) => {
+    return formatCurrency(convertCurrency(amount, language), language);
+  };
 
   // Lấy dữ liệu người dùng từ API
   useEffect(() => {
@@ -283,12 +288,12 @@ function UsersPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="font-medium text-gray-900">
-                        {user.balance.toLocaleString('vi-VN')} VND
+                        {formatAmount(user.balance)}
                       </div>
                       {user.totalSpent && user.totalSpent > 0 && (
                         <div className="text-xs text-gray-500">
                           {t('admin.users.spent')}: 
-                          {user.totalSpent.toLocaleString('vi-VN')} VND
+                          {formatAmount(user.totalSpent)}
                         </div>
                       )}
                     </td>

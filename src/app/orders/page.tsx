@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 // Khai báo kiểu dữ liệu
 interface OrderItem {
@@ -84,6 +86,7 @@ export default function OrdersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [products, setProducts] = useState<any[]>([]);
+  const { language } = useLanguage();
 
   useEffect(() => {
     // Tải danh sách sản phẩm
@@ -157,9 +160,8 @@ export default function OrdersPage() {
     }
   }, [status, session, router]);
 
-  // Hàm định dạng tiền tệ
-  const formatCurrency = (amount: number) => {
-    return amount.toLocaleString('vi-VN') + ' ₫';
+  const formatAmount = (amount: number) => {
+    return formatCurrency(convertCurrency(amount, language), language);
   };
 
   // Hàm định dạng ngày
@@ -213,7 +215,7 @@ export default function OrdersPage() {
                     >
                       {order.status}
                     </span>
-                    <span className="text-gray-900 font-medium">{formatCurrency(order.total)}</span>
+                    <span className="text-gray-900 font-medium">{formatAmount(order.total)}</span>
                     <svg
                       className={`h-5 w-5 text-gray-400 transform ${expandedOrderId === order.id ? 'rotate-180' : ''}`}
                       xmlns="http://www.w3.org/2000/svg"
@@ -300,10 +302,10 @@ export default function OrdersPage() {
                                 </span>
                               </td>
                               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {formatCurrency(item.price)}
+                                {formatAmount(item.price)}
                                 {item.originalPrice > item.price && (
                                   <span className="line-through text-gray-500 ml-2">
-                                    {formatCurrency(item.originalPrice)}
+                                    {formatAmount(item.originalPrice)}
                                   </span>
                                 )}
                               </td>
@@ -323,7 +325,7 @@ export default function OrdersPage() {
                       <div className="text-right">
                         <div className="text-sm text-gray-500">Tổng tiền:</div>
                         <div className="text-lg font-semibold text-gray-900">
-                          {formatCurrency(order.total)}
+                          {formatAmount(order.total)}
                         </div>
                       </div>
                     </div>

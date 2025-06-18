@@ -6,6 +6,7 @@ import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 interface Stats {
   products: number;
@@ -26,10 +27,8 @@ function AdminDashboard() {
   });
   const { language, t, locale } = useLanguage();
 
-  // Chuyển đổi số thành định dạng tiền tệ
-  // Convert number to currency format
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale, { style: 'currency', currency: 'VND' }).format(amount);
+  const formatAmount = (amount: number) => {
+    return formatCurrency(convertCurrency(amount, language), language);
   };
 
   // Lấy dữ liệu sản phẩm khi component mount
@@ -130,7 +129,7 @@ function AdminDashboard() {
               <h3 className="text-gray-500 text-sm font-medium">
                 {t('admin.orders.revenue')}
               </h3>
-              <p className="mt-2 text-3xl font-bold">{formatCurrency(stats.revenue)}</p>
+              <p className="mt-2 text-3xl font-bold">{formatAmount(stats.revenue)}</p>
               <Link
                 href="/admin/orders"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
@@ -159,7 +158,7 @@ function AdminDashboard() {
                     <div>
                       <h3 className="font-medium">{product.name}</h3>
                       <p className="text-sm text-gray-500">
-                        {formatCurrency(product.versions[0]?.price || 0)}
+                        {formatAmount(product.versions[0]?.price || 0)}
                       </p>
                     </div>
                     <div>

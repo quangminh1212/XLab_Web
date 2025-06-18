@@ -40,8 +40,8 @@ export function getTranslation(key: string, language: LanguageKeys = defaultLang
         return directResult;
       }
       
-      // If direct access fails and we're using Vietnamese, try English as fallback
-      if (safeLanguage === 'vie' || safeLanguage === 'spa') {
+      // If direct access fails and we're using Vietnamese or Spanish, try English as fallback
+      if (safeLanguage === 'vie' || safeLanguage === 'spa' || safeLanguage === 'chi') {
         // @ts-ignore: The translations object might not have all the keys
         const engDirectResult = translations.eng[key];
         if (engDirectResult !== undefined) {

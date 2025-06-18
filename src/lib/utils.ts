@@ -35,10 +35,11 @@ export function containerClass(...additionalClasses: ClassValue[]) {
  * Format a number as Vietnamese currency (VND)
  */
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(amount);
+  // Import and use the language-aware formatting function
+  const { formatCurrency: formatCurrencyWithLang } = require('@/shared/utils/formatCurrency');
+  
+  // Default to Vietnamese but will respect language setting when called through other components
+  return formatCurrencyWithLang(amount, 'vie');
 }
 
 /**

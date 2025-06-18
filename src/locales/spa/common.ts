@@ -42,6 +42,7 @@ export const common = {
   'common.yes': 'Sí',
   'common.no': 'No',
   'common.softwareAndServices': 'Software y Servicios',
+  'common.backToMainPage': 'Volver a la página principal',
   
   // Footer categories
   'footer.products': 'Productos',

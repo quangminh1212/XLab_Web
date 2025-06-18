@@ -7,6 +7,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -76,11 +77,6 @@ export default function AccountPage() {
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
   const { t, language } = useLanguage();
-
-  const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
-  const formatCurrency = (amount: number) => {
-    return currencyFormatter.format(amount);
-  };
 
   // Hàm lấy danh sách mã giảm giá
   const fetchAvailableCoupons = async () => {
@@ -454,6 +450,9 @@ export default function AccountPage() {
   // Tổng số sản phẩm
   const totalProducts = purchaseHistory.reduce((sum, order) => sum + order.items.length, 0);
 
+  // Use the language-aware formatter
+  const formattedTotalSpent = formatCurrency(convertCurrency(totalSpent, language), language);
+
   return (
     <div>
       {/* Page Header */}
@@ -513,7 +512,7 @@ export default function AccountPage() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalPaid')}</h3>
               <p className="text-3xl font-bold text-gray-800 whitespace-nowrap">
-                {formatCurrency(totalSpent)}
+                {formattedTotalSpent}
               </p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 <svg
@@ -535,7 +534,7 @@ export default function AccountPage() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalSaved')}</h3>
               <p className="text-3xl font-bold text-green-600 whitespace-nowrap">
-                {formatCurrency(totalSaved)}
+                {formatCurrency(convertCurrency(totalSaved, language), language)}
               </p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 <svg

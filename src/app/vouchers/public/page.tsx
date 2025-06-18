@@ -27,21 +27,11 @@ interface Voucher {
 }
 
 const formatCurrency = (amount: number, currentLanguage: string = 'vie') => {
-  // Use locale based on language
-  const localeMap: Record<string, { locale: string; currency: string }> = {
-    vie: { locale: 'vi-VN', currency: 'VND' },
-    eng: { locale: 'en-US', currency: 'USD' },
-    spa: { locale: 'es-ES', currency: 'EUR' },
-    chi: { locale: 'zh-CN', currency: 'CNY' }
-  };
-
-  const { locale, currency } = localeMap[currentLanguage] || localeMap.vie;
+  // Import and use the language-aware formatting function
+  const { formatCurrency: formatCurrencyWithLang } = require('@/shared/utils/formatCurrency');
   
-  return new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  // Use the shared implementation
+  return formatCurrencyWithLang(amount, currentLanguage);
 };
 
 const formatDate = (dateString: string, currentLanguage: string = 'vie') => {
