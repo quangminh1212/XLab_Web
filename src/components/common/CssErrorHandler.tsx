@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useIsomorphicLayoutEffect } from '@/lib';
 import { setupCssErrorHandler } from '@/shared/utils/cssErrorHandler';
 
 /**
@@ -9,7 +9,7 @@ import { setupCssErrorHandler } from '@/shared/utils/cssErrorHandler';
  * It should be included in the layout component
  */
 const CssErrorHandler = (): null => {
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     // Set up CSS error handling on the client side
     setupCssErrorHandler();
   }, []);

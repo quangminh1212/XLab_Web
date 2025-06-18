@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useIsomorphicLayoutEffect } from '@/lib';
 
 export default function TitleUpdater(): React.ReactNode {
   const pathname = usePathname();
   const { t, language } = useLanguage();
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     let pageTitle = '';
 
     // Xác định tiêu đề dựa trên đường dẫn

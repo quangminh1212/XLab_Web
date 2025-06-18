@@ -225,3 +225,28 @@ Routes can be protected using middleware:
 ## 📄 License
 
 Copyright © 2023-2024 XLab. All rights reserved.
+
+## React Hooks Best Practices
+
+### useLayoutEffect in Server-Side Rendering
+
+When working with Next.js and server-side rendering, using `useLayoutEffect` directly can cause warnings because it cannot be executed during server rendering. To solve this issue, we use a custom hook called `useIsomorphicLayoutEffect` that automatically uses:
+
+- `useLayoutEffect` when running in the browser
+- `useEffect` when running on the server
+
+```tsx
+// Import the proper hook
+import { useIsomorphicLayoutEffect } from '@/lib';
+
+function MyComponent() {
+  // Use it instead of useLayoutEffect
+  useIsomorphicLayoutEffect(() => {
+    // Your code here
+  }, [dependencies]);
+}
+```
+
+This approach eliminates the "useLayoutEffect does nothing on the server" warning while maintaining the same behavior as useLayoutEffect in the browser.
+
+ESLint is configured to prevent direct usage of useLayoutEffect in favor of our isomorphic version.

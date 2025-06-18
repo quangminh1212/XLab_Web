@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
+import { useIsomorphicLayoutEffect } from '@/lib';
 
 /**
  * StyleLoader component to ensure CSS styles are loaded correctly without 404 errors
  */
 export const StyleLoader: React.FC = () => {
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     // Client-side only code to handle CSS 404 errors
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {

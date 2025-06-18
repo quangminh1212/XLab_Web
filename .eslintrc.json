@@ -12,7 +12,7 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "react-hooks", "import"],
   "rules": {
     "@typescript-eslint/no-unused-vars": ["error", {
       "argsIgnorePattern": "^_",
@@ -22,10 +22,42 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "import/order": ["warn", {
-      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
-      "newlines-between": "always",
-      "alphabetize": { "order": "asc", "caseInsensitive": true }
-    }]
+    "import/order": [
+      "warn",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "next/**",
+            "group": "builtin",
+            "position": "after"
+          },
+          {
+            "pattern": "@/**",
+            "group": "internal"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "no-restricted-imports": [
+      "error", 
+      {
+        "paths": [{
+          "name": "react",
+          "importNames": ["useLayoutEffect"],
+          "message": "Please import useIsomorphicLayoutEffect from '@/lib' instead of useLayoutEffect from 'react' to avoid SSR warnings."
+        }]
+      }
+    ]
   }
 }
