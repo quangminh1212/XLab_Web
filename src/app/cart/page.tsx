@@ -16,6 +16,7 @@ import {
   AiOutlineInfoCircle,
 } from 'react-icons/ai';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 // Kết hợp interface CartItem từ CartContext và utils
 interface CartItemWithVersion {
@@ -29,10 +30,35 @@ interface CartItemWithVersion {
   uniqueKey?: string;
 }
 
+interface Coupon {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrder?: number;
+  maxDiscount?: number;
+  isActive: boolean;
+  discount?: number;
+  discountAmount?: number;
+  metadata?: {
+    en?: {
+      name?: string;
+      description?: string;
+    };
+    es?: {
+      name?: string;
+      description?: string;
+    };
+  };
+}
+
 // Danh sách mã giảm giá sẽ được lấy từ API
 
 export default function CartPage() {
-  const { t } = useLanguage();
+  const router = useRouter();
+  const { t, language } = useLanguage();
   const {
     items: cartItems,
     removeItem: removeItemFromCart,
@@ -41,11 +67,7 @@ export default function CartPage() {
     addItem: addItemToCart,
   } = useCart();
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<{
-    code: string;
-    discount: number;
-    name: string;
-  } | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [couponError, setCouponError] = useState('');
   const [showCouponInfo, setShowCouponInfo] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
@@ -134,7 +156,7 @@ export default function CartPage() {
     if (!appliedCoupon) return 0;
 
     // Với API mới, discountAmount đã được tính sẵn
-    return appliedCoupon.discount;
+    return appliedCoupon.discountAmount || 0;
   };
 
   const couponDiscount = calculateCouponDiscount();
@@ -185,9 +207,16 @@ export default function CartPage() {
 
       if (result.success) {
         setAppliedCoupon({
+          id: result.coupon.id,
           code: result.coupon.code,
-          discount: result.coupon.discountAmount,
           name: result.coupon.name,
+          description: result.coupon.description,
+          type: result.coupon.type,
+          value: result.coupon.value,
+          isActive: result.coupon.isActive,
+          discount: result.coupon.discountAmount,
+          discountAmount: result.coupon.discountAmount,
+          metadata: result.coupon.metadata
         });
         setCouponCode('');
       } else {
@@ -483,7 +512,11 @@ export default function CartPage() {
                         <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-3 flex justify-between items-center">
                           <div>
                             <p className="font-medium text-green-700 text-sm">
-                              {t(`coupon.${appliedCoupon.code.toLowerCase()}`, { default: appliedCoupon.name })}
+                              {language === 'spa' && appliedCoupon.metadata?.es?.name ? 
+                                appliedCoupon.metadata.es.name :
+                               language === 'eng' && appliedCoupon.metadata?.en?.name ?
+                                appliedCoupon.metadata.en.name :
+                                t(`coupon.${appliedCoupon.code.toLowerCase()}`, { default: appliedCoupon.name })}
                             </p>
                             <p className="text-green-600 text-xs mt-1">{t('cart.code')}: {appliedCoupon.code}</p>
                           </div>

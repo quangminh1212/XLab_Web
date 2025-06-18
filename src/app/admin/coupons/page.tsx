@@ -350,8 +350,18 @@ function CouponsPage() {
       userLimit: coupon.userLimit || 1,
       startDate: coupon.startDate.split('T')[0],
       endDate: coupon.endDate.split('T')[0],
-      applicableProducts: coupon.applicableProducts?.join(', ') || '',
-      isPublic: coupon.isPublic ?? true,
+      applicableProducts: coupon.applicableProducts?.join(',') || '',
+      isPublic: coupon.isPublic,
+      metadata: {
+        en: {
+          name: coupon.metadata?.en?.name || '',
+          description: coupon.metadata?.en?.description || ''
+        },
+        es: {
+          name: coupon.metadata?.es?.name || '',
+          description: coupon.metadata?.es?.description || ''
+        }
+      }
     });
     setEditingCoupon(coupon);
     setShowEditModal(true);
@@ -1396,6 +1406,148 @@ function CouponsPage() {
                     <p className="text-xs text-gray-500 mt-1">
                       {t('admin.coupons.perUserLimitDesc', { default: 'Số lần mã giảm giá có thể được sử dụng bởi mỗi người' })}
                     </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mô tả */}
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  {t('admin.coupons.description', { default: 'Mô tả' })}
+                </label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                  rows={2}
+                  placeholder="Mô tả ngắn gọn về mã giảm giá"
+                />
+              </div>
+
+              {/* Nội dung đa ngôn ngữ */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                  <span className="bg-blue-100 text-blue-700 p-1 rounded mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.027 7.232A4 4 0 018 4h4a4 4 0 014 4v6a4 4 0 01-4 4H8a4 4 0 01-3.973-3.232L4.027 7.232zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  {t('admin.coupons.multiLanguage', { default: 'Nội dung đa ngôn ngữ' })}
+                </h3>
+                
+                {/* Tiếng Anh */}
+                <div className="mb-4 border-b border-gray-200 pb-4">
+                  <h4 className="flex items-center text-xs font-medium text-gray-700 mb-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs mr-2">
+                      EN
+                    </span>
+                    {t('admin.coupons.englishContent', { default: 'Nội dung tiếng Anh' })}
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        {t('admin.coupons.name', { default: 'Tên' })}
+                      </label>
+                      <input
+                        type="text"
+                        value={form.metadata?.en.name || ''}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            metadata: {
+                              ...prev.metadata!,
+                              en: {
+                                ...prev.metadata!.en,
+                                name: e.target.value
+                              }
+                            }
+                          }))
+                        }
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                        placeholder="English name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        {t('admin.coupons.description', { default: 'Mô tả' })}
+                      </label>
+                      <textarea
+                        value={form.metadata?.en.description || ''}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            metadata: {
+                              ...prev.metadata!,
+                              en: {
+                                ...prev.metadata!.en,
+                                description: e.target.value
+                              }
+                            }
+                          }))
+                        }
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                        rows={2}
+                        placeholder="English description"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Tiếng Tây Ban Nha */}
+                <div>
+                  <h4 className="flex items-center text-xs font-medium text-gray-700 mb-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full bg-orange-100 text-orange-800 text-xs mr-2">
+                      ES
+                    </span>
+                    {t('admin.coupons.spanishContent', { default: 'Nội dung tiếng Tây Ban Nha' })}
+                  </h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        {t('admin.coupons.name', { default: 'Tên' })}
+                      </label>
+                      <input
+                        type="text"
+                        value={form.metadata?.es.name || ''}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            metadata: {
+                              ...prev.metadata!,
+                              es: {
+                                ...prev.metadata!.es,
+                                name: e.target.value
+                              }
+                            }
+                          }))
+                        }
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                        placeholder="Nombre en español"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        {t('admin.coupons.description', { default: 'Mô tả' })}
+                      </label>
+                      <textarea
+                        value={form.metadata?.es.description || ''}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            metadata: {
+                              ...prev.metadata!,
+                              es: {
+                                ...prev.metadata!.es,
+                                description: e.target.value
+                              }
+                            }
+                          }))
+                        }
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                        rows={2}
+                        placeholder="Descripción en español"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

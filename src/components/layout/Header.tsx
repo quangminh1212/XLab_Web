@@ -28,12 +28,22 @@ interface PublicCoupon {
     current: number;
     limit: number;
   };
+  metadata?: {
+    en?: {
+      name: string;
+      description?: string;
+    };
+    es?: {
+      name: string;
+      description?: string;
+    };
+  };
 }
 
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -465,12 +475,20 @@ const Header = () => {
                                   </span>
                                 </div>
                                 <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                                  {t(`coupon.${coupon.code.toLowerCase()}`, { default: coupon.name })}
+                                  {language === 'spa' && coupon.metadata?.es?.name ? 
+                                    coupon.metadata.es.name :
+                                   language === 'eng' && coupon.metadata?.en?.name ?
+                                    coupon.metadata.en.name :
+                                    t(`coupon.${coupon.code.toLowerCase()}`, { default: coupon.name })}
                                 </h4>
-                                {coupon.description && (
+                                {(coupon.description || coupon.metadata?.en?.description || coupon.metadata?.es?.description) && (
                                   <div className="flex justify-between items-center mt-1">
                                     <p className="text-xs text-gray-600 line-clamp-2">
-                                      {t(`coupon.${coupon.code.toLowerCase()}.description`, { default: coupon.description })}
+                                      {language === 'spa' && coupon.metadata?.es?.description ? 
+                                        coupon.metadata.es.description :
+                                       language === 'eng' && coupon.metadata?.en?.description ?
+                                        coupon.metadata.en.description :
+                                        t(`coupon.${coupon.code.toLowerCase()}.description`, { default: coupon.description })}
                                     </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                       <span className="text-xs font-medium text-teal-600">
