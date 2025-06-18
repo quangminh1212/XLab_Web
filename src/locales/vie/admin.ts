@@ -1,4 +1,5 @@
 export const admin = {
+  'admin.title': 'XLab Quản Trị',
   'admin.dashboard': 'Bảng điều khiển',
   'admin.users': 'Người dùng',
   'admin.products': 'Sản phẩm',

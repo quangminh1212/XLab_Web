@@ -1,4 +1,5 @@
 export const admin = {
+  'admin.title': 'XLab Admin',
   'admin.dashboard': 'Panel de Control',
   'admin.users': 'Usuarios',
   'admin.products': 'Productos',

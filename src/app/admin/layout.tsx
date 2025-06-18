@@ -97,7 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="container mx-auto py-6 px-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold">XLab Admin</h1>
+              <h1 className="text-3xl font-bold">{t('admin.title')}</h1>
               <p className="text-sm mt-1 opacity-80">
                 {language === 'vie' 
                   ? `Xin chào, ${session?.user?.name || 'Admin'}`

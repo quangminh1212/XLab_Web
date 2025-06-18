@@ -14,6 +14,8 @@ export default function TitleUpdater(): React.ReactNode {
     // Xác định tiêu đề dựa trên đường dẫn
     if (pathname === '/') {
       pageTitle = `XLab - ${t('common.softwareAndServices')}`;
+    } else if (pathname.startsWith('/admin')) {
+      pageTitle = `${t('admin.title')} | XLab`;
     } else if (pathname === '/vouchers/public') {
       pageTitle = `${t('voucher.title')} | XLab`;
     } else if (pathname === '/products') {
@@ -31,9 +33,12 @@ export default function TitleUpdater(): React.ReactNode {
 
     // Áp dụng tiêu đề
     document.title = pageTitle;
-    console.log('TitleUpdater: Setting title to', pageTitle);
-    console.log('TitleUpdater: Current language', language);
-    console.log('TitleUpdater: Current pathname', pathname);
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('TitleUpdater: Setting title to', pageTitle);
+      console.log('TitleUpdater: Current language', language);
+      console.log('TitleUpdater: Current pathname', pathname);
+    }
 
     // Tạo thẻ title mới nếu cần
     let titleElement = document.querySelector('title');
