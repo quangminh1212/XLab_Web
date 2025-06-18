@@ -19,6 +19,9 @@ export const notifications = {
   'notifications.none': 'Không có thông báo',
   'notifications.viewDetailsLink': 'Xem chi tiết',
   'notifications.justNow': 'Vừa xong',
+  'notifications.minutesAgo': '{0} phút trước',
+  'notifications.hoursAgo': '{0} giờ trước',
+  'notifications.daysAgo': '{0} ngày trước',
 
   // Default notifications
   'notifications.default.promotion.title': 'Khuyến mãi đặc biệt',
@@ -26,5 +29,7 @@ export const notifications = {
   'notifications.default.update.title': 'Cập nhật mới',
   'notifications.default.update.content': 'Phiên bản 2.0 đã ra mắt với nhiều tính năng mới',
   'notifications.default.system.title': 'Thông báo hệ thống',
-  'notifications.default.system.content': 'Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.'
+  'notifications.default.system.content': 'Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.',
+  'notifications.demo.title': 'Chào mừng đến với XLab!',
+  'notifications.demo.content': 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.'
 }; 

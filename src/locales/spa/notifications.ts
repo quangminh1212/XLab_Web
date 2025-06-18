@@ -19,6 +19,9 @@ export const notifications = {
   'notifications.none': 'No hay notificaciones',
   'notifications.viewDetailsLink': 'Ver detalles',
   'notifications.justNow': 'Ahora mismo',
+  'notifications.minutesAgo': 'Hace {0} minuto{1}',
+  'notifications.hoursAgo': 'Hace {0} hora{1}',
+  'notifications.daysAgo': 'Hace {0} día{1}',
 
   // Default notifications
   'notifications.default.promotion.title': 'Promoción Especial',
@@ -26,5 +29,7 @@ export const notifications = {
   'notifications.default.update.title': 'Nueva Actualización',
   'notifications.default.update.content': 'La versión 2.0 ha sido lanzada con muchas nuevas funciones',
   'notifications.default.system.title': 'Notificación del Sistema',
-  'notifications.default.system.content': 'El sistema estará en mantenimiento a las 10:00 PM esta noche. Disculpe las molestias.'
+  'notifications.default.system.content': 'El sistema estará en mantenimiento a las 10:00 PM esta noche. Disculpe las molestias.',
+  'notifications.demo.title': '¡Bienvenido a XLab!',
+  'notifications.demo.content': 'Esta es una notificación de demostración. Inicie sesión para ver notificaciones reales.'
 }; 

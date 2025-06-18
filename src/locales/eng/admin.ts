@@ -167,5 +167,11 @@ export const admin = {
   'admin.notifications.settings.title': 'Notification Settings',
   'admin.notifications.settings.automatic': 'Automation Settings',
   'admin.notifications.settings.saveBtn': 'Save Settings',
-  'admin.notifications.createNotification': 'Create Notification'
+  'admin.notifications.createNotification': 'Create Notification',
+  'admin.notifications.form.englishVersion': 'English Version',
+  'admin.notifications.form.spanishVersion': 'Spanish Version',
+  'admin.notifications.form.englishTitlePlaceholder': 'Enter English notification title',
+  'admin.notifications.form.englishContentPlaceholder': 'Enter English notification content',
+  'admin.notifications.form.spanishTitlePlaceholder': 'Enter Spanish notification title',
+  'admin.notifications.form.spanishContentPlaceholder': 'Enter Spanish notification content'
 }; 

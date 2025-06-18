@@ -168,5 +168,11 @@ export const admin = {
   'admin.notifications.updatingBtn': 'Đang cập nhật...',
   'admin.notifications.updateBtn': 'Cập nhật',
   'admin.notifications.settings.saveBtn': 'Lưu cài đặt',
-  'admin.notifications.createNotification': 'Tạo thông báo'
+  'admin.notifications.createNotification': 'Tạo thông báo',
+  'admin.notifications.form.englishVersion': 'Phiên bản Tiếng Anh',
+  'admin.notifications.form.spanishVersion': 'Phiên bản Tiếng Tây Ban Nha',
+  'admin.notifications.form.englishTitlePlaceholder': 'Nhập tiêu đề thông báo bằng Tiếng Anh',
+  'admin.notifications.form.englishContentPlaceholder': 'Nhập nội dung thông báo bằng Tiếng Anh',
+  'admin.notifications.form.spanishTitlePlaceholder': 'Nhập tiêu đề thông báo bằng Tiếng Tây Ban Nha',
+  'admin.notifications.form.spanishContentPlaceholder': 'Nhập nội dung thông báo bằng Tiếng Tây Ban Nha',
 }; 

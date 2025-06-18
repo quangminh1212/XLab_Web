@@ -61,6 +61,12 @@ function NotificationsPage() {
     expiresAt: '',
   });
 
+  // Form tạo thông báo
+  const [formMetadata, setFormMetadata] = useState({
+    en: { title: '', content: '' },
+    es: { title: '', content: '' }
+  });
+
   // Settings state
   const [notificationSettings, setNotificationSettings] = useState({
     autoSendOrderNotifications: true,
@@ -100,6 +106,10 @@ function NotificationsPage() {
       priority: 'medium',
       expiresAt: '',
     });
+    setFormMetadata({
+      en: { title: '', content: '' },
+      es: { title: '', content: '' }
+    });
   };
 
   // Tạo thông báo mới
@@ -114,11 +124,32 @@ function NotificationsPage() {
         title: form.title,
         content: form.content,
         type: form.type,
-        link: undefined as string | undefined,
-        priority: 'medium' as const,
-        expiresAt: undefined as string | undefined,
-        targetUsers: [] as string[],
+        link: form.link || undefined,
+        priority: form.priority as 'low' | 'medium' | 'high',
+        expiresAt: form.expiresAt || undefined,
+        targetUsers: form.targetUsers ? form.targetUsers.split(',').map(u => u.trim()) : [],
+        metadata: {
+          en: {
+            title: formMetadata.en.title || undefined,
+            content: formMetadata.en.content || undefined
+          },
+          es: {
+            title: formMetadata.es.title || undefined,
+            content: formMetadata.es.content || undefined
+          }
+        }
       };
+
+      // Xóa các thuộc tính metadata nếu không có nội dung
+      if (!formMetadata.en.title && !formMetadata.en.content) {
+        delete requestData.metadata.en;
+      }
+      if (!formMetadata.es.title && !formMetadata.es.content) {
+        delete requestData.metadata.es;
+      }
+      if (Object.keys(requestData.metadata).length === 0) {
+        delete requestData.metadata;
+      }
 
       const response = await fetch('/api/notifications', {
         method: 'POST',
@@ -160,11 +191,32 @@ function NotificationsPage() {
         title: form.title,
         content: form.content,
         type: form.type,
-        link: undefined as string | undefined,
-        priority: 'medium' as const,
-        expiresAt: undefined as string | undefined,
-        targetUsers: [] as string[],
+        link: form.link || undefined,
+        priority: form.priority as 'low' | 'medium' | 'high',
+        expiresAt: form.expiresAt || undefined,
+        targetUsers: form.targetUsers ? form.targetUsers.split(',').map(u => u.trim()) : [],
+        metadata: {
+          en: {
+            title: formMetadata.en.title || undefined,
+            content: formMetadata.en.content || undefined
+          },
+          es: {
+            title: formMetadata.es.title || undefined,
+            content: formMetadata.es.content || undefined
+          }
+        }
       };
+
+      // Xóa các thuộc tính metadata nếu không có nội dung
+      if (!formMetadata.en.title && !formMetadata.en.content) {
+        delete requestData.metadata.en;
+      }
+      if (!formMetadata.es.title && !formMetadata.es.content) {
+        delete requestData.metadata.es;
+      }
+      if (Object.keys(requestData.metadata).length === 0) {
+        delete requestData.metadata;
+      }
 
       const response = await fetch(`/api/admin/notifications/${isEditing}`, {
         method: 'PUT',
@@ -219,11 +271,24 @@ function NotificationsPage() {
       title: notification.title,
       content: notification.content,
       type: notification.type,
-      targetUsers: '',
-      link: '',
-      priority: 'medium',
-      expiresAt: '',
+      targetUsers: notification.targetUsers?.join(', ') || '',
+      link: notification.link || '',
+      priority: notification.priority || 'medium',
+      expiresAt: notification.expiresAt || '',
     });
+
+    // Thiết lập dữ liệu đa ngôn ngữ nếu có
+    setFormMetadata({
+      en: {
+        title: notification.metadata?.en?.title || '',
+        content: notification.metadata?.en?.content || ''
+      },
+      es: {
+        title: notification.metadata?.es?.title || '',
+        content: notification.metadata?.es?.content || ''
+      }
+    });
+
     setIsEditing(notification.id);
     setActiveTab('edit');
   };
@@ -538,6 +603,90 @@ function NotificationsPage() {
                   />
                 </div>
 
+                {/* Thêm form cho tiếng Anh */}
+                <div className="border border-gray-200 rounded-md p-4 mt-6 bg-gray-50">
+                  <h3 className="text-md font-medium text-gray-900 mb-4 flex items-center">
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs mr-2">EN</span>
+                    {t('admin.notifications.form.englishVersion')}
+                  </h3>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="en-title" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.title')}
+                    </label>
+                    <input
+                      type="text"
+                      id="en-title"
+                      value={formMetadata.en.title}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        en: { ...formMetadata.en, title: e.target.value }
+                      })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.englishTitlePlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="en-content" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.content')}
+                    </label>
+                    <textarea
+                      id="en-content"
+                      value={formMetadata.en.content}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        en: { ...formMetadata.en, content: e.target.value }
+                      })}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.englishContentPlaceholder')}
+                    />
+                  </div>
+                </div>
+
+                {/* Thêm form cho tiếng Tây Ban Nha */}
+                <div className="border border-gray-200 rounded-md p-4 mt-6 bg-gray-50">
+                  <h3 className="text-md font-medium text-gray-900 mb-4 flex items-center">
+                    <span className="px-2 py-0.5 bg-orange-100 text-orange-800 rounded text-xs mr-2">ES</span>
+                    {t('admin.notifications.form.spanishVersion')}
+                  </h3>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="es-title" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.title')}
+                    </label>
+                    <input
+                      type="text"
+                      id="es-title"
+                      value={formMetadata.es.title}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        es: { ...formMetadata.es, title: e.target.value }
+                      })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.spanishTitlePlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="es-content" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.content')}
+                    </label>
+                    <textarea
+                      id="es-content"
+                      value={formMetadata.es.content}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        es: { ...formMetadata.es, content: e.target.value }
+                      })}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.spanishContentPlaceholder')}
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
                     {t('admin.notifications.form.type')}
@@ -615,6 +764,90 @@ function NotificationsPage() {
                     required
                     placeholder={t('admin.notifications.form.contentPlaceholder')}
                   />
+                </div>
+
+                {/* Thêm form cho tiếng Anh */}
+                <div className="border border-gray-200 rounded-md p-4 mt-6 bg-gray-50">
+                  <h3 className="text-md font-medium text-gray-900 mb-4 flex items-center">
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs mr-2">EN</span>
+                    {t('admin.notifications.form.englishVersion')}
+                  </h3>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="edit-en-title" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.title')}
+                    </label>
+                    <input
+                      type="text"
+                      id="edit-en-title"
+                      value={formMetadata.en.title}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        en: { ...formMetadata.en, title: e.target.value }
+                      })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.englishTitlePlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="edit-en-content" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.content')}
+                    </label>
+                    <textarea
+                      id="edit-en-content"
+                      value={formMetadata.en.content}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        en: { ...formMetadata.en, content: e.target.value }
+                      })}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.englishContentPlaceholder')}
+                    />
+                  </div>
+                </div>
+
+                {/* Thêm form cho tiếng Tây Ban Nha */}
+                <div className="border border-gray-200 rounded-md p-4 mt-6 bg-gray-50">
+                  <h3 className="text-md font-medium text-gray-900 mb-4 flex items-center">
+                    <span className="px-2 py-0.5 bg-orange-100 text-orange-800 rounded text-xs mr-2">ES</span>
+                    {t('admin.notifications.form.spanishVersion')}
+                  </h3>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="edit-es-title" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.title')}
+                    </label>
+                    <input
+                      type="text"
+                      id="edit-es-title"
+                      value={formMetadata.es.title}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        es: { ...formMetadata.es, title: e.target.value }
+                      })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.spanishTitlePlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="edit-es-content" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.content')}
+                    </label>
+                    <textarea
+                      id="edit-es-content"
+                      value={formMetadata.es.content}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        es: { ...formMetadata.es, content: e.target.value }
+                      })}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.spanishContentPlaceholder')}
+                    />
+                  </div>
                 </div>
 
                 <div>

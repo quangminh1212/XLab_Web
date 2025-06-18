@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs/promises';
 import path from 'path';
+import { notifications as vieNotifications } from '@/locales/vie/notifications';
+import { notifications as engNotifications } from '@/locales/eng/notifications';
+import { notifications as spaNotifications } from '@/locales/spa/notifications';
 
 const NOTIFICATIONS_FILE = path.join(process.cwd(), 'data', 'notifications.json');
 
@@ -17,6 +20,16 @@ interface Notification {
   link?: string;
   priority: 'low' | 'medium' | 'high';
   expiresAt?: string;
+  metadata?: {
+    es?: {
+      title?: string;
+      content?: string;
+    };
+    en?: {
+      title?: string;
+      content?: string;
+    };
+  };
 }
 
 // Đảm bảo thư mục data tồn tại
@@ -86,29 +99,47 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
   const date = new Date(dateString);
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
+  const localeMessages = language === 'eng' 
+    ? engNotifications 
+    : language === 'spa' 
+      ? spaNotifications 
+      : vieNotifications;
+
   if (diffInSeconds < 60) {
-    // Vừa xong / Just now / Ahora mismo
-    if (language === 'eng') return 'Just now';
-    if (language === 'spa') return 'Ahora mismo';
-    return 'Vừa xong';
+    return localeMessages['notifications.justNow'];
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
-    // X phút trước / X minutes ago / Hace X minutos
-    if (language === 'eng') return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
-    if (language === 'spa') return `Hace ${minutes} minuto${minutes !== 1 ? 's' : ''}`;
-    return `${minutes} phút trước`;
+    if (language === 'eng') {
+      const suffix = minutes !== 1 ? 's' : '';
+      return localeMessages['notifications.minutesAgo'].replace('{0}', minutes.toString()).replace('{1}', suffix);
+    } else if (language === 'spa') {
+      const suffix = minutes !== 1 ? 's' : '';
+      return localeMessages['notifications.minutesAgo'].replace('{0}', minutes.toString()).replace('{1}', suffix);
+    } else {
+      return localeMessages['notifications.minutesAgo'].replace('{0}', minutes.toString());
+    }
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
-    // X giờ trước / X hours ago / Hace X horas
-    if (language === 'eng') return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-    if (language === 'spa') return `Hace ${hours} hora${hours !== 1 ? 's' : ''}`;
-    return `${hours} giờ trước`;
+    if (language === 'eng') {
+      const suffix = hours !== 1 ? 's' : '';
+      return localeMessages['notifications.hoursAgo'].replace('{0}', hours.toString()).replace('{1}', suffix);
+    } else if (language === 'spa') {
+      const suffix = hours !== 1 ? 's' : '';
+      return localeMessages['notifications.hoursAgo'].replace('{0}', hours.toString()).replace('{1}', suffix);
+    } else {
+      return localeMessages['notifications.hoursAgo'].replace('{0}', hours.toString());
+    }
   } else {
     const days = Math.floor(diffInSeconds / 86400);
-    // X ngày trước / X days ago / Hace X días
-    if (language === 'eng') return `${days} day${days !== 1 ? 's' : ''} ago`;
-    if (language === 'spa') return `Hace ${days} día${days !== 1 ? 's' : ''}`;
-    return `${days} ngày trước`;
+    if (language === 'eng') {
+      const suffix = days !== 1 ? 's' : '';
+      return localeMessages['notifications.daysAgo'].replace('{0}', days.toString()).replace('{1}', suffix);
+    } else if (language === 'spa') {
+      const suffix = days !== 1 ? 's' : '';
+      return localeMessages['notifications.daysAgo'].replace('{0}', days.toString()).replace('{1}', suffix);
+    } else {
+      return localeMessages['notifications.daysAgo'].replace('{0}', days.toString());
+    }
   }
 }
 
@@ -119,6 +150,13 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const language = url.searchParams.get('language') || 'vie';
 
+    // Lấy bản dịch thông báo theo ngôn ngữ
+    const localeMessages = language === 'eng' 
+      ? engNotifications 
+      : language === 'spa' 
+        ? spaNotifications 
+        : vieNotifications;
+
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
       if (process.env.NODE_ENV === 'development') {
@@ -126,16 +164,8 @@ export async function GET(request: Request) {
         const demoNotifications = [
           {
             id: 'demo-1',
-            title: language === 'eng' 
-              ? 'Welcome to XLab!' 
-              : language === 'spa' 
-                ? '¡Bienvenido a XLab!' 
-                : 'Chào mừng đến với XLab!',
-            content: language === 'eng' 
-              ? 'This is a demo notification. Please login to see real notifications.' 
-              : language === 'spa' 
-                ? 'Esta es una notificación de demostración. Inicie sesión para ver notificaciones reales.' 
-                : 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
+            title: localeMessages['notifications.demo.title'],
+            content: localeMessages['notifications.demo.content'],
             type: 'system',
             time: formatTimeAgo(new Date().toISOString(), language as string),
             isRead: false,
@@ -165,34 +195,18 @@ export async function GET(request: Request) {
         return true;
       })
       .map((notification) => {
-        // Translate notification content based on language
+        // Lấy nội dung thông báo theo ngôn ngữ từ metadata
         let title = notification.title;
         let content = notification.content;
 
-        // Translate system notifications based on ID
-        if (notification.id === '1') {
-          if (language === 'eng') {
-            title = 'Special Promotion';
-            content = '50% off all software products this week!';
-          } else if (language === 'spa') {
-            title = 'Promoción Especial';
-            content = '¡50% de descuento en todos los productos de software esta semana!';
-          }
-        } else if (notification.id === '2') {
-          if (language === 'eng') {
-            title = 'New Update';
-            content = 'Version 2.0 has been released with many new features';
-          } else if (language === 'spa') {
-            title = 'Nueva Actualización';
-            content = 'La versión 2.0 ha sido lanzada con muchas nuevas características';
-          }
-        } else if (notification.id === '3') {
-          if (language === 'eng') {
-            title = 'System Notification';
-            content = 'The system will undergo maintenance at 22:00 tonight. Sorry for the inconvenience.';
-          } else if (language === 'spa') {
-            title = 'Notificación del Sistema';
-            content = 'El sistema estará en mantenimiento a las 22:00 esta noche. Disculpe las molestias.';
+        // Sử dụng metadata cho đa ngôn ngữ nếu có
+        if (notification.metadata) {
+          if (language === 'eng' && notification.metadata.en) {
+            title = notification.metadata.en.title || title;
+            content = notification.metadata.en.content || content;
+          } else if (language === 'spa' && notification.metadata.es) {
+            title = notification.metadata.es.title || title;
+            content = notification.metadata.es.content || content;
           }
         }
 

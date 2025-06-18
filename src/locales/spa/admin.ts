@@ -168,5 +168,11 @@ export const admin = {
   'admin.notifications.settings.title': 'Configuración de Notificaciones',
   'admin.notifications.settings.automatic': 'Configuración de Automatización',
   'admin.notifications.settings.saveBtn': 'Guardar Configuración',
-  'admin.notifications.createNotification': 'Crear Notificación'
+  'admin.notifications.createNotification': 'Crear Notificación',
+  'admin.notifications.form.englishVersion': 'Versión en Inglés',
+  'admin.notifications.form.spanishVersion': 'Versión en Español',
+  'admin.notifications.form.englishTitlePlaceholder': 'Ingrese el título de la notificación en inglés',
+  'admin.notifications.form.englishContentPlaceholder': 'Ingrese el contenido de la notificación en inglés',
+  'admin.notifications.form.spanishTitlePlaceholder': 'Ingrese el título de la notificación en español',
+  'admin.notifications.form.spanishContentPlaceholder': 'Ingrese el contenido de la notificación en español',
 }; 
