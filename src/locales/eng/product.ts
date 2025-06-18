@@ -24,6 +24,9 @@ export const product = {
   'product.liveChat': 'Live Chat',
   'product.chatDescription': 'Chat directly with our support staff',
   'product.startChat': 'Start chat',
+  'product.quantity': 'Quantity',
+  'product.options': 'Options',
+  'product.option.fullPrivateMonth': 'Full - Private Use - 1 Month',
   
   // ChatGPT and Grok descriptions
   'product.chatgpt.description': 'ChatGPT is a powerful AI chatbot that can answer a wide range of questions in both English and Vietnamese, providing support from Front-end to Back-end programming.',

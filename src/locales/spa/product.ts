@@ -11,6 +11,8 @@ export const product = {
   'product.discountedPrice': 'Precio con descuento',
   'product.youSave': 'Ahorras',
   'product.quantity': 'Cantidad',
+  'product.options': 'Opciones',
+  'product.option.fullPrivateMonth': 'Completo - Uso Privado - 1 Mes',
   'product.availableStock': 'Disponible en stock',
   'product.outOfStock': 'Agotado',
   'product.lowStock': 'Pocas unidades',

@@ -108,12 +108,16 @@ const ProductDescription = ({ description, productId }: { description: string, p
 
 // Component xử lý hiển thị mô tả ngắn sản phẩm
 const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
   const [translatedShortDescription, setTranslatedShortDescription] = useState<string>(shortDescription);
 
   useEffect(() => {
+    // Nếu có mã định danh sản phẩm đặc biệt (chatgpt, grok), sử dụng bản dịch từ file
+    if (productId === 'chatgpt' || productId === 'grok') {
+      setTranslatedShortDescription(t(`product.${productId}.description`) || shortDescription);
+    } 
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    else if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -139,7 +143,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
       // Nếu tiếng Việt, sử dụng mô tả gốc
       setTranslatedShortDescription(shortDescription);
     }
-  }, [shortDescription, language, productId]);
+  }, [shortDescription, language, productId, t]);
 
   return (
     <p className="mt-4 text-gray-600 text-lg">{translatedShortDescription || ''}</p>

@@ -26,6 +26,7 @@ export const product = {
   'product.startChat': 'Bắt đầu chat',
   'product.quantity': 'Số lượng',
   'product.options': 'Tùy chọn',
+  'product.option.fullPrivateMonth': 'Full - Dùng riêng - 1 Tháng',
   
   // ChatGPT and Grok descriptions
   'product.chatgpt.description': 'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.',
