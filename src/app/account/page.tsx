@@ -892,7 +892,7 @@ export default function AccountPage() {
                           <div className="p-4">
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.price')}</span>
-                              <span className="font-semibold">{formatCurrency(item.price)}</span>
+                              <span className="font-semibold">{formatCurrency(convertCurrency(item.price, language), language)}</span>
                             </div>
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.quantity')}</span>
@@ -901,7 +901,7 @@ export default function AccountPage() {
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.savingsFromSale')}</span>
                               <span className="font-semibold text-green-600">
-                                {formatCurrency(item.originalPrice - item.price)}
+                                {formatCurrency(convertCurrency(item.originalPrice - item.price, language), language)}
                               </span>
                             </div>
                             {/* Tìm order chứa item hiện tại để hiển thị ngày mua */}
@@ -933,7 +933,7 @@ export default function AccountPage() {
                                   >
                                     <span className="text-gray-600">{t('account.savingsFromVoucher')}</span>
                                     <span className="font-semibold text-green-600">
-                                      {formatCurrency(order.couponDiscount)}
+                                      {formatCurrency(convertCurrency(order.couponDiscount, language), language)}
                                     </span>
                                   </div>
                                 );
@@ -1185,7 +1185,7 @@ export default function AccountPage() {
                                   </div>
                                 </div>
                                 <div className="text-right mt-2 sm:mt-0">
-                                  <div className="font-semibold">{formatCurrency(item.price)}</div>
+                                  <div className="font-semibold">{formatCurrency(convertCurrency(item.price, language), language)}</div>
                                 </div>
                               </div>
                             ))}
@@ -1197,10 +1197,14 @@ export default function AccountPage() {
                                 <span className="text-gray-600">{t('account.savingsFromSale')}:</span>
                                 <span className="font-semibold text-green-600">
                                   {formatCurrency(
-                                    order.items.reduce(
-                                      (sum, item) => sum + (item.originalPrice - item.price),
-                                      0,
+                                    convertCurrency(
+                                      order.items.reduce(
+                                        (sum, item) => sum + (item.originalPrice - item.price),
+                                        0,
+                                      ),
+                                      language
                                     ),
+                                    language
                                   )}
                                 </span>
                               </div>
@@ -1208,7 +1212,7 @@ export default function AccountPage() {
                                 <div className="flex justify-between text-sm">
                                   <span className="text-gray-600">{t('account.savingsFromVoucher')}:</span>
                                   <span className="font-semibold text-green-600">
-                                    {formatCurrency(order.couponDiscount)}
+                                    {formatCurrency(convertCurrency(order.couponDiscount, language), language)}
                                   </span>
                                 </div>
                               )}
@@ -1216,10 +1220,14 @@ export default function AccountPage() {
                                 <span className="text-gray-800">{t('account.totalSavings')}:</span>
                                 <span className="text-green-600">
                                   {formatCurrency(
-                                    order.items.reduce(
-                                      (sum, item) => sum + (item.originalPrice - item.price),
-                                      0,
-                                    ) + (order.couponDiscount || 0),
+                                    convertCurrency(
+                                      order.items.reduce(
+                                        (sum, item) => sum + (item.originalPrice - item.price),
+                                        0,
+                                      ) + (order.couponDiscount || 0),
+                                      language
+                                    ),
+                                    language
                                   )}
                                 </span>
                               </div>
@@ -1227,7 +1235,7 @@ export default function AccountPage() {
 
                             <div className="flex justify-between items-center">
                               <div className="text-lg font-semibold">
-                                {t('account.totalPayment', { amount: formatCurrency(order.total) })}
+                                {t('account.totalPayment', { amount: formatCurrency(convertCurrency(order.total, language), language) })}
                               </div>
                               <div className="flex space-x-3">
                                 <Link
