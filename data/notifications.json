@@ -19,6 +19,10 @@
         "title": "Media",
         "content": "Version 2.0 has been released with many new features"
       },
+      "chi": {
+        "title": "新更新",
+        "content": "版本2.0已发布，带来许多新功能"
+      },
       "readCount": 1
     }
   },
@@ -40,6 +44,10 @@
       "en": {
         "title": "Alta",
         "content": "The system will be under maintenance at 10:00 PM tonight. Sorry for the inconvenience."
+      },
+      "chi": {
+        "title": "系统通知",
+        "content": "系统将在今晚10:00进行维护。给您带来不便，敬请谅解。"
       },
       "readCount": 1
     }

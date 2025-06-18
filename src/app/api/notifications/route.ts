@@ -6,6 +6,7 @@ import path from 'path';
 import { notifications as vieNotifications } from '@/locales/vie/notifications';
 import { notifications as engNotifications } from '@/locales/eng/notifications';
 import { notifications as spaNotifications } from '@/locales/spa/notifications';
+import { notifications as chiNotifications } from '@/locales/chi/notifications';
 
 const NOTIFICATIONS_FILE = path.join(process.cwd(), 'data', 'notifications.json');
 
@@ -26,6 +27,10 @@ interface Notification {
       content?: string;
     };
     en?: {
+      title?: string;
+      content?: string;
+    };
+    chi?: {
       title?: string;
       content?: string;
     };
@@ -103,7 +108,9 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
     ? engNotifications 
     : language === 'spa' 
       ? spaNotifications 
-      : vieNotifications;
+      : language === 'chi'
+        ? chiNotifications
+        : vieNotifications;
 
   if (diffInSeconds < 60) {
     return localeMessages['notifications.justNow'];
@@ -155,7 +162,9 @@ export async function GET(request: Request) {
       ? engNotifications 
       : language === 'spa' 
         ? spaNotifications 
-        : vieNotifications;
+        : language === 'chi'
+          ? chiNotifications
+          : vieNotifications;
 
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
@@ -207,6 +216,9 @@ export async function GET(request: Request) {
           } else if (language === 'spa' && notification.metadata.es) {
             title = notification.metadata.es.title || title;
             content = notification.metadata.es.content || content;
+          } else if (language === 'chi' && notification.metadata.chi) {
+            title = notification.metadata.chi.title || title;
+            content = notification.metadata.chi.content || content;
           }
         }
 
@@ -320,6 +332,13 @@ export async function POST(request: Request) {
         newNotification.metadata.es = {
           title: body.metadata.es.title,
           content: body.metadata.es.content
+        };
+      }
+      
+      if (body.metadata.chi) {
+        newNotification.metadata.chi = {
+          title: body.metadata.chi.title,
+          content: body.metadata.chi.content
         };
       }
     }
