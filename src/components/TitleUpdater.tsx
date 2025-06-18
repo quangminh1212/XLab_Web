@@ -13,7 +13,7 @@ export default function TitleUpdater(): React.ReactNode {
 
     // Xác định tiêu đề dựa trên đường dẫn
     if (pathname === '/') {
-      pageTitle = `XLab - ${t('common.softwareAndServices')}`;
+      pageTitle = `${t('nav.home')} | XLab`;
     } else if (pathname.startsWith('/admin')) {
       pageTitle = `${t('admin.title')} | XLab`;
     } else if (pathname === '/vouchers/public') {
@@ -28,7 +28,7 @@ export default function TitleUpdater(): React.ReactNode {
       pageTitle = `${t('nav.warranty')} | XLab`;
     } else {
       // Tiêu đề mặc định
-      pageTitle = `XLab - ${t('common.softwareAndServices')}`;
+      pageTitle = `${t('common.softwareAndServices')} | XLab`;
     }
 
     // Áp dụng tiêu đề
