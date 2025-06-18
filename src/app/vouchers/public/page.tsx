@@ -350,9 +350,13 @@ export default function PublicVouchersPage() {
 
               {/* Coupon body */}
               <div className="p-4 flex-1 flex flex-col">
-                <h3 className="font-semibold text-gray-800 text-lg mb-2">{voucher.name}</h3>
+                <h3 className="font-semibold text-gray-800 text-lg mb-2">
+                  {t(`coupon.${voucher.code.toLowerCase()}`, { default: voucher.name })}
+                </h3>
                 {voucher.description && (
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{voucher.description}</p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    {t(`coupon.${voucher.code.toLowerCase()}.description`, { default: voucher.description })}
+                  </p>
                 )}
 
                 <div className="flex-1 flex flex-col">

@@ -465,12 +465,12 @@ const Header = () => {
                                   </span>
                                 </div>
                                 <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                                  {coupon.name}
+                                  {t(`coupon.${coupon.code.toLowerCase()}`, { default: coupon.name })}
                                 </h4>
                                 {coupon.description && (
                                   <div className="flex justify-between items-center mt-1">
                                     <p className="text-xs text-gray-600 line-clamp-2">
-                                      {coupon.description}
+                                      {t(`coupon.${coupon.code.toLowerCase()}.description`, { default: coupon.description })}
                                     </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                       <span className="text-xs font-medium text-teal-600">

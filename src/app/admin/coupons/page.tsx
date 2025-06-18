@@ -693,7 +693,7 @@ function CouponsPage() {
                                     className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                     title={t('admin.coupons.clickToEdit', { default: 'Click để chỉnh sửa' })}
                                   >
-                                    {coupon.name}
+                                    {t(`coupon.${coupon.code.toLowerCase()}`, { default: coupon.name })}
                                   </span>
                                 )}
                               </div>
