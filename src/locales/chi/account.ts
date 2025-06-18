@@ -95,6 +95,7 @@ export const account = {
   'account.deposit': '充值',
   'account.usedVouchers': '已使用优惠券',
   'account.orderHistory': '订单历史',
+  'account.purchaseHistory': '购买历史',
   'account.quantity': '数量',
   
   // Additional translations

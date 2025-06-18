@@ -95,6 +95,7 @@ export const account = {
   'account.deposit': 'Depósito',
   'account.usedVouchers': 'Cupones Usados',
   'account.orderHistory': 'Historial de Pedidos',
+  'account.purchaseHistory': 'Historial de Compras',
   'account.quantity': 'Cantidad',
   
   // Additional translations
