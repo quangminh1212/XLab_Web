@@ -25,6 +25,10 @@ interface Notification {
       title?: string;
       content?: string;
     };
+    chi?: {
+      title?: string;
+      content?: string;
+    };
     readCount?: number;
   };
 }
@@ -64,7 +68,8 @@ function NotificationsPage() {
   // Form tạo thông báo
   const [formMetadata, setFormMetadata] = useState({
     en: { title: '', content: '' },
-    es: { title: '', content: '' }
+    es: { title: '', content: '' },
+    chi: { title: '', content: '' }
   });
 
   // Settings state
@@ -108,7 +113,8 @@ function NotificationsPage() {
     });
     setFormMetadata({
       en: { title: '', content: '' },
-      es: { title: '', content: '' }
+      es: { title: '', content: '' },
+      chi: { title: '', content: '' }
     });
   };
 
@@ -136,6 +142,10 @@ function NotificationsPage() {
           es: {
             title: formMetadata.es.title || undefined,
             content: formMetadata.es.content || undefined
+          },
+          chi: {
+            title: formMetadata.chi.title || undefined,
+            content: formMetadata.chi.content || undefined
           }
         }
       };
@@ -146,6 +156,9 @@ function NotificationsPage() {
       }
       if (!formMetadata.es.title && !formMetadata.es.content) {
         delete requestData.metadata.es;
+      }
+      if (!formMetadata.chi.title && !formMetadata.chi.content) {
+        delete requestData.metadata.chi;
       }
       if (Object.keys(requestData.metadata).length === 0) {
         delete requestData.metadata;
@@ -203,6 +216,10 @@ function NotificationsPage() {
           es: {
             title: formMetadata.es.title || undefined,
             content: formMetadata.es.content || undefined
+          },
+          chi: {
+            title: formMetadata.chi.title || undefined,
+            content: formMetadata.chi.content || undefined
           }
         }
       };
@@ -213,6 +230,9 @@ function NotificationsPage() {
       }
       if (!formMetadata.es.title && !formMetadata.es.content) {
         delete requestData.metadata.es;
+      }
+      if (!formMetadata.chi.title && !formMetadata.chi.content) {
+        delete requestData.metadata.chi;
       }
       if (Object.keys(requestData.metadata).length === 0) {
         delete requestData.metadata;
@@ -286,6 +306,10 @@ function NotificationsPage() {
       es: {
         title: notification.metadata?.es?.title || '',
         content: notification.metadata?.es?.content || ''
+      },
+      chi: {
+        title: notification.metadata?.chi?.title || '',
+        content: notification.metadata?.chi?.content || ''
       }
     });
 
@@ -484,6 +508,8 @@ function NotificationsPage() {
                                 notification.metadata.es.title :
                               locale === 'en-US' && notification.metadata?.en?.title ?
                                 notification.metadata.en.title : 
+                              locale === 'zh-CN' && notification.metadata?.chi?.title ?
+                                notification.metadata.chi.title :
                                 notification.title
                             }</h3>
                             <span
@@ -510,6 +536,8 @@ function NotificationsPage() {
                               notification.metadata.es.content :
                             locale === 'en-US' && notification.metadata?.en?.content ?
                               notification.metadata.en.content : 
+                            locale === 'zh-CN' && notification.metadata?.chi?.content ?
+                              notification.metadata.chi.content :
                               notification.content
                           }</p>
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
@@ -681,6 +709,48 @@ function NotificationsPage() {
                   </div>
                 </div>
 
+                {/* Thêm form cho tiếng Trung */}
+                <div className="border border-gray-200 rounded-md p-4 mt-6 bg-gray-50">
+                  <h3 className="text-md font-medium text-gray-900 mb-4 flex items-center">
+                    <span className="px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs mr-2">ZH</span>
+                    {t('admin.notifications.form.chineseVersion')}
+                  </h3>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="chi-title" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.title')}
+                    </label>
+                    <input
+                      type="text"
+                      id="chi-title"
+                      value={formMetadata.chi.title}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        chi: { ...formMetadata.chi, title: e.target.value }
+                      })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.chineseTitlePlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="chi-content" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.content')}
+                    </label>
+                    <textarea
+                      id="chi-content"
+                      value={formMetadata.chi.content}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        chi: { ...formMetadata.chi, content: e.target.value }
+                      })}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.chineseContentPlaceholder')}
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
                     {t('admin.notifications.form.type')}
@@ -840,6 +910,48 @@ function NotificationsPage() {
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       placeholder={t('admin.notifications.form.spanishContentPlaceholder')}
+                    />
+                  </div>
+                </div>
+
+                {/* Thêm form cho tiếng Trung */}
+                <div className="border border-gray-200 rounded-md p-4 mt-6 bg-gray-50">
+                  <h3 className="text-md font-medium text-gray-900 mb-4 flex items-center">
+                    <span className="px-2 py-0.5 bg-red-100 text-red-800 rounded text-xs mr-2">ZH</span>
+                    {t('admin.notifications.form.chineseVersion')}
+                  </h3>
+                  
+                  <div className="mb-4">
+                    <label htmlFor="edit-chi-title" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.title')}
+                    </label>
+                    <input
+                      type="text"
+                      id="edit-chi-title"
+                      value={formMetadata.chi.title}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        chi: { ...formMetadata.chi, title: e.target.value }
+                      })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.chineseTitlePlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="edit-chi-content" className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('admin.notifications.form.content')}
+                    </label>
+                    <textarea
+                      id="edit-chi-content"
+                      value={formMetadata.chi.content}
+                      onChange={(e) => setFormMetadata({
+                        ...formMetadata,
+                        chi: { ...formMetadata.chi, content: e.target.value }
+                      })}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder={t('admin.notifications.form.chineseContentPlaceholder')}
                     />
                   </div>
                 </div>

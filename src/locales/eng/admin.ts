@@ -262,5 +262,8 @@ export const admin = {
   'admin.notifications.form.englishTitlePlaceholder': 'Enter English notification title',
   'admin.notifications.form.englishContentPlaceholder': 'Enter English notification content',
   'admin.notifications.form.spanishTitlePlaceholder': 'Enter Spanish notification title',
-  'admin.notifications.form.spanishContentPlaceholder': 'Enter Spanish notification content'
+  'admin.notifications.form.spanishContentPlaceholder': 'Enter Spanish notification content',
+  'admin.notifications.form.chineseVersion': 'Chinese Version',
+  'admin.notifications.form.chineseTitlePlaceholder': 'Enter Chinese notification title',
+  'admin.notifications.form.chineseContentPlaceholder': 'Enter Chinese notification content'
 }; 

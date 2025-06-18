@@ -16,11 +16,11 @@
         "content": "La versión 2.0 ha sido lanzada con muchas nuevas funciones"
       },
       "en": {
-        "title": "Media",
+        "title": "Update",
         "content": "Version 2.0 has been released with many new features"
       },
       "chi": {
-        "title": "新更新",
+        "title": "更新",
         "content": "版本2.0已发布，带来许多新功能"
       },
       "readCount": 1
@@ -38,16 +38,16 @@
     "priority": "high",
     "metadata": {
       "es": {
-        "title": "Sistema",
+        "title": "Notificación del sistema",
         "content": "El sistema estará en mantenimiento a las 10:00 PM esta noche. Disculpe las molestias."
       },
       "en": {
-        "title": "Alta",
+        "title": "System Notification",
         "content": "The system will be under maintenance at 10:00 PM tonight. Sorry for the inconvenience."
       },
       "chi": {
         "title": "系统通知",
-        "content": "系统将在今晚10:00进行维护。给您带来不便，敬请谅解。"
+        "content": "系统将在今晚22:00进行维护。给您带来不便，敬请谅解。"
       },
       "readCount": 1
     }

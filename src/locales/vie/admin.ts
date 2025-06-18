@@ -219,6 +219,9 @@ export const admin = {
   'admin.notifications.form.englishContentPlaceholder': 'Nhập nội dung thông báo bằng Tiếng Anh',
   'admin.notifications.form.spanishTitlePlaceholder': 'Nhập tiêu đề thông báo bằng Tiếng Tây Ban Nha',
   'admin.notifications.form.spanishContentPlaceholder': 'Nhập nội dung thông báo bằng Tiếng Tây Ban Nha',
+  'admin.notifications.form.chineseVersion': 'Phiên bản Tiếng Trung',
+  'admin.notifications.form.chineseTitlePlaceholder': 'Nhập tiêu đề thông báo bằng Tiếng Trung',
+  'admin.notifications.form.chineseContentPlaceholder': 'Nhập nội dung thông báo bằng Tiếng Trung',
   
   // Settings page
   'admin.settings.general': 'Thông tin chung',

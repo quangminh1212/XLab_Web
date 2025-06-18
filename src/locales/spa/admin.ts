@@ -264,4 +264,7 @@ export const admin = {
   'admin.notifications.form.englishContentPlaceholder': 'Ingrese el contenido de la notificación en inglés',
   'admin.notifications.form.spanishTitlePlaceholder': 'Ingrese el título de la notificación en español',
   'admin.notifications.form.spanishContentPlaceholder': 'Ingrese el contenido de la notificación en español',
+  'admin.notifications.form.chineseVersion': 'Versión en Chino',
+  'admin.notifications.form.chineseTitlePlaceholder': 'Ingrese el título de la notificación en chino',
+  'admin.notifications.form.chineseContentPlaceholder': 'Ingrese el contenido de la notificación en chino',
 }; 

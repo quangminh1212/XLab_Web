@@ -31,5 +31,35 @@ export const notifications = {
   'notifications.default.system.title': '系统通知',
   'notifications.default.system.content': '系统将在今晚10:00进行维护。给您带来不便，敬请谅解。',
   'notifications.demo.title': '欢迎来到XLab！',
-  'notifications.demo.content': '这是一条演示通知。请登录查看真实通知。'
+  'notifications.demo.content': '这是一条演示通知。请登录查看真实通知。',
+  
+  // Admin notification panel
+  'notifications.created': '已创建',
+  'notifications.readCount': '阅读数',
+  'notifications.people': '人',
+  'notifications.expires': '过期',
+  'notifications.createdOn': '创建于',
+  'notifications.edit': '编辑',
+  'notifications.delete': '删除',
+  'notifications.priority.high': '高',
+  'notifications.priority.medium': '中',
+  'notifications.priority.low': '低',
+  'notifications.createNotification': '创建通知',
+  'notifications.create': '创建通知',
+  'notifications.createSuccess': '通知创建成功',
+  'notifications.createError': '创建通知出错',
+  'notifications.updateSuccess': '通知更新成功',
+  'notifications.updateError': '更新通知出错',
+  'notifications.deleteSuccess': '通知删除成功',
+  'notifications.deleteError': '删除通知出错',
+  'notifications.confirmDelete': '确定要删除此通知吗？',
+  'notifications.settings': '通知设置',
+  'notifications.settingsSaved': '通知设置已保存',
+  'notifications.connectionError': '连接错误。请重试。',
+  
+  // Specific notification contents
+  'notification.update.title': '更新',
+  'notification.update.content': '版本2.0已发布，带来许多新功能',
+  'notification.system.maintenance.title': '系统维护',
+  'notification.system.maintenance.content': '系统将在今晚22:00进行维护。给您带来不便，敬请谅解。'
 }; 
