@@ -2,6 +2,7 @@ export const account = {
   'account.title': 'Mi Cuenta',
   'account.profile': 'Perfil',
   'account.orders': 'Pedidos',
+  'account.myOrders': 'Mis Pedidos',
   'account.balance': 'Saldo',
   'account.balanceTooltip': 'Saldo de cuenta - Haz clic para depositar',
   'account.settings': 'Configuración',

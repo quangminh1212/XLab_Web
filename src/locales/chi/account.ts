@@ -2,6 +2,7 @@ export const account = {
   'account.title': '我的账户',
   'account.profile': '个人资料',
   'account.orders': '订单',
+  'account.myOrders': '我的订单',
   'account.balance': '余额',
   'account.balanceTooltip': '账户余额 - 点击充值',
   'account.settings': '设置',

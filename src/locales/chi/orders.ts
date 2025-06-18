@@ -1,5 +1,6 @@
 export const orders = {
   'orders.title': '我的订单',
+  'orders.myOrders': '我的订单',
   'orders.orderNumber': '订单 #',
   'orders.date': '日期',
   'orders.status': '状态',

@@ -1,5 +1,6 @@
 export const orders = {
   'orders.title': 'Mis Pedidos',
+  'orders.myOrders': 'Mis Pedidos',
   'orders.orderNumber': 'Pedido #',
   'orders.date': 'Fecha',
   'orders.status': 'Estado',

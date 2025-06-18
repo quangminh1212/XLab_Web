@@ -2,6 +2,7 @@ export const account = {
   'account.title': 'My Account',
   'account.profile': 'Profile',
   'account.orders': 'Orders',
+  'account.myOrders': 'My Orders',
   'account.balance': 'Balance',
   'account.balanceTooltip': 'Account balance - Click to deposit',
   'account.settings': 'Settings',
