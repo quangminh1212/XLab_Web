@@ -122,10 +122,18 @@ const ProductGrid = ({
   };
 
   // Xử lý category từ sản phẩm
-  const extractCategory = (product: Product): string | object | undefined => {
+  const extractCategory = (product: Product): string | undefined => {
     // Nếu đã có category
     if (product.category) {
-      return product.category;
+      if (typeof product.category === 'string') {
+        return product.category;
+      }
+      
+      // Nếu category là object
+      if (typeof product.category === 'object' && product.category !== null) {
+        const categoryObj = product.category as any;
+        return categoryObj.name || categoryObj.id || undefined;
+      }
     }
     
     // Nếu có categories array
@@ -139,8 +147,8 @@ const ProductGrid = ({
       
       // Nếu category là object
       if (typeof firstCategory === 'object' && firstCategory !== null) {
-        // Trả về object để ProductCard xử lý
-        return firstCategory;
+        const categoryObj = firstCategory as any;
+        return categoryObj.name || categoryObj.id || undefined;
       }
     }
     

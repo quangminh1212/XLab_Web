@@ -125,16 +125,28 @@ export default function RelatedProducts({
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
 
-    // Xử lý category an toàn - giữ nguyên dạng object để ProductCard xử lý
+    // Xử lý category an toàn
     let safeCategory;
     
     // Nếu có category trực tiếp
     if (product.category) {
-      safeCategory = product.category;
+      // Chuyển đổi nếu là object
+      if (typeof product.category === 'object' && product.category !== null) {
+        const catObj = product.category as any;
+        safeCategory = catObj.name || catObj.id || undefined;
+      } else if (typeof product.category === 'string') {
+        safeCategory = product.category;
+      }
     }
     // Nếu có categories array
     else if (product.categories?.length) {
-      safeCategory = product.categories[0];
+      const firstCategory = product.categories[0];
+      if (typeof firstCategory === 'string') {
+        safeCategory = firstCategory;
+      } else if (typeof firstCategory === 'object' && firstCategory !== null) {
+        const catObj = firstCategory as any;
+        safeCategory = catObj.name || catObj.id || undefined;
+      }
     }
 
     const mapped = {

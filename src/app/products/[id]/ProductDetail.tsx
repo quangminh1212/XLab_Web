@@ -1050,8 +1050,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
           categoryId={
             product.categories && product.categories.length > 0
               ? typeof product.categories[0].id === 'object'
-                ? (product.categories[0].id as any)?.id
-                : product.categories[0].id
+                ? String((product.categories[0].id as any)?.id || '')
+                : String(product.categories[0].id || '')
               : undefined
           }
         />
