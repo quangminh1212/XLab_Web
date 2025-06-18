@@ -10,7 +10,8 @@ export const formatCurrency = (
   const localeMap: Record<string, { locale: string; currency: string }> = {
     vie: { locale: 'vi-VN', currency: 'VND' },
     eng: { locale: 'en-US', currency: 'USD' },
-    spa: { locale: 'es-ES', currency: 'EUR' }
+    spa: { locale: 'es-ES', currency: 'EUR' },
+    chi: { locale: 'zh-CN', currency: 'CNY' }
   };
 
   // Get locale configuration based on language or fall back to Vietnamese
@@ -39,7 +40,8 @@ export const convertCurrency = (
   const exchangeRates: Record<string, number> = {
     vie: 1, // 1 VND = 1 VND (base currency)
     eng: 0.000041, // 1 VND ≈ 0.000041 USD
-    spa: 0.000038 // 1 VND ≈ 0.000038 EUR
+    spa: 0.000038, // 1 VND ≈ 0.000038 EUR
+    chi: 0.00029 // 1 VND ≈ 0.00029 CNY
   };
 
   // Get exchange rate or use Vietnamese rate as fallback

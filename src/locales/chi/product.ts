@@ -1,0 +1,39 @@
+export const product = {
+  'product.details': '产品详情',
+  'product.description': '描述',
+  'product.specifications': '规格',
+  'product.reviews': '评价',
+  'product.relatedProducts': '相关产品',
+  'product.addToCart': '加入购物车',
+  'product.buyNow': '立即购买',
+  'product.outOfStock': '缺货',
+  'product.inStock': '有货',
+  'product.warranty': '保修政策',
+  'product.warranty.days': '30天保修',
+  'product.warranty.description': '30天内不满意可退款或更换产品',
+  'product.support': '24/7全天候支持',
+  'product.support.description': '我们的技术支持团队随时准备帮助您',
+  'product.documentation': '完整文档',
+  'product.documentation.description': '详细的用户指南和参考资料',
+  'product.needHelp': '需要关于此产品的更多帮助？',
+  'product.supportDescription': '我们的专家团队随时准备协助您',
+  'product.supportEmail': '支持邮箱',
+  'product.emailResponse': '24小时内回复',
+  'product.supportPhone': '热线',
+  'product.phoneHours': '每日上午8点至晚上10点提供支持',
+  'product.liveChat': '在线聊天',
+  'product.chatDescription': '直接与我们的支持人员聊天',
+  'product.startChat': '开始聊天',
+  
+  // ChatGPT and Grok descriptions
+  'product.chatgpt.description': 'ChatGPT是一个强大的AI聊天机器人，可以用中英文回答各种问题，提供从前端到后端的编程支持。',
+  'product.grok.description': 'Grok AI可以快速自动分析和处理大型数据集，支持准确决策并节省时间。广泛适用于多个领域。',
+  'product.chatgpt.shortDescription': 'ChatGPT是一个强大的AI聊天机器人，可以用中英文回答问题，支持从前端到后端的编程。',
+  'product.grok.shortDescription': 'Grok AI帮助快速自动分析和处理数据。',
+  'product.purchasesPerWeek': '每周{count}次',
+  'product.totalSold': '已售{count}',
+
+  // Product status
+  'product.status.draft': '草稿',
+  'product.status.public': '公开'
+}; 

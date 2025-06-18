@@ -1,11 +1,13 @@
 import { eng } from './eng';
 import { vie } from './vie';
 import { spa } from './spa';
+import { chi } from './chi';
 
 export const translations = {
   eng,
   vie,
-  spa
+  spa,
+  chi
 };
 
 export type LanguageKeys = keyof typeof translations;
@@ -114,4 +116,4 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   };
 }
 
-export { eng, vie, spa }; 
+export { eng, vie, spa, chi }; 

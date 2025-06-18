@@ -42,6 +42,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       case 'eng': return 'en-US';
       case 'spa': return 'es-ES';
       case 'vie': return 'vi-VN';
+      case 'chi': return 'zh-CN';
       default: return 'en-US';
     }
   };

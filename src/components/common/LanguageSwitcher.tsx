@@ -13,7 +13,8 @@ interface LanguageSwitcherProps {
 const languageMap: Record<string, { name: string, flagPath: string }> = {
   'vie': { name: 'Tiếng Việt', flagPath: '/images/flags/vn.svg' },
   'eng': { name: 'English', flagPath: '/images/flags/gb.svg' },
-  'spa': { name: 'Español', flagPath: '/images/flags/es.svg' }
+  'spa': { name: 'Español', flagPath: '/images/flags/es.svg' },
+  'chi': { name: '中文', flagPath: '/images/flags/cn.svg' }
 };
 
 const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
