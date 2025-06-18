@@ -67,14 +67,14 @@ function SettingsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage(data.message || (language === 'vi' ? 'Cài đặt đã được lưu thành công!' : 'Settings saved successfully!'));
+        setSuccessMessage(data.message || (language === 'vie' ? 'Cài đặt đã được lưu thành công!' : 'Settings saved successfully!'));
         setSettings(data.settings);
       } else {
-        setErrors(data.details || [data.error || (language === 'vi' ? 'Đã xảy ra lỗi khi lưu cài đặt' : 'An error occurred while saving settings')]);
+        setErrors(data.details || [data.error || (language === 'vie' ? 'Đã xảy ra lỗi khi lưu cài đặt' : 'An error occurred while saving settings')]);
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      setErrors([(language === 'vi' ? 'Không thể kết nối đến máy chủ' : 'Cannot connect to server')]);
+      setErrors([(language === 'vie' ? 'Không thể kết nối đến máy chủ' : 'Cannot connect to server')]);
     } finally {
       setIsSaving(false);
 
@@ -688,10 +688,10 @@ function SettingsPage() {
             )}
           </div>
 
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+          <div className="flex justify-end pt-6 mt-6 border-t border-gray-200">
             <button
               type="submit"
-              className="px-4 py-2 bg-primary-600 text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              className="px-5 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               disabled={isSaving}
             >
               {isSaving ? (t('admin.settings.saving')) : (t('admin.settings.saveSettings'))}
