@@ -18,5 +18,13 @@ export const notifications = {
   'notifications.loading': 'Cargando notificaciones...',
   'notifications.none': 'No hay notificaciones',
   'notifications.viewDetailsLink': 'Ver detalles',
-  'notifications.justNow': 'Ahora mismo'
+  'notifications.justNow': 'Ahora mismo',
+
+  // Default notifications
+  'notifications.default.promotion.title': 'Promoción Especial',
+  'notifications.default.promotion.content': '¡50% de descuento en todos los productos de software esta semana!',
+  'notifications.default.update.title': 'Nueva Actualización',
+  'notifications.default.update.content': 'La versión 2.0 ha sido lanzada con muchas nuevas funciones',
+  'notifications.default.system.title': 'Notificación del Sistema',
+  'notifications.default.system.content': 'El sistema estará en mantenimiento a las 10:00 PM esta noche. Disculpe las molestias.'
 }; 

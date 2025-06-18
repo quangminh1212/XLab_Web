@@ -18,5 +18,13 @@ export const notifications = {
   'notifications.loading': 'Đang tải thông báo...',
   'notifications.none': 'Không có thông báo',
   'notifications.viewDetailsLink': 'Xem chi tiết',
-  'notifications.justNow': 'Vừa xong'
+  'notifications.justNow': 'Vừa xong',
+
+  // Default notifications
+  'notifications.default.promotion.title': 'Khuyến mãi đặc biệt',
+  'notifications.default.promotion.content': 'Giảm 50% tất cả sản phẩm phần mềm trong tuần này!',
+  'notifications.default.update.title': 'Cập nhật mới',
+  'notifications.default.update.content': 'Phiên bản 2.0 đã ra mắt với nhiều tính năng mới',
+  'notifications.default.system.title': 'Thông báo hệ thống',
+  'notifications.default.system.content': 'Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.'
 }; 

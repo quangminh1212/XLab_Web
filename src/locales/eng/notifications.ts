@@ -18,5 +18,13 @@ export const notifications = {
   'notifications.loading': 'Loading notifications...',
   'notifications.none': 'No notifications',
   'notifications.viewDetailsLink': 'View details',
-  'notifications.justNow': 'Just now'
+  'notifications.justNow': 'Just now',
+
+  // Default notifications
+  'notifications.default.promotion.title': 'Special Promotion',
+  'notifications.default.promotion.content': '50% off all software products this week!',
+  'notifications.default.update.title': 'New Update',
+  'notifications.default.update.content': 'Version 2.0 has been released with many new features',
+  'notifications.default.system.title': 'System Notification',
+  'notifications.default.system.content': 'The system will be under maintenance at 10:00 PM tonight. Sorry for the inconvenience.'
 }; 
