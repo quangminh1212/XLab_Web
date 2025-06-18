@@ -92,6 +92,7 @@ export const admin = {
   // Orders Management
   'admin.orders.title': 'Quản lý đơn hàng',
   'admin.orders.viewCustomerPage': 'Xem trang khách hàng',
+  'admin.orders.backToDashboard': 'Quay lại Dashboard',
   'admin.orders.totalOrders': 'Tổng đơn hàng',
   'admin.orders.pendingOrders': 'Đơn chờ xử lý',
   'admin.orders.completedOrders': 'Hoàn thành',
