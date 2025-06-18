@@ -148,5 +148,19 @@ export const admin = {
   'admin.notifications.settings.autoUpdate': 'Tự động gửi thông báo cập nhật',
   'admin.notifications.settings.email': 'Gửi thông báo qua email',
   'admin.notifications.settings.retention': 'Thời gian lưu trữ (ngày)',
-  'admin.notifications.settings.retentionDesc': 'Thông báo cũ hơn thời gian này sẽ tự động bị xóa'
+  'admin.notifications.settings.retentionDesc': 'Thông báo cũ hơn thời gian này sẽ tự động bị xóa',
+  'admin.notifications.editBtn': 'Sửa',
+  'admin.notifications.deleteBtn': 'Xóa',
+  'admin.notifications.createBtn': 'Tạo mới',
+  'admin.notifications.creatingBtn': 'Đang tạo...',
+  'admin.notifications.cancelBtn': 'Hủy',
+  'admin.notifications.settings': 'Cài đặt',
+  'admin.notifications.noNotifications': 'Không có thông báo',
+  'admin.notifications.noNotificationsDesc': 'Tạo thông báo mới để gửi tới người dùng',
+  'admin.notifications.success': 'Tạo thông báo thành công',
+  'admin.notifications.error': 'Lỗi khi tạo thông báo',
+  'admin.notifications.updateSuccess': 'Cập nhật thông báo thành công',
+  'admin.notifications.updateError': 'Lỗi khi cập nhật thông báo',
+  'admin.notifications.deleteSuccess': 'Xóa thông báo thành công',
+  'admin.notifications.deleteError': 'Lỗi khi xóa thông báo'
 }; 

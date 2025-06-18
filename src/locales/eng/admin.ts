@@ -147,5 +147,19 @@ export const admin = {
   'admin.notifications.settings.autoUpdate': 'Auto-send update notifications',
   'admin.notifications.settings.email': 'Send notifications via email',
   'admin.notifications.settings.retention': 'Retention period (days)',
-  'admin.notifications.settings.retentionDesc': 'Notifications older than this will be deleted automatically'
+  'admin.notifications.settings.retentionDesc': 'Notifications older than this will be deleted automatically',
+  'admin.notifications.editBtn': 'Edit',
+  'admin.notifications.deleteBtn': 'Delete',
+  'admin.notifications.createBtn': 'Create',
+  'admin.notifications.creatingBtn': 'Creating...',
+  'admin.notifications.cancelBtn': 'Cancel',
+  'admin.notifications.settings': 'Settings',
+  'admin.notifications.noNotifications': 'No notifications',
+  'admin.notifications.noNotificationsDesc': 'Create new notifications to send to users',
+  'admin.notifications.success': 'Notification created successfully',
+  'admin.notifications.error': 'Error creating notification',
+  'admin.notifications.updateSuccess': 'Notification updated successfully',
+  'admin.notifications.updateError': 'Error updating notification',
+  'admin.notifications.deleteSuccess': 'Notification deleted successfully',
+  'admin.notifications.deleteError': 'Error deleting notification'
 }; 

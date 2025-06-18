@@ -148,5 +148,19 @@ export const admin = {
   'admin.notifications.settings.autoUpdate': 'Enviar automáticamente notificaciones de actualizaciones',
   'admin.notifications.settings.email': 'Enviar notificaciones por correo electrónico',
   'admin.notifications.settings.retention': 'Período de retención (días)',
-  'admin.notifications.settings.retentionDesc': 'Las notificaciones más antiguas que esto se eliminarán automáticamente'
+  'admin.notifications.settings.retentionDesc': 'Las notificaciones más antiguas que esto se eliminarán automáticamente',
+  'admin.notifications.editBtn': 'Editar',
+  'admin.notifications.deleteBtn': 'Eliminar',
+  'admin.notifications.createBtn': 'Crear',
+  'admin.notifications.creatingBtn': 'Creando...',
+  'admin.notifications.cancelBtn': 'Cancelar',
+  'admin.notifications.settings': 'Configuración',
+  'admin.notifications.noNotifications': 'No hay notificaciones',
+  'admin.notifications.noNotificationsDesc': 'Cree nuevas notificaciones para enviar a los usuarios',
+  'admin.notifications.success': 'Notificación creada con éxito',
+  'admin.notifications.error': 'Error al crear la notificación',
+  'admin.notifications.updateSuccess': 'Notificación actualizada con éxito',
+  'admin.notifications.updateError': 'Error al actualizar la notificación',
+  'admin.notifications.deleteSuccess': 'Notificación eliminada con éxito',
+  'admin.notifications.deleteError': 'Error al eliminar la notificación'
 }; 
