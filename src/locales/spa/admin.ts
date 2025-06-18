@@ -167,5 +167,6 @@ export const admin = {
   'admin.notifications.updateBtn': 'Actualizar',
   'admin.notifications.settings.title': 'Configuración de Notificaciones',
   'admin.notifications.settings.automatic': 'Configuración de Automatización',
-  'admin.notifications.settings.saveBtn': 'Guardar Configuración'
+  'admin.notifications.settings.saveBtn': 'Guardar Configuración',
+  'admin.notifications.createNotification': 'Crear Notificación'
 }; 

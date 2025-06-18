@@ -41,7 +41,7 @@ interface NotificationForm {
 
 function NotificationsPage() {
   const { data: session } = useSession();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -230,7 +230,7 @@ function NotificationsPage() {
 
   // Format thời gian
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('vi-VN');
+    return new Date(dateString).toLocaleString(locale);
   };
 
   // Đếm số người đã đọc
@@ -399,7 +399,7 @@ function NotificationsPage() {
                       d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     />
                   </svg>
-                  <span className="text-lg font-medium">{t('admin.notifications.create')}</span>
+                  <span className="text-lg font-medium">{t('admin.notifications.createNotification')}</span>
                 </button>
               </div>
 
@@ -469,7 +469,7 @@ function NotificationsPage() {
                                 href={notification.link}
                                 className="text-primary-600 hover:text-primary-700 text-sm"
                               >
-                                {t('notifications.viewDetailsLink')} →
+                                {t('admin.notifications.viewDetails')} →
                               </a>
                             </div>
                           )}

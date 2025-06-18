@@ -167,5 +167,6 @@ export const admin = {
   'admin.notifications.deleteError': 'Lỗi khi xóa thông báo',
   'admin.notifications.updatingBtn': 'Đang cập nhật...',
   'admin.notifications.updateBtn': 'Cập nhật',
-  'admin.notifications.settings.saveBtn': 'Lưu cài đặt'
+  'admin.notifications.settings.saveBtn': 'Lưu cài đặt',
+  'admin.notifications.createNotification': 'Tạo thông báo'
 }; 

@@ -166,5 +166,6 @@ export const admin = {
   'admin.notifications.updateBtn': 'Update',
   'admin.notifications.settings.title': 'Notification Settings',
   'admin.notifications.settings.automatic': 'Automation Settings',
-  'admin.notifications.settings.saveBtn': 'Save Settings'
+  'admin.notifications.settings.saveBtn': 'Save Settings',
+  'admin.notifications.createNotification': 'Create Notification'
 }; 

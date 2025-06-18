@@ -5,9 +5,11 @@ import { LanguageKeys, defaultLanguage, getTranslation, translations } from '../
 
 type LanguageContextType = {
   language: LanguageKeys;
+  currentLanguage: LanguageKeys;
   setLanguage: (lang: LanguageKeys) => void;
   t: (key: string, params?: Record<string, string | number>) => string;
   availableLanguages: LanguageKeys[];
+  locale: string;
 };
 
 // Get available languages from translations object
@@ -17,9 +19,11 @@ const availableLanguagesArray = Object.keys(translations).filter(
 
 const LanguageContext = createContext<LanguageContextType>({
   language: defaultLanguage,
+  currentLanguage: defaultLanguage,
   setLanguage: () => {},
   t: (key: string) => key,
   availableLanguages: availableLanguagesArray,
+  locale: 'vi-VN'
 });
 
 interface LanguageProviderProps {
@@ -31,6 +35,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const [language, setLanguageState] = useState<LanguageKeys>(defaultLanguage);
   // Track whether component is mounted to avoid hydration mismatch
   const [isMounted, setIsMounted] = useState(false);
+  
+  // Map language to locale
+  const getLocaleFromLanguage = (lang: LanguageKeys): string => {
+    switch (lang) {
+      case 'eng': return 'en-US';
+      case 'spa': return 'es-ES';
+      case 'vie': return 'vi-VN';
+      default: return 'en-US';
+    }
+  };
 
   useEffect(() => {
     // This will only run on the client side after hydration
@@ -80,8 +94,17 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     return text;
   };
 
+  const locale = getLocaleFromLanguage(language);
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, availableLanguages: availableLanguagesArray }}>
+    <LanguageContext.Provider value={{ 
+      language, 
+      currentLanguage: language, 
+      setLanguage, 
+      t, 
+      availableLanguages: availableLanguagesArray,
+      locale
+    }}>
       {children}
     </LanguageContext.Provider>
   );
