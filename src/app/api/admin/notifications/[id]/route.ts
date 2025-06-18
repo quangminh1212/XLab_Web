@@ -130,12 +130,36 @@ export async function PUT(
       expiresAt: expiresAt || undefined,
       targetUsers: targetUsers || [],
       updatedAt: new Date().toISOString(),
-      // Preserve existing metadata and merge with any new metadata
-      metadata: {
-        ...notifications[notificationIndex].metadata,
-        ...(metadata || {}),
-      },
     };
+
+    // Handle metadata separately to ensure proper structure
+    if (metadata || notifications[notificationIndex].metadata) {
+      updatedNotification.metadata = {};
+      
+      // Preserve existing metadata if no new metadata is provided
+      const existingMetadata = notifications[notificationIndex].metadata || {};
+      
+      // Handle English metadata
+      if (metadata?.en || existingMetadata.en) {
+        updatedNotification.metadata.en = {
+          title: metadata?.en?.title !== undefined ? metadata.en.title : existingMetadata.en?.title,
+          content: metadata?.en?.content !== undefined ? metadata.en.content : existingMetadata.en?.content
+        };
+      }
+      
+      // Handle Spanish metadata
+      if (metadata?.es || existingMetadata.es) {
+        updatedNotification.metadata.es = {
+          title: metadata?.es?.title !== undefined ? metadata.es.title : existingMetadata.es?.title,
+          content: metadata?.es?.content !== undefined ? metadata.es.content : existingMetadata.es?.content
+        };
+      }
+      
+      // Preserve read count if it exists
+      if (existingMetadata.readCount) {
+        updatedNotification.metadata.readCount = existingMetadata.readCount;
+      }
+    }
 
     notifications[notificationIndex] = updatedNotification;
     await saveNotifications(notifications);

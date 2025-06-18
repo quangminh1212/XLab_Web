@@ -479,7 +479,13 @@ function NotificationsPage() {
                         <span className="text-2xl">{getTypeIcon(notification.type)}</span>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
-                            <h3 className="font-semibold text-gray-900">{notification.title}</h3>
+                            <h3 className="font-semibold text-gray-900">{
+                              locale === 'es-ES' && notification.metadata?.es?.title ? 
+                                notification.metadata.es.title :
+                              locale === 'en-US' && notification.metadata?.en?.title ?
+                                notification.metadata.en.title : 
+                                notification.title
+                            }</h3>
                             <span
                               className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(notification.priority)}`}
                             >
@@ -499,25 +505,13 @@ function NotificationsPage() {
                                     : t('admin.notifications.type.system')}
                             </span>
                           </div>
-                          <p className="text-gray-600 mb-2">{notification.content}</p>
-                          
-                          {/* Display multilingual content if available */}
-                          {notification.metadata && (
-                            <div className="mt-2 space-y-1">
-                              {notification.metadata.en?.title && (
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-0.5 rounded">EN</span>
-                                  <p className="text-sm text-gray-600">{notification.metadata.en.title}</p>
-                                </div>
-                              )}
-                              {notification.metadata.es?.title && (
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-xs font-medium bg-orange-100 text-orange-800 px-2 py-0.5 rounded">ES</span>
-                                  <p className="text-sm text-gray-600">{notification.metadata.es.title}</p>
-                                </div>
-                              )}
-                            </div>
-                          )}
+                          <p className="text-gray-600 mb-2">{
+                            locale === 'es-ES' && notification.metadata?.es?.content ? 
+                              notification.metadata.es.content :
+                            locale === 'en-US' && notification.metadata?.en?.content ?
+                              notification.metadata.en.content : 
+                              notification.content
+                          }</p>
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
                             <span>{t('admin.notifications.created')}: {formatDate(notification.createdAt)}</span>
                             <span>{t('admin.notifications.readCount')}: {getReadCount(notification)} {t('admin.notifications.people')}</span>

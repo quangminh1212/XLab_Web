@@ -25,6 +25,16 @@ interface Coupon {
   createdAt: string;
   applicableProducts?: string[];
   isPublic: boolean;
+  metadata?: {
+    es?: {
+      name?: string;
+      description?: string;
+    };
+    en?: {
+      name?: string;
+      description?: string;
+    };
+  };
 }
 
 interface CouponForm {
@@ -41,6 +51,16 @@ interface CouponForm {
   endDate: string;
   applicableProducts: string;
   isPublic: boolean;
+  metadata?: {
+    en: {
+      name: string;
+      description: string;
+    };
+    es: {
+      name: string;
+      description: string;
+    };
+  };
 }
 
 function CouponsPage() {
@@ -74,6 +94,10 @@ function CouponsPage() {
     endDate: '',
     applicableProducts: '',
     isPublic: true,
+    metadata: {
+      en: { name: '', description: '' },
+      es: { name: '', description: '' }
+    }
   });
 
   // Reset form
@@ -92,6 +116,10 @@ function CouponsPage() {
       endDate: '',
       applicableProducts: '',
       isPublic: true,
+      metadata: {
+        en: { name: '', description: '' },
+        es: { name: '', description: '' }
+      }
     });
   };
 
@@ -161,7 +189,30 @@ function CouponsPage() {
               .map((id) => id.trim())
               .filter((id) => id)
           : [],
+        metadata: {
+          en: {
+            name: form.metadata?.en.name || '',
+            description: form.metadata?.en.description || ''
+          },
+          es: {
+            name: form.metadata?.es.name || '',
+            description: form.metadata?.es.description || ''
+          }
+        }
       };
+
+      // Loại bỏ metadata nếu trống
+      if (!requestData.metadata.en.name && !requestData.metadata.en.description) {
+        delete requestData.metadata.en;
+      }
+      
+      if (!requestData.metadata.es.name && !requestData.metadata.es.description) {
+        delete requestData.metadata.es;
+      }
+      
+      if (Object.keys(requestData.metadata).length === 0) {
+        delete requestData.metadata;
+      }
 
       const response = await fetch('/api/admin/coupons', {
         method: 'POST',

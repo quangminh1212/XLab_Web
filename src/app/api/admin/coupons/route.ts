@@ -34,6 +34,16 @@ interface Coupon {
   updatedAt?: string;
   applicableProducts?: string[];
   isPublic: boolean;
+  metadata?: {
+    es?: {
+      name?: string;
+      description?: string;
+    };
+    en?: {
+      name?: string;
+      description?: string;
+    };
+  };
 }
 
 // Initial sample data
@@ -204,6 +214,7 @@ export async function POST(request: NextRequest) {
       endDate,
       applicableProducts,
       isPublic,
+      metadata
     } = body;
 
     // Validation
@@ -240,7 +251,7 @@ export async function POST(request: NextRequest) {
     const newId = (
       coupons.length > 0 ? Math.max(...coupons.map((c) => parseInt(c.id))) + 1 : 1
     ).toString();
-
+    
     // Tạo mã giảm giá mới
     const newCoupon: Coupon = {
       id: newId,
@@ -260,6 +271,25 @@ export async function POST(request: NextRequest) {
       applicableProducts: applicableProducts || [],
       isPublic: typeof isPublic === 'boolean' ? isPublic : true,
     };
+    
+    // Thêm metadata đa ngôn ngữ nếu có
+    if (metadata) {
+      newCoupon.metadata = {};
+      
+      if (metadata.en) {
+        newCoupon.metadata.en = {
+          name: metadata.en.name,
+          description: metadata.en.description
+        };
+      }
+      
+      if (metadata.es) {
+        newCoupon.metadata.es = {
+          name: metadata.es.name,
+          description: metadata.es.description
+        };
+      }
+    }
 
     // Thêm mã giảm giá mới vào danh sách
     coupons.push(newCoupon);

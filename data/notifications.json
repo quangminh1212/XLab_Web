@@ -13,10 +13,11 @@
     "metadata": {
       "es": {
         "title": "Actualización",
-        "content": "Phiên bản 2.0 đã ra mắt với nhiều tính năng mới"
+        "content": "La versión 2.0 ha sido lanzada con muchas nuevas funciones"
       },
       "en": {
-        "title": "Media"
+        "title": "Media",
+        "content": "Version 2.0 has been released with many new features"
       },
       "readCount": 1
     }
@@ -34,10 +35,11 @@
     "metadata": {
       "es": {
         "title": "Sistema",
-        "content": "Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này."
+        "content": "El sistema estará en mantenimiento a las 10:00 PM esta noche. Disculpe las molestias."
       },
       "en": {
-        "title": "Alta"
+        "title": "Alta",
+        "content": "The system will be under maintenance at 10:00 PM tonight. Sorry for the inconvenience."
       },
       "readCount": 1
     }

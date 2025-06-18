@@ -305,6 +305,25 @@ export async function POST(request: Request) {
       expiresAt,
     };
 
+    // Add metadata if provided
+    if (body.metadata) {
+      newNotification.metadata = {};
+      
+      if (body.metadata.en) {
+        newNotification.metadata.en = {
+          title: body.metadata.en.title,
+          content: body.metadata.en.content
+        };
+      }
+      
+      if (body.metadata.es) {
+        newNotification.metadata.es = {
+          title: body.metadata.es.title,
+          content: body.metadata.es.content
+        };
+      }
+    }
+
     notifications.unshift(newNotification); // Thêm vào đầu danh sách
     await saveNotifications(notifications);
 
