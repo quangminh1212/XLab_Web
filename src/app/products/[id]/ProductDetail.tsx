@@ -19,8 +19,8 @@ const ProductDescription = ({ description, productId }: { description: string, p
   const [translatedDescription, setTranslatedDescription] = useState<string>(description);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh, tiếng Tây Ban Nha hoặc tiếng Trung
+    if (language === 'eng' || language === 'chi' || language === 'spa') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -116,8 +116,8 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
     if (productId === 'chatgpt' || productId === 'grok') {
       setTranslatedShortDescription(t(`product.${productId}.description`) || shortDescription);
     } 
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    else if (language === 'eng') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh, tiếng Tây Ban Nha hoặc tiếng Trung
+    else if (language === 'eng' || language === 'chi' || language === 'spa') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -156,8 +156,8 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
   const [translatedFeatures, setTranslatedFeatures] = useState<any[]>(features);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh, tiếng Tây Ban Nha hoặc tiếng Trung
+    if (language === 'eng' || language === 'chi' || language === 'spa') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -224,8 +224,8 @@ const ProductOptions = ({
   const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh, tiếng Tây Ban Nha hoặc tiếng Trung
+    if (language === 'eng' || language === 'chi' || language === 'spa') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -246,7 +246,7 @@ const ProductOptions = ({
 
       fetchTranslation();
     } else {
-      // Nếu tiếng Việt, sử dụng tùy chọn gốc
+      // Nếu tiếng Việt hoặc ngôn ngữ khác, sử dụng tùy chọn gốc và lấy tiêu đề từ translation
       setTranslatedOptions(productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {}));
       setOptionsTitle(t('product.options'));
     }
