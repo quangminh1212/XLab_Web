@@ -34,6 +34,7 @@ export const account = {
   'account.viewDetails': 'Xem chi tiết',
   'account.noDownloads': 'Không có tệp để tải xuống',
   'account.downloadDesc': 'Bạn cần mua sản phẩm trước khi có thể tải xuống phần mềm.',
+  'account.downloadsNote': 'Phần tải xuống này chỉ áp dụng cho phần mềm, không áp dụng cho tài khoản.',
   'account.version': 'Phiên bản: {version} (Cập nhật: {date})',
   'account.viewHistory': 'Xem lịch sử',
   'account.changePassword': 'Đổi mật khẩu',

@@ -19,6 +19,8 @@ interface OrderItem {
   licenseKey: string;
   expiryDate: string;
   quantity?: number;
+  isAccount?: boolean;  // Flag for account-type products vs software products
+  type?: 'software' | 'account';  // Type of product: software or account
 }
 
 interface Order {
@@ -248,6 +250,8 @@ export default function AccountPage() {
                       expiryDate: new Date(
                         Date.now() + 365 * 24 * 60 * 60 * 1000,
                       ).toLocaleDateString('vi-VN'), // 1 năm
+                      isAccount: productData?.type === 'account' || productData?.isAccount || false,
+                      type: productData?.type || (productData?.isAccount ? 'account' : 'software')
                     };
                   }),
                   couponDiscount: apiOrder.couponDiscount,
@@ -304,6 +308,8 @@ export default function AccountPage() {
                     expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString(
                       'vi-VN',
                     ),
+                    isAccount: productData?.type === 'account' || productData?.isAccount || false,
+                    type: productData?.type || (productData?.isAccount ? 'account' : 'software')
                   };
                 }),
                 couponDiscount: order.couponDiscount,
@@ -1326,11 +1332,15 @@ export default function AccountPage() {
               {/* Phần Tải xuống */}
               <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">{t('account.downloads')}</h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  {t('account.downloadsNote') || 'This section only applies to software products, not account products.'}
+                </p>
 
                 {hasProducts ? (
                   <div className="space-y-4">
                     {purchaseHistory
                       .flatMap((order) => order.items)
+                      .filter(item => item.type === 'software' && !item.isAccount) // Ensure products are software type and not accounts
                       .map((item, index) => (
                         <div
                           key={index}

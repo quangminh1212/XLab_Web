@@ -34,6 +34,7 @@ export const account = {
   'account.viewDetails': 'View Details',
   'account.noDownloads': 'No files to download',
   'account.downloadDesc': 'You need to purchase a product before you can download software.',
+  'account.downloadsNote': 'This section only applies to software products, not account products.',
   'account.version': 'Version: {version} (Updated: {date})',
   'account.viewHistory': 'View History',
   'account.changePassword': 'Change Password',

@@ -34,6 +34,7 @@ export const account = {
   'account.viewDetails': '查看详情',
   'account.noDownloads': '没有可下载的文件',
   'account.downloadDesc': '您需要先购买产品才能下载软件。',
+  'account.downloadsNote': '此部分仅适用于软件产品，不适用于账户产品。',
   'account.version': '版本：{version}（更新日期：{date}）',
   'account.viewHistory': '查看历史记录',
   'account.changePassword': '修改密码',
