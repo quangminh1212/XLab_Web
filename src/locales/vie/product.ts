@@ -38,5 +38,19 @@ export const product = {
 
   // Product status
   'product.status.draft': 'Nháp',
-  'product.status.public': 'Công khai'
+  'product.status.public': 'Công khai',
+  
+  // ChatGPT product detail sections
+  'product.chatgpt.pricingTitle': 'I. Bảng giá Tài khoản ChatGPT Plus – OpenAI',
+  'product.chatgpt.technology': '– Công nghệ GPT-4o, chuẩn bị cập nhật GPT-5 mới nhất.',
+  'product.chatgpt.genuine': '– Tài khoản chính hãng, đầy đủ tính năng Plus',
+  'product.chatgpt.warranty': '– Bảo hành trọn thời gian sử dụng',
+  'product.chatgpt.sharedPlan': '1) Gói dùng chung:',
+  'product.chatgpt.sharedAccess': '– Tài khoản cấp dùng chung',
+  'product.chatgpt.fixedDevices': '– Đăng nhập 1-2 thiết bị cố định.',
+  'product.chatgpt.noPasswordChange': '– Không đổi mật khẩu',
+  'product.chatgpt.privatePlan': '2) Gói dùng riêng/ nâng cấp:',
+  'product.chatgpt.privateAccess': '– Nhận tài khoản tạo sẵn hoặc Nâng cấp tài khoản chính chủ, dùng riêng 100%.',
+  'product.chatgpt.multipleDevices': '– Dùng nhiều thiết bị.',
+  'product.chatgpt.passwordChange': '– Được đổi mật khẩu.'
 }; 

@@ -39,8 +39,11 @@ export const common = {
   'common.details': 'Chi tiết',
   'common.more': 'Xem thêm',
   'common.less': 'Thu gọn',
-  'common.yes': 'Có',
+  'common.yes': 'Đồng ý',
   'common.no': 'Không',
+  'common.unknown': 'Không xác định',
+  'common.useVietnameseContent': 'Dùng nội dung tiếng Việt',
+  'common.usingVietnameseContent': 'Đang dùng nội dung tiếng Việt',
   'common.softwareAndServices': 'Phần mềm và Dịch vụ',
   'common.backToMainPage': 'Trở về trang chính',
   

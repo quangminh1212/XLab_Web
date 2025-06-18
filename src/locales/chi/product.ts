@@ -38,5 +38,19 @@ export const product = {
 
   // Product status
   'product.status.draft': '草稿',
-  'product.status.public': '公开'
+  'product.status.public': '公开',
+  
+  // ChatGPT product detail sections
+  'product.chatgpt.pricingTitle': 'I. ChatGPT Plus账户价格 – OpenAI',
+  'product.chatgpt.technology': '– GPT-4o技术，准备更新至最新的GPT-5。',
+  'product.chatgpt.genuine': '– 正版账户，具备完整Plus功能',
+  'product.chatgpt.warranty': '– 全期使用保修',
+  'product.chatgpt.sharedPlan': '1) 共享访问计划:',
+  'product.chatgpt.sharedAccess': '– 共享账户访问',
+  'product.chatgpt.fixedDevices': '– 在1-2台固定设备上登录。',
+  'product.chatgpt.noPasswordChange': '– 不允许更改密码',
+  'product.chatgpt.privatePlan': '2) 私人访问/升级计划:',
+  'product.chatgpt.privateAccess': '– 获取预创建账户或升级自己的账户，100%私人使用。',
+  'product.chatgpt.multipleDevices': '– 可在多台设备上使用。',
+  'product.chatgpt.passwordChange': '– 允许更改密码。'
 }; 

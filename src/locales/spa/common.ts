@@ -41,6 +41,9 @@ export const common = {
   'common.less': 'Menos',
   'common.yes': 'Sí',
   'common.no': 'No',
+  'common.unknown': 'Desconocido',
+  'common.useVietnameseContent': 'Usar contenido vietnamita',
+  'common.usingVietnameseContent': 'Usando contenido vietnamita',
   'common.softwareAndServices': 'Software y Servicios',
   'common.backToMainPage': 'Volver a la página principal',
   

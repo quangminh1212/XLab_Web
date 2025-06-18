@@ -17,8 +17,15 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
   const { t, language } = useLanguage();
   const [translatedDescription, setTranslatedDescription] = useState<string>(description);
+  const [useVietnamDescription, setUseVietnamDescription] = useState<boolean>(false);
 
   useEffect(() => {
+    // Luôn sử dụng nội dung gốc Vietnamese nếu người dùng yêu cầu
+    if (useVietnamDescription) {
+      setTranslatedDescription(description);
+      return;
+    }
+
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh, tiếng Tây Ban Nha hoặc tiếng Trung
     if (language === 'eng' || language === 'chi' || language === 'spa') {
       const fetchTranslation = async () => {
@@ -46,7 +53,15 @@ const ProductDescription = ({ description, productId }: { description: string, p
       // Nếu tiếng Việt, sử dụng mô tả gốc
       setTranslatedDescription(description);
     }
-  }, [description, language, productId]);
+  }, [description, language, productId, useVietnamDescription]);
+
+  // Kiểm tra query parameter để xác định có sử dụng nội dung tiếng Việt hay không
+  useEffect(() => {
+    // Kiểm tra nếu có query param preserveVietnamese=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const preserveVietnamese = urlParams.get('preserveVietnamese');
+    setUseVietnamDescription(preserveVietnamese === 'true');
+  }, []);
 
   return (
     <div className="mt-10">
@@ -110,8 +125,15 @@ const ProductDescription = ({ description, productId }: { description: string, p
 const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
   const { t, language } = useLanguage();
   const [translatedShortDescription, setTranslatedShortDescription] = useState<string>(shortDescription);
+  const [useVietnamDescription, setUseVietnamDescription] = useState<boolean>(false);
 
   useEffect(() => {
+    // Luôn sử dụng nội dung gốc Vietnamese nếu người dùng yêu cầu
+    if (useVietnamDescription) {
+      setTranslatedShortDescription(shortDescription);
+      return;
+    }
+    
     // Nếu có mã định danh sản phẩm đặc biệt (chatgpt, grok), sử dụng bản dịch từ file
     if (productId === 'chatgpt' || productId === 'grok') {
       setTranslatedShortDescription(t(`product.${productId}.description`) || shortDescription);
@@ -143,7 +165,15 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
       // Nếu tiếng Việt, sử dụng mô tả gốc
       setTranslatedShortDescription(shortDescription);
     }
-  }, [shortDescription, language, productId, t]);
+  }, [shortDescription, language, productId, t, useVietnamDescription]);
+
+  // Kiểm tra query parameter để xác định có sử dụng nội dung tiếng Việt hay không
+  useEffect(() => {
+    // Kiểm tra nếu có query param preserveVietnamese=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const preserveVietnamese = urlParams.get('preserveVietnamese');
+    setUseVietnamDescription(preserveVietnamese === 'true');
+  }, []);
 
   return (
     <p className="mt-4 text-gray-600 text-lg">{translatedShortDescription || ''}</p>
@@ -154,8 +184,15 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
 const ProductFeatures = ({ features, productId }: { features: any[], productId: string }) => {
   const { t, language } = useLanguage();
   const [translatedFeatures, setTranslatedFeatures] = useState<any[]>(features);
+  const [useVietnamFeatures, setUseVietnamFeatures] = useState<boolean>(false);
 
   useEffect(() => {
+    // Luôn sử dụng nội dung gốc Vietnamese nếu người dùng yêu cầu
+    if (useVietnamFeatures) {
+      setTranslatedFeatures(features);
+      return;
+    }
+    
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh, tiếng Tây Ban Nha hoặc tiếng Trung
     if (language === 'eng' || language === 'chi' || language === 'spa') {
       const fetchTranslation = async () => {
@@ -183,7 +220,15 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
       // Nếu tiếng Việt, sử dụng tính năng gốc
       setTranslatedFeatures(features);
     }
-  }, [features, language, productId]);
+  }, [features, language, productId, useVietnamFeatures]);
+
+  // Kiểm tra query parameter để xác định có sử dụng nội dung tiếng Việt hay không
+  useEffect(() => {
+    // Kiểm tra nếu có query param preserveVietnamese=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const preserveVietnamese = urlParams.get('preserveVietnamese');
+    setUseVietnamFeatures(preserveVietnamese === 'true');
+  }, []);
 
   if (!translatedFeatures || translatedFeatures.length === 0) return null;
 
@@ -222,8 +267,16 @@ const ProductOptions = ({
     productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {})
   );
   const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));
+  const [useVietnamOptions, setUseVietnamOptions] = useState<boolean>(false);
 
   useEffect(() => {
+    // Luôn sử dụng nội dung gốc Vietnamese nếu người dùng yêu cầu
+    if (useVietnamOptions) {
+      setTranslatedOptions(productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {}));
+      setOptionsTitle(t('product.options'));
+      return;
+    }
+    
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh, tiếng Tây Ban Nha hoặc tiếng Trung
     if (language === 'eng' || language === 'chi' || language === 'spa') {
       const fetchTranslation = async () => {
@@ -250,7 +303,15 @@ const ProductOptions = ({
       setTranslatedOptions(productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {}));
       setOptionsTitle(t('product.options'));
     }
-  }, [language, productId, productOptions, t]);
+  }, [productOptions, language, productId, t, useVietnamOptions]);
+
+  // Kiểm tra query parameter để xác định có sử dụng nội dung tiếng Việt hay không
+  useEffect(() => {
+    // Kiểm tra nếu có query param preserveVietnamese=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const preserveVietnamese = urlParams.get('preserveVietnamese');
+    setUseVietnamOptions(preserveVietnamese === 'true');
+  }, []);
 
   // Format price based on selected language
   const displayPrice = (amount: number) => {
@@ -325,6 +386,7 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
+  const router = useRouter();
   const { t, language } = useLanguage();
   
   // Thêm class để đánh dấu khi component đã load xong
@@ -347,9 +409,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState<number>(1);
 
   // State lưu phiên bản sản phẩm được chọn
-  const [selectedVersion, setSelectedVersion] = useState<string>(
-    product.versions && product.versions.length > 0 ? product.versions[0].name : '',
-  );
+  const [selectedVersion, setSelectedVersion] = useState<string>(product?.versions?.[0]?.name || '');
 
   // State quản lý tùy chọn mới
   const [newOptionText, setNewOptionText] = useState('');
@@ -358,9 +418,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
 
   // State tùy chọn đang chọn
-  const [selectedOption, setSelectedOption] = useState<string>(
-    product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : '',
-  );
+  const [selectedOption, setSelectedOption] = useState<string>(product?.defaultProductOption || product?.productOptions?.[0] || '');
 
   // State hiển thị tùy chọn hiện có
   const [showOptions, setShowOptions] = useState(false);
@@ -371,6 +429,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // State để hiện thị hiệu ứng khi thêm vào giỏ
   const [showAddToCartAnimation, setShowAddToCartAnimation] = useState<boolean>(false);
   const [addedToCartMessage, setAddedToCartMessage] = useState<string>('');
+
+  // State để bật/tắt chế độ giữ nguyên nội dung tiếng Việt
+  const [preserveVietnamese, setPreserveVietnamese] = useState<boolean>(false);
 
   // Xử lý thêm tùy chọn mới
   const handleAddOption = () => {
@@ -613,6 +674,32 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     return formatCurrency(convertedAmount, language);
   };
 
+  // Kiểm tra query parameter để xác định có sử dụng nội dung tiếng Việt hay không
+  useEffect(() => {
+    // Kiểm tra nếu có query param preserveVietnamese=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const preserveParam = urlParams.get('preserveVietnamese');
+    setPreserveVietnamese(preserveParam === 'true');
+  }, []);
+
+  // Toggle để bật/tắt chế độ giữ nguyên nội dung tiếng Việt
+  const togglePreserveVietnamese = () => {
+    const newValue = !preserveVietnamese;
+    setPreserveVietnamese(newValue);
+    
+    // Cập nhật URL với query parameter mới
+    const urlParams = new URLSearchParams(window.location.search);
+    if (newValue) {
+      urlParams.set('preserveVietnamese', 'true');
+    } else {
+      urlParams.delete('preserveVietnamese');
+    }
+    
+    // Cập nhật URL mà không reload trang
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    router.push(newUrl);
+  };
+
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -641,6 +728,27 @@ export default function ProductDetail({ product }: { product: ProductType }) {
             </svg>
             <span>{addedToCartMessage}</span>
           </div>
+        </div>
+      )}
+
+      {/* Nút chuyển đổi bảo tồn nội dung tiếng Việt */}
+      {language !== 'vie' && (
+        <div className="mb-4 flex justify-end">
+          <button 
+            onClick={togglePreserveVietnamese}
+            className={`flex items-center space-x-2 px-3 py-1 rounded text-sm ${
+              preserveVietnamese 
+                ? 'bg-primary-100 text-primary-700 border border-primary-300' 
+                : 'bg-gray-100 text-gray-700 border border-gray-300'
+            }`}
+          >
+            <span>{preserveVietnamese ? t('common.usingVietnameseContent') || 'Đang dùng nội dung tiếng Việt' : t('common.useVietnameseContent') || 'Dùng nội dung tiếng Việt'}</span>
+            <div className={`w-4 h-4 rounded-full border flex-shrink-0 ${preserveVietnamese ? 'border-primary-500 bg-primary-500' : 'border-gray-400'}`}>
+              {preserveVietnamese && (
+                <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
+              )}
+            </div>
+          </button>
         </div>
       )}
 

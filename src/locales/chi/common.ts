@@ -41,6 +41,9 @@ export const common = {
   'common.less': '更少',
   'common.yes': '是',
   'common.no': '否',
+  'common.unknown': '未知',
+  'common.useVietnameseContent': '使用越南语内容',
+  'common.usingVietnameseContent': '正在使用越南语内容',
   'common.softwareAndServices': '软件和服务',
   
   // Footer categories

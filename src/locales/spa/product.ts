@@ -59,5 +59,19 @@ export const product = {
 
   // Estado del producto
   'product.status.draft': 'Borrador',
-  'product.status.public': 'Público'
+  'product.status.public': 'Público',
+  
+  // Secciones de detalles de producto ChatGPT
+  'product.chatgpt.pricingTitle': 'I. Precios de Cuenta ChatGPT Plus – OpenAI',
+  'product.chatgpt.technology': '– Tecnología GPT-4o, preparándose para actualizar a la última GPT-5.',
+  'product.chatgpt.genuine': '– Cuenta genuina con todas las funciones Plus',
+  'product.chatgpt.warranty': '– Garantía durante todo el período de uso',
+  'product.chatgpt.sharedPlan': '1) Plan de acceso compartido:',
+  'product.chatgpt.sharedAccess': '– Acceso a cuenta compartida',
+  'product.chatgpt.fixedDevices': '– Inicio de sesión en 1-2 dispositivos fijos.',
+  'product.chatgpt.noPasswordChange': '– No se permiten cambios de contraseña',
+  'product.chatgpt.privatePlan': '2) Plan de acceso privado/actualización:',
+  'product.chatgpt.privateAccess': '– Reciba una cuenta preconfigurada o actualice su propia cuenta, 100% de uso privado.',
+  'product.chatgpt.multipleDevices': '– Uso en múltiples dispositivos.',
+  'product.chatgpt.passwordChange': '– Cambios de contraseña permitidos.'
 }; 
