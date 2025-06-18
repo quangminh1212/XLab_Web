@@ -19,8 +19,18 @@ export const formatCurrency = (
 
   // Apply appropriate decimal settings based on currency
   const fractionDigits = currency === 'VND' ? 0 : 2;
+  
+  // Special case for VND to display currency code instead of symbol
+  if (currency === 'VND') {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency,
+      currencyDisplay: 'code',
+      maximumFractionDigits: fractionDigits
+    }).format(amount);
+  }
 
-  // Format the amount using Intl.NumberFormat
+  // Format the amount using Intl.NumberFormat for other currencies
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
