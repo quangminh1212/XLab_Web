@@ -26,21 +26,41 @@ interface Voucher {
   };
 }
 
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('vi-VN', {
+const formatCurrency = (amount: number, currentLanguage: string = 'vie') => {
+  // Use locale based on language
+  const localeMap: Record<string, { locale: string; currency: string }> = {
+    vie: { locale: 'vi-VN', currency: 'VND' },
+    eng: { locale: 'en-US', currency: 'USD' },
+    spa: { locale: 'es-ES', currency: 'EUR' },
+    chi: { locale: 'zh-CN', currency: 'CNY' }
+  };
+
+  const { locale, currency } = localeMap[currentLanguage] || localeMap.vie;
+  
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'VND',
+    currency,
     maximumFractionDigits: 0,
   }).format(amount);
 };
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string, currentLanguage: string = 'vie') => {
   try {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
       return 'Undefined';
     }
-    return date.toLocaleDateString('vi-VN');
+    
+    // Use locale based on language
+    const localeMap: Record<string, string> = {
+      vie: 'vi-VN',
+      eng: 'en-US',
+      spa: 'es-ES',
+      chi: 'zh-CN'
+    };
+    
+    const locale = localeMap[currentLanguage] || 'vi-VN';
+    return date.toLocaleDateString(locale);
   } catch (error) {
     return 'Undefined';
   }
@@ -76,6 +96,10 @@ export default function PublicVouchersPage() {
   const [isCopied, setIsCopied] = useState<{ [key: string]: boolean }>({});
   const [activeTab, setActiveTab] = useState<'available' | 'used' | 'expired'>('available');
   const { t, language } = useLanguage();
+
+  // Format functions that use the current language
+  const formatCurrencyWithLanguage = (amount: number) => formatCurrency(amount, language);
+  const formatDateWithLanguage = (dateString: string) => formatDate(dateString, language);
 
   // Force Vietnamese title
   useEffect(() => {
@@ -341,7 +365,7 @@ export default function PublicVouchersPage() {
                   <span>
                     {voucher.type === 'percentage'
                       ? `${voucher.value}% Off`
-                      : `${formatCurrency(voucher.value)} Off`}
+                      : `${formatCurrencyWithLanguage(voucher.value)} Off`}
                     {activeTab === 'expired' && ` (${t('voucher.public.expired')})`}
                     {activeTab === 'used' && ` (${t('voucher.public.used')})`}
                   </span>
@@ -377,7 +401,7 @@ export default function PublicVouchersPage() {
                           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-                      <span>{t('voucher.expiryDate')} {formatDate(voucher.endDate)}</span>
+                      <span>{t('voucher.expiryDate')} {formatDateWithLanguage(voucher.endDate)}</span>
                     </div>
 
                     {voucher.userUsage && (
@@ -426,7 +450,7 @@ export default function PublicVouchersPage() {
                             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        <span>Max: {formatCurrency(voucher.maxDiscount)}</span>
+                        <span>Max: {formatCurrencyWithLanguage(voucher.maxDiscount)}</span>
                       </div>
                     )}
 
@@ -549,7 +573,7 @@ export default function PublicVouchersPage() {
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
-                        {t('voucher.minOrder')} {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} |
+                        {t('voucher.minOrder')} {voucher.minOrder ? formatCurrencyWithLanguage(voucher.minOrder) : 0} |
                         {t('voucher.welcome50.used', { 
                           used: voucher.userUsage ? voucher.userUsage.current : 0, 
                           total: voucher.userUsage ? voucher.userUsage.limit : 1 
@@ -578,7 +602,7 @@ export default function PublicVouchersPage() {
                       <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                         <span>
                           {voucher.minOrder
-                            ? `${t('voucher.minOrder')} ${formatCurrency(voucher.minOrder)}`
+                            ? `${t('voucher.minOrder')} ${formatCurrencyWithLanguage(voucher.minOrder)}`
                             : ''}
                           {voucher.minOrder ? ' | ' : ''}
                           {t('voucher.welcome50.used', { 
@@ -611,7 +635,7 @@ export default function PublicVouchersPage() {
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
                         {voucher.minOrder
-                          ? `${t('voucher.minOrder')} ${formatCurrency(voucher.minOrder)}`
+                          ? `${t('voucher.minOrder')} ${formatCurrencyWithLanguage(voucher.minOrder)}`
                           : ''}
                         {voucher.minOrder ? ' | ' : ''}
                         {t('voucher.welcome50.used', { 
@@ -634,7 +658,7 @@ export default function PublicVouchersPage() {
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
                         {voucher.minOrder
-                          ? `Min order: ${formatCurrency(voucher.minOrder)}`
+                          ? `Min order: ${formatCurrencyWithLanguage(voucher.minOrder)}`
                           : ''}
                         {voucher.minOrder ? ' | ' : ''}Status:{' '}
                         <span className="text-gray-600 font-medium">Expired</span>
@@ -650,7 +674,7 @@ export default function PublicVouchersPage() {
                                           <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-gray-500 bg-gray-100">
                       {voucher.usageLimit !== undefined && voucher.usageLimit <= voucher.usedCount
                         ? 'Hết lượt sử dụng'
-                        : `Hết hạn ngày ${formatDate(voucher.endDate)}`}
+                        : `Hết hạn ngày ${formatDateWithLanguage(voucher.endDate)}`}
                     </div>
                   </div>
                 )}
