@@ -162,5 +162,10 @@ export const admin = {
   'admin.notifications.updateSuccess': 'Notificación actualizada con éxito',
   'admin.notifications.updateError': 'Error al actualizar la notificación',
   'admin.notifications.deleteSuccess': 'Notificación eliminada con éxito',
-  'admin.notifications.deleteError': 'Error al eliminar la notificación'
+  'admin.notifications.deleteError': 'Error al eliminar la notificación',
+  'admin.notifications.updatingBtn': 'Actualizando...',
+  'admin.notifications.updateBtn': 'Actualizar',
+  'admin.notifications.settings.title': 'Configuración de Notificaciones',
+  'admin.notifications.settings.automatic': 'Configuración de Automatización',
+  'admin.notifications.settings.saveBtn': 'Guardar Configuración'
 }; 

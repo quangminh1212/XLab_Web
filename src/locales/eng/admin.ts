@@ -161,5 +161,10 @@ export const admin = {
   'admin.notifications.updateSuccess': 'Notification updated successfully',
   'admin.notifications.updateError': 'Error updating notification',
   'admin.notifications.deleteSuccess': 'Notification deleted successfully',
-  'admin.notifications.deleteError': 'Error deleting notification'
+  'admin.notifications.deleteError': 'Error deleting notification',
+  'admin.notifications.updatingBtn': 'Updating...',
+  'admin.notifications.updateBtn': 'Update',
+  'admin.notifications.settings.title': 'Notification Settings',
+  'admin.notifications.settings.automatic': 'Automation Settings',
+  'admin.notifications.settings.saveBtn': 'Save Settings'
 }; 

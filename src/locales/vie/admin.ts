@@ -143,6 +143,8 @@ export const admin = {
   'admin.notifications.form.titlePlaceholder': 'Nhập tiêu đề thông báo',
   'admin.notifications.form.content': 'Nội dung',
   'admin.notifications.form.contentPlaceholder': 'Nhập nội dung thông báo',
+  'admin.notifications.settings.title': 'Cài đặt thông báo',
+  'admin.notifications.settings.automatic': 'Tự động hóa thông báo',
   'admin.notifications.settings.autoOrder': 'Tự động gửi thông báo đơn hàng',
   'admin.notifications.settings.autoPromotion': 'Tự động gửi thông báo khuyến mãi',
   'admin.notifications.settings.autoUpdate': 'Tự động gửi thông báo cập nhật',
@@ -162,5 +164,8 @@ export const admin = {
   'admin.notifications.updateSuccess': 'Cập nhật thông báo thành công',
   'admin.notifications.updateError': 'Lỗi khi cập nhật thông báo',
   'admin.notifications.deleteSuccess': 'Xóa thông báo thành công',
-  'admin.notifications.deleteError': 'Lỗi khi xóa thông báo'
+  'admin.notifications.deleteError': 'Lỗi khi xóa thông báo',
+  'admin.notifications.updatingBtn': 'Đang cập nhật...',
+  'admin.notifications.updateBtn': 'Cập nhật',
+  'admin.notifications.settings.saveBtn': 'Lưu cài đặt'
 }; 
