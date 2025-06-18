@@ -28,6 +28,12 @@ export const product = {
   // ChatGPT and Grok descriptions
   'product.chatgpt.description': 'ChatGPT is a powerful AI chatbot that can answer a wide range of questions in both English and Vietnamese, providing support from Front-end to Back-end programming.',
   'product.grok.description': 'Grok AI helps automatically analyze and process large datasets quickly, supporting accurate decision-making and saving time. Widely applicable across many fields.',
+  'product.chatgpt.shortDescription': 'ChatGPT is a powerful AI chatbot that can answer questions in both English and Vietnamese, supporting programming from Front-end to Back-end.',
+  'product.grok.shortDescription': 'Grok AI helps automatically analyze and process data quickly.',
   'product.purchasesPerWeek': '{count}/week',
-  'product.totalSold': '{count} sold'
+  'product.totalSold': '{count} sold',
+
+  // Product status
+  'product.status.draft': 'Draft',
+  'product.status.public': 'Public'
 }; 
