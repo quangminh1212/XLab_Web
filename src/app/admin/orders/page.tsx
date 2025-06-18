@@ -22,7 +22,7 @@ function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [timeFilter, setTimeFilter] = useState<string>('all');
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Giả lập dữ liệu đơn hàng
   useEffect(() => {
@@ -131,47 +131,11 @@ function OrdersPage() {
     }).format(amount);
   };
 
-  // Lấy tên trạng thái đơn hàng
-  const getStatusName = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return language === 'vi' ? 'Chờ xử lý' : 'Pending';
-      case 'processing':
-        return language === 'vi' ? 'Đang xử lý' : 'Processing';
-      case 'completed':
-        return language === 'vi' ? 'Hoàn thành' : 'Completed';
-      case 'cancelled':
-        return language === 'vi' ? 'Đã hủy' : 'Cancelled';
-      case 'refunded':
-        return language === 'vi' ? 'Hoàn tiền' : 'Refunded';
-      default:
-        return status;
-    }
-  };
-
-  // Lấy màu của trạng thái đơn hàng
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800';
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      case 'refunded':
-        return 'bg-orange-100 text-orange-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">
-          {language === 'vi' ? 'Quản lý đơn hàng' : 'Order Management'}
+          {t('admin.orders.title')}
         </h1>
         <div className="flex space-x-3">
           <Link
@@ -196,11 +160,11 @@ function OrdersPage() {
                 clipRule="evenodd"
               />
             </svg>
-            {language === 'vi' ? 'Xem trang khách hàng' : 'View customer page'}
+            {t('admin.orders.viewCustomerPage')}
           </Link>
           <Link
             href="/admin"
-            className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm flex items-center"
+            className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg flex items-center text-sm transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -210,11 +174,11 @@ function OrdersPage() {
             >
               <path
                 fillRule="evenodd"
-                d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
+                d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
                 clipRule="evenodd"
               />
             </svg>
-            {language === 'vi' ? 'Quay lại Dashboard' : 'Back to Dashboard'}
+            {t('admin.orders.backToDashboard')}
           </Link>
         </div>
       </div>
@@ -223,28 +187,28 @@ function OrdersPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
           <h3 className="text-gray-500 text-sm font-medium mb-1">
-            {language === 'vi' ? 'Tổng đơn hàng' : 'Total Orders'}
+            {t('admin.orders.totalOrders')}
           </h3>
           <p className="text-3xl font-bold">{stats.total}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
           <h3 className="text-gray-500 text-sm font-medium mb-1">
-            {language === 'vi' ? 'Đơn chờ xử lý' : 'Pending Orders'}
+            {t('admin.orders.pendingOrders')}
           </h3>
           <p className="text-3xl font-bold text-yellow-500">{stats.pending}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
           <h3 className="text-gray-500 text-sm font-medium mb-1">
-            {language === 'vi' ? 'Hoàn thành' : 'Completed'}
+            {t('admin.orders.completedOrders')}
           </h3>
           <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
           <h3 className="text-gray-500 text-sm font-medium mb-1">
-            {language === 'vi' ? 'Doanh thu' : 'Revenue'}
+            {t('admin.orders.revenue')}
           </h3>
           <p className="text-3xl font-bold text-blue-700">{formatCurrency(stats.revenue)}</p>
         </div>
@@ -256,7 +220,7 @@ function OrdersPage() {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder={language === 'vi' ? "Tìm kiếm theo ID, tên, email..." : "Search by ID, name, email..."}
+              placeholder={t('admin.orders.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -284,12 +248,12 @@ function OrdersPage() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">{language === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
-              <option value="pending">{language === 'vi' ? 'Chờ xử lý' : 'Pending'}</option>
-              <option value="processing">{language === 'vi' ? 'Đang xử lý' : 'Processing'}</option>
-              <option value="completed">{language === 'vi' ? 'Hoàn thành' : 'Completed'}</option>
-              <option value="cancelled">{language === 'vi' ? 'Đã hủy' : 'Cancelled'}</option>
-              <option value="refunded">{language === 'vi' ? 'Hoàn tiền' : 'Refunded'}</option>
+              <option value="all">{t('admin.orders.allStatuses')}</option>
+              <option value="pending">{t('admin.orders.pending')}</option>
+              <option value="processing">{t('admin.orders.processing')}</option>
+              <option value="completed">{t('admin.orders.completed')}</option>
+              <option value="cancelled">{t('admin.orders.cancelled')}</option>
+              <option value="refunded">{t('admin.orders.refunded')}</option>
             </select>
 
             <select
@@ -297,10 +261,10 @@ function OrdersPage() {
               onChange={(e) => setTimeFilter(e.target.value)}
               className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">{language === 'vi' ? 'Tất cả thời gian' : 'All time'}</option>
-              <option value="today">{language === 'vi' ? 'Hôm nay' : 'Today'}</option>
-              <option value="thisWeek">{language === 'vi' ? 'Tuần này' : 'This week'}</option>
-              <option value="thisMonth">{language === 'vi' ? 'Tháng này' : 'This month'}</option>
+              <option value="all">{t('admin.orders.allTime')}</option>
+              <option value="today">{t('admin.orders.today')}</option>
+              <option value="thisWeek">{t('admin.orders.thisWeek')}</option>
+              <option value="thisMonth">{t('admin.orders.thisMonth')}</option>
             </select>
           </div>
         </div>
@@ -321,43 +285,43 @@ function OrdersPage() {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Mã đơn hàng' : 'Order ID'}
+                    {t('admin.orders.orderIdColumn')}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Khách hàng' : 'Customer'}
+                    {t('admin.orders.customerColumn')}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Ngày đặt' : 'Date'}
+                    {t('admin.orders.dateColumn')}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Tổng tiền' : 'Total'}
+                    {t('admin.orders.totalColumn')}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Phương thức' : 'Payment Method'}
+                    {t('admin.orders.paymentMethodColumn')}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Trạng thái' : 'Status'}
+                    {t('admin.orders.statusColumn')}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Hành động' : 'Actions'}
+                    {t('admin.orders.actionsColumn')}
                   </th>
                 </tr>
               </thead>
@@ -368,7 +332,7 @@ function OrdersPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{order.id}</div>
                         <div className="text-xs text-gray-500">
-                          {language === 'vi' ? 'Sản phẩm: ' : 'Products: '}{order.items.length}
+                          {t('admin.orders.products')}: {order.items.length}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -381,38 +345,50 @@ function OrdersPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{formatCurrency(order.totalAmount)}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {order.paymentMethod === 'credit_card' 
-                          ? (language === 'vi' ? 'Thẻ' : 'Card') 
-                          : order.paymentMethod === 'bank_transfer' 
-                            ? (language === 'vi' ? 'Chuyển khoản' : 'Bank Transfer') 
-                            : order.paymentMethod === 'momo' || order.paymentMethod === 'zalopay'
-                              ? order.paymentMethod.toUpperCase()
-                              : order.paymentMethod === 'cash'
-                                ? (language === 'vi' ? 'Tiền mặt' : 'Cash')
-                                : order.paymentMethod}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                          {order.paymentMethod}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                            order.status
-                          )}`}
-                        >
-                          {getStatusName(order.status)}
-                        </span>
+                        {order.status === 'pending' && (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            {t('admin.orders.pending')}
+                          </span>
+                        )}
+                        {order.status === 'processing' && (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {t('admin.orders.processing')}
+                          </span>
+                        )}
+                        {order.status === 'completed' && (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            {t('admin.orders.completed')}
+                          </span>
+                        )}
+                        {order.status === 'cancelled' && (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            {t('admin.orders.cancelled')}
+                          </span>
+                        )}
+                        {order.status === 'refunded' && (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                            {t('admin.orders.refunded')}
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <Link href={`/orders/${order.id}`} className="text-indigo-600 hover:text-indigo-900 mr-3">
-                          {language === 'vi' ? 'Xem' : 'View'}
+                          {t('admin.orders.view')}
                         </Link>
                         {order.status === 'pending' && (
                           <button className="text-green-600 hover:text-green-900 ml-2">
-                            {language === 'vi' ? 'Duyệt' : 'Approve'}
+                            {t('admin.orders.approve')}
                           </button>
                         )}
                         {(order.status === 'pending' || order.status === 'processing') && (
                           <button className="text-red-600 hover:text-red-900 ml-2">
-                            {language === 'vi' ? 'Hủy' : 'Cancel'}
+                            {t('admin.orders.cancel')}
                           </button>
                         )}
                       </td>
@@ -421,7 +397,7 @@ function OrdersPage() {
                 ) : (
                   <tr>
                     <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
-                      {language === 'vi' ? 'Không tìm thấy đơn hàng nào' : 'No orders found'}
+                      {t('admin.orders.noOrders')}
                     </td>
                   </tr>
                 )}

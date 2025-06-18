@@ -92,6 +92,7 @@ export const admin = {
   // Orders Management
   'admin.orders.title': 'Gestión de Pedidos',
   'admin.orders.viewCustomerPage': 'Ver página de cliente',
+  'admin.orders.backToDashboard': 'Volver al Panel',
   'admin.orders.totalOrders': 'Total de Pedidos',
   'admin.orders.pendingOrders': 'Pedidos Pendientes',
   'admin.orders.completedOrders': 'Completados',
