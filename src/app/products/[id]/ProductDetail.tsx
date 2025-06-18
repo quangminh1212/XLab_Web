@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 import { Product as ProductType } from '@/models/ProductModel';
 import { useCart } from '@/components/cart/CartContext';
 import RichTextContent from '@/components/common/RichTextContent';
@@ -20,7 +20,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -113,7 +113,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -153,7 +153,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -221,7 +221,7 @@ const ProductOptions = ({
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -248,6 +248,12 @@ const ProductOptions = ({
     }
   }, [language, productId, productOptions, t]);
 
+  // Format price based on selected language
+  const displayPrice = (amount: number) => {
+    const convertedAmount = convertCurrency(amount, language);
+    return formatCurrency(convertedAmount, language);
+  };
+
   if (!options || options.length === 0) return null;
 
   return (
@@ -265,7 +271,7 @@ const ProductOptions = ({
             </span>
             {optionPrices && optionPrices[option] && (
               <span className="text-primary-600 font-medium text-sm">
-                {formatCurrency(optionPrices[option].price)}
+                {displayPrice(optionPrices[option].price)}
               </span>
             )}
           </div>
@@ -315,7 +321,7 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
@@ -597,6 +603,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     }
   };
 
+  // Format price based on selected language
+  const displayPrice = (amount: number) => {
+    const convertedAmount = convertCurrency(amount, language);
+    return formatCurrency(convertedAmount, language);
+  };
+
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -689,13 +701,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 <div className="text-3xl font-bold text-primary-600">
                   {calculateCheapestPrice() === 0
                     ? t('product.free')
-                    : formatCurrency(calculateCheapestPrice())}
+                    : displayPrice(calculateCheapestPrice())}
                 </div>
 
                 {calculateOriginalPriceOfCheapest() > calculateCheapestPrice() && (
                   <>
                     <div className="ml-4 text-xl text-gray-500 line-through">
-                      {formatCurrency(calculateOriginalPriceOfCheapest())}
+                      {displayPrice(calculateOriginalPriceOfCheapest())}
                     </div>
                     <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
                       -{calculateCheapestDiscountPercentage()}%
@@ -741,7 +753,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                             )}
                           </div>
                           <span className="font-medium text-primary-600 ml-2 text-sm">
-                            {formatCurrency(version.price)}
+                            {displayPrice(version.price)}
                           </span>
                         </div>
                       ))}

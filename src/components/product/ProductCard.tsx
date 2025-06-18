@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 interface ProductCardProps {
   id: string;
@@ -180,16 +181,12 @@ export default function ProductCard({
   // Lấy tên category để hiển thị
   const displayCategory = getCategoryName(category);
 
-  // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
-  const formatCurrency = (amount: number) => {
-    // Đảm bảo amount là số
-    const safeAmount = isNaN(amount) ? 0 : amount;
-    
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    }).format(safeAmount);
+  // Format currency based on selected language
+  const displayPrice = (amount: number) => {
+    // Convert to appropriate currency based on language
+    const convertedAmount = convertCurrency(amount, language);
+    // Format with the correct currency symbol and format
+    return formatCurrency(convertedAmount, language);
   };
 
   const renderRatingStars = (rating: number) => {
@@ -505,11 +502,11 @@ export default function ProductCard({
               <span
                 className={`text-base font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
-                {formatCurrency(price)}
+                {displayPrice(price)}
               </span>
               {originalPrice && originalPrice > price && (
                 <span className="text-xs text-gray-400 line-through">
-                  {formatCurrency(originalPrice)}
+                  {displayPrice(originalPrice)}
                 </span>
               )}
             </div>
