@@ -47,12 +47,18 @@ export default function RelatedProducts({
         );
 
         if (!response.ok) {
+          console.log(`RelatedProducts - Failed to fetch related products. Falling back to category products.`);
           // Fallback: If API fails, try to fetch products from the same category
           const categoryResponse = await fetch(
             `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
           );
           if (categoryResponse.ok) {
-            const allProducts = await categoryResponse.json();
+            const responseData = await categoryResponse.json();
+            console.log(`RelatedProducts - Category API response:`, responseData);
+            // Make sure we have an array of products
+            const allProducts = Array.isArray(responseData) ? responseData : 
+                               (responseData.data && Array.isArray(responseData.data) ? responseData.data : []);
+            console.log(`RelatedProducts - Products array:`, allProducts);
             // Filter out the current product
             const filtered = allProducts
               .filter((p: Product) => p.id !== currentProductId)
@@ -62,8 +68,13 @@ export default function RelatedProducts({
             setProducts([]);
           }
         } else {
-          const data = await response.json();
-          setProducts(data);
+          const responseData = await response.json();
+          console.log(`RelatedProducts - Related API response:`, responseData);
+          // Make sure we have an array of products
+          const relatedProducts = Array.isArray(responseData) ? responseData :
+                                 (responseData.data && Array.isArray(responseData.data) ? responseData.data : []);
+          console.log(`RelatedProducts - Related products array:`, relatedProducts);
+          setProducts(relatedProducts);
         }
       } catch (error) {
         console.error('Error fetching related products:', error);

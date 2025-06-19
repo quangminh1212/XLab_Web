@@ -110,6 +110,15 @@ export default function ProductCard({
     if (imgUrl.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
     if (imgUrl.trim() === '') return '/images/placeholder/product-placeholder.jpg';
 
+    // Special cases for specific products
+    if (id === 'chatgpt') {
+      return '/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png';
+    }
+    
+    if (id === 'grok') {
+      return '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+    }
+
     // Nếu đường dẫn không tồn tại hoặc không hợp lệ, sử dụng placeholder
     try {
       // Kiểm tra nếu là đường dẫn tương đối

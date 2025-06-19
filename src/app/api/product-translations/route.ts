@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
   try {
     // Use language-specific files in their respective folders
     const langPath = path.join(process.cwd(), `src/locales/${lang}/products.json`);
-    const productsPath = path.join(process.cwd(), 'src/data/products.json');
-    
+    const viePath = path.join(process.cwd(), 'src/locales/vie/products.json');
+
     if (!fs.existsSync(langPath)) {
       console.error(`Language file not found: ${lang}/products.json`);
       // If the requested language file doesn't exist, fallback to English
@@ -33,41 +33,44 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    if (!fs.existsSync(productsPath)) {
-      console.error('Products file not found');
-      return NextResponse.json({ error: 'Products file not found' }, { status: 404 });
-    }
-    
-    let translations;
-    let products;
-    
-    try {
-      // Read the language-specific file
-      const translationsData = fs.existsSync(langPath) 
-        ? fs.readFileSync(langPath, 'utf8') 
-        : fs.readFileSync(path.join(process.cwd(), 'src/locales/eng/products.json'), 'utf8');
-      
-      const productsData = fs.readFileSync(productsPath, 'utf8');
-      
-      translations = JSON.parse(translationsData);
-      products = JSON.parse(productsData);
-      
-      console.log(`Products length: ${products.length}`);
-    } catch (parseError) {
-      console.error('Error parsing JSON:', parseError);
-      return NextResponse.json({ error: 'Error parsing JSON data', details: String(parseError) }, { status: 500 });
+    if (!fs.existsSync(viePath)) {
+      console.error('Vietnamese products file not found');
+      return NextResponse.json({ error: 'Base products file not found' }, { status: 404 });
     }
 
-    // Find product by ID
-    const product = Array.isArray(products) 
-      ? products.find((p: any) => p.id === id)
-      : null;
-    
-    if (!product) {
+    let translations;
+    let vieProducts;
+
+    try {
+      // Read the language-specific file
+      const translationsData = fs.existsSync(langPath)
+        ? fs.readFileSync(langPath, 'utf8')
+        : fs.readFileSync(path.join(process.cwd(), 'src/locales/eng/products.json'), 'utf8');
+
+      const vieProductsData = fs.readFileSync(viePath, 'utf8');
+
+      translations = JSON.parse(translationsData);
+      vieProducts = JSON.parse(vieProductsData);
+    } catch (parseError) {
+      console.error('Error parsing JSON:', parseError);
+      return NextResponse.json(
+        { error: 'Error parsing JSON data', details: String(parseError) },
+        { status: 500 },
+      );
+    }
+
+    // Find product by ID in Vietnamese data
+    if (!vieProducts[id]) {
       console.error(`Product not found with ID: ${id}`);
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
-    
+
+    const product = {
+      id,
+      ...vieProducts[id],
+      slug: id,
+    };
+
     console.log(`Found product: ${product.name}`);
 
     // Use original if language is Vietnamese
@@ -79,7 +82,7 @@ export async function GET(request: NextRequest) {
     if (translations && translations[id]) {
       const translatedData = translations[id];
       console.log(`Found translation for ${id} in ${lang}`);
-      
+
       // If using original structure from Vietnamese
       if (useOriginalStructure) {
         const mergedData = {
@@ -88,22 +91,25 @@ export async function GET(request: NextRequest) {
           shortDescription: translatedData.shortDescription || product.shortDescription,
           description: translatedData.description || product.description,
           productOptions: translatedData.productOptions || product.productOptions,
-          options: translatedData.options || product.options
+          options: translatedData.options || product.options,
         };
-        
+
         return NextResponse.json(mergedData);
       }
-      
+
       // Return translation
       return NextResponse.json(translatedData);
     }
 
     console.log(`No translation found for ${id} in ${lang}, returning original product`);
-    
+
     // If no translation, return original
     return NextResponse.json(product);
   } catch (error) {
     console.error('Error fetching product translation:', error);
-    return NextResponse.json({ error: 'Failed to fetch translation', details: String(error) }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch translation', details: String(error) },
+      { status: 500 },
+    );
   }
-} 
+}

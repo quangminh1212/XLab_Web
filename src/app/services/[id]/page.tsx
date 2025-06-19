@@ -10,19 +10,57 @@ export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 // Đọc dữ liệu sản phẩm từ file JSON
-function getProducts(): Product[] {
+async function getProducts(): Promise<Product[]> {
   try {
-    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    if (!fs.existsSync(dataFilePath)) {
-      return [];
+    // Create a proper URL for server-side fetching
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+    const url = new URL('/api/products', baseUrl).toString();
+
+    // Fetch products from API with proper URL
+    const response = await fetch(url, { next: { revalidate: 60 } });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.status}`);
     }
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-    return JSON.parse(fileContent);
+
+    const result = await response.json();
+    return result.data || [];
   } catch (error) {
-    console.error('Error reading products data:', error);
+    console.error('Error fetching products data:', error);
     return [];
   }
 }
+
+// Type for sample account products that matches the Product interface
+const convertSampleAccountToProduct = (sample: any): Product => {
+  return {
+    ...sample,
+    shortDescription: sample.description,
+    images: [sample.imageUrl],
+    descriptionImages: [],
+    requirements: [],
+    specifications: [],
+    categories: [
+      {
+        id: { id: sample.categoryId },
+        name: { id: sample.categoryId },
+        slug: { id: sample.categoryId },
+      },
+    ],
+    versions: [
+      {
+        name: 'Default',
+        description: 'Phiên bản mặc định',
+        price: sample.price || 0,
+        originalPrice: sample.salePrice || 0,
+        features: sample.features || [],
+      },
+    ],
+    isPublished: true,
+  };
+};
 
 export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params trước khi sử dụng thuộc tính của nó
@@ -31,7 +69,7 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
 
   // Lấy danh sách sản phẩm từ file JSON
-  const productsFromJson = getProducts();
+  const productsFromJson = await getProducts();
 
   // Tìm kiếm trong products.json trước
   let selectedProduct = productsFromJson.find(
@@ -46,16 +84,14 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
 
   // Nếu không tìm thấy, tìm trong mockData
   if (!selectedProduct) {
-    // Tìm theo slug trước
-    selectedProduct = mockProducts.find(
-      (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
+    // Tìm trong mockProducts
+    const mockProduct = mockProducts.find(
+      (p) => (p.slug === accountId || p.id === accountId) && (p.isAccount || p.type === 'account'),
     );
 
-    // Sau đó tìm theo id nếu không tìm thấy theo slug
-    if (!selectedProduct) {
-      selectedProduct = mockProducts.find(
-        (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
-      );
+    // Convert mockProduct to Product type
+    if (mockProduct) {
+      selectedProduct = convertSampleAccountToProduct(mockProduct);
     }
   }
 
@@ -246,21 +282,21 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
     },
   ];
 
-  // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData và products.json
+  // Nếu không tìm thấy, tìm trong sampleAccounts
   if (!selectedProduct) {
-    // Tìm theo slug trước
-    selectedProduct = sampleAccounts.find((p) => p.slug === accountId);
+    // Find in sample accounts
+    const sampleAccount = sampleAccounts.find((p) => p.slug === accountId || p.id === accountId);
 
-    // Sau đó tìm theo id nếu cần
-    if (!selectedProduct) {
-      selectedProduct = sampleAccounts.find((p) => p.id === accountId);
+    if (sampleAccount) {
+      // Convert sample account to match Product type
+      selectedProduct = convertSampleAccountToProduct(sampleAccount);
     }
   }
 
-  // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
+  // Nếu không tìm thấy trong cả hai nguồn dữ liệu, hiển thị trang not-found
   if (!selectedProduct) {
-    console.log(`Không tìm thấy tài khoản với ID hoặc slug: ${accountId}`);
-    return notFound();
+    console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${accountId}`);
+    notFound();
   }
 
   // Ghi log thông tin truy cập

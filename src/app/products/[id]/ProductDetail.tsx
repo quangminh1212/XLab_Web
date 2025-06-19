@@ -297,6 +297,15 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // Lấy ảnh sản phẩm
   const getProductImage = () => {
+    // Special cases for specific products
+    if (translatedProduct.id === 'chatgpt') {
+      return '/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png';
+    }
+    
+    if (translatedProduct.id === 'grok') {
+      return '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+    }
+    
     if (translatedProduct.images && translatedProduct.images.length > 0) {
       const firstImage = translatedProduct.images[0];
       // Không sử dụng blob URLs
@@ -433,7 +442,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const handleAddToCart = () => {
     let productImage = '/images/placeholder/product-placeholder.svg';
 
-    if (translatedProduct.images && translatedProduct.images.length > 0) {
+    // Special cases for specific products
+    if (translatedProduct.id === 'chatgpt') {
+      productImage = '/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png';
+    } 
+    else if (translatedProduct.id === 'grok') {
+      productImage = '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+    }
+    else if (translatedProduct.images && translatedProduct.images.length > 0) {
       const firstImage = translatedProduct.images[0];
       // Xử lý đường dẫn ảnh
       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
