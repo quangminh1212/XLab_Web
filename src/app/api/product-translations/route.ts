@@ -87,7 +87,6 @@ export async function GET(request: NextRequest) {
           name: translatedData.name || product.name,
           shortDescription: translatedData.shortDescription || product.shortDescription,
           description: translatedData.description || product.description,
-          features: translatedData.features || product.features,
           productOptions: translatedData.productOptions || product.productOptions,
           options: translatedData.options || product.options
         };

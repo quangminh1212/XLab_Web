@@ -85,26 +85,6 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
   );
 };
 
-// Component xử lý hiển thị tính năng sản phẩm với khả năng dịch
-const ProductFeatures = ({ features, productId }: { features: any[], productId: string }) => {
-  const { t, language } = useLanguage();
-
-  if (!features || features.length === 0) return null;
-
-  return (
-    <div className="mt-8">
-      <h3 className="font-medium text-gray-900 mb-2">{t('product.features')}:</h3>
-      <ul className="list-disc list-inside space-y-1">
-        {features.map((feature, index) => (
-          <li key={index} className="text-gray-600">
-            {typeof feature === 'string' ? feature : feature.title}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
 // Component xử lý dịch tùy chọn sản phẩm
 const ProductOptions = ({ 
   options, 
@@ -216,7 +196,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               name: data.name || product.name,
               shortDescription: data.shortDescription || product.shortDescription,
               description: data.description || product.description,
-              features: data.features || product.features,
               productOptions: data.productOptions || product.productOptions
             });
           }
@@ -688,7 +667,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
               {/* Quantity selector */}
               <div className="mt-6">
-                <h3 className="font-medium text-gray-900 mb-2">{t('product.quantity')}:</h3>
+                <h3 className="font-medium text-gray-900 mb-2">{t('product.quantity')}</h3>
                 <div className="flex items-center">
                   <button
                     onClick={decreaseQuantity}
@@ -753,11 +732,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   {t('product.buyNow')}
                 </Link>
               </div>
-
-              {/* Features list */}
-              {translatedProduct.features && translatedProduct.features.length > 0 && (
-                <ProductFeatures features={translatedProduct.features} productId={translatedProduct.id.toString()} />
-              )}
             </div>
           </div>
         </div>

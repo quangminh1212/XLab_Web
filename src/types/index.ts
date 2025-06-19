@@ -14,7 +14,6 @@ export interface Product {
   storeId?: string;
   discountPercentage?: number;
   tags?: string[];
-  features?: string[];
   specifications?: { [key: string]: string };
   stock?: number;
   ratings?: number;
@@ -41,7 +40,6 @@ export interface Product {
     description?: string;
     price: number;
     originalPrice: number;
-    features: string[];
   }[];
 }
 
