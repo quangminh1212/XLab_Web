@@ -79,7 +79,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
 const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
   const { t, language } = useLanguage();
   
-  // Sử dụng mô tả ngắn gốc
+  // Directly display the provided shortDescription that should be already translated
   return (
     <p className="mt-4 text-gray-600 text-lg">{shortDescription || ''}</p>
   );
@@ -181,32 +181,34 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   
   // States for translated product data
   const [translatedProduct, setTranslatedProduct] = useState<ProductType>(product);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Fetch translations when language changes or initial load
   useEffect(() => {
     const fetchProductTranslations = async () => {
       try {
-        // Only fetch translations for non-Vietnamese languages
-        if (language !== 'vie') {
-          const response = await fetch(`/api/product-translations?id=${product.id}&lang=${language}&useOriginalStructure=true`);
-          if (response.ok) {
-            const data = await response.json();
-            setTranslatedProduct({
-              ...product,
-              name: data.name || product.name,
-              shortDescription: data.shortDescription || product.shortDescription,
-              description: data.description || product.description,
-              productOptions: data.productOptions || product.productOptions
-            });
-          }
+        setIsLoading(true);
+        // Always fetch translations to ensure we have the right language
+        const response = await fetch(`/api/product-translations?id=${product.id}&lang=${language}&useOriginalStructure=true`);
+        if (response.ok) {
+          const data = await response.json();
+          setTranslatedProduct({
+            ...product,
+            name: data.name || product.name,
+            shortDescription: data.shortDescription || product.shortDescription,
+            description: data.description || product.description,
+            productOptions: data.productOptions || product.productOptions
+          });
         } else {
-          // Use original product for Vietnamese
+          // Use original product as fallback
           setTranslatedProduct(product);
         }
       } catch (error) {
         console.error('Error fetching product translations:', error);
         // Fall back to original product data
         setTranslatedProduct(product);
+      } finally {
+        setIsLoading(false);
       }
     };
 
