@@ -126,15 +126,46 @@ export default function RelatedProducts({
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
 
     // Xử lý category an toàn - giữ nguyên dạng object để ProductCard xử lý
-    let safeCategory;
+    let safeCategory = '';
+    
+    // Helper function to extract category name from object
+    const extractCategoryString = (categoryObj: any): string => {
+      if (!categoryObj) return '';
+      
+      if (typeof categoryObj === 'string') {
+        return categoryObj;
+      }
+      
+      if (typeof categoryObj === 'object') {
+        // Try to get name
+        if (categoryObj.name) {
+          if (typeof categoryObj.name === 'string') {
+            return categoryObj.name;
+          } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
+            return String(categoryObj.name.id);
+          }
+        }
+        
+        // Try to get id
+        if (categoryObj.id) {
+          if (typeof categoryObj.id === 'string') {
+            return categoryObj.id;
+          } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
+            return String(categoryObj.id.id);
+          }
+        }
+      }
+      
+      return '';
+    };
     
     // Nếu có category trực tiếp
     if (product.category) {
-      safeCategory = product.category;
+      safeCategory = extractCategoryString(product.category);
     }
     // Nếu có categories array
     else if (product.categories?.length) {
-      safeCategory = product.categories[0];
+      safeCategory = extractCategoryString(product.categories[0]);
     }
 
     const mapped = {

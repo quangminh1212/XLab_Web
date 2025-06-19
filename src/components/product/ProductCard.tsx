@@ -145,8 +145,8 @@ export default function ProductCard({
     : cleanImageUrl;
 
   // Xử lý category có thể là object phức tạp
-  const getCategoryName = (categoryValue: string | object | undefined): string | undefined => {
-    if (!categoryValue) return undefined;
+  const getCategoryName = (categoryValue: string | object | undefined): string => {
+    if (!categoryValue) return "";
     
     if (typeof categoryValue === 'string') {
       return categoryValue;
@@ -161,7 +161,7 @@ export default function ProductCard({
         if (typeof categoryObj.name === 'string') {
           return categoryObj.name;
         } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
-          return categoryObj.name.id;
+          return String(categoryObj.name.id);
         }
       }
       
@@ -170,12 +170,12 @@ export default function ProductCard({
         if (typeof categoryObj.id === 'string') {
           return categoryObj.id;
         } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
-          return categoryObj.id.id;
+          return String(categoryObj.id.id);
         }
       }
     }
     
-    return undefined;
+    return ""; // Return empty string instead of undefined
   };
 
   // Lấy tên category để hiển thị

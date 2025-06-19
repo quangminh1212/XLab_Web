@@ -122,10 +122,38 @@ const ProductGrid = ({
   };
 
   // Xử lý category từ sản phẩm
-  const extractCategory = (product: Product): string | object | undefined => {
+  const extractCategory = (product: Product): string => {
     // Nếu đã có category
     if (product.category) {
-      return product.category;
+      // Nếu category là string
+      if (typeof product.category === 'string') {
+        return product.category;
+      }
+      
+      // Nếu category là object
+      if (typeof product.category === 'object' && product.category !== null) {
+        const categoryObj = product.category as any;
+        
+        // Thử lấy tên từ object
+        if (categoryObj.name) {
+          if (typeof categoryObj.name === 'string') {
+            return categoryObj.name;
+          } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
+            return String(categoryObj.name.id);
+          }
+        }
+        
+        // Thử lấy id từ object
+        if (categoryObj.id) {
+          if (typeof categoryObj.id === 'string') {
+            return categoryObj.id;
+          } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
+            return String(categoryObj.id.id);
+          }
+        }
+        
+        return '';
+      }
     }
     
     // Nếu có categories array
@@ -139,12 +167,31 @@ const ProductGrid = ({
       
       // Nếu category là object
       if (typeof firstCategory === 'object' && firstCategory !== null) {
-        // Trả về object để ProductCard xử lý
-        return firstCategory;
+        const categoryObj = firstCategory as any;
+        
+        // Thử lấy tên từ object
+        if (categoryObj.name) {
+          if (typeof categoryObj.name === 'string') {
+            return categoryObj.name;
+          } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
+            return String(categoryObj.name.id);
+          }
+        }
+        
+        // Thử lấy id từ object
+        if (categoryObj.id) {
+          if (typeof categoryObj.id === 'string') {
+            return categoryObj.id;
+          } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
+            return String(categoryObj.id.id);
+          }
+        }
+        
+        return '';
       }
     }
     
-    return undefined;
+    return '';
   };
 
   return (
