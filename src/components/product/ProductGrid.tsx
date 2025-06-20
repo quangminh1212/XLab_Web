@@ -1,8 +1,10 @@
+import React from 'react';
 import ProductCard from './ProductCard';
+import classNames from 'classnames';
 
 interface OptionPrice {
   price: number;
-  originalPrice: number;
+  originalPrice?: number;
 }
 
 interface ProductVersion {
@@ -18,8 +20,9 @@ interface Product {
   name: string;
   description: string;
   shortDescription?: string;
-  price?: number;
+  price: number;
   originalPrice?: number;
+  salePrice?: number;
   image: string;
   category?: string | object;
   categories?: Array<string | { id: string | object; name: string | object; slug?: string | object }>;
@@ -31,94 +34,92 @@ interface Product {
   versions?: ProductVersion[];
   optionPrices?: { [key: string]: OptionPrice };
   weeklyPurchases?: number;
+  type?: string;
 }
 
 interface ProductGridProps {
   products: Product[];
   title?: string;
   subtitle?: string;
-  columns?: 2 | 3 | 4 | 5;
+  columns?: number; // Số cột hiển thị
   onAddToCart?: (id: string) => void;
-  onProductView?: (id: string) => void;
+  onView?: (id: string) => void;
 }
 
-const ProductGrid = ({
+export default function ProductGrid({
   products,
   title,
   subtitle,
-  columns = 4,
-  onAddToCart,
-  onProductView,
-}: ProductGridProps) => {
-  // Set column classes based on the columns prop
+  columns = 3,
+  onAddToCart = () => {},
+  onView = () => {},
+}: ProductGridProps) {
+  // Log products recieved
+  console.log('ProductGrid - Received products:', products);
+  
+  // Allow product view handler
+  const onProductView = (id: string) => {
+    console.log('Product viewed:', id);
+    onView(id);
+  };
+
+  // Get grid columns class based on columns prop
   const getColumnsClass = () => {
-    switch (columns) {
-      case 2:
-        return 'grid-cols-1 sm:grid-cols-2';
-      case 3:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
-      case 4:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
-      case 5:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5';
-      default:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
-    }
+    return `w-full`;
   };
 
-  // Tính giá thấp nhất từ các phiên bản và tùy chọn
+  // Calculate minimum price for products with versions
   const calculateMinPrice = (product: Product): number => {
-    let minPrice = Infinity;
+    if (product.price && product.price > 0) {
+      return product.price;
+    }
 
-    // Kiểm tra các phiên bản
+    // If product has versions, get the minimum price
     if (product.versions && product.versions.length > 0) {
-      product.versions.forEach((version) => {
-        if (version.price < minPrice) {
-          minPrice = version.price;
-        }
-      });
+      const prices = product.versions.map((v) => v.price);
+      return Math.min(...prices);
     }
 
-    // Kiểm tra các tùy chọn sản phẩm
-    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-      Object.values(product.optionPrices).forEach((option) => {
-        if (option.price < minPrice) {
-          minPrice = option.price;
-        }
-      });
+    // If product has optionPrices, get the minimum price
+    if (product.optionPrices) {
+      const prices = Object.values(product.optionPrices).map((op) => op.price);
+      if (prices.length > 0) {
+        return Math.min(...prices);
+      }
     }
 
-    // Nếu có giá cố định
-    if (product.price !== undefined && product.price < minPrice) {
-      minPrice = product.price;
+    // If product has salePrice, use it
+    if (product.salePrice && product.salePrice > 0) {
+      return product.salePrice;
     }
 
-    return minPrice === Infinity ? 0 : minPrice;
+    return 0;
   };
 
-  // Tính giá gốc tương ứng với giá thấp nhất
+  // Calculate original price based on the min price
   const calculateOriginalPrice = (product: Product, minPrice: number): number | undefined => {
-    let correspondingOriginalPrice;
+    if (product.originalPrice && product.originalPrice > 0) {
+      return product.originalPrice;
+    }
 
-    // Nếu giá thấp nhất từ version
+    // If min price comes from a version, get the corresponding original price
     if (product.versions && product.versions.length > 0) {
-      const version = product.versions.find((v) => v.price === minPrice);
-      if (version) {
-        return version.originalPrice;
+      const minVersion = product.versions.find((v) => v.price === minPrice);
+      if (minVersion?.originalPrice) {
+        return minVersion.originalPrice;
       }
     }
 
-    // Nếu giá thấp nhất từ optionPrice
-    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-      for (const key in product.optionPrices) {
-        if (product.optionPrices[key].price === minPrice) {
-          return product.optionPrices[key].originalPrice;
+    // If min price comes from an option, get the corresponding original price
+    if (product.optionPrices) {
+      for (const option of Object.values(product.optionPrices)) {
+        if (option.price === minPrice && option.originalPrice) {
+          return option.originalPrice;
         }
       }
     }
 
-    // Sử dụng giá gốc cố định nếu có
-    return product.originalPrice;
+    return undefined;
   };
 
   // Xử lý category từ sản phẩm
@@ -138,8 +139,12 @@ const ProductGrid = ({
         if (categoryObj.name) {
           if (typeof categoryObj.name === 'string') {
             return categoryObj.name;
-          } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
-            return String(categoryObj.name.id);
+          } else if (typeof categoryObj.name === 'object' && categoryObj.name !== null) {
+            // Sử dụng as any để tránh lỗi TypeScript
+            const nameObj = categoryObj.name as any;
+            if (nameObj.id) {
+              return String(nameObj.id);
+            }
           }
         }
         
@@ -147,59 +152,64 @@ const ProductGrid = ({
         if (categoryObj.id) {
           if (typeof categoryObj.id === 'string') {
             return categoryObj.id;
-          } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
-            return String(categoryObj.id.id);
+          } else if (typeof categoryObj.id === 'object' && categoryObj.id !== null) {
+            // Sử dụng as any để tránh lỗi TypeScript
+            const idObj = categoryObj.id as any;
+            if (idObj.id) {
+              return String(idObj.id);
+            }
           }
         }
-        
-        return '';
       }
     }
     
     // Nếu có categories array
-    if (product.categories && product.categories.length > 0) {
+    if (product.categories && Array.isArray(product.categories) && product.categories.length > 0) {
       const firstCategory = product.categories[0];
-      
-      // Nếu category là string
       if (typeof firstCategory === 'string') {
         return firstCategory;
       }
       
-      // Nếu category là object
       if (typeof firstCategory === 'object' && firstCategory !== null) {
-        const categoryObj = firstCategory as any;
-        
         // Thử lấy tên từ object
-        if (categoryObj.name) {
-          if (typeof categoryObj.name === 'string') {
-            return categoryObj.name;
-          } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
-            return String(categoryObj.name.id);
+        if (firstCategory.name) {
+          if (typeof firstCategory.name === 'string') {
+            return firstCategory.name;
+          } else if (typeof firstCategory.name === 'object' && firstCategory.name !== null) {
+            // Sử dụng as any để tránh lỗi TypeScript
+            const nameObj = firstCategory.name as any;
+            if (nameObj.id) {
+              return String(nameObj.id);
+            }
           }
         }
         
         // Thử lấy id từ object
-        if (categoryObj.id) {
-          if (typeof categoryObj.id === 'string') {
-            return categoryObj.id;
-          } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
-            return String(categoryObj.id.id);
+        if (firstCategory.id) {
+          if (typeof firstCategory.id === 'string') {
+            return firstCategory.id;
+          } else if (typeof firstCategory.id === 'object' && firstCategory.id !== null) {
+            // Sử dụng as any để tránh lỗi TypeScript
+            const idObj = firstCategory.id as any;
+            if (idObj.id) {
+              return String(idObj.id);
+            }
           }
         }
-        
-        return '';
       }
     }
     
-    return '';
+    // Nếu ko có category hoặc categories
+    return product.type || 'AI-tools'; // Mặc định về AI-tools hoặc sử dụng type
   };
 
+  // Render grid
   return (
     <div className="w-full">
       {(title || subtitle) && (
         <div className="mb-responsive">
-          {title && <h2 className="heading-2 text-gray-800">{title}</h2>}
-          {subtitle && <p className="mt-2 text-responsive-base text-gray-600">{subtitle}</p>}
+           {title && <h2 className="heading-2 text-gray-800">{title}</h2>}
+           {subtitle && <p className="mt-2 text-responsive-base text-gray-600">{subtitle}</p>}
         </div>
       )}
 
@@ -217,7 +227,7 @@ const ProductGrid = ({
             price: Number(minPrice) || 0,
             originalPrice: originalPrice ? Number(originalPrice) : undefined,
             image: String(product.image || ''),
-            category: extractCategory(product),
+            category: extractCategory(product), // Đảm bảo category luôn là string
             rating: product.rating ? Number(product.rating) : undefined,
             reviewCount: product.reviewCount ? Number(product.reviewCount) : undefined,
             totalSold: product.totalSold ? Number(product.totalSold) : undefined,
@@ -229,7 +239,7 @@ const ProductGrid = ({
           };
 
           console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
-
+          
           return (
             <div key={safeProps.key} className="h-full aspect-[1/1] flex">
               <ProductCard
@@ -255,6 +265,4 @@ const ProductGrid = ({
       </div>
     </div>
   );
-};
-
-export default ProductGrid;
+}
