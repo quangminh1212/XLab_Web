@@ -54,7 +54,7 @@ export function getTranslation(key: string, language: LanguageKeys = defaultLang
     if (key === 'auth.signIn') return translations[safeLanguage]['auth.signIn'] || 'Sign In';
     if (key === 'auth.signOut') return translations[safeLanguage]['auth.signOut'] || 'Sign Out';
     // @ts-ignore: May not exist in all translation files
-    if (key === 'orders.myOrders') return translations[safeLanguage]['orders.myOrders'] || 'My Orders';
+    if (key === 'account.myOrders') return translations[safeLanguage]['account.myOrders'] || 'My Orders';
 
     // Handle nested keys approach (less reliable)
     const keys = key.split('.');

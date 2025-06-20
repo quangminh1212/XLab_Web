@@ -180,13 +180,28 @@ function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">
-            {language === 'vie' 
-              ? 'Sản phẩm mới nhất' 
-              : language === 'spa'
-                ? 'Últimos productos'
-                : 'Latest Products'}
-          </h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">
+              {language === 'vie' 
+                ? 'Sản phẩm mới nhất' 
+                : language === 'spa'
+                  ? 'Últimos productos'
+                  : 'Latest Products'}
+            </h2>
+            <Link
+              href="/admin/products"
+              className="text-teal-600 hover:text-teal-800 text-sm font-medium flex items-center"
+            >
+              {language === 'vie' 
+                ? 'Xem tất cả' 
+                : language === 'spa'
+                  ? 'Ver todos'
+                  : 'View all'} 
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+              </svg>
+            </Link>
+          </div>
           {isLoading ? (
             <div className="flex justify-center items-center h-32">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
@@ -195,33 +210,35 @@ function AdminDashboard() {
             <ul className="divide-y divide-gray-200">
               {products.slice(0, 5).map((product) => (
                 <li key={product.id} className="py-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        {formatCurrency(product.versions[0]?.price || 0)}
-                      </p>
+                  <Link href={`/admin/products/${product.id}`}>
+                    <div className="flex items-center justify-between hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer">
+                      <div>
+                        <h3 className="font-medium">{product.name}</h3>
+                        <p className="text-sm text-gray-500">
+                          {formatCurrency(product.versions[0]?.price || 0)}
+                        </p>
+                      </div>
+                      <div>
+                        {product.isPublished ? (
+                          <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                            {language === 'vie' 
+                              ? 'Công khai' 
+                              : language === 'spa'
+                                ? 'Público'
+                                : 'Public'}
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
+                            {language === 'vie' 
+                              ? 'Nháp' 
+                              : language === 'spa'
+                                ? 'Borrador'
+                                : 'Draft'}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      {product.isPublished ? (
-                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                          {language === 'vie' 
-                            ? 'Công khai' 
-                            : language === 'spa'
-                              ? 'Público'
-                              : 'Public'}
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
-                          {language === 'vie' 
-                            ? 'Nháp' 
-                            : language === 'spa'
-                              ? 'Borrador'
-                              : 'Draft'}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                  </Link>
                 </li>
               ))}
             </ul>
