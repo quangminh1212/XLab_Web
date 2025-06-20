@@ -416,8 +416,8 @@ function HomePage() {
                 </section>
 
                 {/* New Products Section */}
-                <section>
-                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <section className="mt-12 pt-6 border-t border-gray-100">
+                  <div className="flex items-center justify-between mb-6 sm:mb-8">
                     <h2 className="heading-3 text-gray-800">{t('home.newProducts')}</h2>
                     <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
                       {t('home.viewAll')}
