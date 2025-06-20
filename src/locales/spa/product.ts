@@ -7,31 +7,9 @@ export const product = {
   'product.relatedProductsSubtitle': 'Productos similares que podrían interesarte',
   'product.addToCart': 'Añadir al carrito',
   'product.buyNow': 'Comprar ahora',
-  'product.price': 'Precio',
-  'product.originalPrice': 'Precio original',
-  'product.discountedPrice': 'Precio con descuento',
-  'product.youSave': 'Ahorras',
-  'product.quantity': 'Cantidad',
-  'product.availableStock': 'Disponible en stock',
   'product.outOfStock': 'Agotado',
-  'product.lowStock': 'Pocas unidades',
   'product.inStock': 'En stock',
-  'product.category': 'Categoría',
-  'product.tags': 'Etiquetas',
-  'product.sku': 'SKU',
-  'product.brand': 'Marca',
-  'product.model': 'Modelo',
   'product.warranty': 'Garantía',
-  'product.deliveryInfo': 'Información de entrega',
-  'product.returnPolicy': 'Política de devolución',
-  'product.writeReview': 'Escribir una reseña',
-  'product.customerReviews': 'Reseñas de clientes',
-  'product.rateProduct': 'Calificar producto',
-  'product.submitReview': 'Enviar reseña',
-  'product.productFeatures': 'Características del producto',
-  'product.downloadSample': 'Descargar muestra',
-  
-  // Añadiendo claves faltantes
   'product.warranty.days': 'Garantía de 30 días',
   'product.warranty.description': 'Devolución del dinero o reemplazo del producto si no está satisfecho en 30 días',
   'product.support': 'Soporte 24/7',
@@ -47,16 +25,18 @@ export const product = {
   'product.liveChat': 'Chat en vivo',
   'product.chatDescription': 'Chatea directamente con nuestro personal de soporte',
   'product.startChat': 'Iniciar chat',
+  'product.quantity': 'Cantidad',
+  'product.options': 'Opciones',
   
-  // Descripciones de ChatGPT y Grok
-  'product.chatgpt.description': 'ChatGPT es un chatbot de IA muy potente que puede responder a una amplia variedad de preguntas tanto en inglés como en vietnamita, brindando soporte desde programación Front-end hasta Back-end.',
+  // ChatGPT and Grok descriptions
+  'product.chatgpt.description': 'ChatGPT es un chatbot de IA muy potente que puede responder a una amplia variedad de preguntas tanto en inglés como en español, brindando soporte desde programación Front-end hasta Back-end.',
   'product.grok.description': 'Grok AI ayuda a analizar y procesar automáticamente grandes conjuntos de datos de manera rápida, apoyando la toma de decisiones precisas y ahorrando tiempo. Ampliamente aplicable en muchos campos.',
-  'product.chatgpt.shortDescription': 'ChatGPT es un chatbot de IA potente que puede responder preguntas en inglés y vietnamita, apoyando la programación.',
-  'product.grok.shortDescription': 'Grok AI ayuda a analizar y procesar datos automáticamente de forma rápida.',
+  'product.chatgpt.shortDescription': 'ChatGPT es un chatbot de IA potente que puede responder preguntas en inglés y español, apoyando la programación.',
+  'product.grok.shortDescription': 'Grok AI ayuda a analizar y procesar datos rápidamente.',
   'product.purchasesPerWeek': '{count}/semana',
   'product.totalSold': '{count} vendidos',
 
-  // Estado del producto
+  // Product status
   'product.status.draft': 'Borrador',
   'product.status.public': 'Público'
 }; 

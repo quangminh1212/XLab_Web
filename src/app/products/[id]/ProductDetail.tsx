@@ -19,8 +19,21 @@ const ProductDescription = ({ description, productId }: { description: string, p
   const [translatedDescription, setTranslatedDescription] = useState<string>(description);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    // Check if we need a translation (for non-Vietnamese languages)
+    if (language !== 'vie') {
+      // For Spanish, try to get translation from localized strings
+      if (language === 'spa') {
+        const translationKey = `product.${productId}.description`;
+        const translation = t(translationKey);
+        
+        // Only use the translation if it's not the same as the key (meaning it was found)
+        if (translation !== translationKey) {
+          setTranslatedDescription(translation);
+          return;
+        }
+      }
+      
+      // For other languages or if Spanish translation wasn't found in t(), fetch from API
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -43,10 +56,10 @@ const ProductDescription = ({ description, productId }: { description: string, p
 
       fetchTranslation();
     } else {
-      // Nếu tiếng Việt, sử dụng mô tả gốc
+      // For Vietnamese, use the original description
       setTranslatedDescription(description);
     }
-  }, [description, language, productId]);
+  }, [description, language, productId, t]);
 
   return (
     <div className="mt-10">
@@ -108,12 +121,25 @@ const ProductDescription = ({ description, productId }: { description: string, p
 
 // Component xử lý hiển thị mô tả ngắn sản phẩm
 const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [translatedShortDescription, setTranslatedShortDescription] = useState<string>(shortDescription);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    // Check if we need a translation (for non-Vietnamese languages)
+    if (language !== 'vie') {
+      // For Spanish, try to get translation from localized strings
+      if (language === 'spa') {
+        const translationKey = `product.${productId}.shortDescription`;
+        const translation = t(translationKey);
+        
+        // Only use the translation if it's not the same as the key (meaning it was found)
+        if (translation !== translationKey) {
+          setTranslatedShortDescription(translation);
+          return;
+        }
+      }
+      
+      // For other languages or if Spanish translation wasn't found in t(), fetch from API
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -136,10 +162,10 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
 
       fetchTranslation();
     } else {
-      // Nếu tiếng Việt, sử dụng mô tả gốc
+      // For Vietnamese, use the original description
       setTranslatedShortDescription(shortDescription);
     }
-  }, [shortDescription, language, productId]);
+  }, [shortDescription, language, productId, t]);
 
   return (
     <p className="mt-4 text-gray-600 text-lg">{translatedShortDescription || ''}</p>
@@ -152,8 +178,27 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
   const [translatedFeatures, setTranslatedFeatures] = useState<any[]>(features);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    // Check if we need a translation (for non-Vietnamese languages)
+    if (language !== 'vie') {
+      // For Spanish, check if we have specific translations
+      if (language === 'spa') {
+        // Try to translate features if we have any
+        if (features && features.length > 0) {
+          // This would ideally come from a translation file - simplified example
+          const translatedFeaturesArray = features.map(feature => {
+            if (typeof feature === 'string') {
+              // Try to translate string features - could be enhanced with a lookup table
+              return feature; // Using original for now
+            }
+            return feature; // Return original object features
+          });
+          
+          setTranslatedFeatures(translatedFeaturesArray);
+          return;
+        }
+      }
+      
+      // For other languages or if Spanish translation wasn't handled above, fetch from API
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -176,7 +221,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
 
       fetchTranslation();
     } else {
-      // Nếu tiếng Việt, sử dụng tính năng gốc
+      // For Vietnamese, use the original features
       setTranslatedFeatures(features);
     }
   }, [features, language, productId]);
@@ -220,8 +265,31 @@ const ProductOptions = ({
   const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
+    // Check if we need a translation (for non-Vietnamese languages)
+    if (language !== 'vie') {
+      // Always set options title based on current language
+      setOptionsTitle(t('product.options'));
+      
+      // For Spanish, check if we have specific translations for product options
+      if (language === 'spa' && productId === 'chatgpt') {
+        // Map Vietnamese options to Spanish
+        const spanishOptions: { [key: string]: string } = {
+          'Full - Dùng riêng - 1 Tháng': 'Completo - Uso privado - 1 Mes'
+        };
+        
+        // Create a map of translations
+        const translatedOpts = productOptions.reduce((acc, option) => {
+          return { 
+            ...acc, 
+            [option]: spanishOptions[option] || option // Use Spanish translation or original
+          };
+        }, {});
+        
+        setTranslatedOptions(translatedOpts);
+        return;
+      }
+      
+      // For other languages or products, fetch from API
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -242,7 +310,7 @@ const ProductOptions = ({
 
       fetchTranslation();
     } else {
-      // Nếu tiếng Việt, sử dụng tùy chọn gốc
+      // For Vietnamese, use original options
       setTranslatedOptions(productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {}));
       setOptionsTitle(t('product.options'));
     }

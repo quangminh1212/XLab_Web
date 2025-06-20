@@ -42,6 +42,7 @@ export const common = {
   'common.yes': 'Có',
   'common.no': 'Không',
   'common.softwareAndServices': 'Phần mềm và Dịch vụ',
+  'language.select': 'Ngôn ngữ',
   
   // Footer categories
   'footer.products': 'Sản phẩm',

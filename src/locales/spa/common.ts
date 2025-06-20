@@ -42,6 +42,7 @@ export const common = {
   'common.yes': 'Sí',
   'common.no': 'No',
   'common.softwareAndServices': 'Software y Servicios',
+  'language.select': 'Idioma',
   
   // Footer categories
   'footer.products': 'Productos',
