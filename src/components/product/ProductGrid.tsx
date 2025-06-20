@@ -65,7 +65,20 @@ export default function ProductGrid({
 
   // Get grid columns class based on columns prop
   const getColumnsClass = () => {
-    return `w-full`;
+    switch (columns) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-1 sm:grid-cols-2';
+      case 3:
+        return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
+      case 4:
+        return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+      case 5:
+        return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+      default:
+        return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
+    }
   };
 
   // Calculate minimum price for products with versions
@@ -213,7 +226,7 @@ export default function ProductGrid({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-6 auto-rows-fr`}>
+      <div className={`grid ${getColumnsClass()} gap-6`}>
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
@@ -241,7 +254,7 @@ export default function ProductGrid({
           console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
           
           return (
-            <div key={safeProps.key} className="h-full aspect-[1/1] flex">
+            <div key={safeProps.key} className="h-full flex">
               <ProductCard
                 id={safeProps.id}
                 name={safeProps.name}
