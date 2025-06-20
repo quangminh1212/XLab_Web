@@ -2,6 +2,7 @@ export const home = {
   'home.title': 'Bienvenido a nuestra plataforma',
   'home.subtitle': 'Descubre nuestros productos y servicios',
   'home.featuredProducts': 'Productos destacados',
+  'home.newProducts': 'Productos nuevos',
   'home.newArrivals': 'Nuevos lanzamientos',
   'home.popularCategories': 'Categorías populares',
   'home.testimonials': 'Testimonios',
