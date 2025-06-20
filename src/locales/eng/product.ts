@@ -1,4 +1,5 @@
 export const product = {
+  // General product UI elements
   'product.details': 'Product Details',
   'product.description': 'Description',
   'product.specifications': 'Specifications',
@@ -25,16 +26,33 @@ export const product = {
   'product.liveChat': 'Live Chat',
   'product.chatDescription': 'Chat directly with our support staff',
   'product.startChat': 'Start chat',
-  
-  // ChatGPT and Grok descriptions
-  'product.chatgpt.description': 'ChatGPT is a powerful AI chatbot that can answer a wide range of questions in both English and Vietnamese, providing support from Front-end to Back-end programming.',
-  'product.grok.description': 'Grok AI helps automatically analyze and process large datasets quickly, supporting accurate decision-making and saving time. Widely applicable across many fields.',
-  'product.chatgpt.shortDescription': 'ChatGPT is a powerful AI chatbot that can answer questions in both English and Vietnamese, supporting programming from Front-end to Back-end.',
-  'product.grok.shortDescription': 'Grok AI helps automatically analyze and process data quickly.',
   'product.purchasesPerWeek': '{count}/week',
   'product.totalSold': '{count} sold',
 
   // Product status
   'product.status.draft': 'Draft',
-  'product.status.public': 'Public'
+  'product.status.public': 'Public',
+  
+  // Product specific descriptions
+  products: {
+    // ChatGPT product
+    chatgpt: {
+      'description': 'ChatGPT is an extremely powerful chatbot in today\'s world. It can answer a wide variety of questions in both English and Vietnamese. It can provide support for programming from Front-end to Back-end. Additionally, the ChatGPT account has the ability to answer many different types of questions, including those related to knowledge, culture, society, and other fields. ChatGPT is a language model trained with transformer technology and developed by OpenAI. It has the ability to learn from large text datasets and automatically generate relevant answers to the questions asked. The ChatGPT account can be used in chatbot applications, automated conversations, and other advisory systems. It also has the ability to automate tasks such as text translation, form auto-completion, and other language-related tasks.',
+      'shortDescription': 'ChatGPT is an extremely powerful chatbot in today\'s world. It can answer a wide variety of questions in both English and Vietnamese. It can provide support for programming from Front-end to Back-end.'
+    },
+    
+    // Grok product
+    grok: {
+      'description': 'Grok AI helps automatically analyze and process large datasets quickly, supporting accurate decision-making and saving time. Widely applicable across many fields.',
+      'shortDescription': 'Grok AI helps automatically analyze and process data quickly.'
+    }
+  }
 }; 
+
+// Legacy format for backward compatibility
+export const legacyProductTranslations = {
+  'product.chatgpt.description': product.products.chatgpt.description,
+  'product.chatgpt.shortDescription': product.products.chatgpt.shortDescription,
+  'product.grok.description': product.products.grok.description,
+  'product.grok.shortDescription': product.products.grok.shortDescription
+};

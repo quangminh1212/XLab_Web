@@ -1,4 +1,5 @@
 export const product = {
+  // Common product UI elements
   'product.details': 'Detalles del producto',
   'product.description': 'Descripción',
   'product.specifications': 'Especificaciones',
@@ -27,40 +28,33 @@ export const product = {
   'product.startChat': 'Iniciar chat',
   'product.quantity': 'Cantidad',
   'product.options': 'Opciones',
-  
-  // ChatGPT and Grok descriptions
-  'product.chatgpt.description': 'ChatGPT es un chatbot de IA extremadamente potente que puede responder una gran cantidad de preguntas tanto en inglés como en vietnamita, y brinda soporte para programación desde Front-end hasta Back-end.',
-  'product.grok.description': 'Grok AI ayuda a analizar y procesar automáticamente grandes conjuntos de datos de manera rápida, apoyando la toma de decisiones precisas y ahorrando tiempo. Ampliamente aplicable en muchos campos.',
-  'product.chatgpt.shortDescription': 'ChatGPT es un chatbot de IA extremadamente potente que puede responder una gran cantidad de preguntas tanto en inglés como en vietnamita, y brinda soporte para programación desde Front-end hasta Back-end.',
-  'product.grok.shortDescription': 'Grok AI ayuda a analizar y procesar datos rápidamente.',
   'product.purchasesPerWeek': '{count}/semana',
   'product.totalSold': '{count} vendidos',
-
+  
   // Product status
   'product.status.draft': 'Borrador',
   'product.status.public': 'Público',
   
-  // Products page
-  'products.title': 'Productos',
-  'products.subtitle': 'Explora nuestra lista de productos',
-  'products.all': 'Todos los Productos',
-  'products.software': 'Software',
-  'products.service': 'Servicios',
-  'products.showing': 'Mostrando',
-  'products.sortBy': 'Ordenar por:',
-  'products.sortNewest': 'Más recientes',
-  'products.sortPriceAsc': 'Precio: De menor a mayor',
-  'products.sortPriceDesc': 'Precio: De mayor a menor',
-  'products.sortPopular': 'Más populares',
-  'products.sortRating': 'Mejor valorados',
-  'products.loadError': 'No se pudieron cargar los productos. Por favor, inténtalo de nuevo más tarde.',
-  'products.invalidData': 'Datos de producto no válidos.',
-  'products.error': 'Ocurrió un error al cargar los datos.',
-  'products.errorTitle': 'No se pudieron cargar los productos',
-  'products.tryAgain': 'Intentar de nuevo',
-  'products.loading': 'Cargando productos...',
-  'products.pageTitle': 'Productos | XLab',
-  'products.noProducts': 'No se encontraron productos coincidentes.',
-  'products.search': 'Buscar productos',
-  'products.purchasesPerWeek': '{count}/semana'
+  // Product specific descriptions
+  products: {
+    // ChatGPT product
+    chatgpt: {
+      'description': 'ChatGPT es un chatbot extremadamente potente en la actualidad. Puede responder a una gran variedad de preguntas tanto en inglés como en vietnamita. Puede proporcionar soporte para programación desde Front-end hasta Back-end. Además, la cuenta ChatGPT tiene la capacidad de responder a muchos tipos diferentes de preguntas, incluyendo aquellas relacionadas con conocimientos, cultura, sociedad y otros campos. ChatGPT es un modelo de lenguaje entrenado con tecnología transformer y desarrollado por OpenAI. Tiene la capacidad de aprender de grandes conjuntos de datos textuales y generar automáticamente respuestas relevantes a las preguntas planteadas. La cuenta ChatGPT se puede utilizar en aplicaciones de chatbot, conversaciones automatizadas y otros sistemas de asesoramiento. También tiene capacidad para automatizar tareas como traducción de texto, autocompletado de formularios y otras tareas relacionadas con el lenguaje.',
+      'shortDescription': 'ChatGPT es un chatbot extremadamente potente en la actualidad. Puede responder a una gran variedad de preguntas tanto en inglés como en vietnamita. Puede proporcionar soporte para programación desde Front-end hasta Back-end.'
+    },
+    
+    // Grok product
+    grok: {
+      'description': 'Grok AI ayuda a analizar y procesar automáticamente grandes conjuntos de datos de manera rápida, apoyando la toma de decisiones precisas y ahorrando tiempo. Ampliamente aplicable en muchos campos.',
+      'shortDescription': 'Grok AI ayuda a analizar y procesar datos rápidamente.'
+    }
+  }
 }; 
+
+// Legacy format for backward compatibility
+export const legacyProductTranslations = {
+  'product.chatgpt.description': product.products.chatgpt.description,
+  'product.chatgpt.shortDescription': product.products.chatgpt.shortDescription,
+  'product.grok.description': product.products.grok.description,
+  'product.grok.shortDescription': product.products.grok.shortDescription
+};
