@@ -395,7 +395,7 @@ function HomePage() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {featuredProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.5]">
+                      <div key={product.id} className="aspect-[1/1.7]">
                         <ProductCard 
                           id={product.id}
                           name={product.name}
@@ -425,7 +425,7 @@ function HomePage() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {newProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.5]">
+                      <div key={product.id} className="aspect-[1/1.7]">
                         <ProductCard 
                           id={product.id}
                           name={product.name}
