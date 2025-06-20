@@ -90,6 +90,8 @@ export const account = {
   'account.manageCoupons': 'Manage Coupons',
   'account.manageLicenses': 'Manage Licenses',
   'account.account': 'Account',
+  'account.myOrders': 'My Orders',
+  'account.administration': 'Administration',
   'account.adminPanel': 'Administrator',
   'account.deposit': 'Deposit',
   'account.usedVouchers': 'Used Vouchers',
