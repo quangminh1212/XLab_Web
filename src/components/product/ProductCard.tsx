@@ -134,7 +134,8 @@ export default function ProductCard({
   const cleanImageUrl = getValidImageUrl(image);
 
   // Sử dụng mô tả đã được dịch
-  const shortDescription = translatedDescription || '';
+  // Giới hạn độ dài của mô tả để đảm bảo hiển thị đúng
+  const shortDescription = (translatedDescription || '').substring(0, 100) + (translatedDescription && translatedDescription.length > 100 ? '...' : '');
 
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage =
