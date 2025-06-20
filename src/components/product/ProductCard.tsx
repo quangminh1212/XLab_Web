@@ -496,7 +496,7 @@ export default function ProductCard({
         <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-3 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-xs text-gray-600 line-clamp-3 mb-5 leading-relaxed">
+        <p className="text-xs text-gray-600 line-clamp-2 mb-5 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between mt-auto">
