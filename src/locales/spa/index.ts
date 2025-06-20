@@ -13,7 +13,6 @@ import { notifications } from './notifications';
 import { orders } from './orders';
 import { payment } from './payment';
 import { placeholder } from './placeholder';
-import { products } from './products';
 import { services } from './services';
 import { support } from './support';
 import { system } from './system';
@@ -39,7 +38,6 @@ export const spa = {
   ...orders,
   ...payment,
   ...placeholder,
-  ...products,
   ...services,
   ...support,
   ...system,

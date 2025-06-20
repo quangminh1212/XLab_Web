@@ -29,14 +29,38 @@ export const product = {
   'product.options': 'Opciones',
   
   // ChatGPT and Grok descriptions
-  'product.chatgpt.description': 'ChatGPT es un chatbot de IA muy potente que puede responder a una amplia variedad de preguntas tanto en inglés como en español, brindando soporte desde programación Front-end hasta Back-end.',
+  'product.chatgpt.description': 'ChatGPT es un chatbot de IA extremadamente potente que puede responder una gran cantidad de preguntas tanto en inglés como en vietnamita, y brinda soporte para programación desde Front-end hasta Back-end.',
   'product.grok.description': 'Grok AI ayuda a analizar y procesar automáticamente grandes conjuntos de datos de manera rápida, apoyando la toma de decisiones precisas y ahorrando tiempo. Ampliamente aplicable en muchos campos.',
-  'product.chatgpt.shortDescription': 'ChatGPT es un chatbot de IA potente que puede responder preguntas en inglés y español, apoyando la programación.',
+  'product.chatgpt.shortDescription': 'ChatGPT es un chatbot de IA extremadamente potente que puede responder una gran cantidad de preguntas tanto en inglés como en vietnamita, y brinda soporte para programación desde Front-end hasta Back-end.',
   'product.grok.shortDescription': 'Grok AI ayuda a analizar y procesar datos rápidamente.',
   'product.purchasesPerWeek': '{count}/semana',
   'product.totalSold': '{count} vendidos',
 
   // Product status
   'product.status.draft': 'Borrador',
-  'product.status.public': 'Público'
+  'product.status.public': 'Público',
+  
+  // Products page
+  'products.title': 'Productos',
+  'products.subtitle': 'Explora nuestra lista de productos',
+  'products.all': 'Todos los Productos',
+  'products.software': 'Software',
+  'products.service': 'Servicios',
+  'products.showing': 'Mostrando',
+  'products.sortBy': 'Ordenar por:',
+  'products.sortNewest': 'Más recientes',
+  'products.sortPriceAsc': 'Precio: De menor a mayor',
+  'products.sortPriceDesc': 'Precio: De mayor a menor',
+  'products.sortPopular': 'Más populares',
+  'products.sortRating': 'Mejor valorados',
+  'products.loadError': 'No se pudieron cargar los productos. Por favor, inténtalo de nuevo más tarde.',
+  'products.invalidData': 'Datos de producto no válidos.',
+  'products.error': 'Ocurrió un error al cargar los datos.',
+  'products.errorTitle': 'No se pudieron cargar los productos',
+  'products.tryAgain': 'Intentar de nuevo',
+  'products.loading': 'Cargando productos...',
+  'products.pageTitle': 'Productos | XLab',
+  'products.noProducts': 'No se encontraron productos coincidentes.',
+  'products.search': 'Buscar productos',
+  'products.purchasesPerWeek': '{count}/semana'
 }; 
