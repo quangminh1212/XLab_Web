@@ -4,6 +4,7 @@ export const product = {
   'product.specifications': 'Specifications',
   'product.reviews': 'Reviews',
   'product.relatedProducts': 'Related Products',
+  'product.relatedProductsSubtitle': 'Similar products you might be interested in',
   'product.addToCart': 'Add to Cart',
   'product.buyNow': 'Buy Now',
   'product.outOfStock': 'Out of Stock',

@@ -4,6 +4,7 @@ export const product = {
   'product.specifications': 'Thông số kỹ thuật',
   'product.reviews': 'Đánh giá',
   'product.relatedProducts': 'Sản phẩm liên quan',
+  'product.relatedProductsSubtitle': 'Các sản phẩm tương tự mà bạn có thể quan tâm',
   'product.addToCart': 'Thêm vào giỏ hàng',
   'product.buyNow': 'Mua ngay',
   'product.outOfStock': 'Hết hàng',

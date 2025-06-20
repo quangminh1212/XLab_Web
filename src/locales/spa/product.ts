@@ -4,6 +4,7 @@ export const product = {
   'product.specifications': 'Especificaciones',
   'product.reviews': 'Reseñas',
   'product.relatedProducts': 'Productos relacionados',
+  'product.relatedProductsSubtitle': 'Productos similares que podrían interesarte',
   'product.addToCart': 'Añadir al carrito',
   'product.buyNow': 'Comprar ahora',
   'product.price': 'Precio',
