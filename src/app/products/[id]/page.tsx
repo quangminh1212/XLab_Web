@@ -1,7 +1,4 @@
 import { notFound } from 'next/navigation';
-import fs from 'fs';
-import path from 'path';
-import { Product } from '@/models/ProductModel';
 import { default as dynamicImport } from 'next/dynamic';
 
 // Loading component đơn giản để hiển thị ngay lập tức
@@ -38,51 +35,38 @@ const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/f
 export const dynamic = 'auto';
 export const dynamicParams = true;
 
-// Đọc dữ liệu sản phẩm từ file JSON
-function getProducts(): Product[] {
-  try {
-    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    if (!fs.existsSync(dataFilePath)) {
-      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
-      return [];
-    }
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    console.error('Error reading products data:', error);
-    return [];
-  }
-}
-
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProductPage({ params }: { params: { id: string } }) {
   try {
-    // Await params trước khi sử dụng thuộc tính của nó
-    const { id: productId } = await params;
+    // Lấy ID sản phẩm từ params
+    const productId = params.id;
 
     console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
 
-    // Lấy dữ liệu sản phẩm từ file JSON
-    const products = getProducts();
+    // Mặc định sử dụng tiếng Việt
+    const language = 'vie';
+    
+    console.log(`Sử dụng ngôn ngữ: ${language} để tải sản phẩm`);
 
-    // Tìm sản phẩm theo slug trước (ưu tiên tìm theo slug để cải thiện SEO)
-    let product = products.find((p) => p.slug === productId);
-
-    // Nếu không tìm thấy bằng slug, thử tìm bằng id
-    if (!product) {
-      product = products.find((p) => p.id === productId);
-    }
-
-    // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
-    if (!product) {
+    // Tạo URL với ngôn ngữ được chọn
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/products/language/${productId}?lang=${language}`;
+    
+    // Lấy dữ liệu sản phẩm từ API
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
       console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
       notFound();
     }
+    
+    const productData = await response.json();
+    const product = productData.data;
 
-    // Xác định categoryId cho sản phẩm liên quan
-    const categoryId = product.categories && product.categories.length > 0 
-      ? product.categories[0].id 
-      : undefined;
+    // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
+    if (!product) {
+      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId} trong response API`);
+      notFound();
+    }
 
     // Ghi log thông tin truy cập
     console.log(

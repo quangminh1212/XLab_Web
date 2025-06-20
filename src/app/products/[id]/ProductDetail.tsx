@@ -321,7 +321,7 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage, availableLanguages } = useLanguage();
   
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
@@ -655,6 +655,28 @@ export default function ProductDetail({ product }: { product: ProductType }) {
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <span className="text-gray-800">{product.name}</span>
+          
+          {/* Language selector */}
+          <div className="ml-auto flex items-center space-x-2">
+            <span className="text-xs text-gray-500">{t('language.select')}:</span>
+            {availableLanguages.map((lang) => (
+              <button
+                key={lang}
+                onClick={() => {
+                  setLanguage(lang);
+                  // Reload page with new language
+                  window.location.reload();
+                }}
+                className={`px-2 py-1 text-xs rounded-md ${
+                  language === lang
+                    ? 'bg-primary-100 text-primary-700 font-semibold'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {lang === 'eng' ? 'EN' : lang === 'vie' ? 'VI' : lang === 'spa' ? 'ES' : lang === 'chi' ? 'CN' : lang}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Product main info */}
