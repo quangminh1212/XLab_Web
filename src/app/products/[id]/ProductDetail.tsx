@@ -488,6 +488,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
       const imageUrl = typeof firstImage === 'string' ? firstImage : firstImage.url;
 
+      // Đặc biệt xử lý trường hợp Grok
+      if (product.id === 'grok' || product.slug === 'grok') {
+        // Sử dụng file ảnh có sẵn trong thư mục grok
+        return '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+      }
+
       // Kiểm tra xem ảnh có tồn tại không
       if (imageUrl && imageUrl.includes('/images/products/')) {
         // Sử dụng đường dẫn ảnh đã được tổ chức theo thư mục sản phẩm
@@ -723,28 +729,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <span className="text-gray-800">{product.name}</span>
-          
-          {/* Language selector */}
-          <div className="ml-auto flex items-center space-x-2">
-            <span className="text-xs text-gray-500">{t('language.select')}:</span>
-            {availableLanguages.map((lang) => (
-              <button
-                key={lang}
-                onClick={() => {
-                  setLanguage(lang);
-                  // Reload page with new language
-                  window.location.reload();
-                }}
-                className={`px-2 py-1 text-xs rounded-md ${
-                  language === lang
-                    ? 'bg-primary-100 text-primary-700 font-semibold'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {lang === 'eng' ? 'EN' : lang === 'vie' ? 'VI' : lang === 'spa' ? 'ES' : lang === 'chi' ? 'CN' : lang}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Product main info */}

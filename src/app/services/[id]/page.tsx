@@ -33,6 +33,31 @@ function getProducts(): any[] {
   }
 }
 
+// Đặc biệt xử lý ảnh cho sản phẩm Grok
+function fixProductImages(product: any): any {
+  if (!product) return product;
+  
+  // Đặc biệt xử lý trường hợp Grok
+  if (product.id === 'grok' || product.slug === 'grok') {
+    // Sử dụng file ảnh có sẵn trong thư mục grok thay vì sử dụng grok-uuid.png
+    if (product.images) {
+      product.images = product.images.map((img: string | { url: string }) => {
+        if (typeof img === 'string' && img.includes('grok-')) {
+          return '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+        }
+        return img;
+      });
+    }
+    
+    // Cập nhật imageUrl nếu cần
+    if (product.imageUrl && product.imageUrl.includes('grok-')) {
+      product.imageUrl = '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+    }
+  }
+  
+  return product;
+}
+
 export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params trước khi sử dụng thuộc tính của nó
   const { id: accountId } = await params;
@@ -67,6 +92,9 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
       );
     }
   }
+
+  // Xử lý đặc biệt cho ảnh sản phẩm (đặc biệt là Grok)
+  selectedProduct = fixProductImages(selectedProduct);
 
   // Thêm dữ liệu mẫu cho các sản phẩm CapCut Pro
   const sampleAccounts = [
