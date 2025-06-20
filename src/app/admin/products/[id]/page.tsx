@@ -7,6 +7,7 @@ import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
 import { v4 as uuidv4 } from 'uuid';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Danh sách các tùy chọn thời hạn
 const durationOptions = [
@@ -27,6 +28,7 @@ interface AdminEditProductPageProps {
 
 function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const router = useRouter();
+  const { t } = useLanguage();
 
   // Unwrap params Promise với React.use() theo chuẩn Next.js mới
   const { id } = React.use(params);
@@ -779,22 +781,16 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{isNew ? 'Tạo sản phẩm' : 'Chỉnh sửa sản phẩm'}</h1>
-        <div className="flex space-x-3">
-          <button
-            type="button"
-            onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
-            className="bg-blue-100 py-2 px-4 rounded-lg text-blue-700 hover:bg-blue-200 transition-colors text-sm"
-          >
-            {showAdvancedOptions ? 'Ẩn tùy chọn nâng cao' : 'Tùy chọn nâng cao'}
-          </button>
-          <button
-            onClick={() => router.push('/admin/products')}
-            className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
-          >
-            ← Quay lại danh sách
-          </button>
-        </div>
+        <h1 className="text-3xl font-bold text-gray-900">{t('admin.products.editProduct')}</h1>
+        <button
+          type="button"
+          className={`${
+            showAdvancedOptions ? 'bg-gray-100 hover:bg-gray-200' : 'bg-teal-500 hover:bg-teal-600 text-white'
+          } px-4 py-2 rounded-lg transition flex items-center`}
+          onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+        >
+          {showAdvancedOptions ? t('admin.products.hideAdvancedOptions') : t('admin.products.advancedOptions')}
+        </button>
       </div>
 
       {error && (
@@ -1504,9 +1500,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                               />
                             </svg>
-                            <p className="font-medium text-lg mb-2">Chưa có tùy chọn nào</p>
+                            <p className="font-medium text-lg mb-2">{t('admin.products.noOptions')}</p>
                             <p className="text-sm text-gray-600">
-                              Sử dụng form bên trên để thêm tùy chọn đầu tiên
+                              {t('admin.products.addFirstOption')}
                             </p>
                           </div>
                         )}
@@ -1517,7 +1513,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
                 {/* Mô tả ngắn */}
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                  <h3 className="text-lg font-medium mb-4 text-gray-900">Mô tả ngắn</h3>
+                  <h3 className="text-lg font-medium mb-4 text-gray-900">{t('admin.products.shortDescription')}</h3>
                   <div onPaste={handlePasteDescriptionImage}>
                     <RichTextEditor
                       value={formData.shortDescription}
@@ -1537,13 +1533,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             {/* Mô tả đầy đủ */}
             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Mô tả đầy đủ</h2>
+                <h2 className="text-xl font-bold">{t('admin.products.fullDescription')}</h2>
                 <button
                   type="button"
                   onClick={() => setIsEditingDescription(!isEditingDescription)}
                   className="text-blue-500 hover:text-blue-700"
                 >
-                  {isEditingDescription ? 'Xong' : 'Chỉnh sửa'}
+                  {isEditingDescription ? t('admin.products.done') : t('admin.products.editFullDescription')}
                 </button>
               </div>
 
@@ -1558,12 +1554,12 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
               {/* Xem trước mô tả đầy đủ */}
               <div className="mt-6">
-                <h3 className="text-lg font-medium mb-4">Xem trước mô tả đầy đủ</h3>
+                <h3 className="text-lg font-medium mb-4">{t('admin.products.previewFullDescription')}</h3>
 
                 <div
                   className="prose max-w-none border p-4 rounded min-h-[200px]"
                   dangerouslySetInnerHTML={{
-                    __html: formData.description || '<p>Chưa có mô tả chi tiết</p>',
+                    __html: formData.description || `<p>${t('admin.products.noDescription')}</p>`,
                   }}
                 />
               </div>
@@ -1572,13 +1568,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             {/* Thông số kỹ thuật */}
             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
+                <h2 className="text-xl font-bold">{t('admin.products.specifications')}</h2>
                 <button
                   type="button"
                   onClick={() => setIsEditingSpecs(!isEditingSpecs)}
                   className="text-blue-500 hover:text-blue-700"
                 >
-                  {isEditingSpecs ? 'Xong' : 'Chỉnh sửa'}
+                  {isEditingSpecs ? t('admin.products.done') : t('admin.products.editSpecs')}
                 </button>
               </div>
 
@@ -1614,20 +1610,20 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                         onClick={handleAddSpecification}
                         className="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600 transition-colors"
                       >
-                        Thêm
+                        {t('admin.products.add')}
                       </button>
                     </div>
                   </div>
 
                   {specifications.length > 0 && (
                     <div className="mt-4">
-                      <h4 className="font-medium mb-2">Thông số đã thêm</h4>
+                      <h4 className="font-medium mb-2">{t('admin.products.addedSpecs')}</h4>
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <table className="w-full border-collapse">
                           <thead>
                             <tr className="border-b border-gray-300">
-                              <th className="py-2 text-left">Tên thông số</th>
-                              <th className="py-2 text-left">Giá trị</th>
+                              <th className="py-2 text-left">{t('admin.products.specName')}</th>
+                              <th className="py-2 text-left">{t('admin.products.specValue')}</th>
                               <th className="py-2 w-20"></th>
                             </tr>
                           </thead>
@@ -1668,12 +1664,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
               ) : (
                 <div className="bg-gray-50 p-4 rounded-lg text-gray-500 text-center">
-                  Chưa có thông số kỹ thuật nào. Nhấn "Chỉnh sửa" để thêm.
+                  {t('admin.products.noSpecs')}
                 </div>
               )}
               <p className="text-sm text-gray-500 mt-4">
-                Thêm các thông số kỹ thuật chi tiết của sản phẩm để giúp người dùng hiểu rõ hơn về
-                sản phẩm (VD: Cấu hình, Yêu cầu hệ thống, Tính năng đặc biệt).
+                {t('admin.products.specsDescription')}
               </p>
             </div>
           </>
@@ -1682,10 +1677,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         <div className="sticky bottom-5 left-0 right-0 bg-white shadow-md rounded-lg p-4 border border-gray-200 flex justify-between items-center z-10">
           <div>
             {isNew ? (
-              <span className="text-sm text-primary-600 font-medium">Tạo sản phẩm mới</span>
+              <span className="text-sm text-primary-600 font-medium">{t('admin.products.createProduct')}</span>
             ) : (
               <span className="text-sm text-primary-600 font-medium">
-                Cập nhật sản phẩm: <span className="font-bold">{formData.name}</span>
+                {t('admin.products.updateProduct')}<span className="font-bold">{formData.name}</span>
               </span>
             )}
           </div>
@@ -1709,7 +1704,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   d="M10 19l-7-7m0 0l7-7m-7 7h18"
                 />
               </svg>
-              Quay lại
+              {t('admin.products.backToList')}
             </button>
 
             <button
@@ -1739,7 +1734,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Đang lưu...
+                  {t('admin.products.saving')}
                 </>
               ) : (
                 <>
@@ -1757,7 +1752,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  {isNew ? 'Tạo sản phẩm' : 'Lưu thay đổi'}
+                  {t('admin.products.saveChanges')}
                 </>
               )}
             </button>
