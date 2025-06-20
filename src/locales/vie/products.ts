@@ -20,5 +20,6 @@ export const products = {
   'products.pageTitle': 'Sản phẩm | XLab',
   'products.noProducts': 'Không tìm thấy sản phẩm phù hợp.',
   'products.search': 'Tìm kiếm sản phẩm',
-  'products.purchasesPerWeek': '/tuần'
+  'products.purchasesPerWeek': '/tuần',
+  'products.shortDescription': 'Mô tả sản phẩm'
 }; 

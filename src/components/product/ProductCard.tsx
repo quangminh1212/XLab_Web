@@ -60,7 +60,10 @@ export default function ProductCard({
   useEffect(() => {
     // Nếu có mã định danh sản phẩm đặc biệt (chatgpt, grok), sử dụng bản dịch từ file
     if (id === 'chatgpt' || id === 'grok') {
-      setTranslatedDescription(t(`product.${id}.description`) || description);
+      const translationKey = `product.products.${id}.shortDescription`;
+      const translation = t(translationKey);
+      console.log(`Looking up translation for ${translationKey}:`, translation);
+      setTranslatedDescription(translation || description);
       setTranslatedName(name); // Giữ nguyên tên
     } 
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh

@@ -1,1 +1,25 @@
- 
+export const products = {
+  'products.title': 'Productos',
+  'products.subtitle': 'Explora nuestra lista de productos',
+  'products.all': 'Todos los Productos',
+  'products.software': 'Software',
+  'products.service': 'Servicios',
+  'products.showing': 'Mostrando',
+  'products.sortBy': 'Ordenar por:',
+  'products.sortNewest': 'Más reciente',
+  'products.sortPriceAsc': 'Precio: De menor a mayor',
+  'products.sortPriceDesc': 'Precio: De mayor a menor',
+  'products.sortPopular': 'Más Popular',
+  'products.sortRating': 'Mejor Valorados',
+  'products.loadError': 'No se pudieron cargar los productos. Por favor, inténtalo de nuevo más tarde.',
+  'products.invalidData': 'Datos del producto no válidos.',
+  'products.error': 'Se produjo un error al cargar los datos.',
+  'products.errorTitle': 'No se pudieron cargar los productos',
+  'products.tryAgain': 'Intentar de nuevo',
+  'products.loading': 'Cargando productos...',
+  'products.pageTitle': 'Productos | XLab',
+  'products.noProducts': 'No se encontraron productos coincidentes.',
+  'products.search': 'Buscar productos',
+  'products.purchasesPerWeek': '{count}/semana',
+  'products.shortDescription': 'Descripción del producto'
+}; 
