@@ -4,20 +4,29 @@ import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
+import { productsData } from '@/locales/productsData';
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
-// Đọc dữ liệu sản phẩm từ file JSON
-function getProducts(): Product[] {
+// Đọc dữ liệu sản phẩm từ locale files
+function getProducts(): any[] {
   try {
-    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    if (!fs.existsSync(dataFilePath)) {
-      return [];
-    }
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-    return JSON.parse(fileContent);
+    // Lấy danh sách sản phẩm từ tất cả các ngôn ngữ và gộp lại
+    // Ưu tiên tiếng Việt làm ngôn ngữ chính
+    const allProducts = [
+      ...productsData.vie,
+      ...productsData.eng,
+      ...productsData.spa
+    ];
+    
+    // Lọc các sản phẩm trùng lặp theo ID
+    const uniqueProducts = allProducts.filter((product, index, self) =>
+      index === self.findIndex(p => p.id === product.id)
+    );
+    
+    return uniqueProducts;
   } catch (error) {
     console.error('Error reading products data:', error);
     return [];
@@ -30,16 +39,16 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
 
   console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
 
-  // Lấy danh sách sản phẩm từ file JSON
-  const productsFromJson = getProducts();
+  // Lấy danh sách sản phẩm từ locale files
+  const productsFromLocale = getProducts();
 
-  // Tìm kiếm trong products.json trước
-  let selectedProduct = productsFromJson.find(
+  // Tìm kiếm trong locale files trước
+  let selectedProduct: any = productsFromLocale.find(
     (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
   );
 
   if (!selectedProduct) {
-    selectedProduct = productsFromJson.find(
+    selectedProduct = productsFromLocale.find(
       (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
     );
   }
@@ -246,7 +255,7 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
     },
   ];
 
-  // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData và products.json
+  // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData và locale files
   if (!selectedProduct) {
     // Tìm theo slug trước
     selectedProduct = sampleAccounts.find((p) => p.slug === accountId);
