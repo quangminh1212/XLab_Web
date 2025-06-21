@@ -229,16 +229,32 @@ Copyright © 2023-2024 XLab. All rights reserved.
 
 ## Internationalization (i18n)
 
-This project supports multiple languages using a custom implementation. The translations are stored in JSON files in the `locales` directory.
+This project supports multiple languages using a custom implementation. The translations are stored in JSON files organized by features in the `locales` directory.
 
 ### Structure
 
 - `locales/`
   - `index.ts` - Exports all translations
   - `en/`
-    - `translations.json` - English translations
+    - `features/` - Feature-specific translations
+      - `admin.json` - Admin related translations
+      - `auth.json` - Authentication translations
+      - `home.json` - Homepage translations
+      - `navigation.json` - Navigation menu translations
+      - `product.json` - Product related translations
+      - `terms.json` - Terms of service translations
+      - `about.json` - About page translations
+      - ... (other features)
   - `vi/`
-    - `translations.json` - Vietnamese translations
+    - `features/` - Feature-specific translations
+      - `admin.json` - Admin related translations
+      - `auth.json` - Authentication translations
+      - `home.json` - Homepage translations
+      - `navigation.json` - Navigation menu translations
+      - `product.json` - Product related translations
+      - `terms.json` - Terms of service translations
+      - `about.json` - About page translations
+      - ... (other features)
 
 ### Usage
 
@@ -265,8 +281,12 @@ const welcomeMessage = t('welcome.message', { name: 'John' });
 
 ### Adding New Translations
 
-1. Add new strings to `locales/vi/translations.json` and `locales/en/translations.json`.
-2. Follow existing naming conventions for keys (e.g., `page.section.element`).
+1. Find the appropriate feature file in `locales/[language]/features/`.
+2. Add new strings to both language versions to keep them in sync.
+3. Follow existing naming conventions for keys.
+4. If creating translations for a new feature:
+   - Create new JSON files in both `en/features/` and `vi/features/` directories
+   - Add imports and configuration in `locales/index.ts`
 
 ### Extracting Hardcoded Texts
 
@@ -276,4 +296,11 @@ Run the translation extraction script to find potential untranslated texts:
 node scripts/extract-texts.js
 ```
 
-This will generate suggestion files in `locales/vi/suggestions.json` and `locales/en/suggestions.json` that you can review and incorporate into the main translation files.
+This will generate suggestion files that you can review and incorporate into the appropriate feature translation files.
+
+### Benefits of Feature-Based Organization
+
+- Better maintainability with smaller files
+- Easier collaboration across team members
+- Clearer organization of translation keys
+- Simplified updates for specific features
