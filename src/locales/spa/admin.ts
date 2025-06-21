@@ -63,6 +63,7 @@ export const admin = {
   'admin.products.updateProduct': 'Actualizar producto: ',
   'admin.products.saving': 'Guardando...',
   'admin.products.saveChanges': 'Guardar Cambios',
+  'admin.products.enterDetailedDescription': 'Ingrese una descripción detallada del producto...',
   
   // Dashboard page
   'admin.dashboard.overview': 'Estadísticas generales',

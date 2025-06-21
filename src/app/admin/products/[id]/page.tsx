@@ -1179,9 +1179,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                         d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
                       />
                     </svg>
-                    Tùy chọn sản phẩm
+                    {t('admin.products.productOptions')}
                     <span className="ml-2 bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">
-                      {productOptions.length} tùy chọn
+                      {productOptions.length} {t('admin.products.options')}
                     </span>
                   </h3>
 
@@ -1191,7 +1191,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                       {/* Header với form thêm tùy chọn */}
                       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-medium text-gray-700">Danh sách tùy chọn</h4>
+                          <h4 className="font-medium text-gray-700">{t('admin.products.optionsList')}</h4>
                           {productOptions.length > 0 && (
                             <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded lg:hidden">
                               {productOptions.length > 1 ? 'Kéo thả để sắp xếp' : ''}
@@ -1215,7 +1215,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                               />
                             </svg>
-                            <span className="font-medium">Thêm:</span>
+                            <span className="font-medium">{t('admin.products.addOption')}</span>
                           </div>
                           <input
                             type="text"
@@ -1236,7 +1236,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                             disabled={!newProductOption.trim()}
                             className="px-3 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            Thêm
+                            {t('admin.products.add')}
                           </button>
                           {productOptions.length > 0 && (
                             <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded hidden lg:inline">
@@ -1262,21 +1262,21 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                   <h5 className="font-semibold text-gray-900">{option}</h5>
                                   {option === defaultProductOption && (
                                     <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full font-medium">
-                                      Mặc định
+                                      {t('admin.products.default')}
                                     </span>
                                   )}
                                   {/* Di chuyển phần giảm giá lên đây */}
                                   {optionPrices[option]?.originalPrice >
                                     (optionPrices[option]?.price || 0) && (
                                     <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium text-xs">
-                                      Giảm{' '}
-                                      {Math.round(
-                                        ((optionPrices[option].originalPrice -
-                                          optionPrices[option].price) /
-                                          optionPrices[option].originalPrice) *
-                                          100,
-                                      )}
-                                      %
+                                      {t('product.discountPercent', {
+                                        percent: Math.round(
+                                          ((optionPrices[option].originalPrice -
+                                            optionPrices[option].price) /
+                                            optionPrices[option].originalPrice) *
+                                            100
+                                        )
+                                      })}
                                     </span>
                                   )}
                                 </div>
@@ -1290,17 +1290,17 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                         ? 'bg-teal-100 text-teal-700 border border-teal-200'
                                         : 'text-gray-500 hover:text-teal-600 hover:bg-teal-50 border border-gray-200'
                                     }`}
-                                    title="Đặt làm mặc định"
+                                    title={t('admin.products.default')}
                                   >
-                                    {option === defaultProductOption ? 'Mặc định' : 'Đặt mặc định'}
+                                    {option === defaultProductOption ? t('admin.products.default') : t('product.setDefault')}
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => handleRemoveProductOption(index)}
                                     className="px-2 py-1 text-red-600 hover:text-red-700 border border-red-200 rounded-lg transition-colors duration-200 hover:bg-red-50 text-xs font-medium"
-                                    title="Xóa tùy chọn"
+                                    title={t('admin.products.removeOption')}
                                   >
-                                    Xóa
+                                    {t('admin.products.removeOption')}
                                   </button>
                                 </div>
                               </div>
@@ -1311,7 +1311,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                 <div className="bg-gray-50 p-2 rounded-lg">
                                   <div className="flex items-center space-x-2">
                                     <label className="font-medium text-sm text-gray-700 w-24">
-                                      {t('admin.products.duration')}:
+                                      {t('product.duration')}:
                                     </label>
                                     <select
                                       value={optionDurations[option] || '1month'}
@@ -1336,7 +1336,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                 <div className="bg-green-50 p-2 rounded-lg">
                                   <div className="flex items-center space-x-2">
                                     <label className="font-medium text-sm text-gray-700 w-24">
-                                      {t('admin.products.sellingPrice')}:
+                                      {t('product.sellingPrice')}:
                                     </label>
                                     <div className="flex items-center">
                                       <input
@@ -1364,7 +1364,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                 <div className="bg-blue-50 p-2 rounded-lg">
                                   <div className="flex items-center space-x-2">
                                     <label className="font-medium text-sm text-gray-700 w-24">
-                                      {t('admin.products.originalPrice')}:
+                                      {t('product.originalPrice')}:
                                     </label>
                                     <div className="flex items-center">
                                       <input
@@ -1392,7 +1392,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                               {/* Preview tóm tắt - Đơn giản hóa */}
                               <div className="mt-2 p-2 bg-gray-100 rounded border-l-2 border-teal-400">
                                 <div className="flex items-center justify-between text-xs">
-                                  <span className="text-gray-600 font-medium">Preview:</span>
+                                  <span className="text-gray-600 font-medium">{t('product.preview')}</span>
                                   <div className="flex items-center space-x-2">
                                     <span className="font-semibold text-gray-800">{option}</span>
                                     <span className="text-gray-400">•</span>
@@ -1447,7 +1447,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     <RichTextEditor
                       value={formData.shortDescription}
                       onChange={handleShortDescRichTextChange}
-                      placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
+                      placeholder={t('product.shortDescription')}
                       className="min-h-[180px]"
                     />
                   </div>
@@ -1476,7 +1476,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 <RichTextEditor
                   value={formData.description}
                   onChange={handleRichTextChange}
-                  placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                  placeholder={t('admin.products.enterDetailedDescription')}
                   className="mb-4"
                 />
               )}

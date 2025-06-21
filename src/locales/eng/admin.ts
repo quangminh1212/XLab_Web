@@ -42,7 +42,7 @@ export const admin = {
   'admin.products.editProduct': 'Edit Product',
   'admin.products.editFullDescription': 'Edit',
   'admin.products.done': 'Done',
-  'admin.products.previewFullDescription': 'Preview full description',
+  'admin.products.previewFullDescription': 'Preview Full Description',
   'admin.products.shortDescription': 'Short Description',
   'admin.products.fullDescription': 'Full Description',
   'admin.products.productOptions': 'Product Options',
@@ -89,6 +89,7 @@ export const admin = {
   'admin.products.updateProduct': 'Update product: ',
   'admin.products.saving': 'Saving...',
   'admin.products.saveChanges': 'Save Changes',
+  'admin.products.enterDetailedDescription': 'Enter detailed product description...',
   
   // Settings page
   'admin.settings.general': 'General',

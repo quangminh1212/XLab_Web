@@ -47,6 +47,7 @@ export const product = {
   'product.removeOption': 'Remove',
   'product.fullUseOption': 'Full - Private use - 1 Month',
   'product.discountPercent': '{percent}% discount',
+  'product.setDefault': 'Set as default',
 
   // Product descriptions for specific products
   'product.products.chatgpt.shortDescription': 'ChatGPT is an extremely powerful chat bot today. It can answer many different questions in both English and Vietnamese. It can support programming from Front-end to Back-end.',

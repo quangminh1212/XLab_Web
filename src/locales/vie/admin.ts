@@ -341,4 +341,5 @@ export const admin = {
   'admin.products.updateProduct': 'Cập nhật sản phẩm: ',
   'admin.products.saving': 'Đang lưu...',
   'admin.products.saveChanges': 'Lưu thay đổi',
+  'admin.products.enterDetailedDescription': 'Nhập mô tả chi tiết về sản phẩm...',
 }; 
