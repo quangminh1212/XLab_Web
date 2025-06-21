@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
-import { useLanguage } from '@/contexts/LanguageContext';
+import useI18n from '@/contexts/I18nContext';
 
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t } = useI18n();
   const currentYear = new Date().getFullYear();
 
   return (

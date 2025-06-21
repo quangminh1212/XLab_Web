@@ -32,11 +32,10 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
 
   // Initialize language from router locale
   useEffect(() => {
-    const routerLocale = router.locale || router.defaultLocale;
-    if (routerLocale) {
-      setLanguageState(routerLocale);
+    if (router && router.locale) {
+      setLanguageState(router.locale);
     }
-  }, [router.locale, router.defaultLocale]);
+  }, [router]);
 
   // Load all translation files for current language
   useEffect(() => {
@@ -57,7 +56,8 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
         await Promise.all(
           filesToLoad.map(async (file) => {
             try {
-              const module = await import(`../../../locales/${language}/${file}.json`);
+              // Fix path to locales folder - use relative to root, not triple parent directory
+              const module = await import(`/locales/${language}/${file}.json`);
               loadedTranslations[file] = module;
             } catch (error) {
               console.error(`Failed to load ${file} translations for ${language}:`, error);
@@ -79,7 +79,7 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
 
   const setLanguage = useCallback((lang: string) => {
     setLanguageState(lang);
-    if (router.locale !== lang) {
+    if (router && router.locale !== lang) {
       router.push(router.pathname, router.asPath, { locale: lang });
     }
   }, [router]);
