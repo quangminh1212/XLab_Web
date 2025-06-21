@@ -32,6 +32,21 @@ export const product = {
   'product.totalSold': 'Đã bán {count}',
   'product.added': 'Đã thêm',
   'product.shortDescription': 'Mô tả sản phẩm',
+  
+  // Product option related texts
+  'product.productOptions': 'Tùy chọn sản phẩm',
+  'product.optionsList': 'Danh sách tùy chọn',
+  'product.noFileSelected': 'Không có tệp nào được chọn',
+  'product.default': 'Mặc định',
+  'product.discount': 'Giảm giá',
+  'product.duration': 'Thời hạn',
+  'product.sellingPrice': 'Giá bán',
+  'product.originalPrice': 'Giá gốc',
+  'product.preview': 'Xem trước:',
+  'product.addOption': 'Thêm:',
+  'product.removeOption': 'Xóa',
+  'product.fullUseOption': 'Full - Dùng riêng - 1 Tháng',
+  'product.discountPercent': 'Giảm {percent}%',
 
   // Product descriptions for specific products
   'product.products.chatgpt.shortDescription': 'ChatGPT là một chat bot cực mạnh hiện nay. Có thể trả lời được rất nhiều các câu hỏi cả tiếng anh và tiếng việt. Có thể hỗ trợ cả lập trình từ Front-end cho tới Back-end.',

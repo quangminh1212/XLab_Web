@@ -32,6 +32,21 @@ export const product = {
   'product.totalSold': '{count} sold',
   'product.added': 'Added',
   'product.shortDescription': 'Product description',
+  
+  // Product option related texts
+  'product.productOptions': 'Product Options',
+  'product.optionsList': 'Options List',
+  'product.noFileSelected': 'No file selected',
+  'product.default': 'Default',
+  'product.discount': 'Discount',
+  'product.duration': 'Duration',
+  'product.sellingPrice': 'Selling Price',
+  'product.originalPrice': 'Original Price',
+  'product.preview': 'Preview:',
+  'product.addOption': 'Add:',
+  'product.removeOption': 'Remove',
+  'product.fullUseOption': 'Full - Private use - 1 Month',
+  'product.discountPercent': '{percent}% discount',
 
   // Product descriptions for specific products
   'product.products.chatgpt.shortDescription': 'ChatGPT is an extremely powerful chat bot today. It can answer many different questions in both English and Vietnamese. It can support programming from Front-end to Back-end.',

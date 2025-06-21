@@ -33,6 +33,21 @@ export const product = {
   'product.added': 'Añadido',
   'product.shortDescription': 'Descripción del producto',
   
+  // Product option related texts
+  'product.productOptions': 'Opciones de Producto',
+  'product.optionsList': 'Lista de Opciones',
+  'product.noFileSelected': 'Ningún archivo seleccionado',
+  'product.default': 'Predeterminado',
+  'product.discount': 'Descuento',
+  'product.duration': 'Duración',
+  'product.sellingPrice': 'Precio de Venta',
+  'product.originalPrice': 'Precio Original',
+  'product.preview': 'Vista Previa:',
+  'product.addOption': 'Añadir:',
+  'product.removeOption': 'Eliminar',
+  'product.fullUseOption': 'Full - Uso privado - 1 Mes',
+  'product.discountPercent': 'Descuento del {percent}%',
+  
   // Product descriptions for specific products
   'product.products.chatgpt.shortDescription': 'ChatGPT es un chat bot extremadamente potente en la actualidad. Puede responder a muchas preguntas diferentes tanto en inglés como en vietnamita. Puede dar soporte para programación desde Front-end hasta Back-end.',
   'product.products.grok.shortDescription': 'Grok AI ayuda a analizar y procesar datos rápidamente.',
