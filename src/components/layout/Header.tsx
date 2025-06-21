@@ -10,7 +10,7 @@ import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
-import useI18n from '@/contexts/I18nContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -33,7 +33,7 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { t } = useI18n();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);

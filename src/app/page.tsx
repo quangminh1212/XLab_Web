@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ProductCard from '@/components/product/ProductCard';
 import { categories } from '@/data/mockData';
-import useI18n from '@/contexts/I18nContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import HomeTestimonials from '@/components/home/Testimonials';
 
 // Types
@@ -88,7 +88,7 @@ const getValidImageUrl = (product: Product): string => {
 };
 
 function HomePage() {
-  const { t } = useI18n();
+  const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleProductCount, setVisibleProductCount] = useState(8);
