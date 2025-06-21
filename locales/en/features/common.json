@@ -20,5 +20,14 @@
   "notFound": "Not found",
   "retry": "Retry",
   "showMore": "Show more",
-  "showLess": "Show less"
+  "showLess": "Show less",
+  "accessDenied": "Access Denied",
+  "noPermission": "You do not have permission to access this page.",
+  "backToHome": "Back to Home",
+  "loading.data": "Loading data...",
+  "loading.checking": "Checking...",
+  "loading.checkAgain": "Check again",
+  "loading.syncing": "Syncing...",
+  "loading.syncNow": "Sync now",
+  "loading.pleaseWait": "Please wait a moment"
 } 

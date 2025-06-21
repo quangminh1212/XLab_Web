@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { memo, useMemo } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface BalanceDisplayProps {
   className?: string;
@@ -12,6 +13,7 @@ interface BalanceDisplayProps {
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading } = useBalance();
+  const { t } = useLanguage();
 
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
@@ -48,7 +50,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
         {loading ? (
           <div className="flex items-center space-x-1.5 sm:space-x-2">
             <div className="animate-spin rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 border-t-2 border-b-2 border-teal-600"></div>
-            <span className="text-xs sm:text-sm font-medium text-teal-600">Đang tải...</span>
+            <span className="text-xs sm:text-sm font-medium text-teal-600">{t('common.loading')}</span>
           </div>
         ) : (
           <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">

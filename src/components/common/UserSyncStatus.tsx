@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SyncStatus {
   hasUserFile: boolean;
@@ -20,6 +21,7 @@ interface SyncResponse {
 
 export default function UserSyncStatus() {
   const { data: session } = useSession();
+  const { t } = useLanguage();
   const [syncStatus, setSyncStatus] = useState<SyncResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -166,14 +168,14 @@ export default function UserSyncStatus() {
               disabled={isLoading}
               className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 disabled:opacity-50"
             >
-              {isLoading ? 'Đang kiểm tra...' : 'Kiểm tra lại'}
+              {isLoading ? t('common.loading.checking') : t('common.loading.checkAgain')}
             </button>
             <button
               onClick={forceSyncData}
               disabled={isSyncing}
               className="px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
-              {isSyncing ? 'Đang đồng bộ...' : 'Đồng bộ ngay'}
+              {isSyncing ? t('common.loading.syncing') : t('common.loading.syncNow')}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LoadingScreenProps {
   message?: string;
@@ -8,9 +9,13 @@ interface LoadingScreenProps {
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({
-  message = 'Đang tải dữ liệu...',
+  message,
   size = 'md',
 }) => {
+  const { t } = useLanguage();
+  const defaultMessage = t('common.loading.data');
+  const displayMessage = message || defaultMessage;
+
   const sizeClasses = {
     sm: {
       container: 'max-w-xs',
@@ -86,8 +91,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         </div>
 
         <div className="space-y-1.5 sm:space-y-2">
-          <h2 className={`${currentSize.title} font-semibold text-gray-900`}>{message}</h2>
-          <p className={`${currentSize.subtitle} text-gray-500`}>Vui lòng đợi trong giây lát</p>
+          <h2 className={`${currentSize.title} font-semibold text-gray-900`}>{displayMessage}</h2>
+          <p className={`${currentSize.subtitle} text-gray-500`}>{t('common.loading.pleaseWait')}</p>
         </div>
 
         <div className="mt-4 sm:mt-6 relative">

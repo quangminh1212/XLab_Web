@@ -20,5 +20,14 @@
   "notFound": "Không tìm thấy",
   "retry": "Thử lại",
   "showMore": "Xem thêm",
-  "showLess": "Thu gọn"
+  "showLess": "Thu gọn",
+  "accessDenied": "Truy cập bị từ chối",
+  "noPermission": "Bạn không có quyền truy cập vào trang này.",
+  "backToHome": "Quay về trang chủ",
+  "loading.data": "Đang tải dữ liệu...",
+  "loading.checking": "Đang kiểm tra...",
+  "loading.checkAgain": "Kiểm tra lại",
+  "loading.syncing": "Đang đồng bộ...",
+  "loading.syncNow": "Đồng bộ ngay",
+  "loading.pleaseWait": "Vui lòng đợi trong giây lát"
 } 
