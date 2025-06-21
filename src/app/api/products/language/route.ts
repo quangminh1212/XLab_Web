@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { productsData } from '@/locales/productsData';
+import * as localeDebug from '@/utils/localeDebug';
 
 export async function GET(request: Request) {
   try {
@@ -9,6 +10,17 @@ export async function GET(request: Request) {
     const exclude = searchParams.get('exclude');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
 
+    // Log API request parameters
+    localeDebug.logDebug('Products API request', {
+      path: new URL(request.url).pathname,
+      params: {
+        lang,
+        categoryId: categoryId || 'none',
+        exclude: exclude || 'none',
+        limit: limit || 'none'
+      }
+    }, 'INFO');
+
     // Determine which language data to use
     const supportedLanguages = ['eng', 'vie', 'spa', 'chi'];
     const language = supportedLanguages.includes(lang) ? lang : 'vie';
@@ -16,9 +28,16 @@ export async function GET(request: Request) {
     let productList = [];
     if (productsData[language as keyof typeof productsData]) {
       productList = productsData[language as keyof typeof productsData];
-      console.log(`Retrieved ${productList.length} products from localized data (${language})`);
+      localeDebug.logDebug(`Retrieved ${productList.length} products from localized data`, {
+        language,
+        count: productList.length,
+        path: new URL(request.url).pathname
+      }, 'INFO');
     } else {
-      console.log(`No products found for language: ${language}`);
+      localeDebug.logDebug(`No products found for language`, {
+        language,
+        path: new URL(request.url).pathname
+      }, 'ERROR');
       return NextResponse.json(
         {
           success: false,

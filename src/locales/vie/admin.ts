@@ -110,6 +110,7 @@ export const admin = {
   'admin.products.chooseFile': 'Chọn tệp',
   'admin.products.moveMouseToZoom': 'Di chuột để phóng to',
   'admin.products.noImageSelected': 'Chưa chọn hình ảnh',
+  'admin.products.noFileSelected': 'Không có tệp nào được chọn',
   
   // Text editor toolbar
   'admin.editor.bold': 'In đậm',

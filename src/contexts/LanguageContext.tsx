@@ -56,10 +56,28 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     // Ensure we use a valid language or fallback to Vietnamese
     if (savedLanguage && availableLanguagesArray.includes(savedLanguage)) {
       setLanguageState(savedLanguage);
+      // Log language initialization from localStorage
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          const { logLanguageInit } = require('@/utils/localeDebug');
+          logLanguageInit(savedLanguage, 'localStorage');
+        } catch (e) {
+          console.warn('Could not log language initialization:', e);
+        }
+      }
     } else {
       // Explicitly set to Vietnamese if no valid language is saved
       setLanguageState('vie');
       localStorage.setItem('language', 'vie');
+      // Log default language initialization
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          const { logLanguageInit } = require('@/utils/localeDebug');
+          logLanguageInit('vie', 'default');
+        } catch (e) {
+          console.warn('Could not log language initialization:', e);
+        }
+      }
     }
   }, []);
 
@@ -75,7 +93,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 
   const setLanguage = (lang: LanguageKeys) => {
     if (availableLanguagesArray.includes(lang)) {
-      console.log('Changing language to:', lang);
+      // Use our debug utility for logging language changes
+      if (process.env.NODE_ENV === 'development') {
+        try {
+          const { logLanguageSwitch } = require('@/utils/localeDebug');
+          logLanguageSwitch(language, lang, 'user');
+        } catch (e) {
+          console.warn('Could not log language switch:', e);
+        }
+      }
       setLanguageState(lang);
     }
   };
