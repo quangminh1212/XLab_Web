@@ -107,6 +107,20 @@ export const admin = {
   'admin.products.deleteErrorLog': 'Lỗi khi xóa sản phẩm',
   'admin.products.statusPublic': 'Công khai',
   'admin.products.statusDraft': 'Nháp',
+  'admin.products.chooseFile': 'Chọn tệp',
+  'admin.products.moveMouseToZoom': 'Di chuột để phóng to',
+  'admin.products.noImageSelected': 'Chưa chọn hình ảnh',
+  
+  // Text editor toolbar
+  'admin.editor.bold': 'In đậm',
+  'admin.editor.italic': 'In nghiêng',
+  'admin.editor.underline': 'Gạch chân',
+  'admin.editor.strikethrough': 'Gạch ngang',
+  'admin.editor.fontColor': 'Màu chữ',
+  'admin.editor.backgroundColor': 'Màu nền',
+  'admin.editor.undo': 'Hoàn tác',
+  'admin.editor.redo': 'Làm lại',
+  'admin.editor.link': 'Chèn liên kết',
   
   // Users Management
   'admin.users.title': 'Quản lý người dùng',

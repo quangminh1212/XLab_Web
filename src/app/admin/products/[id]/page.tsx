@@ -8,6 +8,7 @@ import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
 import { v4 as uuidv4 } from 'uuid';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { FileInputWithLabel } from '@/components';
 
 // Danh sách các tùy chọn thời hạn
 const durationOptions = [
@@ -1141,7 +1142,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     ) : (
                       <div className="text-gray-400 text-center p-4">
                         <span className="block text-4xl mb-2">🖼️</span>
-                        <span className="text-sm font-medium">{t('admin.products.noFileSelected')}</span>
+                        <span className="text-sm font-medium">{t('admin.products.noImageSelected')}</span>
                         <p className="text-xs mt-2">{t('admin.products.pasteImageDirectly')}</p>
                       </div>
                     )}
@@ -1149,12 +1150,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
 
                 <div>
-                  <input
-                    type="file"
+                  <FileInputWithLabel
+                    onChange={handleFeaturedImageUpload}
                     accept="image/*"
                     ref={featuredImageInputRef}
-                    onChange={handleFeaturedImageUpload}
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
               </div>
