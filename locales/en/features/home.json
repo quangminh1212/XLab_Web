@@ -48,5 +48,57 @@
   "moreQuestions": "See more questions",
   "ctaTitle": "Ready to boost your work efficiency with XLab?",
   "ctaDesc": "We offer special discounted prices for customers who buy in bulk. The more you buy, the higher the discount. We are committed to providing you with the best solutions at the most reasonable cost.",
-  "contactUs": "Contact us for consultation"
+  "contactUs": "Contact us for consultation",
+  "hero.title": "Advanced AI Solutions for Businesses and Individuals",
+  "hero.subtitle": "The power of artificial intelligence in your hands",
+  "hero.cta.primary": "Get Started",
+  "hero.cta.secondary": "Learn More",
+  "features.title": "Key Features",
+  "features.subtitle": "Discover cutting-edge technologies from XLab",
+  "features.ai.title": "Artificial Intelligence",
+  "features.ai.description": "Custom AI solutions for all business and personal needs",
+  "features.security.title": "Maximum Security",
+  "features.security.description": "End-to-end encryption and advanced data protection",
+  "features.analytics.title": "Data Analysis",
+  "features.analytics.description": "Transform data into useful and valuable information",
+  "features.integration.title": "Flexible Integration",
+  "features.integration.description": "Easily connect with existing systems and tools",
+  "stats.title": "Impressive Numbers",
+  "stats.users": "Users",
+  "stats.companies": "Partner Companies",
+  "stats.downloads": "Downloads",
+  "stats.countries": "Countries",
+  "cta.title": "Ready to get started?",
+  "cta.subtitle": "Experience the power of XLab today",
+  "cta.button": "Free Trial",
+  "products.title": "Featured Products",
+  "products.subtitle": "Discover our pioneering products",
+  "products.viewAll": "View all products",
+  "testimonials.title": "Customer Reviews",
+  "testimonials.viewAll": "View all reviews",
+  "testimonials.items": [
+    {
+      "text": "\"I have been using XLab services for 2 years and am extremely satisfied. The software runs smoothly, has complete features, and the support team is very dedicated.\"",
+      "name": "Michael Roberts",
+      "position": "Business Director"
+    },
+    {
+      "text": "\"XLab's AI solutions have helped our business save 30% in operating costs. The technical support team responds quickly and effectively.\"",
+      "name": "David Wilson",
+      "position": "CTO - Tech Solutions"
+    },
+    {
+      "text": "\"XLab's continuous updates ensure the product always meets our increasingly high demands. The interface is friendly and easy to use even for newcomers.\"",
+      "name": "Emily Parker",
+      "position": "Project Manager"
+    }
+  ],
+  "categories.title": "Product Categories",
+  "categories.viewAll": "View all categories",
+  "newsletter.title": "Subscribe to our newsletter",
+  "newsletter.description": "Stay updated with the latest products and technology information",
+  "newsletter.placeholder": "Your email address",
+  "newsletter.button": "Subscribe",
+  "newsletter.privacyNotice": "We respect your privacy. See our privacy policy.",
+  "slogan": "Pioneering technology, superior solutions"
 } 

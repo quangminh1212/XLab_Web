@@ -29,5 +29,23 @@
   "loading.checkAgain": "Check again",
   "loading.syncing": "Syncing...",
   "loading.syncNow": "Sync now",
-  "loading.pleaseWait": "Please wait a moment"
+  "loading.pleaseWait": "Please wait a moment",
+  "userSync": {
+    "title": "Data Sync Status",
+    "status": {
+      "notSynced": "Not synced",
+      "needsUpdate": "Update needed",
+      "synced": "Synced"
+    },
+    "email": "Email:",
+    "balance": "Balance:",
+    "cartItems": "Cart items:",
+    "transactions": "Transactions:",
+    "lastUpdated": "Last updated:",
+    "lastSync": "Last sync:",
+    "recommendations": "Recommendations:"
+  },
+  "balance": {
+    "title": "Account balance - Click to deposit"
+  }
 } 

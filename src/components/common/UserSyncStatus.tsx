@@ -96,15 +96,15 @@ export default function UserSyncStatus() {
   };
 
   const getStatusText = () => {
-    if (!syncStatus?.syncStatus.hasUserFile) return 'Chưa đồng bộ';
-    if (syncStatus.recommendations.length > 0) return 'Cần cập nhật';
-    return 'Đã đồng bộ';
+    if (!syncStatus?.syncStatus.hasUserFile) return t('common.userSync.status.notSynced');
+    if (syncStatus.recommendations.length > 0) return t('common.userSync.status.needsUpdate');
+    return t('common.userSync.status.synced');
   };
 
   return (
     <div className="p-4 bg-white border rounded-lg shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Trạng thái đồng bộ dữ liệu</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t('common.userSync.title')}</h3>
         <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor()}`}>
           {getStatusText()}
         </span>
@@ -114,28 +114,28 @@ export default function UserSyncStatus() {
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-500">Email:</span>
+              <span className="text-gray-500">{t('common.userSync.email')}</span>
               <span className="ml-2 font-medium">{syncStatus.email}</span>
             </div>
             <div>
-              <span className="text-gray-500">Số dư:</span>
+              <span className="text-gray-500">{t('common.userSync.balance')}</span>
               <span className="ml-2 font-medium">
                 {syncStatus.syncStatus.balance.toLocaleString('vi-VN')} VND
               </span>
             </div>
             <div>
-              <span className="text-gray-500">Sản phẩm trong giỏ:</span>
+              <span className="text-gray-500">{t('common.userSync.cartItems')}</span>
               <span className="ml-2 font-medium">{syncStatus.syncStatus.cartItems}</span>
             </div>
             <div>
-              <span className="text-gray-500">Giao dịch:</span>
+              <span className="text-gray-500">{t('common.userSync.transactions')}</span>
               <span className="ml-2 font-medium">{syncStatus.syncStatus.transactionCount}</span>
             </div>
           </div>
 
           {syncStatus.syncStatus.lastUpdated && (
             <div className="text-sm">
-              <span className="text-gray-500">Cập nhật cuối:</span>
+              <span className="text-gray-500">{t('common.userSync.lastUpdated')}</span>
               <span className="ml-2 font-medium">
                 {new Date(syncStatus.syncStatus.lastUpdated).toLocaleString('vi-VN')}
               </span>
@@ -144,7 +144,7 @@ export default function UserSyncStatus() {
 
           {lastSyncTime && (
             <div className="text-sm">
-              <span className="text-gray-500">Đồng bộ cuối:</span>
+              <span className="text-gray-500">{t('common.userSync.lastSync')}</span>
               <span className="ml-2 font-medium text-green-600">
                 {new Date(lastSyncTime).toLocaleString('vi-VN')}
               </span>
@@ -153,7 +153,7 @@ export default function UserSyncStatus() {
 
           {syncStatus.recommendations.length > 0 && (
             <div className="mt-3 p-3 bg-yellow-50 rounded-lg">
-              <h4 className="text-sm font-medium text-yellow-800 mb-1">Khuyến nghị:</h4>
+              <h4 className="text-sm font-medium text-yellow-800 mb-1">{t('common.userSync.recommendations')}</h4>
               <ul className="text-sm text-yellow-700 space-y-1">
                 {syncStatus.recommendations.map((rec, index) => (
                   <li key={index}>• {rec}</li>

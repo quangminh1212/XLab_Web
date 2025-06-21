@@ -5,56 +5,27 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+type TestimonialItem = {
+  text: string;
+  name: string;
+  position: string;
+};
+
 export default function HomeTestimonials() {
   const { t, language } = useLanguage();
 
-  // Định nghĩa các chuỗi văn bản trực tiếp dựa trên ngôn ngữ hiện tại
-  const texts = {
-    title: language === 'vi' ? 'Đánh giá của khách hàng' : 'Customer Reviews',
-    viewAll: language === 'vi' ? 'Xem tất cả đánh giá' : 'View all reviews',
-    testimonials: [
-      {
-        id: 1,
-        text: language === 'vi' 
-          ? '"Tôi đã sử dụng dịch vụ của XLab được 2 năm và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, có đầy đủ tính năng, và đội ngũ hỗ trợ rất tận tâm."'
-          : '"I have been using XLab services for 2 years and am extremely satisfied. The software runs smoothly, has complete features, and the support team is very dedicated."',
-        name: 'Michael Roberts',
-        position: language === 'vi' ? 'Giám đốc kinh doanh' : 'Business Director',
-        image: '/images/testimonials/michael-roberts.jpg',
-        fallbackImage: 'https://randomuser.me/api/portraits/men/32.jpg'
-      },
-      {
-        id: 2,
-        text: language === 'vi'
-          ? '"Các giải pháp AI của XLab đã giúp doanh nghiệp của chúng tôi tiết kiệm được 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."'
-          : '"XLab\'s AI solutions have helped our business save 30% in operating costs. The technical support team responds quickly and effectively."',
-        name: 'David Wilson',
-        position: language === 'vi' ? 'CTO - Tech Solutions' : 'CTO - Tech Solutions',
-        image: '/images/testimonials/david-wilson.jpg',
-        fallbackImage: 'https://randomuser.me/api/portraits/men/41.jpg'
-      },
-      {
-        id: 3,
-        text: language === 'vi'
-          ? '"Các bản cập nhật liên tục của XLab đảm bảo sản phẩm luôn đáp ứng được những yêu cầu ngày càng cao của chúng tôi. Giao diện thân thiện và dễ sử dụng ngay cả với người mới."'
-          : '"XLab\'s continuous updates ensure the product always meets our increasingly high demands. The interface is friendly and easy to use even for newcomers."',
-        name: 'Emily Parker',
-        position: language === 'vi' ? 'Quản lý dự án' : 'Project Manager',
-        image: '/images/testimonials/emily-parker.jpg',
-        fallbackImage: 'https://randomuser.me/api/portraits/women/68.jpg'
-      }
-    ]
-  };
+  // Using translation system for testimonials
+  const testimonialItems = t<any>('home.testimonials.items', undefined, true) as TestimonialItem[];
 
   return (
     <section className="mt-12 mb-12">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="heading-3 text-gray-800">{texts.title}</h2>
+        <h2 className="heading-3 text-gray-800">{t('home.testimonials.title')}</h2>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {texts.testimonials.map((testimonial) => (
-          <div key={testimonial.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
+        {Array.isArray(testimonialItems) && testimonialItems.map((testimonial, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
             <div className="flex text-yellow-400 mb-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -68,14 +39,14 @@ export default function HomeTestimonials() {
             <div className="mt-auto pt-4 border-t border-gray-100 flex items-center">
               <div className="w-10 h-10 rounded-full overflow-hidden mr-3 flex-shrink-0">
                 <Image 
-                  src={testimonial.image} 
+                  src={`/images/testimonials/${testimonial.name.toLowerCase().replace(' ', '-')}.jpg`}
                   alt={testimonial.name} 
                   width={40} 
                   height={40}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = testimonial.fallbackImage;
+                    target.src = `https://randomuser.me/api/portraits/${index % 2 === 0 ? 'men' : 'women'}/${30 + index}.jpg`;
                   }}
                 />
               </div>
@@ -90,7 +61,7 @@ export default function HomeTestimonials() {
       
       <div className="flex justify-center mt-6">
         <Link href="/testimonials" className="text-primary-600 hover:text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
-          {texts.viewAll}
+          {t('home.testimonials.viewAll')}
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
           </svg>

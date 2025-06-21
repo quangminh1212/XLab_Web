@@ -29,5 +29,23 @@
   "loading.checkAgain": "Kiểm tra lại",
   "loading.syncing": "Đang đồng bộ...",
   "loading.syncNow": "Đồng bộ ngay",
-  "loading.pleaseWait": "Vui lòng đợi trong giây lát"
+  "loading.pleaseWait": "Vui lòng đợi trong giây lát",
+  "userSync": {
+    "title": "Trạng thái đồng bộ dữ liệu",
+    "status": {
+      "notSynced": "Chưa đồng bộ",
+      "needsUpdate": "Cần cập nhật",
+      "synced": "Đã đồng bộ"
+    },
+    "email": "Email:",
+    "balance": "Số dư:",
+    "cartItems": "Sản phẩm trong giỏ:",
+    "transactions": "Giao dịch:",
+    "lastUpdated": "Cập nhật cuối:",
+    "lastSync": "Đồng bộ cuối:",
+    "recommendations": "Khuyến nghị:"
+  },
+  "balance": {
+    "title": "Số dư tài khoản - Click để nạp tiền"
+  }
 } 

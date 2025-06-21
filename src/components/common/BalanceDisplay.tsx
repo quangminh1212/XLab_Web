@@ -31,7 +31,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
     <Link
       href="/account/deposit"
       className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
-      title="Số dư tài khoản - Click để nạp tiền"
+      title={t('common.balance.title')}
     >
       <div className="flex items-center space-x-1.5 sm:space-x-2">
         <svg

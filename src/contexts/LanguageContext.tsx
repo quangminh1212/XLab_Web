@@ -8,7 +8,7 @@ type Language = 'vi' | 'en';
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string, params?: Record<string, any>) => string;
+  t: <T = string>(key: string, params?: Record<string, any>, returnObject?: boolean) => T extends true ? any : string;
 };
 
 interface LanguageProviderProps {
@@ -39,23 +39,37 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     localStorage.setItem('language', lang);
   };
 
-  const t = (key: string, params?: Record<string, any>): string => {
+  const t = <T = string>(key: string, params?: Record<string, any>, returnObject?: boolean): T extends true ? any : string => {
     try {
-      const value = translations[language][key] || key;
-      
-      if (!params) {
-        return value;
+      // Navigate to the value by splitting the key by dots
+      const parts = key.split('.');
+      let value: any = translations[language];
+      for (const part of parts) {
+        if (!value || typeof value !== 'object') {
+          return key as any;
+        }
+        value = value[part];
       }
 
-      // Handle template parameters
-      return value.replace(/\{([^}]+)\}/g, (_, paramName) => {
-        return params[paramName] !== undefined 
-          ? convertValueToString(params[paramName], paramName) 
-          : `{${paramName}}`;
-      });
+      // Return the object if requested
+      if (returnObject && typeof value === 'object') {
+        return value as any;
+      }
+
+      // Handle string values with parameters
+      if (typeof value === 'string' && params) {
+        return value.replace(/\{([^}]+)\}/g, (_, paramName) => {
+          return params[paramName] !== undefined 
+            ? convertValueToString(params[paramName], paramName) 
+            : `{${paramName}}`;
+        }) as any;
+      }
+
+      // Return the value or the key if not found
+      return (value !== undefined ? value : key) as any;
     } catch (error) {
       console.error(`Translation error for key: ${key}`, error);
-      return key;
+      return key as any;
     }
   };
 
