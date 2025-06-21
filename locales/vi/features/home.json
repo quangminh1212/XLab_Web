@@ -95,9 +95,12 @@
   ],
   "categories.title": "Danh mục sản phẩm",
   "categories.viewAll": "Xem tất cả danh mục",
+  "categories.productsCount": "{{count}} sản phẩm",
   "newsletter.title": "Đăng ký nhận tin",
   "newsletter.description": "Cập nhật những thông tin mới nhất về sản phẩm và công nghệ",
   "newsletter.placeholder": "Địa chỉ email của bạn",
   "newsletter.button": "Đăng ký",
-  "newsletter.privacyNotice": "Chúng tôi tôn trọng quyền riêng tư của bạn. Xem chính sách bảo mật."
+  "newsletter.privacyNotice": "Chúng tôi tôn trọng quyền riêng tư của bạn. Xem chính sách bảo mật.",
+  "featuredProducts.title": "Sản phẩm nổi bật",
+  "featuredProducts.viewAll": "Xem tất cả sản phẩm"
 } 

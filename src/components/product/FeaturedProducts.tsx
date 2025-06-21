@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ProductGrid from './ProductGrid';
+import { useTranslation } from 'next-i18next';
 
 interface Product {
   id: string;
@@ -26,23 +27,28 @@ interface FeaturedProductsProps {
 
 const FeaturedProducts = ({
   products,
-  title = 'Sản phẩm nổi bật',
+  title,
   subtitle,
   viewAllLink = '/products',
-  viewAllLabel = 'Xem tất cả sản phẩm',
+  viewAllLabel,
   onAddToCart,
   onProductView,
 }: FeaturedProductsProps) => {
+  const { t } = useTranslation(['features/home']);
+  
   if (!products || products.length === 0) {
     return null;
   }
+  
+  const defaultTitle = t('featuredProducts.title', 'Featured Products');
+  const defaultViewAllLabel = t('featuredProducts.viewAll', 'View all products');
 
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            {title && <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{title}</h2>}
+            {(title || defaultTitle) && <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{title || defaultTitle}</h2>}
             {subtitle && <p className="mt-2 text-gray-600">{subtitle}</p>}
           </div>
 
@@ -51,7 +57,7 @@ const FeaturedProducts = ({
               href={viewAllLink}
               className="mt-4 sm:mt-0 inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
             >
-              {viewAllLabel}
+              {viewAllLabel || defaultViewAllLabel}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 ml-1"

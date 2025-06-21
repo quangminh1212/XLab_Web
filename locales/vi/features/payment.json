@@ -1,0 +1,26 @@
+{
+  "qrBankTransfer": {
+    "title": "Chuyển khoản QR",
+    "subtitle": "Quét mã QR để chuyển khoản tự động",
+    "validityPeriod": "Mã QR có hiệu lực: {{time}}",
+    "bankInfo": "Thông tin chuyển khoản",
+    "bank": "Ngân hàng:",
+    "accountNumber": "Số tài khoản:",
+    "accountOwner": "Chủ tài khoản:",
+    "amount": "Số tiền:",
+    "transactionId": "Mã giao dịch:",
+    "checkTransaction": "Kiểm tra giao dịch",
+    "checking": "Đang kiểm tra...",
+    "transferInstructions": "Hướng dẫn chuyển khoản",
+    "step1": "1. Mở ứng dụng ngân hàng trên điện thoại",
+    "step2": "2. Chọn thanh toán QR/VietQR",
+    "step3": "3. Quét mã QR hoặc nhập thông tin thủ công",
+    "step4": "4. Xác nhận thanh toán và đợi hoàn tất",
+    "confirmPayment": "Xác nhận thanh toán",
+    "errorQRGeneration": "Không thể tạo mã QR. Vui lòng thử lại.",
+    "errorTransactionNotFound": "Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.",
+    "errorCheckingTransaction": "Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.",
+    "errorQRExpired": "Mã QR đã hết hạn. Vui lòng tạo lại.",
+    "copiedToClipboard": "Đã sao chép vào clipboard!"
+  }
+} 
