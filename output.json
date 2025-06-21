@@ -1,0 +1,24 @@
+﻿
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"description":"ChatGPT es un chatbot extremadamente potente en la actualidad. 
+                    Puede responder a una gran variedad de preguntas tanto en inglÃ©s como en 
+                    vietnamita. Puede proporcionar soporte para pro...
+RawContent        : HTTP/1.1 200 OK
+                    X-Frame-Options: DENY
+                    X-Content-Type-Options: nosniff
+                    Referrer-Policy: strict-origin-when-cross-origin
+                    X-XSS-Protection: 1; mode=block
+                    Permissions-Policy: camera=(), microphone=()...
+Forms             : {}
+Headers           : {[X-Frame-Options, DENY], [X-Content-Type-Options, nosniff], [Referrer-Policy, 
+                    strict-origin-when-cross-origin], [X-XSS-Protection, 1; mode=block]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 1202
+
+
+

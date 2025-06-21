@@ -1,7 +1,11 @@
 import { eng } from './eng';
 import { vie } from './vie';
 import { spa } from './spa';
+<<<<<<< HEAD
 import { chi } from './chi';
+=======
+import * as localeDebug from '@/utils/localeDebug';
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
 export const translations = {
   eng,
@@ -12,6 +16,9 @@ export const translations = {
 
 export type LanguageKeys = keyof typeof translations;
 export const defaultLanguage: LanguageKeys = 'vie';
+
+// Re-export debug utility function for backward compatibility
+export const debugMissingTranslations = localeDebug.generateMissingTranslationsReport;
 
 export function getTranslation(key: string, language: LanguageKeys = defaultLanguage): string {
   try {
@@ -24,10 +31,11 @@ export function getTranslation(key: string, language: LanguageKeys = defaultLang
     // Ensure language is valid
     const safeLanguage: LanguageKeys = translations[language] ? language : defaultLanguage;
     
-    // Log missing translations in development
+    // Log missing translations using the debug utility
     const logMissingTranslation = (k: string, lang: LanguageKeys) => {
       if (process.env.NODE_ENV === 'development') {
-        console.warn(`Translation missing for key: "${k}" in ${lang}`);
+        // Use our new debug utility instead
+        localeDebug.logMissingTranslation(k, lang);
       }
     };
     
@@ -56,7 +64,7 @@ export function getTranslation(key: string, language: LanguageKeys = defaultLang
     if (key === 'auth.signIn') return translations[safeLanguage]['auth.signIn'] || 'Sign In';
     if (key === 'auth.signOut') return translations[safeLanguage]['auth.signOut'] || 'Sign Out';
     // @ts-ignore: May not exist in all translation files
-    if (key === 'orders.myOrders') return translations[safeLanguage]['orders.myOrders'] || 'My Orders';
+    if (key === 'account.myOrders') return translations[safeLanguage]['account.myOrders'] || 'My Orders';
 
     // Handle nested keys approach (less reliable)
     const keys = key.split('.');
@@ -106,13 +114,25 @@ export function getTranslation(key: string, language: LanguageKeys = defaultLang
   }
 }
 
+// Define global type for debug object
+declare global {
+  interface Window {
+    __LANGUAGE_DEBUG?: {
+      translations: typeof translations;
+      defaultLanguage: LanguageKeys;
+      getTranslation: typeof getTranslation;
+      debugMissingTranslations: typeof debugMissingTranslations;
+    };
+  }
+}
+
 // For debugging in development
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  // @ts-ignore
   window.__LANGUAGE_DEBUG = {
     translations,
     defaultLanguage,
-    getTranslation
+    getTranslation,
+    debugMissingTranslations
   };
 }
 

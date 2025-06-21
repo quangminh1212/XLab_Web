@@ -748,7 +748,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      {t('orders.myOrders')}
+                      {t('account.myOrders')}
                     </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (

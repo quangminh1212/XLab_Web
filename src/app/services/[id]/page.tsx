@@ -4,11 +4,13 @@ import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
+import { productsData } from '@/locales/productsData';
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
+<<<<<<< HEAD
 // Đọc dữ liệu sản phẩm từ file JSON
 async function getProducts(): Promise<Product[]> {
   try {
@@ -27,12 +29,32 @@ async function getProducts(): Promise<Product[]> {
 
     const result = await response.json();
     return result.data || [];
+=======
+// Đọc dữ liệu sản phẩm từ locale files
+function getProducts(): any[] {
+  try {
+    // Lấy danh sách sản phẩm từ tất cả các ngôn ngữ và gộp lại
+    // Ưu tiên tiếng Việt làm ngôn ngữ chính
+    const allProducts = [
+      ...productsData.vie,
+      ...productsData.eng,
+      ...productsData.spa
+    ];
+    
+    // Lọc các sản phẩm trùng lặp theo ID
+    const uniqueProducts = allProducts.filter((product, index, self) =>
+      index === self.findIndex(p => p.id === product.id)
+    );
+    
+    return uniqueProducts;
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   } catch (error) {
     console.error('Error fetching products data:', error);
     return [];
   }
 }
 
+<<<<<<< HEAD
 // Type for sample account products that matches the Product interface
 const convertSampleAccountToProduct = (sample: any): Product => {
   return {
@@ -61,6 +83,32 @@ const convertSampleAccountToProduct = (sample: any): Product => {
     isPublished: true,
   };
 };
+=======
+// Đặc biệt xử lý ảnh cho sản phẩm Grok
+function fixProductImages(product: any): any {
+  if (!product) return product;
+  
+  // Đặc biệt xử lý trường hợp Grok
+  if (product.id === 'grok' || product.slug === 'grok') {
+    // Sử dụng file ảnh có sẵn trong thư mục grok thay vì sử dụng grok-uuid.png
+    if (product.images) {
+      product.images = product.images.map((img: string | { url: string }) => {
+        if (typeof img === 'string' && img.includes('grok-')) {
+          return '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+        }
+        return img;
+      });
+    }
+    
+    // Cập nhật imageUrl nếu cần
+    if (product.imageUrl && product.imageUrl.includes('grok-')) {
+      product.imageUrl = '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
+    }
+  }
+  
+  return product;
+}
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
 export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params trước khi sử dụng thuộc tính của nó
@@ -68,16 +116,21 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
 
   console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
 
+<<<<<<< HEAD
   // Lấy danh sách sản phẩm từ file JSON
   const productsFromJson = await getProducts();
+=======
+  // Lấy danh sách sản phẩm từ locale files
+  const productsFromLocale = getProducts();
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
-  // Tìm kiếm trong products.json trước
-  let selectedProduct = productsFromJson.find(
+  // Tìm kiếm trong locale files trước
+  let selectedProduct: any = productsFromLocale.find(
     (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
   );
 
   if (!selectedProduct) {
-    selectedProduct = productsFromJson.find(
+    selectedProduct = productsFromLocale.find(
       (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
     );
   }
@@ -94,6 +147,9 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
       selectedProduct = convertSampleAccountToProduct(mockProduct);
     }
   }
+
+  // Xử lý đặc biệt cho ảnh sản phẩm (đặc biệt là Grok)
+  selectedProduct = fixProductImages(selectedProduct);
 
   // Thêm dữ liệu mẫu cho các sản phẩm CapCut Pro
   const sampleAccounts = [
@@ -282,7 +338,11 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
     },
   ];
 
+<<<<<<< HEAD
   // Nếu không tìm thấy, tìm trong sampleAccounts
+=======
+  // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData và locale files
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   if (!selectedProduct) {
     // Find in sample accounts
     const sampleAccount = sampleAccounts.find((p) => p.slug === accountId || p.id === accountId);

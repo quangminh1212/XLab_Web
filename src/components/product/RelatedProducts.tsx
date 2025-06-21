@@ -136,6 +136,7 @@ export default function RelatedProducts({
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
 
+<<<<<<< HEAD
     // Xử lý category an toàn
     let safeCategory;
     
@@ -158,6 +159,49 @@ export default function RelatedProducts({
         const catObj = firstCategory as any;
         safeCategory = catObj.name || catObj.id || undefined;
       }
+=======
+    // Xử lý category an toàn - giữ nguyên dạng object để ProductCard xử lý
+    let safeCategory = '';
+    
+    // Helper function to extract category name from object
+    const extractCategoryString = (categoryObj: any): string => {
+      if (!categoryObj) return '';
+      
+      if (typeof categoryObj === 'string') {
+        return categoryObj;
+      }
+      
+      if (typeof categoryObj === 'object') {
+        // Try to get name
+        if (categoryObj.name) {
+          if (typeof categoryObj.name === 'string') {
+            return categoryObj.name;
+          } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
+            return String(categoryObj.name.id);
+          }
+        }
+        
+        // Try to get id
+        if (categoryObj.id) {
+          if (typeof categoryObj.id === 'string') {
+            return categoryObj.id;
+          } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
+            return String(categoryObj.id.id);
+          }
+        }
+      }
+      
+      return '';
+    };
+    
+    // Nếu có category trực tiếp
+    if (product.category) {
+      safeCategory = extractCategoryString(product.category);
+    }
+    // Nếu có categories array
+    else if (product.categories?.length) {
+      safeCategory = extractCategoryString(product.categories[0]);
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
     }
 
     const mapped = {

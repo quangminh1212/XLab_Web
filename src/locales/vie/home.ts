@@ -7,6 +7,7 @@ export const home = {
   'home.title': 'Chào mừng đến với XLab',
   'home.subtitle': 'Giải pháp phần mềm tiên tiến cho doanh nghiệp hiện đại',
   'home.featuredProducts': 'Sản phẩm nổi bật',
+  'home.newProducts': 'Sản phẩm mới',
   'home.viewAll': 'Xem tất cả sản phẩm',
   'home.services': 'Dịch vụ của chúng tôi',
   'home.aboutTitle': 'Về Chúng Tôi',

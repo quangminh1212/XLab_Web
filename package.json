@@ -26,7 +26,9 @@
     "test:watch": "jest --watch",
     "check": "npm run lint && npm run type-check",
     "prepare": "node scripts/fix-next-errors.js",
-    "postinstall": "node scripts/fix-next-errors.js"
+    "postinstall": "node scripts/fix-next-errors.js",
+    "locale-debug": "node scripts/locale-debug.js",
+    "dev:debug-locales": "cross-env LOCALE_DEBUG_LEVEL=4 next dev -p 3000"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
@@ -35,6 +37,7 @@
     "@types/qrcode": "1.5.5",
     "@types/uuid": "10.0.0",
     "class-variance-authority": "0.7.1",
+    "classnames": "2.5.1",
     "clsx": "2.1.1",
     "cssnano": "7.0.7",
     "draftjs-to-html": "0.9.1",

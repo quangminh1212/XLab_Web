@@ -5,12 +5,20 @@ import { Product, ProductCategory } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { productsData } from '@/locales/productsData';
 
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
-// Hàm đọc dữ liệu từ file JSON
+// Hàm đọc dữ liệu từ locales và fallback về file JSON
 const getProducts = (): Product[] => {
   try {
+    // Sử dụng dữ liệu từ locales/productsData.ts (sử dụng tiếng Việt làm mặc định)
+    if (productsData && productsData.vie && Array.isArray(productsData.vie)) {
+      console.log(`Retrieved ${productsData.vie.length} products from localized data (vie)`);
+      return productsData.vie as unknown as Product[];
+    }
+
+    // Fallback to JSON file if locales data is not available
     if (!fs.existsSync(dataFilePath)) {
       fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
       return [];
@@ -159,6 +167,7 @@ function getCategoryName(categoryId: string): string {
     'security-software': 'Phần mềm bảo mật',
     'data-protection': 'Bảo vệ dữ liệu',
     'design-software': 'Phần mềm thiết kế',
+    'ai-tools': 'Công cụ AI',
   };
 
   return categories[categoryId] || categoryId;

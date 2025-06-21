@@ -28,7 +28,10 @@
 - **Payment Integration**: Support for multiple payment methods
 - **Admin Dashboard**: Manage products, orders, and users
 - **Responsive Design**: Optimized for all device sizes
-- **Internationalization**: Support for multiple languages (Vietnamese and English)
+- **Internationalization**: Support for multiple languages (Vietnamese, English, and Spanish)
+  - Organized in `src/locales` with language-specific directories
+  - Verification script available to ensure correct language usage: `node scripts/verify-locales.js`
+  - Default language: Vietnamese with fallback to English
 - **SEO Optimized**: Built with SEO best practices
 
 ## 🏗️ Project Structure
@@ -150,6 +153,7 @@ npm run dev
 - `npm run format` - Format with Prettier
 - `npm run type-check` - Run TypeScript checks
 - `npm run analyze` - Analyze bundle size
+- `node scripts/verify-locales.js` - Verify language consistency in localization files
 
 ### Development Guidelines
 

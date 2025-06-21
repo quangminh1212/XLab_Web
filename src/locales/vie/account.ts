@@ -168,6 +168,8 @@ export const account = {
   'account.deposit.screenshotReminder': 'Nhớ chụp màn hình giao dịch để gửi khi cần hỗ trợ kiểm tra nhanh!',
   'account.deposit.success': 'Giao dịch thành công! Đã nạp {amount} VND vào tài khoản.',
   'account.account': 'Tài khoản',
+  'account.myOrders': 'Đơn hàng của tôi',
+  'account.administration': 'Quản trị',
   'account.adminPanel': 'Quản trị viên',
   'account.usedVouchers': 'Voucher đã sử dụng',
   'account.manageCoupons': 'Quản lý mã giảm giá',

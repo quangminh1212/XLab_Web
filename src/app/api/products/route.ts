@@ -3,6 +3,7 @@ import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
 import JSON5 from 'json5';
+import { productsData } from '@/locales/productsData';
 
 export async function GET(request: Request) {
   try {
@@ -11,6 +12,7 @@ export async function GET(request: Request) {
     const exclude = searchParams.get('exclude');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
     const lang = searchParams.get('lang') || 'vie'; // Default to Vietnamese
+<<<<<<< HEAD
 
     // Get the localized products data
     const localesPath = path.join(process.cwd(), `src/locales/${lang}/products.json`);
@@ -81,8 +83,44 @@ export async function GET(request: Request) {
       console.error('Error reading products data file:', err);
       return NextResponse.json({ success: false, data: [], total: 0 }, { status: 500 });
     }
+=======
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
-    console.log(`Retrieved ${productList.length} products from file`);
+    // Determine which language data to use
+    let productList: Product[] = [];
+    
+    // Use localized data from the locales directory
+    const supportedLanguages = ['eng', 'vie', 'spa', 'chi'];
+    const language = supportedLanguages.includes(lang) ? lang : 'vie';
+    
+    if (productsData[language as keyof typeof productsData]) {
+      productList = productsData[language as keyof typeof productsData];
+      console.log(`Retrieved ${productList.length} products from localized data (${language})`);
+    } else {
+      // Fallback to original JSON file
+      const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
+      let raw: string;
+      try {
+        raw = fs.readFileSync(dataFilePath, 'utf8');
+      } catch (err) {
+        console.error('Error reading products data file:', err);
+        return NextResponse.json({ success: false, data: [], total: 0 }, { status: 500 });
+      }
+
+      if (raw.trim()) {
+        try {
+          productList = JSON.parse(raw);
+        } catch (jsonErr) {
+          try {
+            productList = JSON5.parse(raw);
+          } catch (json5Err) {
+            console.error('Error parsing products data with JSON and JSON5:', jsonErr, json5Err);
+            productList = [];
+          }
+        }
+      }
+      console.log(`Retrieved ${productList.length} products from JSON file (fallback)`);
+    }
 
     // Chỉ lấy sản phẩm được xuất bản
     productList = productList.filter((p) => p.isPublished !== false);
@@ -100,21 +138,22 @@ export async function GET(request: Request) {
       console.log(`Filtered to ${productList.length} products in category ${categoryId}`);
     }
 
-    // Loại trừ sản phẩm cụ thể nếu exclude được cung cấp
+    // Exclude sản phẩm nếu được chỉ định
     if (exclude) {
-      productList = productList.filter((p) => p.id !== exclude && p.slug !== exclude);
-      console.log(`Excluded product ${exclude}, remaining ${productList.length} products`);
+      productList = productList.filter((p) => p.id !== exclude);
+      console.log(`Excluded product ${exclude}, ${productList.length} products remaining`);
     }
 
-    // Giới hạn số lượng kết quả nếu limit được cung cấp
-    if (limit && !isNaN(limit)) {
-      productList = productList.slice(0, limit);
-      console.log(`Limited to ${productList.length} products`);
-    }
+    // Giới hạn số lượng kết quả nếu được chỉ định
+    const limitedProducts = limit ? productList.slice(0, limit) : productList;
 
     // Xử lý blob URLs trong ảnh
+<<<<<<< HEAD
     const processedProducts = productList.map((product) => {
       // Create a deep copy to avoid modifying the original
+=======
+    const processedProducts = limitedProducts.map((product) => {
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
       const processedProduct = {
         ...product,
         images: Array.isArray(product.images)
@@ -147,11 +186,14 @@ export async function GET(request: Request) {
       return processedProduct;
     });
 
-    return NextResponse.json({
-      success: true,
-      data: processedProducts,
-      total: processedProducts.length,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        data: processedProducts,
+        total: productList.length,
+      },
+      { status: 200 },
+    );
   } catch (error: any) {
     console.error('Error fetching products:', error);
     return NextResponse.json(

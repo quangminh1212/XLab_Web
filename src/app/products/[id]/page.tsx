@@ -1,7 +1,4 @@
 import { notFound } from 'next/navigation';
-import fs from 'fs';
-import path from 'path';
-import { Product } from '@/models/ProductModel';
 import { default as dynamicImport } from 'next/dynamic';
 import { getTranslation } from '@/locales';
 
@@ -39,6 +36,7 @@ const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/f
 export const dynamic = 'auto';
 export const dynamicParams = true;
 
+<<<<<<< HEAD
 // Đọc dữ liệu sản phẩm từ file JSON
 async function getProducts(): Promise<Product[]> {
   try {
@@ -63,34 +61,51 @@ async function getProducts(): Promise<Product[]> {
   }
 }
 
+=======
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProductPage({ params }: { params: { id: string } }) {
   try {
-    // Await params trước khi sử dụng thuộc tính của nó
-    const { id: productId } = await params;
+    // Lấy ID sản phẩm từ params
+    const productId = params.id;
 
     console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
 
+<<<<<<< HEAD
     // Lấy dữ liệu sản phẩm từ file JSON
     const products = await getProducts();
+=======
+    // Mặc định sử dụng tiếng Việt
+    const language = 'vie';
+    
+    console.log(`Sử dụng ngôn ngữ: ${language} để tải sản phẩm`);
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
-    // Tìm sản phẩm theo slug trước (ưu tiên tìm theo slug để cải thiện SEO)
-    let product = products.find((p) => p.slug === productId);
-
-    // Nếu không tìm thấy bằng slug, thử tìm bằng id
-    if (!product) {
-      product = products.find((p) => p.id === productId);
-    }
-
-    // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
-    if (!product) {
+    // Tạo URL với ngôn ngữ được chọn
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/products/language/${productId}?lang=${language}`;
+    
+    // Lấy dữ liệu sản phẩm từ API
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
       console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
       notFound();
     }
+    
+    const productData = await response.json();
+    const product = productData.data;
 
+<<<<<<< HEAD
     // Xác định categoryId cho sản phẩm liên quan
     const categoryId =
       product.categories && product.categories.length > 0 ? product.categories[0].id : undefined;
+=======
+    // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
+    if (!product) {
+      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId} trong response API`);
+      notFound();
+    }
+>>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
     // Ghi log thông tin truy cập
     console.log(
