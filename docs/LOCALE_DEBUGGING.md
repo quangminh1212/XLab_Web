@@ -16,18 +16,19 @@ The system supports multiple debug levels to control how much information is log
 
 ## Setting Debug Level
 
-### Option 1: Default Configuration
+### Option 1: Using the Debug Tool
 
-The locale debugging is automatically set up in the run.bat script:
+We've provided a command-line tool to help you set up debugging:
 
 ```bash
-run.bat
+npm run locale-debug
 ```
 
-This script:
-- Automatically creates or updates .env.local with debug level 3 (INFO)
-- Applies the settings before starting the development server
-- Ensures consistent debugging across all development environments
+This interactive tool allows you to:
+- Set the debug level
+- Generate a missing translations report
+- Clear missing translations logs
+- View your current debug configuration
 
 ### Option 2: Environment Variable
 

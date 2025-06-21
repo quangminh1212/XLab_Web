@@ -27,6 +27,7 @@
     "check": "npm run lint && npm run type-check",
     "prepare": "node scripts/fix-next-errors.js",
     "postinstall": "node scripts/fix-next-errors.js",
+    "locale-debug": "node scripts/locale-debug.js",
     "dev:debug-locales": "cross-env LOCALE_DEBUG_LEVEL=4 next dev -p 3000"
   },
   "dependencies": {

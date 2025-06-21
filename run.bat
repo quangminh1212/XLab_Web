@@ -41,30 +41,6 @@ mkdir .next\cache\webpack\edge-server-development 2>nul
 :: Run fix script
 node scripts/fix-next-errors.js
 
-:: Initialize locale debug settings
-echo.
-echo Configuring locale debugging settings...
-
-:: Check if .env.local exists
-if exist ".env.local" (
-  :: Check if it already has LOCALE_DEBUG_LEVEL
-  findstr /c:"LOCALE_DEBUG_LEVEL" .env.local >nul
-  if errorlevel 1 (
-    :: Append LOCALE_DEBUG_LEVEL=3 to the file
-    echo.>> .env.local
-    echo # Locale debugging level (0=NONE, 1=ERROR, 2=WARN, 3=INFO, 4=VERBOSE)>> .env.local
-    echo LOCALE_DEBUG_LEVEL=3 # INFO>> .env.local
-    echo Added locale debug configuration to .env.local
-  ) else (
-    echo Locale debug configuration already exists in .env.local
-  )
-) else (
-  :: Create new .env.local file with LOCALE_DEBUG_LEVEL
-  echo # Locale debugging level (0=NONE, 1=ERROR, 2=WARN, 3=INFO, 4=VERBOSE)> .env.local
-  echo LOCALE_DEBUG_LEVEL=3 # INFO>> .env.local
-  echo Created .env.local with locale debug configuration
-)
-
 :: Start development server
 echo.
 echo Starting Next.js development server...
