@@ -99,11 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div>
               <h1 className="text-3xl font-bold">{t('admin.title')}</h1>
               <p className="text-sm mt-1 opacity-80">
-<<<<<<< HEAD
-                {t('admin.greeting', { name: session?.user?.name || 'Admin' })}
-=======
                 Hello, {session?.user?.name || 'Admin'}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </p>
             </div>
             <div>
@@ -111,11 +107,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 href="/"
                 className="px-4 py-2 bg-white text-teal-600 rounded hover:bg-gray-100 transition-colors duration-200"
               >
-<<<<<<< HEAD
-                {t('common.backToMainPage')}
-=======
                 Back to main page
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </Link>
             </div>
           </div>
@@ -132,21 +124,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div
               className={`p-4 bg-teal-600 text-white font-medium flex ${isSidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}
             >
-<<<<<<< HEAD
-              {!isSidebarCollapsed && <span>{t('admin.menuTitle')}</span>}
-              <button
-                onClick={toggleSidebar}
-                className="text-white focus:outline-none hover:bg-teal-700 rounded p-2 transition-colors"
-                aria-label={isSidebarCollapsed ? t('admin.expandMenu') : t('admin.collapseMenu')}
-                title={isSidebarCollapsed ? t('admin.expandMenu') : t('admin.collapseMenu')}
-=======
               {!isSidebarCollapsed && <span>Admin Menu</span>}
               <button
                 onClick={toggleSidebar}
                 className="text-white focus:outline-none hover:bg-teal-700 rounded p-2 transition-colors"
                 aria-label={isSidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
                 title={isSidebarCollapsed ? 'Expand menu' : 'Collapse menu'}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               >
                 {isSidebarCollapsed ? (
                   <svg
@@ -187,11 +170,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link
                     href="/admin"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-<<<<<<< HEAD
-                    title={t('admin.dashboard')}
-=======
                     title="Dashboard"
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -207,22 +186,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
                       />
                     </svg>
-<<<<<<< HEAD
-                    {!isSidebarCollapsed && <span className="ml-3">{t('admin.dashboard')}</span>}
-=======
                     {!isSidebarCollapsed && <span className="ml-3">Dashboard</span>}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/admin/products"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin/products') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-<<<<<<< HEAD
-                    title={t('admin.productManagement')}
-=======
                     title="Products"
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -238,22 +209,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                       />
                     </svg>
-<<<<<<< HEAD
-                    {!isSidebarCollapsed && <span className="ml-3">{t('admin.productManagement')}</span>}
-=======
                     {!isSidebarCollapsed && <span className="ml-3">Products</span>}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/admin/users"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin/users') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-<<<<<<< HEAD
-                    title={t('admin.userManagement')}
-=======
                     title="Users"
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -269,22 +232,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                       />
                     </svg>
-<<<<<<< HEAD
-                    {!isSidebarCollapsed && <span className="ml-3">{t('admin.userManagement')}</span>}
-=======
                     {!isSidebarCollapsed && <span className="ml-3">Users</span>}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/admin/orders"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin/orders') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-<<<<<<< HEAD
-                    title={t('admin.orderManagement')}
-=======
                     title="Orders"
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -300,22 +255,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                       />
                     </svg>
-<<<<<<< HEAD
-                    {!isSidebarCollapsed && <span className="ml-3">{t('admin.orderManagement')}</span>}
-=======
                     {!isSidebarCollapsed && <span className="ml-3">Orders</span>}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/admin/notifications"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin/notifications') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-<<<<<<< HEAD
-                    title={t('admin.notificationManagement')}
-=======
                     title="Notifications"
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -331,22 +278,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                       />
                     </svg>
-<<<<<<< HEAD
-                    {!isSidebarCollapsed && <span className="ml-3">{t('admin.notificationManagement')}</span>}
-=======
                     {!isSidebarCollapsed && <span className="ml-3">Notifications</span>}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/admin/coupons"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin/coupons') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-<<<<<<< HEAD
-                    title={t('admin.couponManagement')}
-=======
                     title="Coupons"
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -362,22 +301,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                       />
                     </svg>
-<<<<<<< HEAD
-                    {!isSidebarCollapsed && <span className="ml-3">{t('admin.couponManagement')}</span>}
-=======
                     {!isSidebarCollapsed && <span className="ml-3">Coupons</span>}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/admin/settings"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin/settings') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-<<<<<<< HEAD
-                    title={t('admin.systemSettings')}
-=======
                     title="Settings"
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -399,11 +330,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-<<<<<<< HEAD
-                    {!isSidebarCollapsed && <span className="ml-3">{t('admin.systemSettings')}</span>}
-=======
                     {!isSidebarCollapsed && <span className="ml-3">Settings</span>}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </Link>
                 </li>
               </ul>

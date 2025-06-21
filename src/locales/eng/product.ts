@@ -24,24 +24,10 @@ export const product = {
   'product.supportPhone': 'Hotline',
   'product.phoneHours': 'Support from 8am-10pm daily',
   'product.liveChat': 'Live Chat',
-<<<<<<< HEAD
-  'product.chatDescription': 'Chat directly with our support staff',
-  'product.startChat': 'Start chat',
-  'product.quantity': 'Quantity',
-  'product.options': 'Options',
-  'product.option.fullPrivateMonth': 'Full - Private Use - 1 Month',
-  
-  // ChatGPT and Grok descriptions
-  'product.chatgpt.description': 'ChatGPT is a powerful AI chatbot that can answer a wide range of questions in both English and Vietnamese, providing support from Front-end to Back-end programming.',
-  'product.grok.description': 'Grok AI helps automatically analyze and process large datasets quickly, supporting accurate decision-making and saving time. Widely applicable across many fields.',
-  'product.chatgpt.shortDescription': 'ChatGPT is a powerful AI chatbot that can answer questions in both English and Vietnamese, supporting programming from Front-end to Back-end.',
-  'product.grok.shortDescription': 'Grok AI helps automatically analyze and process data quickly.',
-=======
   'product.chatDescription': 'Chat directly with support staff',
   'product.startChat': 'Start Chat',
   'product.quantity': 'Quantity',
   'product.options': 'Options',
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   'product.purchasesPerWeek': '{count}/week',
   'product.totalSold': '{count} sold',
   'product.added': 'Added',
@@ -71,22 +57,6 @@ export const product = {
   'product.status.draft': 'Draft',
   'product.status.public': 'Public',
   
-<<<<<<< HEAD
-  // ChatGPT product detail sections
-  'product.chatgpt.pricingTitle': 'I. ChatGPT Plus Account Pricing – OpenAI',
-  'product.chatgpt.technology': '– GPT-4o technology, preparing to update to the latest GPT-5.',
-  'product.chatgpt.genuine': '– Genuine account with full Plus features',
-  'product.chatgpt.warranty': '– Warranty for the entire usage period',
-  'product.chatgpt.sharedPlan': '1) Shared access plan:',
-  'product.chatgpt.sharedAccess': '– Shared account access',
-  'product.chatgpt.fixedDevices': '– Login on 1-2 fixed devices.',
-  'product.chatgpt.noPasswordChange': '– No password changes allowed',
-  'product.chatgpt.privatePlan': '2) Private access/upgrade plan:',
-  'product.chatgpt.privateAccess': '– Receive a pre-created account or upgrade your own account, 100% private use.',
-  'product.chatgpt.multipleDevices': '– Use on multiple devices.',
-  'product.chatgpt.passwordChange': '– Password changes allowed.'
-}; 
-=======
   // Product specific descriptions
   products: {
     // ChatGPT product
@@ -110,4 +80,3 @@ export const legacyProductTranslations = {
   'product.grok.description': product.products.grok.description,
   'product.grok.shortDescription': product.products.grok.shortDescription
 };
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470

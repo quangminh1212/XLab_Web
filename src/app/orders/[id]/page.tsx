@@ -6,8 +6,6 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 // Khai báo kiểu dữ liệu
 interface OrderItem {

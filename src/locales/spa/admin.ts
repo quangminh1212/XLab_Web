@@ -7,21 +7,7 @@ export const admin = {
   'admin.coupons': 'Cupones',
   'admin.settings': 'Configuración',
   'admin.notifications': 'Notificaciones',
-<<<<<<< HEAD
-  'admin.analytics': 'Análisis',
-  'admin.greeting': 'Hola, {name}',
-  'admin.menuTitle': 'Menú de Administración',
-  'admin.expandMenu': 'Expandir Menú',
-  'admin.collapseMenu': 'Colapsar Menú',
-  'admin.productManagement': 'Gestión de Productos',
-  'admin.userManagement': 'Gestión de Usuarios',
-  'admin.orderManagement': 'Gestión de Pedidos',
-  'admin.notificationManagement': 'Gestión de Notificaciones',
-  'admin.couponManagement': 'Gestión de Cupones',
-  'admin.systemSettings': 'Configuración del Sistema',
-=======
   'admin.analytics': 'Analítica',
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   'admin.notifications.title': 'Gestión de Notificaciones',
   'admin.notifications.list': 'Lista de Notificaciones',
   'admin.settings.title': 'Configuración del Sistema',
@@ -371,7 +357,4 @@ export const admin = {
   'admin.notifications.form.englishContentPlaceholder': 'Ingrese el contenido de la notificación en inglés',
   'admin.notifications.form.spanishTitlePlaceholder': 'Ingrese el título de la notificación en español',
   'admin.notifications.form.spanishContentPlaceholder': 'Ingrese el contenido de la notificación en español',
-  'admin.notifications.form.chineseVersion': 'Versión en Chino',
-  'admin.notifications.form.chineseTitlePlaceholder': 'Ingrese el título de la notificación en chino',
-  'admin.notifications.form.chineseContentPlaceholder': 'Ingrese el contenido de la notificación en chino',
 }; 

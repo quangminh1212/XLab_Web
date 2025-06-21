@@ -2,7 +2,6 @@ export const account = {
   'account.title': 'Mi Cuenta',
   'account.profile': 'Perfil',
   'account.orders': 'Pedidos',
-  'account.myOrders': 'Mis Pedidos',
   'account.balance': 'Saldo',
   'account.balanceTooltip': 'Saldo de cuenta - Haz clic para depositar',
   'account.settings': 'Configuración',
@@ -34,7 +33,6 @@ export const account = {
   'account.viewDetails': 'Ver Detalles',
   'account.noDownloads': 'No hay archivos para descargar',
   'account.downloadDesc': 'Necesitas comprar un producto antes de poder descargar software.',
-  'account.downloadsNote': 'Esta sección solo se aplica a productos de software, no a productos de cuenta.',
   'account.version': 'Versión: {version} (Actualizado: {date})',
   'account.viewHistory': 'Ver Historial',
   'account.changePassword': 'Cambiar Contraseña',
@@ -98,7 +96,6 @@ export const account = {
   'account.deposit': 'Depósito',
   'account.usedVouchers': 'Cupones Usados',
   'account.orderHistory': 'Historial de Pedidos',
-  'account.purchaseHistory': 'Historial de Compras',
   'account.quantity': 'Cantidad',
   
   // Additional translations

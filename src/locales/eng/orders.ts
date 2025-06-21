@@ -1,6 +1,5 @@
 export const orders = {
   'orders.title': 'My Orders',
-  'orders.myOrders': 'My Orders',
   'orders.orderNumber': 'Order #',
   'orders.date': 'Date',
   'orders.status': 'Status',

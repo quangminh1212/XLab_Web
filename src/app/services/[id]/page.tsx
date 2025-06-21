@@ -10,26 +10,6 @@ import { productsData } from '@/locales/productsData';
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
-<<<<<<< HEAD
-// Đọc dữ liệu sản phẩm từ file JSON
-async function getProducts(): Promise<Product[]> {
-  try {
-    // Create a proper URL for server-side fetching
-    const baseUrl =
-      process.env.NEXT_PUBLIC_API_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
-    const url = new URL('/api/products', baseUrl).toString();
-
-    // Fetch products from API with proper URL
-    const response = await fetch(url, { next: { revalidate: 60 } });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch products: ${response.status}`);
-    }
-
-    const result = await response.json();
-    return result.data || [];
-=======
 // Đọc dữ liệu sản phẩm từ locale files
 function getProducts(): any[] {
   try {
@@ -47,43 +27,12 @@ function getProducts(): any[] {
     );
     
     return uniqueProducts;
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   } catch (error) {
-    console.error('Error fetching products data:', error);
+    console.error('Error reading products data:', error);
     return [];
   }
 }
 
-<<<<<<< HEAD
-// Type for sample account products that matches the Product interface
-const convertSampleAccountToProduct = (sample: any): Product => {
-  return {
-    ...sample,
-    shortDescription: sample.description,
-    images: [sample.imageUrl],
-    descriptionImages: [],
-    requirements: [],
-    specifications: [],
-    categories: [
-      {
-        id: { id: sample.categoryId },
-        name: { id: sample.categoryId },
-        slug: { id: sample.categoryId },
-      },
-    ],
-    versions: [
-      {
-        name: 'Default',
-        description: 'Phiên bản mặc định',
-        price: sample.price || 0,
-        originalPrice: sample.salePrice || 0,
-        features: sample.features || [],
-      },
-    ],
-    isPublished: true,
-  };
-};
-=======
 // Đặc biệt xử lý ảnh cho sản phẩm Grok
 function fixProductImages(product: any): any {
   if (!product) return product;
@@ -108,7 +57,6 @@ function fixProductImages(product: any): any {
   
   return product;
 }
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
 export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params trước khi sử dụng thuộc tính của nó
@@ -116,13 +64,8 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
 
   console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
 
-<<<<<<< HEAD
-  // Lấy danh sách sản phẩm từ file JSON
-  const productsFromJson = await getProducts();
-=======
   // Lấy danh sách sản phẩm từ locale files
   const productsFromLocale = getProducts();
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
   // Tìm kiếm trong locale files trước
   let selectedProduct: any = productsFromLocale.find(
@@ -137,14 +80,16 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
 
   // Nếu không tìm thấy, tìm trong mockData
   if (!selectedProduct) {
-    // Tìm trong mockProducts
-    const mockProduct = mockProducts.find(
-      (p) => (p.slug === accountId || p.id === accountId) && (p.isAccount || p.type === 'account'),
+    // Tìm theo slug trước
+    selectedProduct = mockProducts.find(
+      (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
     );
 
-    // Convert mockProduct to Product type
-    if (mockProduct) {
-      selectedProduct = convertSampleAccountToProduct(mockProduct);
+    // Sau đó tìm theo id nếu không tìm thấy theo slug
+    if (!selectedProduct) {
+      selectedProduct = mockProducts.find(
+        (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
+      );
     }
   }
 
@@ -338,25 +283,21 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
     },
   ];
 
-<<<<<<< HEAD
-  // Nếu không tìm thấy, tìm trong sampleAccounts
-=======
   // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData và locale files
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   if (!selectedProduct) {
-    // Find in sample accounts
-    const sampleAccount = sampleAccounts.find((p) => p.slug === accountId || p.id === accountId);
+    // Tìm theo slug trước
+    selectedProduct = sampleAccounts.find((p) => p.slug === accountId);
 
-    if (sampleAccount) {
-      // Convert sample account to match Product type
-      selectedProduct = convertSampleAccountToProduct(sampleAccount);
+    // Sau đó tìm theo id nếu cần
+    if (!selectedProduct) {
+      selectedProduct = sampleAccounts.find((p) => p.id === accountId);
     }
   }
 
-  // Nếu không tìm thấy trong cả hai nguồn dữ liệu, hiển thị trang not-found
+  // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
   if (!selectedProduct) {
-    console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${accountId}`);
-    notFound();
+    console.log(`Không tìm thấy tài khoản với ID hoặc slug: ${accountId}`);
+    return notFound();
   }
 
   // Ghi log thông tin truy cập

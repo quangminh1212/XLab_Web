@@ -47,17 +47,10 @@ export const common = {
   'common.details': 'Chi tiết',
   'common.more': 'Xem thêm',
   'common.less': 'Thu gọn',
-  'common.yes': 'Đồng ý',
+  'common.yes': 'Có',
   'common.no': 'Không',
-  'common.unknown': 'Không xác định',
-  'common.useVietnameseContent': 'Dùng nội dung tiếng Việt',
-  'common.usingVietnameseContent': 'Đang dùng nội dung tiếng Việt',
   'common.softwareAndServices': 'Phần mềm và Dịch vụ',
-<<<<<<< HEAD
-  'common.backToMainPage': 'Trở về trang chính',
-=======
   'language.select': 'Ngôn ngữ',
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   
   // Footer categories
   'footer.products': 'Sản phẩm',

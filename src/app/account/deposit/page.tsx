@@ -8,14 +8,13 @@ import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
 import { useBalance } from '@/contexts/BalanceContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { balance, refreshBalance } = useBalance();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   // Get information from URL params
   const suggestedAmount = searchParams?.get('amount');
@@ -135,11 +134,14 @@ export default function DepositPage() {
     }
   };
 
-  const formatBalanceCurrency = (amount: number) => {
-    // Convert the amount based on the current language
-    const convertedAmount = convertCurrency(amount, language);
-    // Format the converted amount with proper currency format
-    return formatCurrency(convertedAmount, language);
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+    })
+      .format(amount)
+      .replace('₫', 'đ');
   };
 
   const copyToClipboard = (text: string) => {
@@ -201,7 +203,7 @@ export default function DepositPage() {
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                {t('account.deposit.amountToDeposit')}: {formatBalanceCurrency(parseInt(suggestedAmount))}
+                {t('account.deposit.amountToDeposit')}: {formatCurrency(parseInt(suggestedAmount))}
               </div>
             )}
           </div>
@@ -321,7 +323,7 @@ export default function DepositPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">{t('account.deposit.currentBalance')}</h3>
               </div>
-              <p className="text-3xl font-bold text-teal-600">{formatBalanceCurrency(balance)}</p>
+              <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
             </div>
 
             {/* Transfer Information */}

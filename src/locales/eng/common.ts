@@ -48,15 +48,8 @@ export const common = {
   'common.less': 'Less',
   'common.yes': 'Yes',
   'common.no': 'No',
-  'common.unknown': 'Unknown',
-  'common.useVietnameseContent': 'Use Vietnamese content',
-  'common.usingVietnameseContent': 'Using Vietnamese content',
   'common.softwareAndServices': 'Software and Services',
-<<<<<<< HEAD
-  'common.backToMainPage': 'Back to Main Page',
-=======
   'language.select': 'Language',
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   
   // Footer categories
   'footer.products': 'Products',

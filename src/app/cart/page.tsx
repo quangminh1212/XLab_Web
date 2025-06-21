@@ -363,7 +363,7 @@ export default function CartPage() {
                               </h3>
                               {item.version && (
                                 <span className="text-xs text-gray-500 block mt-0.5">
-                                  {t('product.version')} {item.version}
+                                  {t('product.version')}: {item.version}
                                 </span>
                               )}
                               {item.description && (

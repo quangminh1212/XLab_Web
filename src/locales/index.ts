@@ -1,17 +1,12 @@
 import { eng } from './eng';
 import { vie } from './vie';
 import { spa } from './spa';
-<<<<<<< HEAD
-import { chi } from './chi';
-=======
 import * as localeDebug from '@/utils/localeDebug';
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
 export const translations = {
   eng,
   vie,
-  spa,
-  chi
+  spa
 };
 
 export type LanguageKeys = keyof typeof translations;
@@ -48,8 +43,8 @@ export function getTranslation(key: string, language: LanguageKeys = defaultLang
         return directResult;
       }
       
-      // If direct access fails and we're using Vietnamese or Spanish, try English as fallback
-      if (safeLanguage === 'vie' || safeLanguage === 'spa' || safeLanguage === 'chi') {
+      // If direct access fails and we're using Vietnamese, try English as fallback
+      if (safeLanguage === 'vie' || safeLanguage === 'spa') {
         // @ts-ignore: The translations object might not have all the keys
         const engDirectResult = translations.eng[key];
         if (engDirectResult !== undefined) {
@@ -136,4 +131,4 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   };
 }
 
-export { eng, vie, spa, chi }; 
+export { eng, vie, spa }; 

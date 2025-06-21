@@ -3,10 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import { productsData } from '@/locales/productsData';
 
-<<<<<<< HEAD
-// Đọc dữ liệu sản phẩm từ JSON file trong locales
-const productsPath = path.join(process.cwd(), 'src/locales/vie/products.json');
-=======
 // Define a generic product interface to handle various product structures
 interface GenericProduct {
   id: string;
@@ -24,7 +20,6 @@ interface GenericProduct {
   relatedProducts?: string[];
   [key: string]: any; // Allow for any additional properties
 }
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
 export async function GET(request: NextRequest) {
   try {
@@ -39,21 +34,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Product ID là bắt buộc' }, { status: 400 });
     }
 
-<<<<<<< HEAD
-    // Đọc dữ liệu từ file
-    const productsRawData = fs.readFileSync(productsPath, 'utf8');
-    const productsJsonData = JSON.parse(productsRawData);
-    
-    // Chuyển đổi cấu trúc dữ liệu từ object sang array để xử lý dễ dàng hơn
-    const productsData = Object.entries(productsJsonData).map(([id, data]: [string, any]) => {
-      return {
-        id,
-        slug: id,
-        ...data,
-        categories: [{ id: 'software', name: 'Phần mềm', slug: 'software' }], // Default category
-      };
-    });
-=======
     // Lấy danh sách sản phẩm từ tất cả các ngôn ngữ và gộp lại
     // Ưu tiên tiếng Việt làm ngôn ngữ chính
     const allProducts: GenericProduct[] = [
@@ -66,7 +46,6 @@ export async function GET(request: NextRequest) {
     const uniqueProducts: GenericProduct[] = allProducts.filter((product, index, self) =>
       index === self.findIndex(p => p.id === product.id)
     );
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
     // Tìm sản phẩm hiện tại để lấy thông tin
     const currentProduct: GenericProduct | undefined = uniqueProducts.find(
@@ -159,13 +138,6 @@ export async function GET(request: NextRequest) {
           formattedProduct.price = firstOption.price;
           formattedProduct.originalPrice = firstOption.originalPrice;
         }
-      } else if (formattedProduct.productOptions) {
-        // Nếu có productOptions (cấu trúc mới), lấy giá từ option đầu tiên
-        const firstOption = Object.values(formattedProduct.productOptions)[0] as any;
-        if (firstOption && (!formattedProduct.price || formattedProduct.price === 0)) {
-          formattedProduct.price = firstOption.price;
-          formattedProduct.originalPrice = firstOption.originalPrice;
-        }
       }
       
       // Đảm bảo luôn có giá
@@ -177,12 +149,6 @@ export async function GET(request: NextRequest) {
           // Đặt giá mặc định nếu không có giá
           formattedProduct.price = 0;
         }
-      }
-      
-      // Thêm đường dẫn hình ảnh nếu chưa có
-      if (!formattedProduct.image && !formattedProduct.imageUrl) {
-        formattedProduct.imageUrl = `/images/products/${formattedProduct.id}/1.jpg`;
-        formattedProduct.image = `/images/products/${formattedProduct.id}/1.jpg`;
       }
       
       return formattedProduct;

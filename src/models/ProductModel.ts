@@ -4,6 +4,12 @@ export interface ProductImage {
   isFeatured?: boolean;
 }
 
+export interface ProductFeature {
+  title: string;
+  description: string;
+  icon?: string;
+}
+
 export interface ProductRequirement {
   type: 'system' | 'software' | 'hardware';
   description: string;
@@ -19,6 +25,7 @@ export interface ProductVersion {
   description?: string;
   price: number;
   originalPrice: number;
+  features: string[];
 }
 
 export interface ProductCategory {
@@ -44,6 +51,7 @@ export interface Product {
   shortDescription: string;
   images: ProductImage[] | string[];
   descriptionImages?: string[];
+  features: ProductFeature[];
   specifications?: ProductSpecification[];
   requirements: ProductRequirement[];
   versions: ProductVersion[];
@@ -70,6 +78,7 @@ export interface ProductFormData {
   shortDescription: string;
   images: ProductImage[] | string[];
   descriptionImages?: string[];
+  features: ProductFeature[];
   specifications?: ProductSpecification[];
   requirements: ProductRequirement[];
   versions: ProductVersion[];

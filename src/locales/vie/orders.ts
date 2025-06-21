@@ -1,6 +1,5 @@
 export const orders = {
   'orders.title': 'Đơn hàng của tôi',
-  'orders.myOrders': 'Đơn hàng của tôi',
   'orders.orderNumber': 'Đơn hàng #',
   'orders.date': 'Ngày',
   'orders.status': 'Trạng thái',

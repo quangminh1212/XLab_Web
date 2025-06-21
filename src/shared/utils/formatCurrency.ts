@@ -10,8 +10,7 @@ export const formatCurrency = (
   const localeMap: Record<string, { locale: string; currency: string }> = {
     vie: { locale: 'vi-VN', currency: 'VND' },
     eng: { locale: 'en-US', currency: 'USD' },
-    spa: { locale: 'es-ES', currency: 'EUR' },
-    chi: { locale: 'zh-CN', currency: 'CNY' }
+    spa: { locale: 'es-ES', currency: 'EUR' }
   };
 
   // Get locale configuration based on language or fall back to Vietnamese
@@ -19,8 +18,8 @@ export const formatCurrency = (
 
   // Apply appropriate decimal settings based on currency
   const fractionDigits = currency === 'VND' ? 0 : 2;
-  
-  // Format the amount using Intl.NumberFormat with standard currency formatting
+
+  // Format the amount using Intl.NumberFormat
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
@@ -40,8 +39,7 @@ export const convertCurrency = (
   const exchangeRates: Record<string, number> = {
     vie: 1, // 1 VND = 1 VND (base currency)
     eng: 0.000041, // 1 VND ≈ 0.000041 USD
-    spa: 0.000038, // 1 VND ≈ 0.000038 EUR
-    chi: 0.00029 // 1 VND ≈ 0.00029 CNY
+    spa: 0.000038 // 1 VND ≈ 0.000038 EUR
   };
 
   // Get exchange rate or use Vietnamese rate as fallback

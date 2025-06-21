@@ -47,18 +47,12 @@ export default function RelatedProducts({
         );
 
         if (!response.ok) {
-          console.log(`RelatedProducts - Failed to fetch related products. Falling back to category products.`);
           // Fallback: If API fails, try to fetch products from the same category
           const categoryResponse = await fetch(
             `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
           );
           if (categoryResponse.ok) {
-            const responseData = await categoryResponse.json();
-            console.log(`RelatedProducts - Category API response:`, responseData);
-            // Make sure we have an array of products
-            const allProducts = Array.isArray(responseData) ? responseData : 
-                               (responseData.data && Array.isArray(responseData.data) ? responseData.data : []);
-            console.log(`RelatedProducts - Products array:`, allProducts);
+            const allProducts = await categoryResponse.json();
             // Filter out the current product
             const filtered = allProducts
               .filter((p: Product) => p.id !== currentProductId)
@@ -68,13 +62,8 @@ export default function RelatedProducts({
             setProducts([]);
           }
         } else {
-          const responseData = await response.json();
-          console.log(`RelatedProducts - Related API response:`, responseData);
-          // Make sure we have an array of products
-          const relatedProducts = Array.isArray(responseData) ? responseData :
-                                 (responseData.data && Array.isArray(responseData.data) ? responseData.data : []);
-          console.log(`RelatedProducts - Related products array:`, relatedProducts);
-          setProducts(relatedProducts);
+          const data = await response.json();
+          setProducts(data);
         }
       } catch (error) {
         console.error('Error fetching related products:', error);
@@ -136,30 +125,6 @@ export default function RelatedProducts({
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
 
-<<<<<<< HEAD
-    // Xử lý category an toàn
-    let safeCategory;
-    
-    // Nếu có category trực tiếp
-    if (product.category) {
-      // Chuyển đổi nếu là object
-      if (typeof product.category === 'object' && product.category !== null) {
-        const catObj = product.category as any;
-        safeCategory = catObj.name || catObj.id || undefined;
-      } else if (typeof product.category === 'string') {
-        safeCategory = product.category;
-      }
-    }
-    // Nếu có categories array
-    else if (product.categories?.length) {
-      const firstCategory = product.categories[0];
-      if (typeof firstCategory === 'string') {
-        safeCategory = firstCategory;
-      } else if (typeof firstCategory === 'object' && firstCategory !== null) {
-        const catObj = firstCategory as any;
-        safeCategory = catObj.name || catObj.id || undefined;
-      }
-=======
     // Xử lý category an toàn - giữ nguyên dạng object để ProductCard xử lý
     let safeCategory = '';
     
@@ -201,7 +166,6 @@ export default function RelatedProducts({
     // Nếu có categories array
     else if (product.categories?.length) {
       safeCategory = extractCategoryString(product.categories[0]);
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
     }
 
     const mapped = {

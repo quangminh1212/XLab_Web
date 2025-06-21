@@ -157,7 +157,7 @@ export default function OrderHistoryPage() {
   // Format ngày tháng
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString(language === 'vie' ? 'vi-VN' : 'en-US', {
+    return date.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US', {
       hour: '2-digit',
       minute: '2-digit',
       day: '2-digit',
@@ -168,34 +168,11 @@ export default function OrderHistoryPage() {
 
   // Format tiền tệ
   const formatCurrency = (amount: number) => {
-    const localeMap: Record<string, { locale: string; currency: string }> = {
-      vie: { locale: 'vi-VN', currency: 'VND' },
-      eng: { locale: 'en-US', currency: 'USD' },
-      spa: { locale: 'es-ES', currency: 'EUR' },
-      chi: { locale: 'zh-CN', currency: 'CNY' }
-    };
-    
-    const { locale, currency } = localeMap[language] || localeMap.vie;
-    const fractionDigits = currency === 'VND' ? 0 : 2;
-    
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US', {
       style: 'currency',
-      currency,
-      maximumFractionDigits: fractionDigits
+      currency: 'VND',
+      minimumFractionDigits: 0,
     }).format(amount);
-  };
-  
-  // Convert currency based on language
-  const convertCurrency = (amountInVND: number): number => {
-    const exchangeRates: Record<string, number> = {
-      vie: 1, // 1 VND = 1 VND (base currency)
-      eng: 0.000041, // 1 VND ≈ 0.000041 USD
-      spa: 0.000038, // 1 VND ≈ 0.000038 EUR
-      chi: 0.00029 // 1 VND ≈ 0.00029 CNY
-    };
-    
-    const exchangeRate = exchangeRates[language] || exchangeRates.vie;
-    return amountInVND * exchangeRate;
   };
 
   if (status === 'loading' || loading) {
@@ -320,7 +297,7 @@ export default function OrderHistoryPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-gray-800 text-sm">{formatCurrency(convertCurrency(item.price))}</p>
+                        <p className="font-medium text-gray-800 text-sm">{formatCurrency(item.price)}</p>
                       </div>
                     </div>
                   ))}
@@ -331,7 +308,7 @@ export default function OrderHistoryPage() {
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-gray-700 text-sm">{t('orders.total')}:</span>
                   <span className="font-semibold text-primary-600">
-                    {formatCurrency(convertCurrency(order.totalAmount))}
+                    {formatCurrency(order.totalAmount)}
                   </span>
                 </div>
                 <div className="mt-2 flex justify-end">

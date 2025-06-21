@@ -6,7 +6,6 @@ import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 interface Stats {
   products: number;
@@ -25,14 +24,12 @@ function AdminDashboard() {
     orders: 0,
     revenue: 0,
   });
-<<<<<<< HEAD
-  const { language, t, locale } = useLanguage();
-=======
   const { language, t } = useLanguage();
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
-  const formatAmount = (amount: number) => {
-    return formatCurrency(convertCurrency(amount, language), language);
+  // Chuyển đổi số thành định dạng tiền tệ
+  // Convert number to currency format
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   };
 
   // Lấy dữ liệu sản phẩm khi component mount
@@ -81,11 +78,7 @@ function AdminDashboard() {
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-4">
-<<<<<<< HEAD
-          {t('admin.dashboard')}
-=======
           {t('admin.dashboard.overview')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
         </h2>
 
         {isLoading ? (
@@ -96,85 +89,53 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-<<<<<<< HEAD
-                {t('admin.products')}
-=======
                 {t('admin.dashboard.products')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.products}</p>
               <Link
                 href="/admin/products"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-<<<<<<< HEAD
-                {t('admin.coupons.edit')} →
-=======
                 {t('admin.dashboard.manage')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-<<<<<<< HEAD
-                {t('admin.users')}
-=======
                 {t('admin.dashboard.users')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.users}</p>
               <Link
                 href="/admin/users"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-<<<<<<< HEAD
-                {t('admin.coupons.edit')} →
-=======
                 {t('admin.dashboard.manage')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-<<<<<<< HEAD
-                {t('admin.orders')}
-=======
                 {t('admin.dashboard.orders')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.orders}</p>
               <Link
                 href="/admin/orders"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-<<<<<<< HEAD
-                {t('admin.coupons.edit')} →
-=======
                 {t('admin.dashboard.manage')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-<<<<<<< HEAD
-                {t('admin.orders.revenue')}
-=======
                 {t('admin.dashboard.revenue')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </h3>
-              <p className="mt-2 text-3xl font-bold">{formatAmount(stats.revenue)}</p>
+              <p className="mt-2 text-3xl font-bold">{formatCurrency(stats.revenue)}</p>
               <Link
                 href="/admin/orders"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-<<<<<<< HEAD
-                {t('admin.notifications.viewDetails')} →
-=======
                 {t('admin.dashboard.viewDetails')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
               </Link>
             </div>
           </div>
@@ -183,11 +144,6 @@ function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
-<<<<<<< HEAD
-          <h2 className="text-xl font-bold mb-4">
-            {t('admin.products.title')}
-          </h2>
-=======
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">
               {t('admin.dashboard.latestProducts')}
@@ -202,7 +158,6 @@ function AdminDashboard() {
               </svg>
             </Link>
           </div>
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
           {isLoading ? (
             <div className="flex justify-center items-center h-32">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
@@ -211,27 +166,6 @@ function AdminDashboard() {
             <ul className="divide-y divide-gray-200">
               {products.slice(0, 5).map((product) => (
                 <li key={product.id} className="py-3">
-<<<<<<< HEAD
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        {formatAmount(product.versions[0]?.price || 0)}
-                      </p>
-                    </div>
-                    <div>
-                      {product.isPublished ? (
-                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                          {t('admin.products.statusPublic')}
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
-                          {t('admin.products.statusDraft')}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-=======
                   <Link href={`/admin/products/${product.id}`}>
                     <div className="flex items-center justify-between hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer">
                       <div>
@@ -253,28 +187,19 @@ function AdminDashboard() {
                       </div>
                     </div>
                   </Link>
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                 </li>
               ))}
             </ul>
           ) : (
             <p className="text-gray-500 text-center py-4">
-<<<<<<< HEAD
-              {t('admin.products.noProducts')}
-=======
               {t('admin.dashboard.noProducts')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
             </p>
           )}
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">
-<<<<<<< HEAD
-            {t('admin.products.quickActions')}
-=======
             {t('admin.dashboard.quickActions')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
           </h2>
           <div className="space-y-3">
             <Link
@@ -298,17 +223,10 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-<<<<<<< HEAD
-                    {t('admin.products.addNew')}
-                  </h3>
-                  <p className="text-sm">
-                    {t('admin.products.subtitle')}
-=======
                     {t('admin.dashboard.addNewProduct')}
                   </h3>
                   <p className="text-sm">
                     {t('admin.dashboard.createManageProducts')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </p>
                 </div>
               </div>
@@ -335,17 +253,10 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-<<<<<<< HEAD
-                    {t('admin.notifications.create')}
-                  </h3>
-                  <p className="text-sm">
-                    {t('admin.notifications.noNotificationsDesc')}
-=======
                     {t('admin.dashboard.addNotification')}
                   </h3>
                   <p className="text-sm">
                     {t('admin.dashboard.createNotifications')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </p>
                 </div>
               </div>
@@ -372,17 +283,10 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-<<<<<<< HEAD
-                    {t('admin.coupons.createTab')}
-                  </h3>
-                  <p className="text-sm">
-                    {t('admin.coupons.createTitle')}
-=======
                     {t('admin.dashboard.addCoupon')}
                   </h3>
                   <p className="text-sm">
                     {t('admin.dashboard.createCoupons')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </p>
                 </div>
               </div>
@@ -409,17 +313,10 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-<<<<<<< HEAD
-                    {t('admin.orders.title')}
-                  </h3>
-                  <p className="text-sm">
-                    {t('admin.orders.viewCustomerPage')}
-=======
                     {t('admin.dashboard.manageOrders')}
                   </h3>
                   <p className="text-sm">
                     {t('admin.dashboard.processOrders')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </p>
                 </div>
               </div>
@@ -452,17 +349,10 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-<<<<<<< HEAD
-                    {t('admin.settings.title')}
-                  </h3>
-                  <p className="text-sm">
-                    {t('admin.settings.advanced')}
-=======
                     {t('admin.dashboard.systemSettings')}
                   </h3>
                   <p className="text-sm">
                     {t('admin.dashboard.configureSystem')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
                   </p>
                 </div>
               </div>
@@ -472,11 +362,7 @@ function AdminDashboard() {
               href="/"
               className="px-4 py-2 bg-white text-teal-600 rounded hover:bg-gray-100 transition-colors duration-200"
             >
-<<<<<<< HEAD
-              {t('common.backToMainPage')}
-=======
               {t('admin.dashboard.backToMain')}
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
             </Link>
           </div>
         </div>

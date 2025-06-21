@@ -8,17 +8,6 @@ export const product = {
   'product.relatedProductsSubtitle': 'Productos similares que podrían interesarte',
   'product.addToCart': 'Añadir al carrito',
   'product.buyNow': 'Comprar ahora',
-<<<<<<< HEAD
-  'product.price': 'Precio',
-  'product.originalPrice': 'Precio original',
-  'product.discountedPrice': 'Precio con descuento',
-  'product.youSave': 'Ahorras',
-  'product.quantity': 'Cantidad',
-  'product.options': 'Opciones',
-  'product.option.fullPrivateMonth': 'Completo - Uso Privado - 1 Mes',
-  'product.availableStock': 'Disponible en stock',
-=======
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   'product.outOfStock': 'Agotado',
   'product.inStock': 'En stock',
   'product.warranty': 'Garantía',
@@ -68,22 +57,6 @@ export const product = {
   'product.status.draft': 'Borrador',
   'product.status.public': 'Público',
   
-<<<<<<< HEAD
-  // Secciones de detalles de producto ChatGPT
-  'product.chatgpt.pricingTitle': 'I. Precios de Cuenta ChatGPT Plus – OpenAI',
-  'product.chatgpt.technology': '– Tecnología GPT-4o, preparándose para actualizar a la última GPT-5.',
-  'product.chatgpt.genuine': '– Cuenta genuina con todas las funciones Plus',
-  'product.chatgpt.warranty': '– Garantía durante todo el período de uso',
-  'product.chatgpt.sharedPlan': '1) Plan de acceso compartido:',
-  'product.chatgpt.sharedAccess': '– Acceso a cuenta compartida',
-  'product.chatgpt.fixedDevices': '– Inicio de sesión en 1-2 dispositivos fijos.',
-  'product.chatgpt.noPasswordChange': '– No se permiten cambios de contraseña',
-  'product.chatgpt.privatePlan': '2) Plan de acceso privado/actualización:',
-  'product.chatgpt.privateAccess': '– Reciba una cuenta preconfigurada o actualice su propia cuenta, 100% de uso privado.',
-  'product.chatgpt.multipleDevices': '– Uso en múltiples dispositivos.',
-  'product.chatgpt.passwordChange': '– Cambios de contraseña permitidos.'
-}; 
-=======
   // Product specific descriptions
   products: {
     // ChatGPT product
@@ -107,4 +80,3 @@ export const legacyProductTranslations = {
   'product.grok.description': product.products.grok.description,
   'product.grok.shortDescription': product.products.grok.shortDescription
 };
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470

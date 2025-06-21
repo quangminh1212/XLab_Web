@@ -136,16 +136,10 @@ export default function ProductGrid({
   };
 
   // Xử lý category từ sản phẩm
-<<<<<<< HEAD
-  const extractCategory = (product: Product): string | undefined => {
-    // Nếu đã có category
-    if (product.category) {
-=======
   const extractCategory = (product: Product): string => {
     // Nếu đã có category
     if (product.category) {
       // Nếu category là string
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
       if (typeof product.category === 'string') {
         return product.category;
       }
@@ -153,9 +147,6 @@ export default function ProductGrid({
       // Nếu category là object
       if (typeof product.category === 'object' && product.category !== null) {
         const categoryObj = product.category as any;
-<<<<<<< HEAD
-        return categoryObj.name || categoryObj.id || undefined;
-=======
         
         // Thử lấy tên từ object
         if (categoryObj.name) {
@@ -182,7 +173,6 @@ export default function ProductGrid({
             }
           }
         }
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
       }
     }
     
@@ -194,10 +184,6 @@ export default function ProductGrid({
       }
       
       if (typeof firstCategory === 'object' && firstCategory !== null) {
-<<<<<<< HEAD
-        const categoryObj = firstCategory as any;
-        return categoryObj.name || categoryObj.id || undefined;
-=======
         // Thử lấy tên từ object
         if (firstCategory.name) {
           if (typeof firstCategory.name === 'string') {
@@ -223,7 +209,6 @@ export default function ProductGrid({
             }
           }
         }
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
       }
     }
     

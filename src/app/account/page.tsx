@@ -7,7 +7,6 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -19,8 +18,6 @@ interface OrderItem {
   licenseKey: string;
   expiryDate: string;
   quantity?: number;
-  isAccount?: boolean;  // Flag for account-type products vs software products
-  type?: 'software' | 'account';  // Type of product: software or account
 }
 
 interface Order {
@@ -79,6 +76,11 @@ export default function AccountPage() {
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
   const { t, language } = useLanguage();
+
+  const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
+  const formatCurrency = (amount: number) => {
+    return currencyFormatter.format(amount);
+  };
 
   // Hàm lấy danh sách mã giảm giá
   const fetchAvailableCoupons = async () => {
@@ -250,8 +252,6 @@ export default function AccountPage() {
                       expiryDate: new Date(
                         Date.now() + 365 * 24 * 60 * 60 * 1000,
                       ).toLocaleDateString('vi-VN'), // 1 năm
-                      isAccount: productData?.type === 'account' || productData?.isAccount || false,
-                      type: productData?.type || (productData?.isAccount ? 'account' : 'software')
                     };
                   }),
                   couponDiscount: apiOrder.couponDiscount,
@@ -308,8 +308,6 @@ export default function AccountPage() {
                     expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString(
                       'vi-VN',
                     ),
-                    isAccount: productData?.type === 'account' || productData?.isAccount || false,
-                    type: productData?.type || (productData?.isAccount ? 'account' : 'software')
                   };
                 }),
                 couponDiscount: order.couponDiscount,
@@ -456,9 +454,6 @@ export default function AccountPage() {
   // Tổng số sản phẩm
   const totalProducts = purchaseHistory.reduce((sum, order) => sum + order.items.length, 0);
 
-  // Use the language-aware formatter
-  const formattedTotalSpent = formatCurrency(convertCurrency(totalSpent, language), language);
-
   return (
     <div>
       {/* Page Header */}
@@ -518,7 +513,7 @@ export default function AccountPage() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalPaid')}</h3>
               <p className="text-3xl font-bold text-gray-800 whitespace-nowrap">
-                {formattedTotalSpent}
+                {formatCurrency(totalSpent)}
               </p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 <svg
@@ -540,7 +535,7 @@ export default function AccountPage() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalSaved')}</h3>
               <p className="text-3xl font-bold text-green-600 whitespace-nowrap">
-                {formatCurrency(convertCurrency(totalSaved, language), language)}
+                {formatCurrency(totalSaved)}
               </p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 <svg
@@ -898,7 +893,7 @@ export default function AccountPage() {
                           <div className="p-4">
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.price')}</span>
-                              <span className="font-semibold">{formatCurrency(convertCurrency(item.price, language), language)}</span>
+                              <span className="font-semibold">{formatCurrency(item.price)}</span>
                             </div>
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.quantity')}</span>
@@ -907,7 +902,7 @@ export default function AccountPage() {
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.savingsFromSale')}</span>
                               <span className="font-semibold text-green-600">
-                                {formatCurrency(convertCurrency(item.originalPrice - item.price, language), language)}
+                                {formatCurrency(item.originalPrice - item.price)}
                               </span>
                             </div>
                             {/* Tìm order chứa item hiện tại để hiển thị ngày mua */}
@@ -939,7 +934,7 @@ export default function AccountPage() {
                                   >
                                     <span className="text-gray-600">{t('account.savingsFromVoucher')}</span>
                                     <span className="font-semibold text-green-600">
-                                      {formatCurrency(convertCurrency(order.couponDiscount, language), language)}
+                                      {formatCurrency(order.couponDiscount)}
                                     </span>
                                   </div>
                                 );
@@ -1191,7 +1186,7 @@ export default function AccountPage() {
                                   </div>
                                 </div>
                                 <div className="text-right mt-2 sm:mt-0">
-                                  <div className="font-semibold">{formatCurrency(convertCurrency(item.price, language), language)}</div>
+                                  <div className="font-semibold">{formatCurrency(item.price)}</div>
                                 </div>
                               </div>
                             ))}
@@ -1203,14 +1198,10 @@ export default function AccountPage() {
                                 <span className="text-gray-600">{t('account.savingsFromSale')}:</span>
                                 <span className="font-semibold text-green-600">
                                   {formatCurrency(
-                                    convertCurrency(
-                                      order.items.reduce(
-                                        (sum, item) => sum + (item.originalPrice - item.price),
-                                        0,
-                                      ),
-                                      language
+                                    order.items.reduce(
+                                      (sum, item) => sum + (item.originalPrice - item.price),
+                                      0,
                                     ),
-                                    language
                                   )}
                                 </span>
                               </div>
@@ -1218,7 +1209,7 @@ export default function AccountPage() {
                                 <div className="flex justify-between text-sm">
                                   <span className="text-gray-600">{t('account.savingsFromVoucher')}:</span>
                                   <span className="font-semibold text-green-600">
-                                    {formatCurrency(convertCurrency(order.couponDiscount, language), language)}
+                                    {formatCurrency(order.couponDiscount)}
                                   </span>
                                 </div>
                               )}
@@ -1226,14 +1217,10 @@ export default function AccountPage() {
                                 <span className="text-gray-800">{t('account.totalSavings')}:</span>
                                 <span className="text-green-600">
                                   {formatCurrency(
-                                    convertCurrency(
-                                      order.items.reduce(
-                                        (sum, item) => sum + (item.originalPrice - item.price),
-                                        0,
-                                      ) + (order.couponDiscount || 0),
-                                      language
-                                    ),
-                                    language
+                                    order.items.reduce(
+                                      (sum, item) => sum + (item.originalPrice - item.price),
+                                      0,
+                                    ) + (order.couponDiscount || 0),
                                   )}
                                 </span>
                               </div>
@@ -1241,7 +1228,7 @@ export default function AccountPage() {
 
                             <div className="flex justify-between items-center">
                               <div className="text-lg font-semibold">
-                                {t('account.totalPayment', { amount: formatCurrency(convertCurrency(order.total, language), language) })}
+                                {t('account.totalPayment', { amount: formatCurrency(order.total) })}
                               </div>
                               <div className="flex space-x-3">
                                 <Link
@@ -1332,15 +1319,11 @@ export default function AccountPage() {
               {/* Phần Tải xuống */}
               <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">{t('account.downloads')}</h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  {t('account.downloadsNote') || 'This section only applies to software products, not account products.'}
-                </p>
 
                 {hasProducts ? (
                   <div className="space-y-4">
                     {purchaseHistory
                       .flatMap((order) => order.items)
-                      .filter(item => item.type === 'software' && !item.isAccount) // Ensure products are software type and not accounts
                       .map((item, index) => (
                         <div
                           key={index}

@@ -142,11 +142,11 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href="/testimonials"
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.contactUs')}
+                  {t('footer.testimonials')}
                 </Link>
               </li>
             </ul>

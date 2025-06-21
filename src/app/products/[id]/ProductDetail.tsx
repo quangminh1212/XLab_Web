@@ -16,8 +16,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
   const { t, language } = useLanguage();
-<<<<<<< HEAD
-=======
   const [translatedDescription, setTranslatedDescription] = useState<string>(description);
 
   useEffect(() => {
@@ -62,14 +60,13 @@ const ProductDescription = ({ description, productId }: { description: string, p
       setTranslatedDescription(description);
     }
   }, [description, language, productId, t]);
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.details')}</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
         <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
-          <RichTextContent content={description} className="product-description" />
+          <RichTextContent content={translatedDescription} className="product-description" />
         </div>
 
         <style jsx global>{`
@@ -124,11 +121,6 @@ const ProductDescription = ({ description, productId }: { description: string, p
 
 // Component xử lý hiển thị mô tả ngắn sản phẩm
 const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
-<<<<<<< HEAD
-  const { t, language } = useLanguage();
-  
-  // Directly display the provided shortDescription that should be already translated
-=======
   const { language, t } = useLanguage();
   const [translatedShortDescription, setTranslatedShortDescription] = useState<string>(shortDescription);
 
@@ -236,9 +228,17 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
 
   if (!translatedFeatures || translatedFeatures.length === 0) return null;
 
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   return (
-    <p className="mt-4 text-gray-600 text-lg">{shortDescription || ''}</p>
+    <div className="mt-8">
+      <h3 className="font-medium text-gray-900 mb-2">{t('product.features')}:</h3>
+      <ul className="list-disc list-inside space-y-1">
+        {translatedFeatures.map((feature, index) => (
+          <li key={index} className="text-gray-600">
+            {typeof feature === 'string' ? feature : feature.title}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
@@ -259,9 +259,6 @@ const ProductOptions = ({
   optionPrices?: { [key: string]: any }
 }) => {
   const { t, language } = useLanguage();
-<<<<<<< HEAD
-  
-=======
   const [translatedOptions, setTranslatedOptions] = useState<{ [key: string]: string }>(
     productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {})
   );
@@ -319,7 +316,6 @@ const ProductOptions = ({
     }
   }, [language, productId, productOptions, t]);
 
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   // Format price based on selected language
   const displayPrice = (amount: number) => {
     const convertedAmount = convertCurrency(amount, language);
@@ -330,7 +326,7 @@ const ProductOptions = ({
 
   return (
     <div className="mb-6">
-      <h4 className="font-medium text-gray-700 text-lg mb-4">{t('product.options')}</h4>
+      <h4 className="font-medium text-gray-700 text-lg mb-4">{optionsTitle}</h4>
       <div className="flex flex-wrap gap-4">
         {options.map((option, index) => (
           <div
@@ -339,7 +335,7 @@ const ProductOptions = ({
             className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
           >
             <span className="text-gray-900 font-medium text-sm mr-2">
-              {option}
+              {translatedOptions[option] || option}
             </span>
             {optionPrices && optionPrices[option] && (
               <span className="text-primary-600 font-medium text-sm">
@@ -393,48 +389,7 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
-<<<<<<< HEAD
-  const router = useRouter();
-  const { t, language } = useLanguage();
-=======
   const { t, language, setLanguage, availableLanguages } = useLanguage();
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
-  
-  // States for translated product data
-  const [translatedProduct, setTranslatedProduct] = useState<ProductType>(product);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // Fetch translations when language changes or initial load
-  useEffect(() => {
-    const fetchProductTranslations = async () => {
-      try {
-        setIsLoading(true);
-        // Always fetch translations to ensure we have the right language
-        const response = await fetch(`/api/product-translations?id=${product.id}&lang=${language}&useOriginalStructure=true`);
-        if (response.ok) {
-          const data = await response.json();
-          setTranslatedProduct({
-            ...product,
-            name: data.name || product.name,
-            shortDescription: data.shortDescription || product.shortDescription,
-            description: data.description || product.description,
-            productOptions: data.productOptions || product.productOptions
-          });
-        } else {
-          // Use original product as fallback
-          setTranslatedProduct(product);
-        }
-      } catch (error) {
-        console.error('Error fetching product translations:', error);
-        // Fall back to original product data
-        setTranslatedProduct(product);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProductTranslations();
-  }, [language, product]);
   
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
@@ -446,8 +401,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // Update document title khi component được render
   useEffect(() => {
-    document.title = `${translatedProduct.name} | ${t('product.metaTitle')}`;
-  }, [translatedProduct.name, t]);
+    document.title = `${product.name} | ${t('product.metaTitle')}`;
+  }, [product.name, t]);
 
   // State để theo dõi số lượt xem
   const [viewCount, setViewCount] = useState<number>(0);
@@ -456,16 +411,20 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState<number>(1);
 
   // State lưu phiên bản sản phẩm được chọn
-  const [selectedVersion, setSelectedVersion] = useState<string>(translatedProduct?.versions?.[0]?.name || '');
+  const [selectedVersion, setSelectedVersion] = useState<string>(
+    product.versions && product.versions.length > 0 ? product.versions[0].name : '',
+  );
 
   // State quản lý tùy chọn mới
   const [newOptionText, setNewOptionText] = useState('');
 
   // State danh sách tùy chọn
-  const [productOptions, setProductOptions] = useState<string[]>(translatedProduct?.productOptions || []);
+  const [productOptions, setProductOptions] = useState(product.productOptions || []);
 
   // State tùy chọn đang chọn
-  const [selectedOption, setSelectedOption] = useState<string>(translatedProduct?.defaultProductOption || translatedProduct?.productOptions?.[0] || '');
+  const [selectedOption, setSelectedOption] = useState<string>(
+    product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : '',
+  );
 
   // State hiển thị tùy chọn hiện có
   const [showOptions, setShowOptions] = useState(false);
@@ -520,17 +479,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // Lấy ảnh sản phẩm
   const getProductImage = () => {
-    // Special cases for specific products
-    if (translatedProduct.id === 'chatgpt') {
-      return '/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png';
-    }
-    
-    if (translatedProduct.id === 'grok') {
-      return '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
-    }
-    
-    if (translatedProduct.images && translatedProduct.images.length > 0) {
-      const firstImage = translatedProduct.images[0];
+    if (product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
       // Không sử dụng blob URLs
       if (typeof firstImage === 'string' && firstImage.startsWith('blob:')) {
         return '/images/placeholder/product-placeholder.svg';
@@ -558,14 +508,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // Tính toán giá dựa trên tùy chọn đã chọn
   const calculateSelectedPrice = () => {
     // Nếu có giá tùy chọn, ưu tiên sử dụng giá của tùy chọn
-    if (selectedOption && translatedProduct.optionPrices && translatedProduct.optionPrices[selectedOption]) {
-      return translatedProduct.optionPrices[selectedOption].price;
+    if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
+      return product.optionPrices[selectedOption].price;
     }
 
     // Ngược lại sử dụng giá của version
-    if (selectedVersion && translatedProduct.versions && translatedProduct.versions.length > 0) {
-      const version = translatedProduct.versions.find((v) => v.name === selectedVersion);
-      return version ? version.price : translatedProduct.versions[0]?.price || 0;
+    if (selectedVersion && product.versions && product.versions.length > 0) {
+      const version = product.versions.find((v) => v.name === selectedVersion);
+      return version ? version.price : product.versions[0]?.price || 0;
     }
 
     return calculateCheapestPrice();
@@ -574,14 +524,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // Tính toán giá gốc của tùy chọn đã chọn
   const calculateSelectedOriginalPrice = () => {
     // Nếu có giá gốc tùy chọn, ưu tiên sử dụng giá gốc của tùy chọn
-    if (selectedOption && translatedProduct.optionPrices && translatedProduct.optionPrices[selectedOption]) {
-      return translatedProduct.optionPrices[selectedOption].originalPrice;
+    if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
+      return product.optionPrices[selectedOption].originalPrice;
     }
 
     // Ngược lại sử dụng giá gốc của version
-    if (selectedVersion && translatedProduct.versions && translatedProduct.versions.length > 0) {
-      const version = translatedProduct.versions.find((v) => v.name === selectedVersion);
-      return version ? version.originalPrice : translatedProduct.versions[0]?.originalPrice || 0;
+    if (selectedVersion && product.versions && product.versions.length > 0) {
+      const version = product.versions.find((v) => v.name === selectedVersion);
+      return version ? version.originalPrice : product.versions[0]?.originalPrice || 0;
     }
 
     return calculateOriginalPriceOfCheapest();
@@ -603,9 +553,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     let cheapestPrice = Number.MAX_VALUE;
 
     // Kiểm tra giá trong tùy chọn
-    if (translatedProduct.optionPrices && Object.keys(translatedProduct.optionPrices).length > 0) {
-      for (const option in translatedProduct.optionPrices) {
-        const price = translatedProduct.optionPrices[option].price;
+    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+      for (const option in product.optionPrices) {
+        const price = product.optionPrices[option].price;
         if (price < cheapestPrice) {
           cheapestPrice = price;
         }
@@ -613,8 +563,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     }
 
     // Kiểm tra giá trong versions
-    if (translatedProduct.versions && translatedProduct.versions.length > 0) {
-      for (const version of translatedProduct.versions) {
+    if (product.versions && product.versions.length > 0) {
+      for (const version of product.versions) {
         if (version.price < cheapestPrice) {
           cheapestPrice = version.price;
         }
@@ -630,19 +580,19 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     let originalPrice = 0;
 
     // Kiểm tra giá trong tùy chọn
-    if (translatedProduct.optionPrices && Object.keys(translatedProduct.optionPrices).length > 0) {
-      for (const option in translatedProduct.optionPrices) {
-        const price = translatedProduct.optionPrices[option].price;
+    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+      for (const option in product.optionPrices) {
+        const price = product.optionPrices[option].price;
         if (price < cheapestPrice) {
           cheapestPrice = price;
-          originalPrice = translatedProduct.optionPrices[option].originalPrice;
+          originalPrice = product.optionPrices[option].originalPrice;
         }
       }
     }
 
     // Kiểm tra giá trong versions
-    if (translatedProduct.versions && translatedProduct.versions.length > 0) {
-      for (const version of translatedProduct.versions) {
+    if (product.versions && product.versions.length > 0) {
+      for (const version of product.versions) {
         if (version.price < cheapestPrice) {
           cheapestPrice = version.price;
           originalPrice = version.originalPrice;
@@ -671,15 +621,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const handleAddToCart = () => {
     let productImage = '/images/placeholder/product-placeholder.svg';
 
-    // Special cases for specific products
-    if (translatedProduct.id === 'chatgpt') {
-      productImage = '/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png';
-    } 
-    else if (translatedProduct.id === 'grok') {
-      productImage = '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png';
-    }
-    else if (translatedProduct.images && translatedProduct.images.length > 0) {
-      const firstImage = translatedProduct.images[0];
+    if (product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
       // Xử lý đường dẫn ảnh
       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
         productImage = firstImage;
@@ -689,8 +632,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     }
 
     addItem({
-      id: translatedProduct.id.toString(),
-      name: translatedProduct.name,
+      id: product.id.toString(),
+      name: product.name,
       price: calculateSelectedPrice(),
       quantity: quantity,
       image: productImage,
@@ -716,11 +659,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     setViewCount((prev) => prev + 1);
 
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
-    console.log(`Đang xem sản phẩm: ${translatedProduct.name}, Lượt xem: ${viewCount + 1}`);
-  }, [translatedProduct.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    console.log(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
+  }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
-  const isAccount = translatedProduct.categories?.some((cat) => cat.id === 'tai-khoan-hoc-tap');
+  const isAccount = product.categories?.some((cat) => cat.id === 'tai-khoan-hoc-tap');
 
   // Xử lý tăng số lượng
   const increaseQuantity = () => {
@@ -740,7 +683,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     return formatCurrency(convertedAmount, language);
   };
 
-  if (!translatedProduct) {
+  if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <p>{t('product.loading')}</p>
@@ -785,7 +728,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
             {isAccount ? t('products.accounts') : t('nav.products')}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
-          <span className="text-gray-800">{translatedProduct.name}</span>
+          <span className="text-gray-800">{product.name}</span>
         </div>
 
         {/* Product main info */}
@@ -796,7 +739,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               <div className="relative aspect-square bg-white rounded-lg overflow-hidden border border-gray-100">
                 <Image
                   src={getProductImage()}
-                  alt={translatedProduct.name}
+                  alt={product.name}
                   fill
                   className="object-contain"
                   priority
@@ -804,16 +747,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
 
               {/* Additional images */}
-              {translatedProduct.descriptionImages && translatedProduct.descriptionImages.length > 0 && (
+              {product.descriptionImages && product.descriptionImages.length > 0 && (
                 <div className="grid grid-cols-4 gap-2 mt-4">
-                  {translatedProduct.descriptionImages.slice(0, 4).map((img, index) => (
+                  {product.descriptionImages.slice(0, 4).map((img, index) => (
                     <div
                       key={index}
                       className="relative aspect-square bg-white rounded-lg overflow-hidden border border-gray-100"
                     >
                       <Image
                         src={img}
-                        alt={`${translatedProduct.name} - ${index + 1}`}
+                        alt={`${product.name} - ${index + 1}`}
                         fill
                         sizes="(max-width: 768px) 25vw, 100px"
                         className="object-cover"
@@ -826,7 +769,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
             {/* Product info */}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{translatedProduct.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{product.name}</h1>
 
               <div className="mt-4 flex items-center">
                 <div className="text-3xl font-bold text-primary-600">
@@ -850,10 +793,10 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
               <div className="mt-6 p-4 rounded-lg">
                 {/* Product options/versions */}
-                {translatedProduct.versions && translatedProduct.versions.length > 1 && (
+                {product.versions && product.versions.length > 1 && (
                   <div className="mb-3">
                     <div className="grid grid-cols-1 gap-1.5">
-                      {translatedProduct.versions.map((version) => (
+                      {product.versions.map((version) => (
                         <div
                           key={version.name}
                           className={`
@@ -893,26 +836,26 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
 
                 {/* Loại sản phẩm */}
-                {translatedProduct.productOptions && translatedProduct.productOptions.length > 0 && (
+                {product.productOptions && product.productOptions.length > 0 && (
                   <ProductOptions 
                     options={productOptions} 
-                    productId={translatedProduct.id.toString()}
+                    productId={product.id.toString()}
                     productOptions={productOptions}
                     selectedOption={selectedOption}
                     setSelectedOption={setSelectedOption}
-                    optionPrices={translatedProduct.optionPrices}
+                    optionPrices={product.optionPrices}
                   />
                 )}
               </div>
 
               <ProductShortDescription 
-                shortDescription={translatedProduct.shortDescription || ''} 
-                productId={translatedProduct.id.toString()} 
+                shortDescription={product.shortDescription || ''} 
+                productId={product.id.toString()} 
               />
 
               {/* Quantity selector */}
               <div className="mt-6">
-                <h3 className="font-medium text-gray-900 mb-2">{t('product.quantity')}</h3>
+                <h3 className="font-medium text-gray-900 mb-2">{t('product.quantity')}:</h3>
                 <div className="flex items-center">
                   <button
                     onClick={decreaseQuantity}
@@ -951,8 +894,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     clearCart();
                     // Thêm sản phẩm hiện tại vào giỏ hàng
                     let productImage = '/images/placeholder/product-placeholder.svg';
-                    if (translatedProduct.images && translatedProduct.images.length > 0) {
-                      const firstImage = translatedProduct.images[0];
+                    if (product.images && product.images.length > 0) {
+                      const firstImage = product.images[0];
                       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
                         productImage = firstImage;
                       } else if (typeof firstImage !== 'string' && firstImage.url) {
@@ -961,8 +904,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     }
                     // Thêm sản phẩm vào giỏ hàng
                     addItem({
-                      id: translatedProduct.id.toString(),
-                      name: translatedProduct.name,
+                      id: product.id.toString(),
+                      name: product.name,
                       price: calculateSelectedPrice(),
                       quantity: quantity,
                       image: productImage,
@@ -977,13 +920,18 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   {t('product.buyNow')}
                 </Link>
               </div>
+
+              {/* Features list */}
+              {product.features && product.features.length > 0 && (
+                <ProductFeatures features={product.features} productId={product.id.toString()} />
+              )}
             </div>
           </div>
         </div>
 
         {/* Product description */}
         <div className="max-w-6xl mx-auto">
-          <ProductDescription description={translatedProduct.description} productId={translatedProduct.id.toString()} />
+          <ProductDescription description={product.description} productId={product.id.toString()} />
         </div>
 
         {/* Product Reviews */}
@@ -1172,12 +1120,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
         {/* Related products */}
         <RelatedProducts
-          currentProductId={translatedProduct.id}
+          currentProductId={product.id}
           categoryId={
-            translatedProduct.categories && translatedProduct.categories.length > 0
-              ? typeof translatedProduct.categories[0].id === 'object'
-                ? String((translatedProduct.categories[0].id as any)?.id || '')
-                : String(translatedProduct.categories[0].id || '')
+            product.categories && product.categories.length > 0
+              ? typeof product.categories[0].id === 'object'
+                ? (product.categories[0].id as any)?.id
+                : product.categories[0].id
               : undefined
           }
         />

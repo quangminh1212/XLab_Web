@@ -28,16 +28,6 @@ export const product = {
   'product.startChat': 'Bắt đầu chat',
   'product.quantity': 'Số lượng',
   'product.options': 'Tùy chọn',
-<<<<<<< HEAD
-  'product.option.fullPrivateMonth': 'Full - Dùng riêng - 1 Tháng',
-  
-  // ChatGPT and Grok descriptions
-  'product.chatgpt.description': 'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.',
-  'product.grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực.',
-  'product.chatgpt.shortDescription': 'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.',
-  'product.grok.shortDescription': 'Grok AI giúp tự động phân tích và xử lý dữ liệu nhanh chóng.',
-=======
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   'product.purchasesPerWeek': '{count} lượt/tuần',
   'product.totalSold': 'Đã bán {count}',
   'product.added': 'Đã thêm',
@@ -67,21 +57,6 @@ export const product = {
   'product.status.draft': 'Nháp',
   'product.status.public': 'Công khai',
   
-<<<<<<< HEAD
-  // ChatGPT product detail sections
-  'product.chatgpt.pricingTitle': 'I. Bảng giá Tài khoản ChatGPT Plus – OpenAI',
-  'product.chatgpt.technology': '– Công nghệ GPT-4o, chuẩn bị cập nhật GPT-5 mới nhất.',
-  'product.chatgpt.genuine': '– Tài khoản chính hãng, đầy đủ tính năng Plus',
-  'product.chatgpt.warranty': '– Bảo hành trọn thời gian sử dụng',
-  'product.chatgpt.sharedPlan': '1) Gói dùng chung:',
-  'product.chatgpt.sharedAccess': '– Tài khoản cấp dùng chung',
-  'product.chatgpt.fixedDevices': '– Đăng nhập 1-2 thiết bị cố định.',
-  'product.chatgpt.noPasswordChange': '– Không đổi mật khẩu',
-  'product.chatgpt.privatePlan': '2) Gói dùng riêng/ nâng cấp:',
-  'product.chatgpt.privateAccess': '– Nhận tài khoản tạo sẵn hoặc Nâng cấp tài khoản chính chủ, dùng riêng 100%.',
-  'product.chatgpt.multipleDevices': '– Dùng nhiều thiết bị.',
-  'product.chatgpt.passwordChange': '– Được đổi mật khẩu.'
-=======
   // Product specific descriptions
   products: {
     // ChatGPT product
@@ -104,5 +79,4 @@ export const legacyProductTranslations = {
   'product.chatgpt.shortDescription': product.products.chatgpt.shortDescription,
   'product.grok.description': product.products.grok.description,
   'product.grok.shortDescription': product.products.grok.shortDescription
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
 }; 

@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 interface SyncStatus {
   hasUserFile: boolean;
@@ -26,7 +24,6 @@ export default function UserSyncStatus() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
-  const { t, language } = useLanguage();
 
   const checkSyncStatus = async () => {
     if (!session?.user?.email) return;
@@ -102,12 +99,6 @@ export default function UserSyncStatus() {
     return 'Đã đồng bộ';
   };
 
-  // Format balance using language-aware function
-  const formattedBalance = formatCurrency(
-    convertCurrency(syncStatus?.syncStatus?.balance || 0, language), 
-    language
-  );
-
   return (
     <div className="p-4 bg-white border rounded-lg shadow-sm">
       <div className="flex items-center justify-between mb-4">
@@ -127,10 +118,7 @@ export default function UserSyncStatus() {
             <div>
               <span className="text-gray-500">Số dư:</span>
               <span className="ml-2 font-medium">
-                <div className="text-gray-800">
-                  <span className="font-medium">{t('common.balance')}: </span>
-                  <span className="text-teal-600 font-bold">{formattedBalance}</span>
-                </div>
+                {syncStatus.syncStatus.balance.toLocaleString('vi-VN')} VND
               </span>
             </div>
             <div>

@@ -28,45 +28,6 @@ export const common = {
   'common.search': 'Buscar',
   'common.filter': 'Filtrar',
   'common.sort': 'Ordenar',
-<<<<<<< HEAD
-  'common.show': 'Mostrar',
-  'common.hide': 'Ocultar',
-  'common.details': 'Detalles',
-  'common.more': 'Más',
-  'common.less': 'Menos',
-  'common.yes': 'Sí',
-  'common.no': 'No',
-  'common.unknown': 'Desconocido',
-  'common.useVietnameseContent': 'Usar contenido vietnamita',
-  'common.usingVietnameseContent': 'Usando contenido vietnamita',
-  'common.softwareAndServices': 'Software y Servicios',
-  'common.backToMainPage': 'Volver a la página principal',
-  
-  // Footer categories
-  'footer.products': 'Productos',
-  'footer.allProducts': 'Todos los productos',
-  'footer.newReleases': 'Nuevos lanzamientos',
-  'footer.mostPopular': 'Más populares',
-  'footer.onSale': 'En oferta',
-  
-  'footer.support': 'Soporte',
-  'footer.contact': 'Contacto',
-  'footer.faq': 'Preguntas frecuentes',
-  'footer.userGuides': 'Guías de usuario',
-  'footer.reportBug': 'Reportar error',
-  
-  'footer.aboutUs': 'Sobre nosotros',
-  'footer.about': 'Acerca de',
-  'footer.blog': 'Blog',
-  'footer.careers': 'Carreras',
-  'footer.partners': 'Socios',
-  
-  'footer.legal': 'Legal',
-  'footer.termsOfService': 'Términos de servicio',
-  'footer.privacyPolicy': 'Política de privacidad',
-  'footer.refundPolicy': 'Política de reembolso',
-  'footer.intellectualProperty': 'Propiedad intelectual',
-=======
   'common.clear': 'Limpiar',
   'common.all': 'Todo',
   'common.none': 'Ninguno',
@@ -74,7 +35,6 @@ export const common = {
   'common.error': 'Error',
   'common.warning': 'Advertencia',
   'common.info': 'Información',
->>>>>>> 8b81a835c3132e7388e78c2b20148965af49f470
   
   // Newsletter
   'newsletter.title': 'Suscríbete a nuestro boletín',
