@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
   });
+  const { t } = useLanguage();
 
   const handleGoogleSignUp = () => {
     setLoading(true);
@@ -38,13 +40,13 @@ export default function RegisterPage() {
 
     // Validate form
     if (!formData.name || !formData.email || !formData.password) {
-      setMessage('Vui lòng điền đầy đủ thông tin.');
+      setMessage(t('pages.register.fillAllFields'));
       setMessageType('error');
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setMessage('Mật khẩu xác nhận không khớp.');
+      setMessage(t('pages.register.passwordMismatch'));
       setMessageType('error');
       return;
     }
@@ -73,7 +75,7 @@ export default function RegisterPage() {
 
       if (response.ok) {
         setMessageType('success');
-        setMessage('Đăng ký thành công! Đang chuyển hướng...');
+        setMessage(t('pages.register.registerSuccess'));
         setTimeout(() => {
           signIn('credentials', {
             email: formData.email,
@@ -82,11 +84,11 @@ export default function RegisterPage() {
           });
         }, 1500);
       } else {
-        throw new Error(data.message || 'Có lỗi xảy ra khi đăng ký');
+        throw new Error(data.message || t('pages.register.registerError'));
       }
     } catch (error) {
       setMessageType('error');
-      setMessage(error instanceof Error ? error.message : 'Có lỗi xảy ra khi đăng ký');
+      setMessage(error instanceof Error ? error.message : t('pages.register.registerError'));
     } finally {
       setLoading(false);
     }

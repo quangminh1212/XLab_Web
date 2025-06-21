@@ -47,5 +47,29 @@
   },
   "balance": {
     "title": "Account balance - Click to deposit"
+  },
+  "auth": {
+    "loading": "Loading...",
+    "notAdmin": "You don't have permission to access admin page",
+    "redirecting": "Redirecting...",
+    "pleaseLogin": "Please login to continue"
+  },
+  "errors": {
+    "copyFailed": "Could not copy. Please try again.",
+    "loadFailed": "Could not load data",
+    "generalError": "An error has occurred"
+  },
+  "actions": {
+    "copyToClipboard": "Copy to clipboard",
+    "sync": "Sync data",
+    "clear": "Clear",
+    "copy": "Copy"
+  },
+  "notifications": {
+    "noItems": "No new notifications"
+  },
+  "vouchers": {
+    "noItems": "No vouchers available",
+    "clickToCopy": "Click to copy code"
   }
 } 

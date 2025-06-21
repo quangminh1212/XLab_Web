@@ -7,6 +7,7 @@ import viHomeTranslations from './vi/features/home.json';
 import viProductTranslations from './vi/features/product.json';
 import viAboutTranslations from './vi/features/about.json';
 import viCommonTranslations from './vi/features/common.json';
+import viPagesTranslations from './vi/features/pages.json';
 
 // Import English translations
 import enAdminTranslations from './en/features/admin.json';
@@ -17,6 +18,7 @@ import enHomeTranslations from './en/features/home.json';
 import enProductTranslations from './en/features/product.json';
 import enAboutTranslations from './en/features/about.json';
 import enCommonTranslations from './en/features/common.json';
+import enPagesTranslations from './en/features/pages.json';
 
 export interface Translations {
   [key: string]: string;
@@ -44,6 +46,7 @@ const viTranslations = {
   ...prefixKeys(viProductTranslations, 'product'),
   ...prefixKeys(viAboutTranslations, 'about'),
   ...prefixKeys(viCommonTranslations, 'common'),
+  ...prefixKeys(viPagesTranslations, 'pages'),
 };
 
 const enTranslations = {
@@ -55,6 +58,7 @@ const enTranslations = {
   ...prefixKeys(enProductTranslations, 'product'),
   ...prefixKeys(enAboutTranslations, 'about'),
   ...prefixKeys(enCommonTranslations, 'common'),
+  ...prefixKeys(enPagesTranslations, 'pages'),
 };
 
 const locales: LocaleData = {

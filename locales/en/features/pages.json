@@ -1,0 +1,60 @@
+{
+  "notFound": {
+    "product": {
+      "title": "Product Not Found",
+      "message": "The product you are looking for does not exist or has been removed."
+    },
+    "service": {
+      "title": "Service Not Found",
+      "message": "The service you are looking for does not exist or has been removed."
+    }
+  },
+  "loading": {
+    "product": {
+      "title": "Loading Product Information",
+      "message": "Loading product details...",
+      "autoReload": "The page will automatically reload in 3 seconds",
+      "backToProducts": "Back to products"
+    }
+  },
+  "product": {
+    "faq": {
+      "subscription": {
+        "question": "Is this product requires a monthly subscription?",
+        "answer": "No, this is a one-time purchase with lifetime usage. You will receive free updates during the warranty period."
+      },
+      "activation": {
+        "question": "How do I activate the product after purchase?",
+        "answer": "After successful payment, you'll receive an email with account information and detailed activation instructions. If you need additional support, please contact our 24/7 support team."
+      },
+      "multipleDevices": {
+        "question": "Can I use this product on multiple devices?",
+        "answer": "Each license is valid for one device. If you want to use it on multiple devices, please purchase additional licenses or contact us about enterprise packages."
+      },
+      "support": {
+        "question": "How do I contact support?",
+        "answer": "You can contact technical support via email at support@xlab.vn or through the Contact page on our website. Our support team works 24/7 and will respond within 24 hours."
+      },
+      "compatibility": {
+        "question": "Is the software compatible with my operating system?",
+        "answer": "We support Windows 10/11, macOS 10.15+, and popular Linux distributions. You can view specific system requirements for each product on the product information page."
+      },
+      "troubleshooting": {
+        "question": "I'm experiencing an issue with the software, what should I do?",
+        "answer": "First, make sure you're using the latest version of the software. If you're still experiencing issues, you can consult the documentation, community forums, or submit a support request through your account with a detailed description of the error and your environment."
+      }
+    }
+  },
+  "register": {
+    "fillAllFields": "Please fill in all fields.",
+    "passwordMismatch": "Confirmation password does not match.",
+    "registerSuccess": "Registration successful! Redirecting...",
+    "registerError": "An error occurred during registration"
+  },
+  "vouchers": {
+    "syncingVouchers": "Syncing...",
+    "syncData": "Sync Data",
+    "cannotLoadVoucher": "Could not load voucher data",
+    "errorLoadingVoucher": "An error occurred while loading vouchers"
+  }
+} 

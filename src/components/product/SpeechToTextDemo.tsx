@@ -88,7 +88,7 @@ const SpeechToTextDemo = () => {
         alert(t('product.speechToText.copiedToClipboard'));
       })
       .catch((err) => {
-        console.error('Không thể sao chép: ', err);
+        console.error(t('errors.copyFailed'), err);
       });
   };
 
