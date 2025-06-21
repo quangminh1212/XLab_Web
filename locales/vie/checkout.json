@@ -1,0 +1,70 @@
+{
+  "title": "Thanh toán",
+  "steps": {
+    "cart": "Giỏ hàng",
+    "shipping": "Vận chuyển",
+    "payment": "Thanh toán",
+    "confirmation": "Xác nhận"
+  },
+  "cart": {
+    "title": "Giỏ hàng",
+    "empty": "Giỏ hàng của bạn đang trống",
+    "continue_shopping": "Tiếp tục mua sắm",
+    "product": "Sản phẩm",
+    "price": "Giá",
+    "quantity": "Số lượng",
+    "total": "Tổng cộng",
+    "remove": "Xóa",
+    "subtotal": "Tổng phụ",
+    "shipping": "Phí vận chuyển",
+    "tax": "Thuế",
+    "order_total": "Tổng đơn hàng",
+    "proceed": "Tiến hành thanh toán"
+  },
+  "shipping": {
+    "title": "Thông tin vận chuyển",
+    "address": "Địa chỉ giao hàng",
+    "first_name": "Tên",
+    "last_name": "Họ",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "address_line1": "Địa chỉ 1",
+    "address_line2": "Địa chỉ 2 (Tùy chọn)",
+    "city": "Thành phố",
+    "state": "Tỉnh/Thành phố",
+    "zip": "Mã bưu điện",
+    "country": "Quốc gia",
+    "save_address": "Lưu địa chỉ này cho lần sau",
+    "shipping_method": "Phương thức vận chuyển",
+    "standard": "Vận chuyển tiêu chuẩn (3-5 ngày làm việc)",
+    "express": "Vận chuyển nhanh (1-2 ngày làm việc)",
+    "next_day": "Giao hàng ngày mai",
+    "continue": "Tiếp tục đến thanh toán"
+  },
+  "payment": {
+    "title": "Phương thức thanh toán",
+    "credit_card": "Thẻ tín dụng/Ghi nợ",
+    "card_number": "Số thẻ",
+    "expiration": "Ngày hết hạn (MM/YY)",
+    "cvv": "CVV",
+    "name_on_card": "Tên trên thẻ",
+    "paypal": "PayPal",
+    "bank_transfer": "Chuyển khoản ngân hàng",
+    "continue": "Đặt hàng",
+    "billing_same": "Địa chỉ thanh toán giống với địa chỉ giao hàng"
+  },
+  "confirmation": {
+    "title": "Xác nhận đơn hàng",
+    "message": "Cảm ơn bạn đã đặt hàng!",
+    "order_number": "Mã đơn hàng",
+    "date": "Ngày",
+    "email_sent": "Email xác nhận đã được gửi đến",
+    "track_order": "Theo dõi đơn hàng của bạn",
+    "continue": "Tiếp tục mua sắm"
+  },
+  "errors": {
+    "payment_failed": "Thanh toán thất bại. Vui lòng thử lại.",
+    "form_error": "Vui lòng kiểm tra thông tin và thử lại.",
+    "stock_error": "Một số mặt hàng trong giỏ hàng của bạn đã hết hàng."
+  }
+} 

@@ -5,18 +5,18 @@ import { useRouter } from 'next/router';
 
 type Translations = Record<string, any>;
 
-type LanguageContextType = {
+type I18nContextType = {
   language: string;
   setLanguage: (lang: string) => void;
   t: (key: string, params?: Record<string, any>) => string;
 };
 
-interface LanguageProviderProps {
+interface I18nProviderProps {
   children: ReactNode;
 }
 
 // Create context
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 // Cache for loaded translation files
 const translationCache: Record<string, Record<string, Translations>> = {
@@ -24,7 +24,7 @@ const translationCache: Record<string, Record<string, Translations>> = {
   vie: {}
 };
 
-export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+export const I18nProvider = ({ children }: I18nProviderProps) => {
   const router = useRouter();
   const [language, setLanguageState] = useState<string>('eng');
   const [translations, setTranslations] = useState<Record<string, Translations>>({});
@@ -103,7 +103,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       }
 
       // Traverse the translation object
-      let value = namespaceTranslations;
+      let value: any = namespaceTranslations;
       for (const k of keys) {
         if (!value || !value[k]) {
           // Return the key if translation is not found
@@ -119,10 +119,9 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
       // Replace parameters in the translation
       if (params) {
-        let result = value;
+        let result: string = value;
         for (const [paramKey, paramValue] of Object.entries(params)) {
-          const stringValue = String(paramValue);
-          result = result.replace(new RegExp(`{{${paramKey}}}`, 'g'), stringValue);
+          result = result.replace(new RegExp(`{{${paramKey}}}`, 'g'), String(paramValue));
         }
         return result;
       }
@@ -133,18 +132,18 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   );
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <I18nContext.Provider value={{ language, setLanguage, t }}>
       {children}
-    </LanguageContext.Provider>
+    </I18nContext.Provider>
   );
 };
 
-export const useLanguage = (): LanguageContextType => {
-  const context = useContext(LanguageContext);
+export const useI18n = (): I18nContextType => {
+  const context = useContext(I18nContext);
   if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    throw new Error('useI18n must be used within an I18nProvider');
   }
   return context;
 };
 
-export default useLanguage; 
+export default useI18n; 

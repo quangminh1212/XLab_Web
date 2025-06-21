@@ -1,0 +1,45 @@
+{
+  "general": {
+    "title": "Lỗi",
+    "something_went_wrong": "Đã xảy ra lỗi.",
+    "try_again": "Vui lòng thử lại sau.",
+    "contact_support": "Nếu vấn đề vẫn tiếp diễn, vui lòng liên hệ hỗ trợ."
+  },
+  "http": {
+    "400": "Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin.",
+    "401": "Chưa xác thực. Vui lòng đăng nhập để tiếp tục.",
+    "403": "Truy cập bị từ chối. Bạn không có quyền truy cập tài nguyên này.",
+    "404": "Không tìm thấy. Trang bạn đang tìm kiếm không tồn tại.",
+    "500": "Lỗi máy chủ nội bộ. Vui lòng thử lại sau.",
+    "503": "Dịch vụ không khả dụng. Vui lòng thử lại sau."
+  },
+  "form": {
+    "required": "Trường này là bắt buộc.",
+    "invalid_email": "Vui lòng nhập địa chỉ email hợp lệ.",
+    "invalid_phone": "Vui lòng nhập số điện thoại hợp lệ.",
+    "min_length": "Trường này phải có ít nhất {{min}} ký tự.",
+    "max_length": "Trường này phải ít hơn {{max}} ký tự.",
+    "passwords_dont_match": "Mật khẩu không khớp."
+  },
+  "auth": {
+    "invalid_credentials": "Email hoặc mật khẩu không hợp lệ.",
+    "account_locked": "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ hỗ trợ.",
+    "email_in_use": "Email này đã được đăng ký.",
+    "weak_password": "Mật khẩu quá yếu. Vui lòng sử dụng mật khẩu mạnh hơn."
+  },
+  "payment": {
+    "card_declined": "Thẻ của bạn đã bị từ chối.",
+    "expired_card": "Thẻ của bạn đã hết hạn.",
+    "insufficient_funds": "Không đủ tiền trong tài khoản."
+  },
+  "not_found": {
+    "page": "Không tìm thấy trang",
+    "product": "Không tìm thấy sản phẩm",
+    "order": "Không tìm thấy đơn hàng",
+    "user": "Không tìm thấy người dùng"
+  },
+  "offline": {
+    "title": "Bạn đang ngoại tuyến",
+    "message": "Vui lòng kiểm tra kết nối internet và thử lại."
+  }
+} 

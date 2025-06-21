@@ -14,6 +14,23 @@ const nextConfig = {
     optimizeCss: true,
     optimisticClientCache: true,
   },
+  i18n: {
+    // These are all the locales you want to support
+    locales: ['eng', 'vie'],
+    // The default locale to be used when visiting a non-locale prefixed path
+    defaultLocale: 'eng',
+    // Domains configuration for domain-specific locales
+    // domains: [
+    //   {
+    //     domain: 'example.com',
+    //     defaultLocale: 'eng',
+    //   },
+    //   {
+    //     domain: 'example.vn',
+    //     defaultLocale: 'vie',
+    //   },
+    // ],
+  },
   images: {
     domains: [
       'via.placeholder.com',

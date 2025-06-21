@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "title": "Chào mừng đến với XLab Web",
+    "subtitle": "Giải pháp toàn diện cho thành công trực tuyến của bạn",
+    "cta": "Bắt đầu ngay"
+  },
+  "features": {
+    "title": "Tính năng của chúng tôi",
+    "description": "Khám phá điều gì làm chúng tôi khác biệt",
+    "feature1": {
+      "title": "Chất lượng cao",
+      "description": "Chúng tôi chỉ cung cấp những sản phẩm và dịch vụ tốt nhất"
+    },
+    "feature2": {
+      "title": "Hỗ trợ khách hàng",
+      "description": "Đội ngũ tận tâm của chúng tôi sẵn sàng giúp đỡ bạn 24/7"
+    },
+    "feature3": {
+      "title": "Giao hàng nhanh chóng",
+      "description": "Nhận đơn hàng của bạn nhanh chóng và hiệu quả"
+    }
+  },
+  "testimonials": {
+    "title": "Khách hàng nói gì về chúng tôi",
+    "description": "Đọc nhận xét từ những khách hàng hài lòng của chúng tôi"
+  },
+  "newsletter": {
+    "title": "Cập nhật thông tin",
+    "description": "Đăng ký nhận bản tin để cập nhật tin tức mới nhất",
+    "placeholder": "Địa chỉ email của bạn",
+    "button": "Đăng ký"
+  }
+} 

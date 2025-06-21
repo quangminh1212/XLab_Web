@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "XLab Web",
+    "description": "Your modern web solution"
+  },
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "services": "Services",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "cart": "Cart",
+    "account": "Account",
+    "orders": "Orders",
+    "notifications": "Notifications",
+    "checkout": "Checkout",
+    "search": "Search"
+  },
+  "actions": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "back": "Back",
+    "next": "Next"
+  },
+  "general": {
+    "loading": "Loading",
+    "error": "Error",
+    "success": "Success",
+    "welcome": "Welcome",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "country": "Country"
+  },
+  "language": {
+    "select": "Select language",
+    "english": "English",
+    "vietnamese": "Vietnamese"
+  }
+} 

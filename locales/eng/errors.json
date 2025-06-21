@@ -1,0 +1,45 @@
+{
+  "general": {
+    "title": "Error",
+    "something_went_wrong": "Something went wrong.",
+    "try_again": "Please try again later.",
+    "contact_support": "If the problem persists, please contact support."
+  },
+  "http": {
+    "400": "Bad request. Please check your input.",
+    "401": "Unauthorized. Please login to continue.",
+    "403": "Forbidden. You do not have permission to access this resource.",
+    "404": "Not found. The page you are looking for does not exist.",
+    "500": "Internal server error. Please try again later.",
+    "503": "Service unavailable. Please try again later."
+  },
+  "form": {
+    "required": "This field is required.",
+    "invalid_email": "Please enter a valid email address.",
+    "invalid_phone": "Please enter a valid phone number.",
+    "min_length": "This field must be at least {{min}} characters long.",
+    "max_length": "This field must be less than {{max}} characters long.",
+    "passwords_dont_match": "Passwords do not match."
+  },
+  "auth": {
+    "invalid_credentials": "Invalid email or password.",
+    "account_locked": "Your account has been locked. Please contact support.",
+    "email_in_use": "This email is already registered.",
+    "weak_password": "Password is too weak. Please use a stronger password."
+  },
+  "payment": {
+    "card_declined": "Your card has been declined.",
+    "expired_card": "Your card is expired.",
+    "insufficient_funds": "Insufficient funds."
+  },
+  "not_found": {
+    "page": "Page not found",
+    "product": "Product not found",
+    "order": "Order not found",
+    "user": "User not found"
+  },
+  "offline": {
+    "title": "You are offline",
+    "message": "Please check your internet connection and try again."
+  }
+} 
