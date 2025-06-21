@@ -10,7 +10,7 @@ const translationCache: Record<string, Translations> = {};
 
 export const useTranslation = (namespace: string = 'common') => {
   const router = useRouter();
-  const locale = router?.locale || router?.defaultLocale || 'eng';
+  const locale = router.locale || router.defaultLocale || 'eng';
   const [translations, setTranslations] = useState<Translations>({});
 
   // Load the translation file
@@ -25,8 +25,8 @@ export const useTranslation = (namespace: string = 'common') => {
       }
 
       try {
-        // Load the translation file dynamically (fix path)
-        const translations = await import(`/locales/${locale}/${namespace}.json`);
+        // Load the translation file dynamically
+        const translations = await import(`../../locales/${locale}/${namespace}.json`);
         translationCache[cacheKey] = translations;
         setTranslations(translations);
       } catch (error) {

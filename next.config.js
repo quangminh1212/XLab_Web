@@ -19,8 +19,6 @@ const nextConfig = {
     locales: ['eng', 'vie'],
     // The default locale to be used when visiting a non-locale prefixed path
     defaultLocale: 'eng',
-    // This is needed for App Router
-    localeDetection: true,
     // Domains configuration for domain-specific locales
     // domains: [
     //   {
@@ -75,7 +73,6 @@ const nextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
-      '/locales': path.join(__dirname, 'locales'),
     };
 
     if (!isServer) {

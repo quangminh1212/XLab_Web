@@ -13,7 +13,7 @@ import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
-import ClientI18nProvider from '@/contexts/ClientI18nProvider';
+import { I18nProvider } from '@/contexts/I18nContext';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ interface ClientLayoutWrapperProps {
 export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperProps) {
   return (
     <SessionProvider>
-      <ClientI18nProvider>
+      <I18nProvider>
         <NotificationProvider>
           <BalanceProvider>
             <CartProvider>
@@ -39,7 +39,7 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
             </CartProvider>
           </BalanceProvider>
         </NotificationProvider>
-      </ClientI18nProvider>
+      </I18nProvider>
     </SessionProvider>
   );
 }
