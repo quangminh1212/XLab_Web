@@ -19,6 +19,7 @@
 - [Authentication](#-authentication)
 - [Performance Optimizations](#-performance-optimizations)
 - [License](#-license)
+- [Internationalization (i18n)](#-internationalization-i18n)
 
 ## ✨ Features
 
@@ -225,3 +226,54 @@ Routes can be protected using middleware:
 ## 📄 License
 
 Copyright © 2023-2024 XLab. All rights reserved.
+
+## Internationalization (i18n)
+
+This project supports multiple languages using a custom implementation. The translations are stored in JSON files in the `locales` directory.
+
+### Structure
+
+- `locales/`
+  - `index.ts` - Exports all translations
+  - `en/`
+    - `translations.json` - English translations
+  - `vi/`
+    - `translations.json` - Vietnamese translations
+
+### Usage
+
+To use translations in components:
+
+```tsx
+import { useLanguage } from '@/contexts/LanguageContext';
+
+const MyComponent = () => {
+  const { t } = useLanguage();
+  
+  return <h1>{t('home.title')}</h1>;
+};
+```
+
+For text with parameters:
+
+```tsx
+// Using parameter
+const welcomeMessage = t('welcome.message', { name: 'John' });
+// Assuming translation is: "Hello, {name}!"
+// Result: "Hello, John!"
+```
+
+### Adding New Translations
+
+1. Add new strings to `locales/vi/translations.json` and `locales/en/translations.json`.
+2. Follow existing naming conventions for keys (e.g., `page.section.element`).
+
+### Extracting Hardcoded Texts
+
+Run the translation extraction script to find potential untranslated texts:
+
+```bash
+node scripts/extract-texts.js
+```
+
+This will generate suggestion files in `locales/vi/suggestions.json` and `locales/en/suggestions.json` that you can review and incorporate into the main translation files.
