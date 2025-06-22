@@ -24,33 +24,35 @@ export default function Footer() {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-10 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-12 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-x-8 gap-y-12">
           {/* Column 1: Logo and Company Info */}
-          <div>
-            <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-6">
-              <Link href="/" className="inline-block shrink-0">
-                <Image src="/images/logo.jpg" alt={t('logo.alt')} width={180} height={90} className="mb-3 sm:mb-0" />
-              </Link>
-              <div>
-                <p className="text-sm text-slate-400 leading-relaxed mb-4 max-w-xs">
+          <div className="md:col-span-2">
+            <div className="flex flex-col sm:flex-row gap-8 mb-8">
+              <div className="flex-shrink-0 mb-4 sm:mb-0 sm:self-start">
+                <Link href="/" className="inline-block">
+                  <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} className="max-w-full" />
+                </Link>
+              </div>
+              <div className="sm:max-w-[280px]">
+                <p className="text-sm text-slate-400 leading-relaxed mb-4">
                   {t('footer.companyDescription1')}
                 </p>
-                <p className="text-sm text-slate-400 leading-relaxed mb-4 max-w-xs">
+                <p className="text-sm text-slate-400 leading-relaxed mb-4">
                   {t('footer.companyDescription2')}
                 </p>
               </div>
             </div>
 
-            <div className="flex justify-center sm:justify-start space-x-3 mt-2">
+            <div className="flex justify-start space-x-5 mt-2 mb-8 ml-1">
               <a
                 href={siteConfig.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-2.5 rounded-xl bg-slate-800/60 hover:bg-blue-600/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-500/25 border border-slate-700/50 hover:border-blue-500/50"
+                className="group p-3 rounded-xl bg-slate-800/60 hover:bg-blue-600/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-500/25 border border-slate-700/50 hover:border-blue-500/50"
               >
                 <svg
-                  className="h-4 w-4 text-slate-400 group-hover:text-white transition-colors"
+                  className="h-6 w-6 text-slate-400 group-hover:text-white transition-colors"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -61,10 +63,10 @@ export default function Footer() {
                 href={siteConfig.social.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-2.5 rounded-xl bg-slate-800/60 hover:bg-sky-500/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-sky-500/25 border border-slate-700/50 hover:border-sky-500/50"
+                className="group p-3 rounded-xl bg-slate-800/60 hover:bg-sky-500/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-sky-500/25 border border-slate-700/50 hover:border-sky-500/50"
               >
                 <svg
-                  className="h-4 w-4 text-slate-400 group-hover:text-white transition-colors"
+                  className="h-6 w-6 text-slate-400 group-hover:text-white transition-colors"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -75,10 +77,10 @@ export default function Footer() {
                 href={siteConfig.social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-2.5 rounded-xl bg-slate-800/60 hover:bg-blue-700/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-700/25 border border-slate-700/50 hover:border-blue-700/50"
+                className="group p-3 rounded-xl bg-slate-800/60 hover:bg-blue-700/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-700/25 border border-slate-700/50 hover:border-blue-700/50"
               >
                 <svg
-                  className="h-4 w-4 text-slate-400 group-hover:text-white transition-colors"
+                  className="h-6 w-6 text-slate-400 group-hover:text-white transition-colors"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -87,45 +89,45 @@ export default function Footer() {
               </a>
             </div>
 
-            <div className="flex justify-start flex-wrap gap-4 mt-8 text-xs text-slate-500">
-              <div className="flex items-center gap-1.5">
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            <div className="flex justify-start flex-wrap gap-7 ml-1 text-sm text-slate-400">
+              <div className="flex items-center gap-2.5">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M5 13l4 4L19 7" />
                 </svg>
-                <span>{t('footer.customers')}</span>
+                <span>500+ {t('footer.customers')}</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-center gap-2.5">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2"
+                    strokeWidth="1.8"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                <span>{t('footer.years')}</span>
+                <span>5+ {t('footer.years')}</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-center gap-2.5">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2"
+                    strokeWidth="1.8"
                     d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
                   />
                 </svg>
-                <span>{t('footer.support')}</span>
+                <span>24/7 {t('footer.support')}</span>
               </div>
             </div>
           </div>
 
           {/* Column 2: Products and Services */}
-          <div className="flex flex-col items-center sm:items-start">
-            <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1">
+            <h3 className="text-white text-lg sm:text-xl font-bold mb-5 relative group">
               <span className="relative z-10">{t('footer.productsAndServices')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
-            <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
+            <ul className="space-y-3 text-center sm:text-left mb-4">
               <li>
                 <Link
                   href="/products"
@@ -157,12 +159,12 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Navigation Links */}
-          <div className="flex flex-col items-center sm:items-start">
-            <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1">
+            <h3 className="text-white text-lg sm:text-xl font-bold mb-5 relative group">
               <span className="relative z-10">{t('footer.navigationLinks')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
-            <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
+            <ul className="space-y-3 text-center sm:text-left mb-4">
               <li>
                 <Link
                   href="/"
@@ -194,17 +196,17 @@ export default function Footer() {
           </div>
 
           {/* Column 4: Contact Info */}
-          <div className="flex flex-col items-center sm:items-start">
-            <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1">
+            <h3 className="text-white text-lg sm:text-xl font-bold mb-5 relative group">
               <span className="relative z-10">{t('footer.contactLink')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
 
-            <ul className="space-y-3 sm:space-y-4 text-center sm:text-left mb-4">
+            <ul className="space-y-4 text-center sm:text-left mb-4">
               <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 mr-2.5 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-all duration-300 border border-orange-500/20">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 mr-3 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-all duration-300 border border-orange-500/20">
                   <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-orange-400 flex-shrink-0"
+                    className="h-5 w-5 text-orange-400 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -229,9 +231,9 @@ export default function Footer() {
               </li>
 
               <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mr-2.5 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all duration-300 border border-blue-500/20">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mr-3 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all duration-300 border border-blue-500/20">
                   <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400 flex-shrink-0"
+                    className="h-5 w-5 text-blue-400 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -250,9 +252,9 @@ export default function Footer() {
               </li>
 
               <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-2.5 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-3 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
                   <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 flex-shrink-0"
+                    className="h-5 w-5 text-green-400 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -271,9 +273,9 @@ export default function Footer() {
               </li>
 
               <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 mr-2.5 group-hover:from-purple-500/30 group-hover:to-indigo-500/30 transition-all duration-300 border border-purple-500/20">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 mr-3 group-hover:from-purple-500/30 group-hover:to-indigo-500/30 transition-all duration-300 border border-purple-500/20">
                   <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400 flex-shrink-0"
+                    className="h-5 w-5 text-purple-400 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
