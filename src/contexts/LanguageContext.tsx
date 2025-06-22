@@ -24,8 +24,12 @@ const translations: Record<Language, Translations> = {
   eng: locales.eng
 };
 
+// Display warning for keys not found during development
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [language, setLanguageState] = useState<Language>('vie');
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
@@ -37,6 +41,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       setLanguageState(newLang);
       localStorage.setItem('language', newLang);
     }
+    setIsInitialized(true);
   }, []);
 
   const setLanguage = (lang: Language) => {
@@ -46,11 +51,33 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
   const t = <T = string>(key: string, params?: Record<string, any>, returnObject?: boolean): T extends true ? any : string => {
     try {
+      // If translations aren't loaded yet, return the key to prevent errors
+      if (!isInitialized) {
+        return key as any;
+      }
+      
+      // Make sure key is a string
+      if (typeof key !== 'string') {
+        console.error('Translation key must be a string:', key);
+        return String(key) as any;
+      }
+
       // Navigate to the value by splitting the key by dots
       const parts = key.split('.');
       let value: any = translations[language];
+      
+      // Check if we have translations for the current language
+      if (!value) {
+        console.error(`No translations found for language: ${language}`);
+        return key as any;
+      }
+
+      // Navigate through the parts of the key
       for (const part of parts) {
         if (!value || typeof value !== 'object') {
+          if (isDevelopment) {
+            console.warn(`Translation not found for key: ${key} in language: ${language}`);
+          }
           return key as any;
         }
         value = value[part];
@@ -59,6 +86,14 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       // Return the object if requested
       if (returnObject && typeof value === 'object') {
         return value as any;
+      }
+
+      // If value is undefined after going through all parts, return the key
+      if (value === undefined) {
+        if (isDevelopment) {
+          console.warn(`Translation not found for key: ${key} in language: ${language}`);
+        }
+        return key as any;
       }
 
       // Handle string values with parameters

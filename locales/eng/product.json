@@ -4,6 +4,7 @@
   "added": "Added",
   "week": "week",
   "purchasesPerWeek": "{count}/week",
+  "purchasesPerWeek": "purchases/week",
   "loadingRelatedProducts": "Loading related products...",
   "relatedProducts": "Related Products",
   "relatedProductsSubtitle": "Similar products you may be interested in",

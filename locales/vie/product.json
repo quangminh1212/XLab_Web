@@ -4,6 +4,7 @@
   "added": "Đã thêm",
   "week": "tuần",
   "purchasesPerWeek": "{count}/tuần",
+  "purchasesPerWeek": "lượt mua/tuần",
   "loadingRelatedProducts": "Đang tải sản phẩm liên quan...",
   "relatedProducts": "Sản phẩm liên quan",
   "relatedProductsSubtitle": "Các sản phẩm tương tự có thể bạn quan tâm",
