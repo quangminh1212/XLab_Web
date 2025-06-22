@@ -38,8 +38,8 @@ const loadTranslations = (language) => {
 };
 
 // Load existing locale files
-const viTranslations = loadTranslations('vi');
-const enTranslations = loadTranslations('en');
+const viTranslations = loadTranslations('vie');
+const enTranslations = loadTranslations('eng');
 
 // Define exclusion patterns
 const excludePatterns = [
@@ -156,8 +156,8 @@ const processComponents = () => {
 // Generate suggestions for new translations
 const generateSuggestions = (extractedTexts) => {
   // Create feature-based suggestions directories
-  const viSuggestionDir = path.join(__dirname, '../locales/vi/suggestions');
-  const enSuggestionDir = path.join(__dirname, '../locales/en/suggestions');
+  const viSuggestionDir = path.join(__dirname, '../locales/vie/suggestions');
+  const enSuggestionDir = path.join(__dirname, '../locales/eng/suggestions');
   
   if (!fs.existsSync(viSuggestionDir)) {
     fs.mkdirSync(viSuggestionDir, { recursive: true });
@@ -204,6 +204,6 @@ const totalSuggestions = generateSuggestions(extractedTexts);
 
 console.log(`Found ${totalSuggestions} potential new translations`);
 console.log('Suggestions have been saved to:');
-console.log('- locales/vi/suggestions/');
-console.log('- locales/en/suggestions/');
+console.log('- locales/vie/suggestions/');
+console.log('- locales/eng/suggestions/');
 console.log('\nReview these files and add appropriate translations to the corresponding feature files.'); 

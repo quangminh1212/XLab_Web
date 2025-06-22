@@ -3,7 +3,7 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import locales, { Translations } from '../../locales';
 
-type Language = 'vi' | 'en';
+type Language = 'vie' | 'eng';
 
 type LanguageContextType = {
   language: Language;
@@ -20,17 +20,22 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 // Use translations from imported locales file
 const translations: Record<Language, Translations> = {
-  vi: locales.vi,
-  en: locales.en
+  vie: locales.vie,
+  eng: locales.eng
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  const [language, setLanguageState] = useState<Language>('vi');
+  const [language, setLanguageState] = useState<Language>('vie');
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
-      setLanguageState(savedLanguage);
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
+      setLanguageState(savedLanguage as Language);
+    } else if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+      // Migration from old format
+      const newLang = savedLanguage === 'vi' ? 'vie' : 'eng';
+      setLanguageState(newLang);
+      localStorage.setItem('language', newLang);
     }
   }, []);
 

@@ -13,14 +13,14 @@ const LocaleTest = () => {
       
       <div className="mb-4">
         <button
-          onClick={() => setLanguage('vi')}
-          className={`mr-2 px-4 py-2 rounded ${language === 'vi' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setLanguage('vie')}
+          className={`mr-2 px-4 py-2 rounded ${language === 'vie' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
         >
           Tiếng Việt
         </button>
         <button
-          onClick={() => setLanguage('en')}
-          className={`px-4 py-2 rounded ${language === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setLanguage('eng')}
+          className={`px-4 py-2 rounded ${language === 'eng' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
         >
           English
         </button>
