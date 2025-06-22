@@ -1,0 +1,29 @@
+{
+  "addToCart": "Add to Cart",
+  "buyNow": "Buy Now",
+  "added": "Added",
+  "week": "week",
+  "purchasesPerWeek": "{count}/week",
+  "purchasesPerWeek": "purchases/week",
+  "loadingRelatedProducts": "Loading related products...",
+  "relatedProducts": "Related Products",
+  "relatedProductsSubtitle": "Similar products you may be interested in",
+  "speechToText": {
+    "title": "Speech Recognition Demo",
+    "browserNotSupported": "Your browser does not support speech recognition.",
+    "useSupportedBrowser": "Please use the latest version of Chrome, Edge or Safari.",
+    "listening": "Listening...",
+    "clickToStart": "Click the microphone button to start",
+    "speakNow": "Say something...",
+    "copyButton": "Copy",
+    "clearButton": "Clear",
+    "copiedToClipboard": "Copied to clipboard!",
+    "features": {
+      "title": "VoiceTyping Features:",
+      "item1": "Vietnamese and multi-language speech recognition",
+      "item2": "Automatic text formatting and editing",
+      "item3": "Integration with Microsoft Office and other apps",
+      "item4": "Works both online and offline"
+    }
+  }
+}

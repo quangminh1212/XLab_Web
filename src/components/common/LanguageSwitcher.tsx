@@ -17,7 +17,11 @@ const languageMap: Record<string, { name: string, flagPath: string }> = {
 };
 
 const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
+<<<<<<< HEAD
   const { language, setLanguage, availableLanguages } = useLanguage();
+=======
+  const { language, setLanguage, isClient } = useLanguage();
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -35,13 +39,51 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     };
   }, []);
 
+<<<<<<< HEAD
   const changeLanguage = (lang: LanguageKeys) => {
+=======
+  const changeLanguage = (lang: 'vie' | 'eng') => {
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
     setLanguage(lang);
     setIsOpen(false);
   };
 
+<<<<<<< HEAD
   // Get current language display info
   const currentLang = languageMap[language] || { name: language, flagPath: '/images/flags/gb.svg' };
+=======
+  // Always render the default language UI on server for hydration matching
+  if (!isClient) {
+    return (
+      <div className={`relative ${className}`} ref={dropdownRef}>
+        <button
+          className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
+          aria-expanded={false}
+        >
+          <div className="relative w-6 h-4 mr-2">
+            <Image 
+              src="/images/flags/vn.svg" 
+              alt="Tiếng Việt" 
+              width={24}
+              height={16}
+              className="object-cover rounded-sm"
+            />
+          </div>
+          <span>VIE</span>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-4 w-4 ml-1" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+    );
+  }
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
@@ -50,6 +92,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
         aria-expanded={isOpen}
       >
+<<<<<<< HEAD
         <div className="relative w-6 h-4 mr-2">
           <Image 
             src={currentLang.flagPath} 
@@ -60,6 +103,35 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
           />
         </div>
         <span>{currentLang.name}</span>
+=======
+        {language === 'vie' ? (
+          <>
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/vn.svg" 
+                alt="Tiếng Việt" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>VIE</span>
+          </>
+        ) : (
+          <>
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/gb.svg" 
+                alt="English" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ENG</span>
+          </>
+        )}
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           className="h-4 w-4 ml-1" 
@@ -72,6 +144,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
       </button>
 
       {isOpen && (
+<<<<<<< HEAD
         <div className="absolute right-0 mt-2 py-1 w-40 bg-white rounded-md shadow-lg z-20 border border-gray-200">
           {availableLanguages.map((lang) => {
             const langInfo = languageMap[lang] || { name: lang, flagPath: '/images/flags/gb.svg' };
@@ -95,6 +168,39 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               </button>
             );
           })}
+=======
+        <div className="absolute right-0 mt-2 py-1 w-28 bg-white rounded-md shadow-lg z-20 border border-gray-200">
+          <button
+            onClick={() => changeLanguage('vie')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'vie' ? 'bg-gray-100' : ''}`}
+          >
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/vn.svg" 
+                alt="Tiếng Việt" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>VIE</span>
+          </button>
+          <button
+            onClick={() => changeLanguage('eng')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'eng' ? 'bg-gray-100' : ''}`}
+          >
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/gb.svg" 
+                alt="English" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ENG</span>
+          </button>
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
         </div>
       )}
     </div>

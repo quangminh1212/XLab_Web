@@ -80,7 +80,11 @@ export default function RelatedProducts({
 
   if (loading) {
     return (
+<<<<<<< HEAD
       <div className="mt-12 py-8 text-center text-gray-500">{t('system.loadingRelatedProducts')}</div>
+=======
+      <div className="mt-12 py-8 text-center text-gray-500">{t('product.loadingRelatedProducts')}</div>
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
     );
   }
 

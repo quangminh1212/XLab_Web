@@ -5,9 +5,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+type TestimonialItem = {
+  text: string;
+  name: string;
+  position: string;
+};
+
 export default function HomeTestimonials() {
   const { t, language } = useLanguage();
 
+<<<<<<< HEAD
   // Sử dụng t() để lấy văn bản từ các file ngôn ngữ
   const testimonials = [
     {
@@ -35,16 +42,29 @@ export default function HomeTestimonials() {
       fallbackImage: 'https://randomuser.me/api/portraits/women/68.jpg'
     }
   ];
+=======
+  // Using translation system for testimonials
+  const testimonialItems = t<any>('home.testimonials.items', undefined, true) as TestimonialItem[];
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
 
   return (
     <section className="mt-12 mb-12">
       <div className="flex items-center justify-between mb-6">
+<<<<<<< HEAD
         <h2 className="heading-3 text-gray-800">{t('testimonials.title')}</h2>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {testimonials.map((testimonial) => (
           <div key={testimonial.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
+=======
+        <h2 className="heading-3 text-gray-800">{t('home.testimonials.title')}</h2>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {Array.isArray(testimonialItems) && testimonialItems.map((testimonial, index) => (
+          <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
             <div className="flex text-yellow-400 mb-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -58,14 +78,14 @@ export default function HomeTestimonials() {
             <div className="mt-auto pt-4 border-t border-gray-100 flex items-center">
               <div className="w-10 h-10 rounded-full overflow-hidden mr-3 flex-shrink-0">
                 <Image 
-                  src={testimonial.image} 
+                  src={`/images/testimonials/${testimonial.name.toLowerCase().replace(' ', '-')}.jpg`}
                   alt={testimonial.name} 
                   width={40} 
                   height={40}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = testimonial.fallbackImage;
+                    target.src = `https://randomuser.me/api/portraits/${index % 2 === 0 ? 'men' : 'women'}/${30 + index}.jpg`;
                   }}
                 />
               </div>
@@ -80,7 +100,11 @@ export default function HomeTestimonials() {
       
       <div className="flex justify-center mt-6">
         <Link href="/testimonials" className="text-primary-600 hover:text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
+<<<<<<< HEAD
           {t('testimonials.viewAll')}
+=======
+          {t('home.testimonials.viewAll')}
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
           </svg>

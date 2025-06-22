@@ -1,0 +1,91 @@
+{
+  "site": {
+    "description": "Cửa hàng bán sản phẩm công nghệ",
+    "address": "Số 1, Đường ABC, Phường XYZ, Quận 123, TP.HCM",
+    "defaultTitle": "XLab - Tối ưu hiệu quả, tối thiểu chi phí!",
+    "metaDescription": "XLab cung cấp các ứng dụng, phần mềm chất lượng cao cho cá nhân và doanh nghiệp."
+  },
+  "navigation": {
+    "products": {
+      "title": "Sản phẩm",
+      "all": "Tất cả sản phẩm",
+      "newest": "Mới phát hành",
+      "popular": "Phổ biến nhất",
+      "sale": "Khuyến mãi"
+    },
+    "support": {
+      "title": "Hỗ trợ",
+      "contact": "Liên hệ",
+      "guides": "Hướng dẫn sử dụng",
+      "reportBug": "Báo lỗi"
+    },
+    "about": {
+      "title": "Về chúng tôi",
+      "introduction": "Giới thiệu",
+      "careers": "Tuyển dụng",
+      "partners": "Đối tác"
+    },
+    "legal": {
+      "title": "Pháp lý",
+      "terms": "Điều khoản dịch vụ",
+      "privacy": "Chính sách bảo mật",
+      "refund": "Chính sách hoàn tiền",
+      "ipRights": "Quyền sở hữu trí tuệ"
+    },
+    "newsletter": {
+      "title": "Đăng ký nhận thông tin mới",
+      "description": "Nhận thông tin về sản phẩm mới, khuyến mãi và cập nhật từ XLab",
+      "privacyText": "Chúng tôi tôn trọng quyền riêng tư của bạn. Xem Chính sách Bảo mật của chúng tôi."
+    }
+  },
+  "mockData": {
+    "categories": {
+      "business": {
+        "name": "Phần mềm doanh nghiệp",
+        "description": "Các phần mềm phục vụ cho doanh nghiệp như ERP, CRM, thanh toán..."
+      },
+      "office": {
+        "name": "Ứng dụng văn phòng",
+        "description": "Các ứng dụng văn phòng như soạn thảo, bảng tính, thuyết trình..."
+      },
+      "graphics": {
+        "name": "Phần mềm đồ họa",
+        "description": "Các phần mềm thiết kế, chỉnh sửa ảnh, video và đồ họa..."
+      },
+      "security": {
+        "name": "Bảo mật & Antivirus",
+        "description": "Các phần mềm bảo mật, diệt virus, mã hóa dữ liệu..."
+      },
+      "education": {
+        "name": "Ứng dụng giáo dục",
+        "description": "Các ứng dụng học ngoại ngữ, lập trình, toán học..."
+      },
+      "accounts": {
+        "name": "Tài khoản học tập",
+        "description": "Các tài khoản premium cho các nền tảng học trực tuyến phổ biến."
+      }
+    },
+    "vendors": {
+      "xlab": {
+        "description": "Chuyên cung cấp phần mềm chất lượng cao"
+      },
+      "vietsoft": {
+        "description": "Giải pháp phần mềm cho doanh nghiệp Việt"
+      },
+      "graphica": {
+        "description": "Công cụ sáng tạo cho designer và họa sĩ"
+      }
+    },
+    "products": {
+      "voicetyping": {
+        "description": "Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition.",
+        "features": {
+          "accuracy": "Nhận dạng giọng nói chính xác với nhiều giọng địa phương",
+          "office": "Tích hợp với Microsoft Office",
+          "hotkeys": "Hỗ trợ điều khiển bằng hotkey",
+          "history": "Tự động lưu lịch sử chuyển đổi"
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,91 @@
+{
+  "site": {
+    "description": "Store selling technology products",
+    "address": "1 ABC Street, XYZ Ward, 123 District, HCMC",
+    "defaultTitle": "XLab - Optimize efficiency, minimize costs!",
+    "metaDescription": "XLab provides high-quality applications and software for individuals and businesses."
+  },
+  "navigation": {
+    "products": {
+      "title": "Products",
+      "all": "All Products",
+      "newest": "New Releases",
+      "popular": "Most Popular",
+      "sale": "On Sale"
+    },
+    "support": {
+      "title": "Support",
+      "contact": "Contact",
+      "guides": "User Guides",
+      "reportBug": "Report a Bug"
+    },
+    "about": {
+      "title": "About Us",
+      "introduction": "Introduction",
+      "careers": "Careers",
+      "partners": "Partners"
+    },
+    "legal": {
+      "title": "Legal",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "refund": "Refund Policy",
+      "ipRights": "Intellectual Property Rights"
+    },
+    "newsletter": {
+      "title": "Subscribe to our newsletter",
+      "description": "Receive information about new products, promotions, and updates from XLab",
+      "privacyText": "We respect your privacy. See our Privacy Policy."
+    }
+  },
+  "mockData": {
+    "categories": {
+      "business": {
+        "name": "Business Software",
+        "description": "Software for businesses such as ERP, CRM, payment solutions..."
+      },
+      "office": {
+        "name": "Office Applications",
+        "description": "Office applications like word processing, spreadsheets, presentations..."
+      },
+      "graphics": {
+        "name": "Graphics Software",
+        "description": "Software for design, photo editing, video editing and graphics..."
+      },
+      "security": {
+        "name": "Security & Antivirus",
+        "description": "Security software, antivirus, data encryption..."
+      },
+      "education": {
+        "name": "Educational Applications",
+        "description": "Applications for language learning, programming, mathematics..."
+      },
+      "accounts": {
+        "name": "Learning Accounts",
+        "description": "Premium accounts for popular online learning platforms."
+      }
+    },
+    "vendors": {
+      "xlab": {
+        "description": "Providing high-quality software"
+      },
+      "vietsoft": {
+        "description": "Software solutions for Vietnamese businesses"
+      },
+      "graphica": {
+        "description": "Creative tools for designers and artists"
+      }
+    },
+    "products": {
+      "voicetyping": {
+        "description": "Enter text by voice at cursor position using Google Speech Recognition.",
+        "features": {
+          "accuracy": "Accurate speech recognition with support for many dialects",
+          "office": "Integrates with Microsoft Office",
+          "hotkeys": "Support for hotkey control",
+          "history": "Automatically saves conversion history"
+        }
+      }
+    }
+  }
+} 

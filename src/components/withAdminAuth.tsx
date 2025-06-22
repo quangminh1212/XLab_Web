@@ -47,13 +47,22 @@ export default function withAdminAuth<P extends object>(
     if (session.user && !session.user.isAdmin) {
       return (
         <div className="flex flex-col justify-center items-center min-h-screen p-4">
+<<<<<<< HEAD
           <h1 className="text-2xl font-bold text-red-600 mb-4">{t('system.accessDenied')}</h1>
           <p className="text-gray-600 mb-4">{t('system.accessDeniedMessage')}</p>
+=======
+          <h1 className="text-2xl font-bold text-red-600 mb-4">{t('common.accessDenied')}</h1>
+          <p className="text-gray-600 mb-4">{t('common.noPermission')}</p>
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
           <button
             onClick={() => router.push('/')}
             className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded hover:from-primary-700 hover:to-primary-800"
           >
+<<<<<<< HEAD
             {t('common.back')}
+=======
+            {t('common.backToHome')}
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
           </button>
         </div>
       );

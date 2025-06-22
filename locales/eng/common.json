@@ -1,0 +1,75 @@
+{
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "yes": "Yes",
+  "no": "No",
+  "back": "Back",
+  "next": "Next",
+  "submit": "Submit",
+  "required": "Required",
+  "optional": "Optional",
+  "search": "Search",
+  "filter": "Filter",
+  "sort": "Sort",
+  "notFound": "Not found",
+  "retry": "Retry",
+  "showMore": "Show more",
+  "showLess": "Show less",
+  "accessDenied": "Access Denied",
+  "noPermission": "You do not have permission to access this page.",
+  "backToHome": "Back to Home",
+  "loading.data": "Loading data...",
+  "loading.checking": "Checking...",
+  "loading.checkAgain": "Check again",
+  "loading.syncing": "Syncing...",
+  "loading.syncNow": "Sync now",
+  "loading.pleaseWait": "Please wait a moment",
+  "userSync": {
+    "title": "Data Sync Status",
+    "status": {
+      "notSynced": "Not synced",
+      "needsUpdate": "Update needed",
+      "synced": "Synced"
+    },
+    "email": "Email:",
+    "balance": "Balance:",
+    "cartItems": "Cart items:",
+    "transactions": "Transactions:",
+    "lastUpdated": "Last updated:",
+    "lastSync": "Last sync:",
+    "recommendations": "Recommendations:"
+  },
+  "balance": {
+    "title": "Account balance - Click to deposit"
+  },
+  "auth": {
+    "loading": "Loading...",
+    "notAdmin": "You don't have permission to access admin page",
+    "redirecting": "Redirecting...",
+    "pleaseLogin": "Please login to continue"
+  },
+  "errors": {
+    "copyFailed": "Could not copy. Please try again.",
+    "loadFailed": "Could not load data",
+    "generalError": "An error has occurred"
+  },
+  "actions": {
+    "copyToClipboard": "Copy to clipboard",
+    "sync": "Sync data",
+    "clear": "Clear",
+    "copy": "Copy"
+  },
+  "notifications": {
+    "noItems": "No new notifications"
+  },
+  "vouchers": {
+    "noItems": "No vouchers available",
+    "clickToCopy": "Click to copy code"
+  }
+} 

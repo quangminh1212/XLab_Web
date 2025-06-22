@@ -81,7 +81,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
+<<<<<<< HEAD
     <html lang="vi" data-default-lang="vi" className={`${inter.variable} scroll-smooth`}>
+=======
+    <html lang="vie" className={`${inter.variable} scroll-smooth`}>
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

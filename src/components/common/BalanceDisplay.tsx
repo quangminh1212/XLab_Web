@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { memo, useMemo } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+<<<<<<< HEAD
 import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
+=======
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
 
 interface BalanceDisplayProps {
   className?: string;
@@ -14,7 +17,11 @@ interface BalanceDisplayProps {
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading } = useBalance();
+<<<<<<< HEAD
   const { t, language } = useLanguage();
+=======
+  const { t } = useLanguage();
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
 
   const formattedBalance = useMemo(() => {
     // First convert the amount to the appropriate currency based on language
@@ -31,7 +38,11 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
     <Link
       href="/account/deposit"
       className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
+<<<<<<< HEAD
       title={t('account.balanceTooltip')}
+=======
+      title={t('common.balance.title')}
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
     >
       <div className="flex items-center space-x-1.5 sm:space-x-2">
         <svg
@@ -50,7 +61,11 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
         {loading ? (
           <div className="flex items-center space-x-1.5 sm:space-x-2">
             <div className="animate-spin rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 border-t-2 border-b-2 border-teal-600"></div>
+<<<<<<< HEAD
             <span className="text-xs sm:text-sm font-medium text-teal-600">{t('system.loading')}</span>
+=======
+            <span className="text-xs sm:text-sm font-medium text-teal-600">{t('common.loading')}</span>
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
           </div>
         ) : (
           <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">

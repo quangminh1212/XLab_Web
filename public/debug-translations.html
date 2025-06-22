@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translation Debug Tool</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      margin-top: 0;
+    }
+    .result-container {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      background-color: #fafafa;
+    }
+    .test-row {
+      display: flex;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .test-row:last-child {
+      border-bottom: none;
+    }
+    .key {
+      flex: 1;
+      font-weight: bold;
+    }
+    .value {
+      flex: 2;
+    }
+    .error {
+      color: #e53e3e;
+    }
+    .success {
+      color: #38a169;
+    }
+    button {
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background-color: #3182ce;
+    }
+    .language-container {
+      margin-bottom: 20px;
+    }
+    .reset-button {
+      background-color: #e53e3e;
+    }
+    .reset-button:hover {
+      background-color: #c53030;
+    }
+    .fixed-button-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Translation Debug Tool</h1>
+    
+    <div class="language-container">
+      <h2>Current Language: <span id="current-language">loading...</span></h2>
+      <button id="toggle-language">Switch Language</button>
+      <button id="clear-cache" class="reset-button">Clear LocalStorage</button>
+    </div>
+    
+    <div class="result-container">
+      <h3>Translation Keys Test</h3>
+      <div id="test-results">Loading...</div>
+    </div>
+  </div>
+  
+  <div class="fixed-button-container">
+    <button id="refresh-page">Refresh Page</button>
+    <button id="goto-debug" onclick="window.location.href='/debug/locale-test'">Go to Debug Page</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Keys to test
+      const keysToTest = [
+        'nav.home',
+        'nav.products',
+        'nav.about',
+        'nav.contact',
+        'nav.warranty',
+        'home.slogan',
+        'home.search',
+        'home.aboutTitle',
+        'home.aboutDesc1',
+        'home.aboutDesc2',
+        'home.learnMore',
+        'footer.aboutLink',
+        'footer.copyright',
+        'footer.products',
+        'footer.services',
+        'product.addToCart',
+        'product.buyNow',
+        'product.purchasesPerWeek'
+      ];
+
+      // Get current language from localStorage or default to English
+      let currentLanguage = localStorage.getItem('language') || 'eng';
+      document.getElementById('current-language').textContent = currentLanguage === 'vie' ? 'Vietnamese (vie)' : 'English (eng)';
+      
+      // Test translations
+      async function testTranslations() {
+        try {
+          // Try to get translations from api endpoint
+          const translationData = await fetch(`/api/translations?lang=${currentLanguage}`)
+            .then(res => res.json())
+            .catch(() => null);
+          
+          // If can't get from API, use local data
+          let translations;
+          if (translationData && translationData.success) {
+            translations = translationData.data;
+          } else {
+            // Simple lookup function simulating the t() function
+            translations = {}; // Placeholder for translations
+          }
+          
+          // Create result rows
+          const resultsContainer = document.getElementById('test-results');
+          resultsContainer.innerHTML = '';
+          
+          keysToTest.forEach(key => {
+            // Try to get translation value
+            const parts = key.split('.');
+            let value = translations;
+            let found = true;
+            
+            for (const part of parts) {
+              if (!value || typeof value !== 'object') {
+                found = false;
+                break;
+              }
+              value = value[part];
+            }
+            
+            // Create result row
+            const row = document.createElement('div');
+            row.className = 'test-row';
+            
+            const keyElement = document.createElement('div');
+            keyElement.className = 'key';
+            keyElement.textContent = key;
+            
+            const valueElement = document.createElement('div');
+            valueElement.className = 'value ' + (found && value !== key ? 'success' : 'error');
+            valueElement.textContent = found && value ? value : '⚠️ Not translated';
+            
+            row.appendChild(keyElement);
+            row.appendChild(valueElement);
+            resultsContainer.appendChild(row);
+          });
+        } catch (error) {
+          document.getElementById('test-results').innerHTML = 
+            `<div class="error">Error testing translations: ${error.message}</div>`;
+        }
+      }
+      
+      // Initialize
+      testTranslations();
+      
+      // Toggle language button
+      document.getElementById('toggle-language').addEventListener('click', function() {
+        currentLanguage = currentLanguage === 'vie' ? 'eng' : 'vie';
+        localStorage.setItem('language', currentLanguage);
+        document.getElementById('current-language').textContent = 
+          currentLanguage === 'vie' ? 'Vietnamese (vie)' : 'English (eng)';
+        testTranslations();
+      });
+      
+      // Clear localStorage button
+      document.getElementById('clear-cache').addEventListener('click', function() {
+        localStorage.clear();
+        alert('LocalStorage cleared! The page will now refresh.');
+        window.location.reload();
+      });
+      
+      // Refresh page button
+      document.getElementById('refresh-page').addEventListener('click', function() {
+        window.location.reload();
+      });
+    });
+  </script>
+</body>
+</html> 

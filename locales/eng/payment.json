@@ -1,0 +1,26 @@
+{
+  "qrBankTransfer": {
+    "title": "QR Bank Transfer",
+    "subtitle": "Scan QR code to transfer automatically",
+    "validityPeriod": "QR code valid for: {{time}}",
+    "bankInfo": "Transfer Information",
+    "bank": "Bank:",
+    "accountNumber": "Account number:",
+    "accountOwner": "Account owner:",
+    "amount": "Amount:",
+    "transactionId": "Transaction ID:",
+    "checkTransaction": "Check Transaction",
+    "checking": "Checking...",
+    "transferInstructions": "Transfer Instructions",
+    "step1": "1. Open your mobile banking app",
+    "step2": "2. Select QR/VietQR payment",
+    "step3": "3. Scan QR code or enter information manually",
+    "step4": "4. Confirm payment and wait for completion",
+    "confirmPayment": "Confirm Payment",
+    "errorQRGeneration": "Could not generate QR code. Please try again.",
+    "errorTransactionNotFound": "Transaction not found. Please check again after completing the transfer.",
+    "errorCheckingTransaction": "An error occurred while checking the transaction. Please try again.",
+    "errorQRExpired": "QR code has expired. Please generate a new one.",
+    "copiedToClipboard": "Copied to clipboard!"
+  }
+} 

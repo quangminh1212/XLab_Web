@@ -1,0 +1,29 @@
+{
+  "addToCart": "Thêm vào giỏ",
+  "buyNow": "Mua ngay",
+  "added": "Đã thêm",
+  "week": "tuần",
+  "purchasesPerWeek": "{count}/tuần",
+  "purchasesPerWeek": "lượt mua/tuần",
+  "loadingRelatedProducts": "Đang tải sản phẩm liên quan...",
+  "relatedProducts": "Sản phẩm liên quan",
+  "relatedProductsSubtitle": "Các sản phẩm tương tự có thể bạn quan tâm",
+  "speechToText": {
+    "title": "Demo Nhận Dạng Giọng Nói",
+    "browserNotSupported": "Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.",
+    "useSupportedBrowser": "Vui lòng sử dụng Chrome, Edge hoặc Safari phiên bản mới nhất.",
+    "listening": "Đang lắng nghe...",
+    "clickToStart": "Nhấn nút micro để bắt đầu",
+    "speakNow": "Nói điều gì đó...",
+    "copyButton": "Sao chép",
+    "clearButton": "Xóa",
+    "copiedToClipboard": "Đã sao chép vào clipboard!",
+    "features": {
+      "title": "Chức năng của VoiceTyping:",
+      "item1": "Nhận dạng giọng nói tiếng Việt và các ngôn ngữ khác",
+      "item2": "Tự động định dạng và chỉnh sửa văn bản",
+      "item3": "Tích hợp với Microsoft Office và các ứng dụng văn phòng",
+      "item4": "Hoạt động cả online và offline"
+    }
+  }
+} 

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
-import { QRPay, BanksObject } from 'vietnam-qr-pay';
+import { QRPay } from 'vietnam-qr-pay';
+import { useTranslation } from 'next-i18next';
 
 interface QRBankTransferProps {
   amount: number;
@@ -18,6 +19,7 @@ interface BankInfo {
 }
 
 const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => {
+  const { t } = useTranslation(['features/payment']);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [transactionId, setTransactionId] = useState<string>('');
   const [isChecking, setIsChecking] = useState(false);
@@ -68,7 +70,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       setQrCodeUrl(qrUrl);
     } catch (error) {
       console.error('Error generating QR code:', error);
-      onError?.('Không thể tạo mã QR. Vui lòng thử lại.');
+      onError?.(t('qrBankTransfer.errorQRGeneration'));
     }
   };
 
@@ -100,11 +102,11 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
         onSuccess?.(transactionId);
       } else {
         // Hiển thị thông báo nếu chưa tìm thấy giao dịch
-        alert('Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.');
+        alert(t('qrBankTransfer.errorTransactionNotFound'));
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
-      alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
+      alert(t('qrBankTransfer.errorCheckingTransaction'));
     } finally {
       setIsChecking(false);
     }
@@ -118,7 +120,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(intervalRef.current);
-          onError?.('Mã QR đã hết hạn. Vui lòng tạo lại.');
+          onError?.(t('qrBankTransfer.errorQRExpired'));
           return 0;
         }
         return prev - 1;
@@ -139,7 +141,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     // Show toast notification (you can implement this)
-    alert('Đã sao chép vào clipboard!');
+    alert(t('qrBankTransfer.copiedToClipboard'));
   };
 
   return (
@@ -153,8 +155,8 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
             </svg>
           </div>
           <div>
-            <h2 className="text-2xl font-bold">Chuyển khoản QR</h2>
-            <p className="text-teal-100 text-sm">Quét mã QR để chuyển khoản tự động</p>
+            <h2 className="text-2xl font-bold">{t('qrBankTransfer.title')}</h2>
+            <p className="text-teal-100 text-sm">{t('qrBankTransfer.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -178,7 +180,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                 />
               </svg>
               <span className="text-yellow-800 font-medium">
-                Mã QR có hiệu lực: {formatTime(timeLeft)}
+                {t('qrBankTransfer.validityPeriod', { time: formatTime(timeLeft) })}
               </span>
             </div>
           </div>
@@ -200,14 +202,14 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
 
           {/* Bank Information */}
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h4 className="font-semibold text-gray-800 mb-3">Thông tin chuyển khoản</h4>
+            <h4 className="font-semibold text-gray-800 mb-3">{t('qrBankTransfer.bankInfo')}</h4>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Ngân hàng:</span>
+                <span className="text-gray-600">{t('qrBankTransfer.bank')}</span>
                 <span className="font-medium text-gray-800">{bankInfo.bankName}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Số tài khoản:</span>
+                <span className="text-gray-600">{t('qrBankTransfer.accountNumber')}</span>
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-teal-600">
                     {bankInfo.accountNumber}
@@ -228,15 +230,15 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Chủ tài khoản:</span>
+                <span className="text-gray-600">{t('qrBankTransfer.accountOwner')}</span>
                 <span className="font-medium text-gray-800">{bankInfo.accountName}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Số tiền:</span>
+                <span className="text-gray-600">{t('qrBankTransfer.amount')}</span>
                 <span className="font-bold text-xl text-teal-800">{formatCurrency(amount)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Mã giao dịch:</span>
+                <span className="text-gray-600">{t('qrBankTransfer.transactionId')}</span>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs font-bold text-teal-600">{transactionId}</span>
                   <button
@@ -261,17 +263,26 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
           <div className="text-center mb-6">
             <button
               onClick={checkTransactionStatus}
-              disabled={isChecking}
-              className="w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold py-4 px-6 rounded-lg hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-lg"
+              disabled={isChecking || !qrCodeUrl || timeLeft === 0}
+              className={`w-full py-3 px-4 ${
+                isChecking || !qrCodeUrl || timeLeft === 0
+                  ? 'bg-gray-300 cursor-not-allowed'
+                  : 'bg-teal-600 hover:bg-teal-700'
+              } text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2`}
             >
               {isChecking ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                  <span>Đang kiểm tra giao dịch...</span>
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                  <span>{t('qrBankTransfer.checking')}</span>
                 </>
               ) : (
                 <>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -279,55 +290,23 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span>Kiểm tra thanh toán</span>
+                  <span>{t('qrBankTransfer.checkTransaction')}</span>
                 </>
               )}
             </button>
-
-            {lastCheckTime && (
-              <p className="text-gray-500 text-sm mt-2">
-                Lần kiểm tra cuối: {lastCheckTime.toLocaleTimeString('vi-VN')}
-              </p>
-            )}
           </div>
 
-          {/* Instructions */}
-          <div className="bg-teal-50 rounded-lg p-3 border border-teal-200">
-            <h5 className="font-medium text-teal-800 mb-2 flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Hướng dẫn chuyển khoản:
-            </h5>
-            <ol className="list-decimal list-inside space-y-1 text-xs text-teal-700">
-              <li>Mở app ngân hàng hoặc ví điện tử</li>
-              <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
-              <li>Kiểm tra số tiền và mã giao dịch</li>
-              <li>Xác nhận chuyển khoản</li>
-              <li className="font-semibold">Nhấn nút "Kiểm tra thanh toán"</li>
+          {/* Transfer Instructions */}
+          <div className="bg-blue-50 rounded-lg p-4">
+            <h4 className="font-semibold text-blue-900 mb-3">
+              {t('qrBankTransfer.transferInstructions')}
+            </h4>
+            <ol className="text-sm text-blue-800 space-y-2">
+              <li>{t('qrBankTransfer.step1')}</li>
+              <li>{t('qrBankTransfer.step2')}</li>
+              <li>{t('qrBankTransfer.step3')}</li>
+              <li>{t('qrBankTransfer.step4')}</li>
             </ol>
-            <div className="mt-2 text-xs text-teal-900 font-semibold flex items-center gap-1">
-              <svg
-                className="w-4 h-4 text-orange-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              Nhớ <span className="underline">chụp màn hình giao dịch</span> để gửi khi cần hỗ trợ
-              kiểm tra nhanh!
-            </div>
           </div>
         </div>
       </div>

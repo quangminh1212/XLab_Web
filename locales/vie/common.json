@@ -1,0 +1,75 @@
+{
+  "loading": "Đang tải...",
+  "error": "Lỗi",
+  "success": "Thành công",
+  "save": "Lưu",
+  "cancel": "Hủy",
+  "delete": "Xóa",
+  "edit": "Sửa",
+  "close": "Đóng",
+  "yes": "Có",
+  "no": "Không",
+  "back": "Quay lại",
+  "next": "Tiếp theo",
+  "submit": "Gửi",
+  "required": "Bắt buộc",
+  "optional": "Tùy chọn",
+  "search": "Tìm kiếm",
+  "filter": "Lọc",
+  "sort": "Sắp xếp",
+  "notFound": "Không tìm thấy",
+  "retry": "Thử lại",
+  "showMore": "Xem thêm",
+  "showLess": "Thu gọn",
+  "accessDenied": "Truy cập bị từ chối",
+  "noPermission": "Bạn không có quyền truy cập vào trang này.",
+  "backToHome": "Quay về trang chủ",
+  "loading.data": "Đang tải dữ liệu...",
+  "loading.checking": "Đang kiểm tra...",
+  "loading.checkAgain": "Kiểm tra lại",
+  "loading.syncing": "Đang đồng bộ...",
+  "loading.syncNow": "Đồng bộ ngay",
+  "loading.pleaseWait": "Vui lòng đợi trong giây lát",
+  "userSync": {
+    "title": "Trạng thái đồng bộ dữ liệu",
+    "status": {
+      "notSynced": "Chưa đồng bộ",
+      "needsUpdate": "Cần cập nhật",
+      "synced": "Đã đồng bộ"
+    },
+    "email": "Email:",
+    "balance": "Số dư:",
+    "cartItems": "Sản phẩm trong giỏ:",
+    "transactions": "Giao dịch:",
+    "lastUpdated": "Cập nhật cuối:",
+    "lastSync": "Đồng bộ cuối:",
+    "recommendations": "Khuyến nghị:"
+  },
+  "balance": {
+    "title": "Số dư tài khoản - Click để nạp tiền"
+  },
+  "auth": {
+    "loading": "Đang tải...",
+    "notAdmin": "Bạn không có quyền truy cập trang quản trị",
+    "redirecting": "Đang chuyển hướng...",
+    "pleaseLogin": "Vui lòng đăng nhập để tiếp tục"
+  },
+  "errors": {
+    "copyFailed": "Không thể sao chép. Vui lòng thử lại.",
+    "loadFailed": "Không thể tải dữ liệu",
+    "generalError": "Đã xảy ra lỗi"
+  },
+  "actions": {
+    "copyToClipboard": "Sao chép vào bộ nhớ tạm",
+    "sync": "Đồng bộ dữ liệu",
+    "clear": "Xóa",
+    "copy": "Sao chép"
+  },
+  "notifications": {
+    "noItems": "Không có thông báo mới"
+  },
+  "vouchers": {
+    "noItems": "Không có mã giảm giá",
+    "clickToCopy": "Nhấn để sao chép mã"
+  }
+} 

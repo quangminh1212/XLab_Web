@@ -13,9 +13,15 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   size = 'md',
 }) => {
   const { t } = useLanguage();
+<<<<<<< HEAD
   const defaultMessage = t('system.loadingData');
   const pleaseWaitMessage = t('system.pleaseWait');
   
+=======
+  const defaultMessage = t('common.loading.data');
+  const displayMessage = message || defaultMessage;
+
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
   const sizeClasses = {
     sm: {
       container: 'max-w-xs',
@@ -91,8 +97,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         </div>
 
         <div className="space-y-1.5 sm:space-y-2">
+<<<<<<< HEAD
           <h2 className={`${currentSize.title} font-semibold text-gray-900`}>{message || defaultMessage}</h2>
           <p className={`${currentSize.subtitle} text-gray-500`}>{pleaseWaitMessage}</p>
+=======
+          <h2 className={`${currentSize.title} font-semibold text-gray-900`}>{displayMessage}</h2>
+          <p className={`${currentSize.subtitle} text-gray-500`}>{t('common.loading.pleaseWait')}</p>
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
         </div>
 
         <div className="mt-4 sm:mt-6 relative">

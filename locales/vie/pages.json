@@ -1,0 +1,60 @@
+{
+  "notFound": {
+    "product": {
+      "title": "Không tìm thấy sản phẩm",
+      "message": "Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa."
+    },
+    "service": {
+      "title": "Không tìm thấy dịch vụ",
+      "message": "Dịch vụ bạn đang tìm kiếm không tồn tại hoặc đã bị xóa."
+    }
+  },
+  "loading": {
+    "product": {
+      "title": "Đang tải thông tin sản phẩm",
+      "message": "Đang tải thông tin chi tiết sản phẩm...",
+      "autoReload": "Trang sẽ tự động tải lại sau 3 giây",
+      "backToProducts": "Quay lại trang sản phẩm"
+    }
+  },
+  "product": {
+    "faq": {
+      "subscription": {
+        "question": "Sản phẩm này có phải trả phí hàng tháng không?",
+        "answer": "Không, đây là sản phẩm mua một lần và sử dụng vĩnh viễn. Bạn sẽ nhận được các bản cập nhật miễn phí trong thời gian bảo hành."
+      },
+      "activation": {
+        "question": "Làm thế nào để kích hoạt sản phẩm sau khi mua?",
+        "answer": "Sau khi thanh toán thành công, bạn sẽ nhận được email chứa thông tin tài khoản và hướng dẫn kích hoạt chi tiết. Nếu cần hỗ trợ thêm, vui lòng liên hệ đội ngũ hỗ trợ 24/7 của chúng tôi."
+      },
+      "multipleDevices": {
+        "question": "Tôi có thể sử dụng sản phẩm này trên nhiều thiết bị không?",
+        "answer": "Mỗi giấy phép sử dụng cho một thiết bị. Nếu bạn muốn sử dụng trên nhiều thiết bị, vui lòng mua thêm giấy phép hoặc liên hệ với chúng tôi để được tư vấn gói doanh nghiệp."
+      },
+      "support": {
+        "question": "Làm thế nào để liên hệ với bộ phận hỗ trợ?",
+        "answer": "Bạn có thể liên hệ hỗ trợ kỹ thuật qua email support@xlab.vn hoặc qua trang Liên hệ trên website. Đội ngũ hỗ trợ của chúng tôi làm việc 24/7 và sẽ phản hồi trong vòng 24 giờ."
+      },
+      "compatibility": {
+        "question": "Phần mềm có tương thích với hệ điều hành của tôi không?",
+        "answer": "Chúng tôi hỗ trợ Windows 10/11, macOS 10.15+, và các phiên bản Linux phổ biến. Bạn có thể xem yêu cầu hệ thống cụ thể cho từng sản phẩm trên trang thông tin sản phẩm."
+      },
+      "troubleshooting": {
+        "question": "Tôi gặp lỗi khi sử dụng phần mềm, phải làm gì?",
+        "answer": "Trước tiên, hãy đảm bảo bạn đang sử dụng phiên bản mới nhất của phần mềm. Nếu vẫn gặp lỗi, bạn có thể tham khảo tài liệu hướng dẫn, diễn đàn cộng đồng, hoặc gửi yêu cầu hỗ trợ qua tài khoản của bạn với mô tả chi tiết về lỗi và môi trường bạn đang sử dụng."
+      }
+    }
+  },
+  "register": {
+    "fillAllFields": "Vui lòng điền đầy đủ thông tin.",
+    "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+    "registerSuccess": "Đăng ký thành công! Đang chuyển hướng...",
+    "registerError": "Có lỗi xảy ra khi đăng ký"
+  },
+  "vouchers": {
+    "syncingVouchers": "Đang đồng bộ...",
+    "syncData": "Đồng bộ dữ liệu",
+    "cannotLoadVoucher": "Không thể tải dữ liệu voucher",
+    "errorLoadingVoucher": "Đã xảy ra lỗi khi tải voucher"
+  }
+} 

@@ -67,7 +67,11 @@ export default function ProductCard({
       setTranslatedName(name); // Giữ nguyên tên
     } 
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+<<<<<<< HEAD
     else if (language === 'eng') {
+=======
+    if (language === 'eng') {
+>>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);

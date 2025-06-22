@@ -1,0 +1,27 @@
+{
+  "header": {
+    "copyError": "Không thể sao chép mã. Vui lòng thử lại.",
+    "copyCodeLabel": "Nhấn để sao chép mã",
+    "notifications": "Thông báo"
+  },
+  "testimonials": {
+    "title": "Đánh giá",
+    "defaultTestimonials": [
+      {
+        "name": "Nguyễn Văn A",
+        "position": "Quản lý dự án",
+        "content": "Sản phẩm rất tuyệt vời, đúng với mô tả và hoạt động rất ổn định. Đội ngũ hỗ trợ phản hồi nhanh và giải quyết vấn đề hiệu quả."
+      },
+      {
+        "name": "Trần Thị B",
+        "position": "Giám đốc Marketing",
+        "content": "Tôi đã sử dụng nhiều sản phẩm tương tự nhưng cái này có giao diện dễ sử dụng nhất. Tiết kiệm được rất nhiều thời gian cho công việc hàng ngày."
+      },
+      {
+        "name": "Lê Văn C",
+        "position": "Kỹ sư phần mềm",
+        "content": "Phần mềm này đã cải thiện đáng kể hiệu quả làm việc của chúng tôi. Các tính năng được thiết kế tốt và đội ngũ hỗ trợ luôn sẵn sàng giúp đỡ."
+      }
+    ]
+  }
+} 
