@@ -8,6 +8,7 @@ type Language = 'vie' | 'eng';
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
+  isClient: boolean;
   t: <T = string>(key: string, params?: Record<string, any>, returnObject?: boolean) => T extends true ? any : string;
 };
 
@@ -27,35 +28,50 @@ const translations: Record<Language, Translations> = {
 // Display warning for keys not found during development
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  const [language, setLanguageState] = useState<Language>('vie');
-  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+// Default language - MUST be the same on server and client for first render
+const DEFAULT_LANGUAGE: Language = 'vie';
 
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  // Start with the default language to avoid hydration mismatch
+  const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
+  // Track if we're on the client side
+  const [isClient, setIsClient] = useState(false);
+
+  // After initial render, check for stored language preference
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
-      setLanguageState(savedLanguage as Language);
-    } else if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
-      // Migration from old format
-      const newLang = savedLanguage === 'vi' ? 'vie' : 'eng';
-      setLanguageState(newLang);
-      localStorage.setItem('language', newLang);
+    setIsClient(true);
+    try {
+      const savedLanguage = localStorage.getItem('language');
+      if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
+        setLanguageState(savedLanguage as Language);
+      } else if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+        // Migration from old format
+        const newLang = savedLanguage === 'vi' ? 'vie' : 'eng';
+        setLanguageState(newLang);
+        localStorage.setItem('language', newLang);
+      }
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
     }
-    setIsInitialized(true);
   }, []);
+
+  // Update localStorage when language changes (but only after initial client-side hydration)
+  useEffect(() => {
+    if (isClient) {
+      try {
+        localStorage.setItem('language', language);
+      } catch (error) {
+        console.error('Error writing to localStorage:', error);
+      }
+    }
+  }, [language, isClient]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('language', lang);
   };
 
   const t = <T = string>(key: string, params?: Record<string, any>, returnObject?: boolean): T extends true ? any : string => {
     try {
-      // If translations aren't loaded yet, return the key to prevent errors
-      if (!isInitialized) {
-        return key as any;
-      }
-      
       // Make sure key is a string
       if (typeof key !== 'string') {
         console.error('Translation key must be a string:', key);
@@ -143,7 +159,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   }
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, isClient, t }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -9,7 +9,7 @@ interface LanguageSwitcherProps {
 }
 
 const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, isClient } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -31,6 +31,38 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     setLanguage(lang);
     setIsOpen(false);
   };
+
+  // Always render the default language UI on server for hydration matching
+  if (!isClient) {
+    return (
+      <div className={`relative ${className}`} ref={dropdownRef}>
+        <button
+          className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
+          aria-expanded={false}
+        >
+          <div className="relative w-6 h-4 mr-2">
+            <Image 
+              src="/images/flags/vn.svg" 
+              alt="Tiếng Việt" 
+              width={24}
+              height={16}
+              className="object-cover rounded-sm"
+            />
+          </div>
+          <span>VIE</span>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-4 w-4 ml-1" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
