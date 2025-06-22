@@ -50,6 +50,12 @@ const common = {
   'footer.documentation': 'Documentation',
   'footer.faq': 'FAQ',
   'footer.followUs': 'Follow Us',
+  'footer.address': 'Long Bien, Hanoi',
+  'footer.phone': '+84 866 528 014',
+  'footer.email': 'xlab.rnd@gmail.com',
+  'footer.supportHours': '24/7',
+  'footer.copyrightFull': '© 2025 XLab. Copyright belongs to XLab Technologies.',
+  'logo.alt': 'XLab Logo',
   
   // Common form elements
   'form.submit': 'Submit',

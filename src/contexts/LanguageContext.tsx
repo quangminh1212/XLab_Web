@@ -39,22 +39,24 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     // Phân tách key để xác định module và khóa thực tế
     const parts = key.split('.');
     
-    // Nếu key có dấu chấm (ví dụ: 'common.nav.home')
-    if (parts.length > 1) {
-      const moduleName = parts[0]; // Lấy module (common, home, admin, ...)
-      // Sử dụng as để tránh lỗi TypeScript với string indexer
-      const langData = translations[language] as Record<string, any>;
-      let value = langData[moduleName]; // Lấy đúng module dịch
+    // Lấy language data
+    const langData = translations[language] as Record<string, any>;
+    if (!langData) {
+      console.warn(`No translations found for language: ${language}`);
+      return key;
+    }
+    
+    // Hàm trả về giá trị dịch
+    const getTranslationValue = (moduleData: any, keyParts: string[]): string | undefined => {
+      let value = moduleData;
       
-      // Đi từng cấp để lấy giá trị dịch
-      for (let i = 1; i < parts.length; i++) {
+      for (const part of keyParts) {
         if (!value || typeof value !== 'object') {
-          return key; // Nếu không tìm thấy, trả về key gốc
+          return undefined;
         }
-        value = value[parts[i]];
+        value = value[part];
       }
       
-      // Nếu tìm thấy và là chuỗi, trả về chuỗi đó
       if (typeof value === 'string') {
         // Xử lý các tham số (nếu có)
         if (params) {
@@ -65,31 +67,37 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
         return value;
       }
       
-      // Nếu không phải chuỗi, trả về key gốc
-      return key;
-    } 
-    else {
-      // Tìm trong tất cả các module nếu key không có dấu chấm
-      const langData = translations[language] as Record<string, any>;
-      for (const moduleName in langData) {
-        const moduleValue = langData[moduleName];
-        if (moduleValue && typeof moduleValue === 'object' && key in moduleValue) {
-          let value = moduleValue[key];
-          if (typeof value === 'string') {
-            // Xử lý các tham số (nếu có)
-            if (params) {
-              Object.keys(params).forEach(paramKey => {
-                value = value.replace(`{${paramKey}}`, String(params[paramKey]));
-              });
-            }
-            return value;
-          }
-        }
-      }
+      return undefined;
+    };
+    
+    // Xử lý keys như 'module.key.subkey'
+    if (parts.length > 1) {
+      const moduleName = parts[0]; // Lấy module (common, home, admin, ...)
+      const moduleData = langData[moduleName];
       
-      // Nếu không tìm thấy, trả về key gốc
-      return key;
+      if (moduleData) {
+        const value = getTranslationValue(moduleData, parts.slice(1));
+        if (value) return value;
+      }
     }
+    
+    // Tìm kiếm trong các module phổ biến nếu không có module prefix
+    // Thử trong common trước
+    const commonValue = getTranslationValue(langData.common, parts);
+    if (commonValue) return commonValue;
+    
+    // Thử trong các module khác
+    for (const moduleName in langData) {
+      if (moduleName !== 'common') {
+        const moduleData = langData[moduleName];
+        const value = getTranslationValue(moduleData, parts);
+        if (value) return value;
+      }
+    }
+    
+    // Nếu không tìm thấy, trả về key gốc
+    console.warn(`Translation key not found: ${key}`);
+    return key;
   };
 
   return (

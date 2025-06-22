@@ -24,24 +24,22 @@ export default function Footer() {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
-      <div className="relative container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-6 sm:pb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
-          {/* Logo và social icons - Cột riêng bên trái */}
-          <div className="flex flex-col items-center">
-            <Link href="/" className="flex items-center justify-center group mb-6 sm:mb-8">
-              <div className="relative overflow-hidden rounded-lg">
-                <Image
-                  src="/images/logo.jpg"
-                  alt={`${siteConfig.name} Logo`}
-                  width={560}
-                  height={224}
-                  className="w-auto h-40 sm:h-48 md:h-56 transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-            </Link>
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-10 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10">
+          {/* Column 1: Logo and Company Info */}
+          <div>
+            <div className="mb-6">
+              <Link href="/" className="inline-block">
+                <Image src="/images/logo-white.svg" alt={t('logo.alt')} width={140} height={55} />
+              </Link>
+            </div>
+            <p className="text-sm text-slate-400 leading-relaxed mb-4 max-w-xs">
+              {t('footer.companyDescription1')}
+            </p>
+            <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-xs">
+              {t('footer.companyDescription2')}
+            </p>
 
-            {/* Social icons */}
             <div className="flex justify-center space-x-3 mt-2">
               <a
                 href={siteConfig.social.facebook}
@@ -82,40 +80,44 @@ export default function Footer() {
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                 </svg>
               </a>
             </div>
-          </div>
 
-          {/* Giới thiệu */}
-          <div className="flex flex-col items-center sm:items-start">
-            <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.aboutLink')}</span>
-              <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
-            </h3>
-            <div className="space-y-3 text-center sm:text-left">
-              <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                {t('footer.companyDescription1')}
-              </p>
-              <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                {t('footer.companyDescription2')}
-              </p>
-              <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 mt-3">
-                <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
-                  {t('footer.customers')}
-                </span>
-                <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
-                  {t('footer.years')}
-                </span>
-                <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
-                  {t('footer.support')}
-                </span>
+            <div className="flex justify-center sm:justify-between flex-wrap gap-4 mt-8 text-xs text-slate-500">
+              <div className="flex items-center gap-1.5">
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{t('footer.customers')}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span>{t('footer.years')}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+                <span>{t('footer.support')}</span>
               </div>
             </div>
           </div>
 
-          {/* Sản phẩm & Dịch vụ + Điều hướng */}
+          {/* Column 2: Products and Services */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <span className="relative z-10">{t('footer.productsAndServices')}</span>
@@ -150,46 +152,52 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-
-            {/* Điều hướng */}
-            <div className="pt-4 border-t border-slate-700 w-full">
-              <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
-                {t('footer.navigationLinks')}
-              </h4>
-              <div className="space-y-3 text-center sm:text-left">
-                <Link
-                  href="/"
-                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
-                >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('nav.home')}
-                </Link>
-                <br />
-                <Link
-                  href="/about"
-                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
-                >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('nav.about')}
-                </Link>
-                <br />
-                <Link
-                  href="/pricing"
-                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
-                >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.pricing')}
-                </Link>
-              </div>
-            </div>
           </div>
 
-          {/* Thông tin liên hệ */}
+          {/* Column 3: Navigation Links */}
+          <div className="flex flex-col items-center sm:items-start">
+            <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
+              <span className="relative z-10">{t('footer.navigationLinks')}</span>
+              <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
+            </h3>
+            <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
+              <li>
+                <Link
+                  href="/"
+                  className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
+                >
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  {t('nav.home')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
+                >
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  {t('nav.about')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/pricing"
+                  className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
+                >
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  {t('footer.pricing')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Contact Info */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <span className="relative z-10">{t('footer.contactLink')}</span>
-              <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
+              <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
+
             <ul className="space-y-3 sm:space-y-4 text-center sm:text-left mb-4">
               <li className="flex items-start justify-center sm:justify-start group">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 mr-2.5 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-all duration-300 border border-orange-500/20">
@@ -214,29 +222,10 @@ export default function Footer() {
                   </svg>
                 </div>
                 <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
-                  {siteConfig.contact.address}
+                  {t('footer.address')}
                 </span>
               </li>
-              <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-2.5 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
-                  <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 flex-shrink-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
-                </div>
-                <span className="text-xs sm:text-sm text-slate-400">
-                  {siteConfig.contact.phone}
-                </span>
-              </li>
+
               <li className="flex items-start justify-center sm:justify-start group">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mr-2.5 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all duration-300 border border-blue-500/20">
                   <svg
@@ -249,18 +238,40 @@ export default function Footer() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                </div>
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
+                  {t('footer.phone')}
+                </span>
+              </li>
+
+              <li className="flex items-start justify-center sm:justify-start group">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-2.5 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
+                  <svg
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400">
-                  {siteConfig.contact.email}
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
+                  {t('footer.email')}
                 </span>
               </li>
+
               <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 mr-2.5 group-hover:from-violet-500/30 group-hover:to-purple-500/30 transition-all duration-300 border border-violet-500/20">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 mr-2.5 group-hover:from-purple-500/30 group-hover:to-indigo-500/30 transition-all duration-300 border border-purple-500/20">
                   <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-violet-400 flex-shrink-0"
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -273,27 +284,14 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400">
-                  {siteConfig.contact.workingHours}
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
+                  {t('footer.supportHours')}
                 </span>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Divider với gradient đẹp */}
-        <div className="relative mt-14 mb-7">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent"></div>
-          </div>
-          <div className="relative flex justify-center">
-            <div className="px-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
-              <div className="w-2 h-2 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom section - Cải thiện layout */}
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
