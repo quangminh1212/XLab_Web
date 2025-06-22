@@ -28,19 +28,21 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10">
           {/* Column 1: Logo and Company Info */}
           <div>
-            <div className="mb-6">
-              <Link href="/" className="inline-block">
-                <Image src="/images/logo-white.svg" alt={t('logo.alt')} width={140} height={55} />
+            <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-6">
+              <Link href="/" className="inline-block shrink-0">
+                <Image src="/images/logo.jpg" alt={t('logo.alt')} width={112} height={56} className="mb-3 sm:mb-0" />
               </Link>
+              <div>
+                <p className="text-sm text-slate-400 leading-relaxed mb-4 max-w-xs">
+                  {t('footer.companyDescription1')}
+                </p>
+                <p className="text-sm text-slate-400 leading-relaxed mb-4 max-w-xs">
+                  {t('footer.companyDescription2')}
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-slate-400 leading-relaxed mb-4 max-w-xs">
-              {t('footer.companyDescription1')}
-            </p>
-            <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-xs">
-              {t('footer.companyDescription2')}
-            </p>
 
-            <div className="flex justify-center space-x-3 mt-2">
+            <div className="flex justify-center sm:justify-start space-x-3 mt-2">
               <a
                 href={siteConfig.social.facebook}
                 target="_blank"
@@ -85,7 +87,7 @@ export default function Footer() {
               </a>
             </div>
 
-            <div className="flex justify-center sm:justify-between flex-wrap gap-4 mt-8 text-xs text-slate-500">
+            <div className="flex justify-start flex-wrap gap-4 mt-8 text-xs text-slate-500">
               <div className="flex items-center gap-1.5">
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
