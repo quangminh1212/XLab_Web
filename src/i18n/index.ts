@@ -1,10 +1,10 @@
-import en from './en/index';
-import vi from './vi/index';
+import eng from './eng/index';
+import vie from './vie/index';
 
 const translations = {
-  en,
-  vi
+  eng,
+  vie
 };
 
-export type Language = 'en' | 'vi';
+export type Language = 'eng' | 'vie';
 export default translations; 
