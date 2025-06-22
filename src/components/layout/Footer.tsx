@@ -30,7 +30,7 @@ export default function Footer() {
           <div>
             <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-6">
               <Link href="/" className="inline-block shrink-0">
-                <Image src="/images/logo.jpg" alt={t('logo.alt')} width={112} height={56} className="mb-3 sm:mb-0" />
+                <Image src="/images/logo.jpg" alt={t('logo.alt')} width={180} height={90} className="mb-3 sm:mb-0" />
               </Link>
               <div>
                 <p className="text-sm text-slate-400 leading-relaxed mb-4 max-w-xs">
