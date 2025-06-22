@@ -7,7 +7,7 @@ import Image from 'next/image';
 import ProductCard from '@/components/product/ProductCard';
 import { categories } from '@/data/mockData';
 import { useLanguage } from '@/contexts/LanguageContext';
-import HomeTestimonials from '@/components/home/Testimonials';
+import HomeAchievements from '@/components/home/Achievements';
 
 // Types
 interface Product {
@@ -465,8 +465,8 @@ function HomePage() {
                   )}
                 </section>
                 
-                {/* Phần Testimonials - Đánh giá từ khách hàng */}
-                <HomeTestimonials />
+                {/* Replace Testimonials with Achievements */}
+                <HomeAchievements />
               </>
             )}
           </div>

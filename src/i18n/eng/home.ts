@@ -21,8 +21,11 @@ const home = {
   'newFeatures': 'Always updated with new features',
   'achievements': 'Our Achievements',
   'customers': 'Trusted customers',
+  'customersDescription': 'We are proud to serve over 10,000 customers who trust our products and services for their daily needs.',
   'softwareSolutions': 'Software solutions',
+  'solutionsDescription': 'With more than 30 software solutions, we offer a wide range of tools to help improve your productivity and efficiency.',
   'yearsExperience': 'Years of experience',
+  'experienceDescription': 'For over 5 years, we have been developing high-quality software solutions for businesses and individuals.',
   'software': 'Software',
   'services': 'Services',
   'featuredProducts': 'Featured Products',
@@ -48,5 +51,8 @@ const home = {
   'testimonials': 'Customer Reviews',
   'viewAllTestimonials': 'View all reviews',
 };
+
+// Check if the translations exist first
+// Add the description translations for the achievements section
 
 export default home; 
