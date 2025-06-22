@@ -1,0 +1,60 @@
+{
+  "errors": {
+    "validation": {
+      "siteName": "Site name cannot be empty",
+      "contactEmail": "Contact email is invalid",
+      "contactPhone": "Contact phone is invalid",
+      "bankName": "Bank name cannot be empty when bank transfer is enabled",
+      "bankAccountName": "Bank account name cannot be empty when bank transfer is enabled",
+      "bankAccountNumber": "Bank account number cannot be empty when bank transfer is enabled",
+      "smtpServer": "SMTP server cannot be empty when email notifications are enabled",
+      "smtpUsername": "SMTP username cannot be empty when email notifications are enabled",
+      "smtpPassword": "SMTP password cannot be empty when email notifications are enabled",
+      "smtpSenderEmail": "Sender email is invalid"
+    },
+    "scripts": {
+      "startVerifying": "Starting product data verification...",
+      "fileNotFound": "products.json file does not exist!",
+      "creatingFile": "Creating new products.json file...",
+      "fileCreated": "Empty products.json file created.",
+      "fileEmpty": "products.json file is currently empty.",
+      "noProducts": "No products in the file.",
+      "productList": "Product List:",
+      "status": "Status: {{status}}",
+      "price": "Price: {{price}}đ (Original: {{original}}đ)",
+      "dataIntegrity": "Checking data integrity:",
+      "missingName": "Missing name",
+      "missingDescription": "Missing description",
+      "invalidImage": "Missing or invalid image format",
+      "missingVersion": "Missing product version",
+      "allValid": "All products are valid!",
+      "jsonError": "Error parsing JSON file:",
+      "fileContent": "File content (first 50 characters):",
+      "checkError": "Error checking products:",
+      "completed": "Product verification completed."
+    },
+    "updatePurchases": {
+      "updating": "Updating daily purchase count...",
+      "apiError": "Error: {{error}}",
+      "callError": "Error calling purchase update API:"
+    },
+    "fixNextErrors": {
+      "fixing": "Fixing Next.js errors...",
+      "completed": "Next.js error fixing completed!",
+      "error": "Error fixing Next.js:"
+    }
+  },
+  "userActivities": {
+    "accountCreated": "Account created",
+    "login": "Logged into system",
+    "balanceUpdated": "Balance updated from {{oldBalance}} VND to {{newBalance}} VND",
+    "logout": "Logged out of system"
+  },
+  "spreadsheet": {
+    "sheetName": "Sheet1!A:K",
+    "transactionType": "Incoming"
+  },
+  "bankInfo": {
+    "mbBank": "MBBank (Military Commercial Joint Stock Bank)"
+  }
+} 

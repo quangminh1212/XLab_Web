@@ -1,0 +1,27 @@
+{
+  "header": {
+    "copyError": "Could not copy code. Please try again.",
+    "copyCodeLabel": "Click to copy code",
+    "notifications": "Notifications"
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "defaultTestimonials": [
+      {
+        "name": "John Doe",
+        "position": "Project Manager",
+        "content": "The product is excellent, exactly as described and works very reliably. The support team responds quickly and resolves issues effectively."
+      },
+      {
+        "name": "Jane Smith",
+        "position": "Marketing Director",
+        "content": "I've used many similar products but this one has the most user-friendly interface. It saves a lot of time for daily tasks."
+      },
+      {
+        "name": "David Johnson",
+        "position": "Software Engineer",
+        "content": "This software has greatly improved our workflow efficiency. The features are well-designed and the support team is always helpful."
+      }
+    ]
+  }
+} 

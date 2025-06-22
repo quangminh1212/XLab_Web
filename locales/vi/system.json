@@ -1,0 +1,60 @@
+{
+  "errors": {
+    "validation": {
+      "siteName": "Tên trang web không được để trống",
+      "contactEmail": "Email liên hệ không hợp lệ",
+      "contactPhone": "Số điện thoại liên hệ không hợp lệ",
+      "bankName": "Tên ngân hàng không được để trống khi bật thanh toán chuyển khoản",
+      "bankAccountName": "Tên tài khoản ngân hàng không được để trống khi bật thanh toán chuyển khoản",
+      "bankAccountNumber": "Số tài khoản ngân hàng không được để trống khi bật thanh toán chuyển khoản",
+      "smtpServer": "Máy chủ SMTP không được để trống khi bật thông báo email",
+      "smtpUsername": "Tên đăng nhập SMTP không được để trống khi bật thông báo email",
+      "smtpPassword": "Mật khẩu SMTP không được để trống khi bật thông báo email",
+      "smtpSenderEmail": "Email người gửi không hợp lệ"
+    },
+    "scripts": {
+      "startVerifying": "Bắt đầu kiểm tra dữ liệu sản phẩm...",
+      "fileNotFound": "File products.json không tồn tại!",
+      "creatingFile": "Tạo file products.json mới...",
+      "fileCreated": "Đã tạo file products.json trống.",
+      "fileEmpty": "File products.json hiện đang trống.",
+      "noProducts": "Không có sản phẩm nào trong file.",
+      "productList": "Danh sách sản phẩm:",
+      "status": "Trạng thái: {{status}}",
+      "price": "Giá: {{price}}đ (Gốc: {{original}}đ)",
+      "dataIntegrity": "Kiểm tra tính toàn vẹn dữ liệu:",
+      "missingName": "Thiếu tên",
+      "missingDescription": "Thiếu mô tả",
+      "invalidImage": "Thiếu hoặc sai định dạng hình ảnh",
+      "missingVersion": "Thiếu phiên bản sản phẩm",
+      "allValid": "Tất cả sản phẩm đều hợp lệ!",
+      "jsonError": "Lỗi khi parse file JSON:",
+      "fileContent": "Nội dung file (50 ký tự đầu tiên):",
+      "checkError": "Lỗi khi kiểm tra sản phẩm:",
+      "completed": "Hoàn thành kiểm tra sản phẩm."
+    },
+    "updatePurchases": {
+      "updating": "Đang cập nhật số lượt mua hàng ngày...",
+      "apiError": "❌ Lỗi: {{error}}",
+      "callError": "❌ Lỗi khi gọi API cập nhật số lượt mua:"
+    },
+    "fixNextErrors": {
+      "fixing": "🔧 Đang sửa lỗi Next.js...",
+      "completed": "✨ Đã hoàn tất sửa lỗi Next.js!",
+      "error": "❌ Lỗi khi sửa Next.js:"
+    }
+  },
+  "userActivities": {
+    "accountCreated": "Tài khoản được tạo",
+    "login": "Đăng nhập vào hệ thống",
+    "balanceUpdated": "Số dư được cập nhật từ {{oldBalance}} VND thành {{newBalance}} VND",
+    "logout": "Đăng xuất khỏi hệ thống"
+  },
+  "spreadsheet": {
+    "sheetName": "Trang tính1!A:K",
+    "transactionType": "Tiền vào"
+  },
+  "bankInfo": {
+    "mbBank": "MBBank (Ngân hàng Quân đội)"
+  }
+} 
