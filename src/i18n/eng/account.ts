@@ -1,0 +1,73 @@
+// English language data for account section
+const account = {
+  'title': 'My Account',
+  'welcome': 'Welcome back, {name}',
+  'navigation.dashboard': 'Dashboard',
+  'navigation.profile': 'Profile',
+  'navigation.orders': 'Orders',
+  'navigation.downloads': 'Downloads',
+  'navigation.licenses': 'Licenses',
+  'navigation.settings': 'Settings',
+  'navigation.logout': 'Logout',
+  
+  // Dashboard
+  'dashboard.title': 'Dashboard',
+  'dashboard.welcomeBack': 'Welcome Back',
+  'dashboard.activeLicenses': 'Active Licenses',
+  'dashboard.recentOrders': 'Recent Orders',
+  'dashboard.recentDownloads': 'Recent Downloads',
+  'dashboard.viewAll': 'View All',
+  'dashboard.noOrders': 'You don\'t have any orders yet',
+  'dashboard.noDownloads': 'You don\'t have any downloads yet',
+  'dashboard.noLicenses': 'You don\'t have any licenses yet',
+  
+  // Profile
+  'profile.title': 'My Profile',
+  'profile.basicInfo': 'Basic Information',
+  'profile.firstName': 'First Name',
+  'profile.lastName': 'Last Name',
+  'profile.email': 'Email',
+  'profile.phone': 'Phone Number',
+  'profile.address': 'Address',
+  'profile.update': 'Update Profile',
+  'profile.updatingProfile': 'Updating...',
+  'profile.updateSuccess': 'Profile updated successfully',
+  'profile.updateError': 'An error occurred while updating your profile',
+
+  // Orders
+  'orders.title': 'My Orders',
+  'orders.id': 'Order ID',
+  'orders.date': 'Date',
+  'orders.status': 'Status',
+  'orders.total': 'Total',
+  'orders.products': 'Products',
+  'orders.noOrders': 'You don\'t have any orders yet',
+  'orders.status.processing': 'Processing',
+  'orders.status.confirmed': 'Confirmed',
+  'orders.status.completed': 'Completed',
+  'orders.status.cancelled': 'Cancelled',
+  'orders.viewDetails': 'View Details',
+  'orders.orderDetails': 'Order Details',
+  'orders.paymentMethod': 'Payment Method',
+  
+  // Settings
+  'settings.title': 'Account Settings',
+  'settings.changePassword': 'Change Password',
+  'settings.currentPassword': 'Current Password',
+  'settings.newPassword': 'New Password',
+  'settings.confirmPassword': 'Confirm New Password',
+  'settings.updatePassword': 'Update Password',
+  'settings.passwordUpdated': 'Password updated successfully',
+  'settings.passwordError': 'An error occurred while updating your password',
+  'settings.notificationsPreferences': 'Notification Preferences',
+  'settings.emailNotifications': 'Email Notifications',
+  'settings.orderUpdates': 'Order Updates',
+  'settings.promotions': 'Promotions and Offers',
+  'settings.newsletter': 'Newsletter',
+  'settings.deleteAccount': 'Delete Account',
+  'settings.deleteWarning': 'This action will permanently delete your account and data. This action cannot be undone.',
+  'settings.confirmDelete': 'Confirm Deletion',
+  'settings.enterPassword': 'Enter your password to confirm',
+};
+
+export default account; 

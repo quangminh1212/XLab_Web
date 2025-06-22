@@ -1,12 +1,12 @@
-// Import các module ngôn ngữ tiếng Việt
+// Import English language modules
 import admin from './admin';
 import common from './common';
 import home from './home';
 import testimonials from './testimonials';
 import account from './account';
 
-// Hợp nhất tất cả các module lại thành một đối tượng
-const vie = {
+// Merge all modules into one object
+const eng = {
   admin,
   common,
   home,
@@ -14,4 +14,4 @@ const vie = {
   account,
 };
 
-export default vie; 
+export default eng; 
