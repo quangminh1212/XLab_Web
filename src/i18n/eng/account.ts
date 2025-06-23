@@ -96,9 +96,12 @@ const account = {
   'deposit.screenshotReminder': 'take a screenshot of the transaction',
   'deposit.supportReason': 'to send when you need help checking quickly!',
   'deposit.copied': 'Copied to clipboard!',
-  'deposit.successMessage': 'Transaction successful! {amount} VND has been added to your account.',
+  'deposit.successMessage': 'Transaction successful! {amount} has been added to your account.',
   'deposit.errorMessage': 'Error checking transaction. Please try again.',
-  'deposit.mbbank': 'MBBank (Military Commercial Joint Stock Bank)'
+  'deposit.mbbank': 'MBBank (Military Commercial Joint Stock Bank)',
+  'deposit.currency': 'USD',
+  'deposit.currencySymbol': '$',
+  'deposit.amount': 'Required amount'
 };
 
 export default account; 

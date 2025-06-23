@@ -74,7 +74,7 @@ export default function DepositPage() {
 
         // Show success message
         alert(
-          t('deposit.successMessage', { amount: data.transaction.amount.toLocaleString('vi-VN') })
+          t('deposit.successMessage', { amount: formatCurrency(data.transaction.amount) })
         );
 
         // Redirect về checkout nếu có tham số redirect
@@ -135,13 +135,26 @@ export default function DepositPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    })
-      .format(amount)
-      .replace('₫', 'đ');
+    const { language } = useLanguage();
+    
+    if (language === 'eng') {
+      // For English, convert VND to USD (rough approximation)
+      const usdAmount = amount / 24000; // Approximate conversion rate
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+      }).format(usdAmount);
+    } else {
+      // For Vietnamese, use VND
+      return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+        minimumFractionDigits: 0,
+      })
+        .format(amount)
+        .replace('₫', t('deposit.currencySymbol'));
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -203,7 +216,7 @@ export default function DepositPage() {
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    Số tiền cần nạp: {formatCurrency(parseInt(suggestedAmount))}
+                    {t('deposit.amount')}: {formatCurrency(parseInt(suggestedAmount))}
                   </div>
                 )}
           </div>
@@ -245,7 +258,7 @@ export default function DepositPage() {
                     {isChecking ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                        <span>Đang kiểm tra giao dịch...</span>
+                        <span>{t('deposit.checkingPayment')}</span>
                       </>
                     ) : (
                       <>
