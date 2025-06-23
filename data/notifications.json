@@ -4,7 +4,9 @@
     "title": "Cập nhật mới",
     "content": "Phiên bản 2.0 đã ra mắt với nhiều tính năng mới",
     "type": "update",
-    "isRead": {},
+    "isRead": {
+      "xlab.rnd@gmail.com": true
+    },
     "createdAt": "2025-05-28T19:06:10.590Z",
     "link": "/products/1",
     "priority": "medium"

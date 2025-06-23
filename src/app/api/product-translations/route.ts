@@ -5,7 +5,10 @@ import fs from 'fs';
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const id = searchParams.get('id') || '';
-  const lang = searchParams.get('lang') || 'en';
+  const requestedLang = searchParams.get('lang') || 'en';
+  
+  // Map "eng" to "en" for compatibility with translations file
+  const lang = requestedLang === 'eng' ? 'en' : requestedLang;
 
   if (!id) {
     return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
@@ -22,7 +25,7 @@ export async function GET(request: NextRequest) {
     const translationsData = fs.readFileSync(translationsPath, 'utf8');
     const translations = JSON.parse(translationsData);
 
-    console.log(`Translation request for id: ${id}, lang: ${lang}`);
+    console.log(`Translation request for id: ${id}, lang: ${requestedLang}`);
     console.log(`Available translations for ${lang}:`, Object.keys(translations[lang] || {}));
 
     // Kiểm tra nếu có bản dịch cho sản phẩm này với ngôn ngữ được chỉ định
@@ -30,7 +33,7 @@ export async function GET(request: NextRequest) {
       console.log(`Found translation for ${id}`);
       return NextResponse.json(translations[lang][id]);
     } else {
-      console.log(`No translation found for ${id} in language ${lang}`);
+      console.log(`No translation found for ${id} in language ${requestedLang}`);
       return NextResponse.json({ message: 'No translation available' }, { status: 404 });
     }
   } catch (error) {
