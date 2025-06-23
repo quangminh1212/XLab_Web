@@ -65,10 +65,6 @@ export default function AccountPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [passwordMessage, setPasswordMessage] = useState('');
   const [showPasswordMessage, setShowPasswordMessage] = useState(false);
-  const [supportProduct, setSupportProduct] = useState('');
-  const [supportTitle, setSupportTitle] = useState('');
-  const [supportDescription, setSupportDescription] = useState('');
-  const [supportSuccess, setSupportSuccess] = useState(false);
   const [notificationSettings, setNotificationSettings] = useState({
     email: true,
     productUpdates: true,
@@ -76,6 +72,12 @@ export default function AccountPage() {
     expiryReminders: true,
   });
   const [settingsSaved, setSettingsSaved] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
@@ -755,26 +757,7 @@ export default function AccountPage() {
                     </svg>
                     {t('account.downloads')}
                   </a>
-                  <a
-                    href="#support"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
-                    {t('account.support')}
-                  </a>
+
                   <a
                     href="#settings"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
@@ -1627,132 +1610,6 @@ export default function AccountPage() {
                     </p>
                   </div>
                 )}
-              </div>
-
-              {/* Phần Hỗ trợ kỹ thuật */}
-              <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">{t('account.support')}</h2>
-
-                <div className="space-y-6">
-                  <div className="bg-gray-50 p-4 rounded-md">
-                    <h3 className="font-semibold text-lg mb-2">{t('account.newRequest')}</h3>
-                    <p className="text-gray-600 mb-4">
-                      {t('account.supportDescription')}
-                    </p>
-
-                    {supportSuccess && (
-                      <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
-                        <div className="flex items-start">
-                          <svg
-                            className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                          <span>{t('account.requestSuccess')}</span>
-                        </div>
-                        <button
-                          onClick={() => setSupportSuccess(false)}
-                          className="text-green-400 hover:text-green-600"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    )}
-
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('account.product')}
-                        </label>
-                        <select
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          value={supportProduct}
-                          onChange={(e) => setSupportProduct(e.target.value)}
-                        >
-                          <option value="">{t('account.selectProduct')}</option>
-                          {purchaseHistory
-                            .flatMap((order) => order.items)
-                            .map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.name} - {item.version}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('account.title')}
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          placeholder={t('account.enterTitle')}
-                          value={supportTitle}
-                          onChange={(e) => setSupportTitle(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('account.description')}
-                        </label>
-                        <textarea
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
-                          placeholder={t('account.enterDescription')}
-                          value={supportDescription}
-                          onChange={(e) => setSupportDescription(e.target.value)}
-                        ></textarea>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 text-right">
-                      <button
-                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          // Validate form
-                          if (!supportTitle || !supportDescription) {
-                            alert(t('account.formValidation'));
-                            return;
-                          }
-
-                          // Reset form
-                          setSupportProduct('');
-                          setSupportTitle('');
-                          setSupportDescription('');
-                          setSupportSuccess(true);
-
-                          // Tự động ẩn thông báo sau 5 giây
-                          setTimeout(() => {
-                            setSupportSuccess(false);
-                          }, 5000);
-                        }}
-                      >
-                        {t('account.submitRequest')}
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Phần Cài đặt tài khoản */}
