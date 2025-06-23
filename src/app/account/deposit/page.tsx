@@ -7,12 +7,14 @@ import Link from 'next/link';
 import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
 import { useBalance } from '@/contexts/BalanceContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { balance, refreshBalance } = useBalance();
+  const { t } = useLanguage();
 
   // Lấy thông tin từ URL params
   const suggestedAmount = searchParams?.get('amount');
@@ -72,7 +74,7 @@ export default function DepositPage() {
 
         // Show success message
         alert(
-          `Giao dịch thành công! Đã nạp ${data.transaction.amount.toLocaleString('vi-VN')} VND vào tài khoản.`,
+          t('deposit.successMessage', { amount: data.transaction.amount.toLocaleString('vi-VN') })
         );
 
         // Redirect về checkout nếu có tham số redirect
@@ -89,7 +91,7 @@ export default function DepositPage() {
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
-      alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
+      alert(t('deposit.errorMessage'));
     } finally {
       setIsChecking(false);
     }
@@ -144,7 +146,7 @@ export default function DepositPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert('Đã sao chép vào clipboard!');
+    alert(t('deposit.copied'));
   };
 
   const formatTimestamp = (timestamp: string) => {
@@ -172,38 +174,38 @@ export default function DepositPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Link
-              href={redirectPath === 'checkout' ? '/checkout' : '/account'}
-              className="text-gray-600 hover:text-gray-800"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </Link>
-            <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
-          </div>
-          <div>
-            <p className="text-gray-600">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
-            {suggestedAmount && (
-              <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm bg-teal-100 text-teal-800">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                Số tiền cần nạp: {formatCurrency(parseInt(suggestedAmount))}
+                    <div className="mb-8">
+              <div className="flex items-center gap-3 mb-2">
+                <Link
+                  href={redirectPath === 'checkout' ? '/checkout' : '/account'}
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </Link>
+                <h1 className="text-3xl font-bold text-gray-900">{t('deposit.title')}</h1>
               </div>
-            )}
+              <div>
+                <p className="text-gray-600">{t('deposit.subtitle')}</p>
+                {suggestedAmount && (
+                  <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm bg-teal-100 text-teal-800">
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Số tiền cần nạp: {formatCurrency(parseInt(suggestedAmount))}
+                  </div>
+                )}
           </div>
         </div>
 
@@ -219,7 +221,7 @@ export default function DepositPage() {
                       <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM19 13h-2v2h2v-2zM19 17h-2v2h2v-2zM17 13h-2v2h2v-2zM15 15h-2v2h2v-2zM17 17h-2v2h2v-2zM13 13h2v2h-2v-2zM13 17h2v2h-2v-2zM15 19h2v2h-2v-2zM13 19h2v2h-2v-2zM19 15h2v2h-2v-2zM21 13h2v2h-2v-2zM19 19h2v2h-2v-2z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Quét mã QR để chuyển khoản</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{t('deposit.qrTitle')}</h3>
                 </div>
 
                 {/* QR Code */}
@@ -260,20 +262,19 @@ export default function DepositPage() {
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        <span>Kiểm tra thanh toán</span>
+                        <span>{t('deposit.checkPayment')}</span>
                       </>
                     )}
                   </button>
 
                   {lastCheckTime && (
                     <p className="text-gray-500 text-sm mt-2">
-                      Lần kiểm tra cuối: {lastCheckTime.toLocaleTimeString('vi-VN')}
+                      {t('deposit.lastCheck')} {lastCheckTime.toLocaleTimeString('vi-VN')}
                     </p>
                   )}
                   {notFound && (
                     <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded p-2">
-                      Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản
-                      hoặc liên hệ hỗ trợ.
+                      {t('deposit.notFound')}
                     </div>
                   )}
                 </div>
@@ -289,11 +290,11 @@ export default function DepositPage() {
                       />
                     </svg>
                     <span className="text-sm font-medium">
-                      Nhấn "Kiểm tra thanh toán" sau khi chuyển khoản
+                      {t('deposit.checkAfterTransfer')}
                     </span>
                   </div>
                   <div className="mt-2 text-center text-xs text-teal-700">
-                    Nếu lỗi, liên hệ Zalo <b>0866 528 014</b> để được hỗ trợ nhanh nhất.
+                    {t('deposit.supportContact')} <b>0866 528 014</b> để được hỗ trợ nhanh nhất.
                   </div>
                 </div>
               </div>
@@ -304,56 +305,56 @@ export default function DepositPage() {
           <div className="space-y-6">
             {/* Current Balance */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-teal-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
+                              <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-teal-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">{t('deposit.balance')}</h3>
               </div>
               <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
             </div>
 
             {/* Transfer Information */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-emerald-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">Thông tin chuyển khoản</h3>
+                              <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-emerald-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">{t('deposit.transferInfo')}</h3>
               </div>
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Ngân hàng</span>
+                  <span className="text-gray-600">{t('deposit.bankName')}</span>
                   <span className="font-medium">{BANK_INFO.bankName}</span>
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Số tài khoản</span>
+                  <span className="text-gray-600">{t('deposit.accountNumber')}</span>
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-teal-600">
                       {BANK_INFO.accountNumber}
@@ -380,12 +381,12 @@ export default function DepositPage() {
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Chủ tài khoản</span>
+                  <span className="text-gray-600">{t('deposit.accountName')}</span>
                   <span className="font-medium">{BANK_INFO.accountName}</span>
                 </div>
 
                 <div className="flex justify-between items-center py-2">
-                  <span className="text-gray-600">Mã giao dịch</span>
+                  <span className="text-gray-600">{t('deposit.transactionCode')}</span>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-sm font-bold text-teal-600">
                       {transactionId}
@@ -424,20 +425,20 @@ export default function DepositPage() {
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Hướng dẫn nạp tiền
+                {t('deposit.guide')}
               </h4>
               <ol className="list-decimal list-inside space-y-1 text-xs text-teal-800">
-                <li>Mở app ngân hàng hoặc ví điện tử</li>
-                <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
-                <li>Nhập số tiền muốn nạp (tối thiểu 10.000đ)</li>
+                <li>{t('deposit.step1')}</li>
+                <li>{t('deposit.step2')}</li>
+                <li>{t('deposit.step3')}</li>
                 <li>
-                  Nhập nội dung:{' '}
+                  {t('deposit.step4')}{' '}
                   <span className="font-mono bg-teal-100 px-1 rounded text-xs">
                     {transactionId}
                   </span>
                 </li>
-                <li>Xác nhận chuyển khoản</li>
-                <li className="font-semibold text-teal-900">Nhấn nút "Kiểm tra thanh toán"</li>
+                <li>{t('deposit.step5')}</li>
+                <li className="font-semibold text-teal-900">{t('deposit.step6')}</li>
               </ol>
               <div className="mt-2 text-xs text-teal-900 font-semibold flex items-center gap-1">
                 <svg
@@ -453,8 +454,7 @@ export default function DepositPage() {
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                   />
                 </svg>
-                Nhớ <span className="underline">chụp màn hình giao dịch</span> để gửi khi cần hỗ trợ
-                kiểm tra nhanh!
+                {t('deposit.reminder')} <span className="underline">{t('deposit.screenshotReminder')}</span> {t('deposit.supportReason')}
               </div>
             </div>
           </div>

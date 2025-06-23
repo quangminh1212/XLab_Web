@@ -68,6 +68,36 @@ const account = {
   'settings.deleteWarning': 'This action will permanently delete your account and data. This action cannot be undone.',
   'settings.confirmDelete': 'Confirm Deletion',
   'settings.enterPassword': 'Enter your password to confirm',
+  
+  // Deposit
+  'deposit.title': 'Deposit Funds',
+  'deposit.subtitle': 'Scan QR code or transfer with the information below',
+  'deposit.qrTitle': 'Scan QR code to transfer',
+  'deposit.checkPayment': 'Check Payment',
+  'deposit.checkingPayment': 'Checking transaction...',
+  'deposit.lastCheck': 'Last check:',
+  'deposit.notFound': 'Transaction not found. Please check again after completing the transfer or contact support.',
+  'deposit.checkAfterTransfer': 'Click "Check Payment" after transfer',
+  'deposit.supportContact': 'If there is an error, contact Zalo',
+  'deposit.balance': 'Current Balance',
+  'deposit.transferInfo': 'Transfer Information',
+  'deposit.bankName': 'Bank',
+  'deposit.accountNumber': 'Account Number',
+  'deposit.accountName': 'Account Owner',
+  'deposit.transactionCode': 'Transaction Code',
+  'deposit.guide': 'Deposit Guide',
+  'deposit.step1': 'Open banking app or e-wallet',
+  'deposit.step2': 'Scan QR code or enter account information',
+  'deposit.step3': 'Enter the amount you want to deposit (minimum 10,000đ)',
+  'deposit.step4': 'Enter content:',
+  'deposit.step5': 'Confirm transaction',
+  'deposit.step6': 'Click "Check Payment" button',
+  'deposit.reminder': 'Remember to',
+  'deposit.screenshotReminder': 'take a screenshot of the transaction',
+  'deposit.supportReason': 'to send when you need help checking quickly!',
+  'deposit.copied': 'Copied to clipboard!',
+  'deposit.successMessage': 'Transaction successful! {amount} VND has been added to your account.',
+  'deposit.errorMessage': 'Error checking transaction. Please try again.'
 };
 
 export default account; 
