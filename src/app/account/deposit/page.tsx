@@ -29,7 +29,7 @@ export default function DepositPage() {
 
   // Bank info constants
   const BANK_INFO = {
-    bankName: 'MBBank (Ngân hàng Quân đội)',
+    bankName: t('deposit.mbbank'),
     accountNumber: '669912122000',
     accountName: 'BACH MINH QUANG',
   };

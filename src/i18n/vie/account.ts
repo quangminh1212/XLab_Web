@@ -97,7 +97,8 @@ const account = {
   'deposit.supportReason': 'để gửi khi cần hỗ trợ kiểm tra nhanh!',
   'deposit.copied': 'Đã sao chép vào clipboard!',
   'deposit.successMessage': 'Giao dịch thành công! Đã nạp {amount} VND vào tài khoản.',
-  'deposit.errorMessage': 'Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.'
+  'deposit.errorMessage': 'Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.',
+  'deposit.mbbank': 'MBBank (Ngân hàng Quân đội)'
 };
 
 export default account; 
