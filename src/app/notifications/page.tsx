@@ -206,13 +206,6 @@ const NotificationsPage = () => {
                         <span className="text-xs text-gray-500">{notification.time}</span>
                       </div>
                       <p className="mt-1 text-sm text-gray-600">{notification.content}</p>
-                      {notification.link && (
-                        <div className="mt-2">
-                          <span className="text-sm text-primary-600 hover:text-primary-800">
-                            {notification.isRead ? t('notifications.viewDetails') : t('notifications.viewNow')}
-                          </span>
-                        </div>
-                      )}
                     </div>
                     {!notification.isRead && (
                       <div className="flex-shrink-0 self-center">
