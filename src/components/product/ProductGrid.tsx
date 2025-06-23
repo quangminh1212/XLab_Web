@@ -122,26 +122,26 @@ const ProductGrid = ({
   };
 
   // Xử lý category từ sản phẩm
-  const extractCategory = (product: Product): string | object | undefined => {
-    // Nếu đã có category
-    if (product.category) {
-      return product.category;
+  const getCategoryString = (category: string | object | undefined): string | undefined => {
+    if (!category) return undefined;
+    
+    if (typeof category === 'string') {
+      return category;
     }
     
-    // Nếu có categories array
-    if (product.categories && product.categories.length > 0) {
-      const firstCategory = product.categories[0];
+    if (typeof category === 'object' && category !== null) {
+      const categoryObj = category as any;
       
-      // Nếu category là string
-      if (typeof firstCategory === 'string') {
-        return firstCategory;
+      // Try to get string representation from the category object
+      if (categoryObj.name && typeof categoryObj.name === 'string') {
+        return categoryObj.name;
       }
       
-      // Nếu category là object
-      if (typeof firstCategory === 'object' && firstCategory !== null) {
-        // Trả về object để ProductCard xử lý
-        return firstCategory;
+      if (categoryObj.id && typeof categoryObj.id === 'string') {
+        return categoryObj.id;
       }
+      
+      return 'unknown';
     }
     
     return undefined;
@@ -160,6 +160,15 @@ const ProductGrid = ({
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
+          
+          // Extract category as string only
+          let categoryString;
+          
+          if (product.category) {
+            categoryString = getCategoryString(product.category);
+          } else if (product.categories && product.categories.length > 0) {
+            categoryString = getCategoryString(product.categories[0]);
+          }
 
           // Validate và đảm bảo tất cả props đều là primitive values
           const safeProps = {
@@ -170,7 +179,7 @@ const ProductGrid = ({
             price: Number(minPrice) || 0,
             originalPrice: originalPrice ? Number(originalPrice) : undefined,
             image: String(product.image || ''),
-            category: extractCategory(product),
+            category: categoryString,
             rating: product.rating ? Number(product.rating) : undefined,
             reviewCount: product.reviewCount ? Number(product.reviewCount) : undefined,
             totalSold: product.totalSold ? Number(product.totalSold) : undefined,

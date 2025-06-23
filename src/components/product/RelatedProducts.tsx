@@ -88,6 +88,31 @@ export default function RelatedProducts({
     return null;
   }
 
+  // Helper function to extract string from category object
+  const getCategoryString = (category: string | object | undefined): string | undefined => {
+    if (!category) return undefined;
+    
+    if (typeof category === 'string') {
+      return category;
+    }
+    
+    if (typeof category === 'object' && category !== null) {
+      const categoryObj = category as any;
+      
+      if (categoryObj.name && typeof categoryObj.name === 'string') {
+        return categoryObj.name;
+      }
+      
+      if (categoryObj.id && typeof categoryObj.id === 'string') {
+        return categoryObj.id;
+      }
+      
+      return 'unknown';
+    }
+    
+    return undefined;
+  };
+
   const mappedProducts = products.map((product) => {
     console.log('RelatedProducts - Raw product:', product);
 
@@ -125,16 +150,13 @@ export default function RelatedProducts({
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
 
-    // Xử lý category an toàn - giữ nguyên dạng object để ProductCard xử lý
-    let safeCategory;
+    // Extract category as string only
+    let categoryString;
     
-    // Nếu có category trực tiếp
     if (product.category) {
-      safeCategory = product.category;
-    }
-    // Nếu có categories array
-    else if (product.categories?.length) {
-      safeCategory = product.categories[0];
+      categoryString = getCategoryString(product.category);
+    } else if (product.categories?.length) {
+      categoryString = getCategoryString(product.categories[0]);
     }
 
     const mapped = {
@@ -144,7 +166,7 @@ export default function RelatedProducts({
       price: safePrice,
       originalPrice: safeOriginalPrice,
       image: safeImage,
-      category: safeCategory,
+      category: categoryString,
       rating: safeRating,
       reviewCount: safeReviewCount,
       isAccount: safeIsAccount,
