@@ -156,41 +156,44 @@ export default function WarrantyPage() {
                   )}
 
                   <div className="mb-5">
-                    <label
-                      htmlFor="name"
-                      className="block text-gray-700 font-medium mb-2"
-                    >
-                      {t('warranty.formName')} <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-300 focus:border-primary-500 transition-colors"
-                      placeholder="Nguyễn Văn A"
-                    />
-                  </div>
-
-                  <div className="mb-5">
-                    <label
-                      htmlFor="phone"
-                      className="block text-gray-700 font-medium mb-2"
-                    >
-                      {t('warranty.formPhone')} <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      required
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-300 focus:border-primary-500 transition-colors"
-                      placeholder="0912345678"
-                    />
+                    <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                      <div className="flex-1">
+                        <label
+                          htmlFor="name"
+                          className="block text-gray-700 font-medium mb-2"
+                        >
+                          {t('warranty.formName')} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          required
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-300 focus:border-primary-500 transition-colors"
+                          placeholder="Nguyễn Văn A"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label
+                          htmlFor="phone"
+                          className="block text-gray-700 font-medium mb-2"
+                        >
+                          {t('warranty.formPhone')} <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          required
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-300 focus:border-primary-500 transition-colors"
+                          placeholder="0912345678"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="mb-6">
