@@ -67,7 +67,7 @@ export default function AboutPage() {
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center mb-6 mx-auto">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-8 w-8"
@@ -83,14 +83,14 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-4">{t('about.mission')}</h2>
+              <h2 className="text-2xl font-bold mb-4 text-center">{t('about.mission')}</h2>
               <p className="text-gray-600">
                 {t('about.missionDesc')}
               </p>
             </div>
 
             <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="w-16 h-16 bg-secondary-600 text-white rounded-full flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-secondary-600 text-white rounded-full flex items-center justify-center mb-6 mx-auto">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-8 w-8"
@@ -112,7 +112,7 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-4">{t('about.vision')}</h2>
+              <h2 className="text-2xl font-bold mb-4 text-center">{t('about.vision')}</h2>
               <p className="text-gray-600">
                 {t('about.visionDesc')}
               </p>
