@@ -52,6 +52,20 @@ const common = {
   'voucher.noLimit': 'No limit',
   'voucher.copyTooltip': 'Click to copy code',
   
+  // Discount Codes Page
+  'discountCodes.title': 'Discount Codes',
+  'discountCodes.subtitle': 'Current and valid discount codes that you can use during checkout',
+  'discountCodes.available': 'Available',
+  'discountCodes.used': 'Used',
+  'discountCodes.expired': 'Expired',
+  'discountCodes.off': 'Off',
+  'discountCodes.expires': 'Expires:',
+  'discountCodes.usedCount': 'Used:',
+  'discountCodes.timesPerUser': 'times/user',
+  'discountCodes.quantity': 'Quantity:',
+  'discountCodes.unlimited': 'Unlimited',
+  'discountCodes.minOrder': 'Min order:',
+  
   // Page Titles
   'about.pageTitle': 'About - XLab',
   'contact.pageTitle': 'Contact - XLab',

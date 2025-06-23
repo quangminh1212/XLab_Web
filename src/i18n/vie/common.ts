@@ -52,6 +52,20 @@ const common = {
   'voucher.noLimit': 'Không giới hạn',
   'voucher.copyTooltip': 'Nhấn để sao chép mã',
   
+  // Discount Codes Page
+  'discountCodes.title': 'Mã giảm giá',
+  'discountCodes.subtitle': 'Các mã giảm giá hiện có và hợp lệ mà bạn có thể sử dụng trong quá trình thanh toán',
+  'discountCodes.available': 'Có sẵn',
+  'discountCodes.used': 'Đã sử dụng',
+  'discountCodes.expired': 'Hết hạn',
+  'discountCodes.off': 'Giảm',
+  'discountCodes.expires': 'Hết hạn:',
+  'discountCodes.usedCount': 'Đã dùng:',
+  'discountCodes.timesPerUser': 'lần/người dùng',
+  'discountCodes.quantity': 'Số lượng:',
+  'discountCodes.unlimited': 'Không giới hạn',
+  'discountCodes.minOrder': 'Đơn hàng tối thiểu:',
+  
   // Page Titles
   'about.pageTitle': 'Giới thiệu - XLab',
   'contact.pageTitle': 'Liên hệ - XLab',
