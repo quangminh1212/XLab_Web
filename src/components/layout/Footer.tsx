@@ -44,7 +44,7 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex justify-start space-x-5 mt-2 mb-8 ml-1">
+            <div className="flex justify-center space-x-5 mt-2 mb-8">
               <a
                 href={siteConfig.social.facebook}
                 target="_blank"
