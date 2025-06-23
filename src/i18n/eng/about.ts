@@ -1,9 +1,9 @@
 const about = {
   pageSubtitle: "About Our Company",
   ourStory: "Our Story",
-  storyP1: "Founded with a vision to transform the digital landscape, our company began its journey with a commitment to excellence and innovation.",
-  storyP2: "Over the years, we have grown into a trusted partner for businesses worldwide, helping them navigate the complexities of the digital era.",
-  storyP3: "Today, we continue to push boundaries and set new standards in the industry, guided by our core values and unwavering dedication to our clients.",
+  storyP1: "From a bold vision of digital transformation, we embarked on an extraordinary journey driven by our relentless pursuit of excellence and groundbreaking innovation. Founded by a team of visionary technologists and industry pioneers, we set out to challenge conventions and redefine what's possible in the digital realm. Our early days were marked by ambitious goals, creative problem-solving, and an unwavering belief that technology could fundamentally transform how businesses operate and succeed.",
+  storyP2: "Through dedication and expertise, we've evolved into a trusted global partner, empowering businesses to thrive amid the complexities and opportunities of today's rapidly evolving digital landscape. Our growth has been organic and purpose-driven, expanding our capabilities, talent pool, and geographic reach while staying true to our founding principles. We've navigated through technological revolutions, market shifts, and global challenges, consistently delivering solutions that enable our clients to adapt, innovate, and lead in their respective industries.",
+  storyP3: "With passion and purpose, we continue to redefine industry standards, guided by unwavering values and an absolute commitment to creating exceptional value for every client we serve. Our approach combines cutting-edge technical expertise with deep industry knowledge, creative thinking, and a collaborative spirit. We invest heavily in research and development, continuously exploring emerging technologies and methodologies to stay ahead of the curve. The relationships we build with our clients are partnerships in the truest sense – based on mutual trust, shared goals, and a collective commitment to achieving extraordinary results that drive sustainable growth and competitive advantage.",
   mission: "Our Mission",
   missionDesc: "To empower businesses with cutting-edge solutions that drive growth, efficiency, and competitive advantage in an ever-evolving digital world.",
   vision: "Our Vision",
