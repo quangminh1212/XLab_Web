@@ -15,9 +15,9 @@ const contact = {
   message: "Nội Dung Tin Nhắn *",
   send: "Gửi Tin Nhắn",
   info: "Thông Tin Liên Hệ",
-  address: "Long Biên, Hà Nội",
-  email: "xlab.rnd@gmail.com",
-  phone: "+84 866 528 014",
+  address: "Địa chỉ",
+  email: "Email",
+  phone: "Số điện thoại",
   connectWithUs: "Kết Nối Với Chúng Tôi"
 };
 
