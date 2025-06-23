@@ -88,37 +88,6 @@ export default function Footer() {
                 </svg>
               </a>
             </div>
-
-            <div className="flex justify-start flex-wrap gap-7 ml-1 text-sm text-slate-400">
-              <div className="flex items-center gap-2.5">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>500+ {t('footer.customers')}</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.8"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <span>5+ {t('footer.years')}</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.8"
-                    d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-                <span>24/7 {t('footer.support')}</span>
-              </div>
-            </div>
           </div>
 
           {/* Column 2: Products and Services */}
