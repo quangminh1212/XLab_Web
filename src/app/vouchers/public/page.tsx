@@ -266,16 +266,14 @@ export default function PublicVouchersPage() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              {activeTab === 'available' && 'No available discount codes'}
-              {activeTab === 'used' && 'You haven\'t used any discount codes yet'}
-              {activeTab === 'expired' && 'No expired or used up discount codes'}
+              {activeTab === 'available' && t('discountCodes.noAvailable')}
+              {activeTab === 'used' && t('discountCodes.noCodesYet')}
+              {activeTab === 'expired' && t('discountCodes.noExpired')}
             </h3>
             <p className="text-gray-600 mb-5">
-              {activeTab === 'available' &&
-                'There are currently no available discount codes. Please check back later.'}
-              {activeTab === 'used' && 'You haven\'t used any discount codes yet or you\'re not logged in.'}
-              {activeTab === 'expired' &&
-                'There are no expired or used up discount codes. Current codes are still valid and have available uses.'}
+              {activeTab === 'available' && t('discountCodes.noAvailableDesc')}
+              {activeTab === 'used' && t('discountCodes.noCodesOrNotLoggedIn')}
+              {activeTab === 'expired' && t('discountCodes.noExpiredDesc')}
             </p>
             <Link
               href="/"
@@ -295,7 +293,7 @@ export default function PublicVouchersPage() {
                   d="M10 19l-7-7m0 0l7-7m-7 7h18"
                 />
               </svg>
-              Return to Home
+              {t('discountCodes.returnHome')}
             </Link>
           </div>
         </div>
