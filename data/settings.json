@@ -15,8 +15,8 @@
     "enableCreditCard": false,
     "bankName": "BIDV",
     "bankAccountName": "CÔNG TY TNHH XLAB",
-    "bankAccountNumber": "669912122000",
-    "bankBranch": "TP.Hà Nội"
+    "bankAccountNumber": "12345678901234",
+    "bankBranch": "TP.HCM"
   },
   "email": {
     "smtpServer": "xlab.rnd@gmail.com",
@@ -30,6 +30,6 @@
   "maintenanceMode": false,
   "disableRegistration": false,
   "disableCheckout": false,
-  "lastUpdated": "2025-06-18T07:36:50.652Z",
+  "lastUpdated": "2025-06-12T08:36:20.840Z",
   "updatedBy": "xlab.rnd@gmail.com"
 }

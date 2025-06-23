@@ -11,7 +11,6 @@ import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -28,16 +27,6 @@ interface PublicCoupon {
   userUsage?: {
     current: number;
     limit: number;
-  };
-  metadata?: {
-    en?: {
-      name: string;
-      description?: string;
-    };
-    es?: {
-      name: string;
-      description?: string;
-    };
   };
 }
 
@@ -250,15 +239,6 @@ const Header = () => {
     if (isNotificationOpen) setIsNotificationOpen(false);
   };
 
-<<<<<<< HEAD
-  const formatCouponValue = (coupon: PublicCoupon) => {
-    if (coupon.type === 'percentage') {
-      return `${coupon.value}%`;
-    } else {
-      // Convert to appropriate currency based on language
-      const convertedAmount = convertCurrency(coupon.value, language);
-      return formatCurrency(convertedAmount, language);
-=======
   const formatCurrency = (amount: number) => {
     if (language === 'eng') {
       // For English, convert VND to USD (rough approximation)
@@ -275,7 +255,6 @@ const Header = () => {
         currency: 'VND',
         maximumFractionDigits: 0,
       }).format(amount).replace('₫', t('deposit.currencySymbol'));
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
     }
   };
 
@@ -487,7 +466,9 @@ const Header = () => {
                                     <span
                                       className={`text-xs font-medium ${coupon.type === 'percentage' ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}
                                     >
-                                      {formatCouponValue(coupon)}
+                                      {coupon.type === 'percentage'
+                                        ? `${coupon.value}%`
+                                        : formatCurrency(coupon.value)}
                                     </span>
                                   </div>
                                   <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
@@ -495,20 +476,12 @@ const Header = () => {
                                   </span>
                                 </div>
                                 <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                                  {language === 'spa' && coupon.metadata?.es?.name ? 
-                                    coupon.metadata.es.name :
-                                   language === 'eng' && coupon.metadata?.en?.name ?
-                                    coupon.metadata.en.name :
-                                    t(`coupon.${coupon.code.toLowerCase()}`, { default: coupon.name })}
+                                  {coupon.name}
                                 </h4>
-                                {(coupon.description || coupon.metadata?.en?.description || coupon.metadata?.es?.description) && (
+                                {coupon.description && (
                                   <div className="flex justify-between items-center mt-1">
                                     <p className="text-xs text-gray-600 line-clamp-2">
-                                      {language === 'spa' && coupon.metadata?.es?.description ? 
-                                        coupon.metadata.es.description :
-                                       language === 'eng' && coupon.metadata?.en?.description ?
-                                        coupon.metadata.en.description :
-                                        t(`coupon.${coupon.code.toLowerCase()}.description`, { default: coupon.description })}
+                                      {coupon.description}
                                     </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                       <span className="text-xs font-medium text-teal-600">
@@ -526,7 +499,7 @@ const Header = () => {
                                 <div className="mt-2 flex justify-between items-center text-xs mb-1">
                                   <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                     {coupon.minOrder
-                                      ? `${t('voucher.minOrder')} ${formatCurrency(convertCurrency(coupon.minOrder, language), language)}`
+                                      ? `${t('voucher.minOrder')} ${formatCurrency(coupon.minOrder)}`
                                       : t('voucher.noLimit')}
                                   </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
@@ -767,7 +740,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      {t('account.myOrders')}
+                      {t('orders.myOrders')}
                     </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (

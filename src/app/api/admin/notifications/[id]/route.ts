@@ -18,17 +18,6 @@ interface Notification {
   priority: 'low' | 'medium' | 'high';
   expiresAt?: string;
   updatedAt?: string;
-  metadata?: {
-    es?: {
-      title?: string;
-      content?: string;
-    };
-    en?: {
-      title?: string;
-      content?: string;
-    };
-    readCount?: number;
-  };
 }
 
 // Đảm bảo thư mục data tồn tại
@@ -102,7 +91,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { title, content, type, link, priority, expiresAt, targetUsers, metadata } = body;
+    const { title, content, type, link, priority, expiresAt, targetUsers } = body;
 
     // Validation
     if (!title || !content || !type || !priority) {
@@ -131,35 +120,6 @@ export async function PUT(
       targetUsers: targetUsers || [],
       updatedAt: new Date().toISOString(),
     };
-
-    // Handle metadata separately to ensure proper structure
-    if (metadata || notifications[notificationIndex].metadata) {
-      updatedNotification.metadata = {};
-      
-      // Preserve existing metadata if no new metadata is provided
-      const existingMetadata = notifications[notificationIndex].metadata || {};
-      
-      // Handle English metadata
-      if (metadata?.en || existingMetadata.en) {
-        updatedNotification.metadata.en = {
-          title: metadata?.en?.title !== undefined ? metadata.en.title : existingMetadata.en?.title,
-          content: metadata?.en?.content !== undefined ? metadata.en.content : existingMetadata.en?.content
-        };
-      }
-      
-      // Handle Spanish metadata
-      if (metadata?.es || existingMetadata.es) {
-        updatedNotification.metadata.es = {
-          title: metadata?.es?.title !== undefined ? metadata.es.title : existingMetadata.es?.title,
-          content: metadata?.es?.content !== undefined ? metadata.es.content : existingMetadata.es?.content
-        };
-      }
-      
-      // Preserve read count if it exists
-      if (existingMetadata.readCount) {
-        updatedNotification.metadata.readCount = existingMetadata.readCount;
-      }
-    }
 
     notifications[notificationIndex] = updatedNotification;
     await saveNotifications(notifications);

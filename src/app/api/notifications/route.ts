@@ -3,9 +3,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs/promises';
 import path from 'path';
-import { notifications as vieNotifications } from '@/locales/vie/notifications';
-import { notifications as engNotifications } from '@/locales/eng/notifications';
-import { notifications as spaNotifications } from '@/locales/spa/notifications';
 
 const NOTIFICATIONS_FILE = path.join(process.cwd(), 'data', 'notifications.json');
 
@@ -20,16 +17,6 @@ interface Notification {
   link?: string;
   priority: 'low' | 'medium' | 'high';
   expiresAt?: string;
-  metadata?: {
-    es?: {
-      title?: string;
-      content?: string;
-    };
-    en?: {
-      title?: string;
-      content?: string;
-    };
-  };
 }
 
 // Đảm bảo thư mục data tồn tại
@@ -99,49 +86,7 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
   const date = new Date(dateString);
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  const localeMessages = language === 'eng' 
-    ? engNotifications 
-    : language === 'spa' 
-      ? spaNotifications 
-      : vieNotifications;
-
   if (diffInSeconds < 60) {
-<<<<<<< HEAD
-    return localeMessages['notifications.justNow'];
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60);
-    if (language === 'eng') {
-      const suffix = minutes !== 1 ? 's' : '';
-      return localeMessages['notifications.minutesAgo'].replace('{0}', minutes.toString()).replace('{1}', suffix);
-    } else if (language === 'spa') {
-      const suffix = minutes !== 1 ? 's' : '';
-      return localeMessages['notifications.minutesAgo'].replace('{0}', minutes.toString()).replace('{1}', suffix);
-    } else {
-      return localeMessages['notifications.minutesAgo'].replace('{0}', minutes.toString());
-    }
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600);
-    if (language === 'eng') {
-      const suffix = hours !== 1 ? 's' : '';
-      return localeMessages['notifications.hoursAgo'].replace('{0}', hours.toString()).replace('{1}', suffix);
-    } else if (language === 'spa') {
-      const suffix = hours !== 1 ? 's' : '';
-      return localeMessages['notifications.hoursAgo'].replace('{0}', hours.toString()).replace('{1}', suffix);
-    } else {
-      return localeMessages['notifications.hoursAgo'].replace('{0}', hours.toString());
-    }
-  } else {
-    const days = Math.floor(diffInSeconds / 86400);
-    if (language === 'eng') {
-      const suffix = days !== 1 ? 's' : '';
-      return localeMessages['notifications.daysAgo'].replace('{0}', days.toString()).replace('{1}', suffix);
-    } else if (language === 'spa') {
-      const suffix = days !== 1 ? 's' : '';
-      return localeMessages['notifications.daysAgo'].replace('{0}', days.toString()).replace('{1}', suffix);
-    } else {
-      return localeMessages['notifications.daysAgo'].replace('{0}', days.toString());
-    }
-=======
     return language === 'eng' ? 'Just now' : 'Vừa xong';
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
@@ -152,7 +97,6 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
   } else {
     const days = Math.floor(diffInSeconds / 86400);
     return language === 'eng' ? `${days} days ago` : `${days} ngày trước`;
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
   }
 }
 
@@ -160,20 +104,8 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-<<<<<<< HEAD
-    const url = new URL(request.url);
-    const language = url.searchParams.get('language') || 'vie';
-
-    // Lấy bản dịch thông báo theo ngôn ngữ
-    const localeMessages = language === 'eng' 
-      ? engNotifications 
-      : language === 'spa' 
-        ? spaNotifications 
-        : vieNotifications;
-=======
     // Get user language preference
     const language = request.headers.get('x-user-language') || 'vie';
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
 
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
@@ -182,19 +114,12 @@ export async function GET(request: Request) {
         const demoNotifications = [
           {
             id: 'demo-1',
-<<<<<<< HEAD
-            title: localeMessages['notifications.demo.title'],
-            content: localeMessages['notifications.demo.content'],
-            type: 'system',
-            time: formatTimeAgo(new Date().toISOString(), language as string),
-=======
             title: language === 'eng' ? 'Welcome to XLab!' : 'Chào mừng đến với XLab!',
             content: language === 'eng' 
               ? 'This is a demo notification. Please sign in to see your actual notifications.' 
               : 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
             type: 'system',
             time: language === 'eng' ? 'Just now' : 'Vừa xong',
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
             isRead: false,
             priority: 'medium',
           },
@@ -224,35 +149,6 @@ export async function GET(request: Request) {
         }
         return true;
       })
-<<<<<<< HEAD
-      .map((notification) => {
-        // Lấy nội dung thông báo theo ngôn ngữ từ metadata
-        let title = notification.title;
-        let content = notification.content;
-
-        // Sử dụng metadata cho đa ngôn ngữ nếu có
-        if (notification.metadata) {
-          if (language === 'eng' && notification.metadata.en) {
-            title = notification.metadata.en.title || title;
-            content = notification.metadata.en.content || content;
-          } else if (language === 'spa' && notification.metadata.es) {
-            title = notification.metadata.es.title || title;
-            content = notification.metadata.es.content || content;
-          }
-        }
-
-        return {
-          id: notification.id,
-          title: title,
-          content: content,
-          type: notification.type,
-          time: formatTimeAgo(notification.createdAt, language as string),
-          isRead: notification.isRead[userId] || false,
-          link: notification.link,
-          priority: notification.priority,
-        };
-      })
-=======
       .map((notification) => ({
         id: notification.id,
         title: notification.title,
@@ -263,7 +159,6 @@ export async function GET(request: Request) {
         link: notification.link,
         priority: notification.priority,
       }))
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
       .sort((a, b) => {
         // Sắp xếp theo độ ưu tiên và thời gian
         const priorityOrder = { high: 3, medium: 2, low: 1 };
@@ -347,25 +242,6 @@ export async function POST(request: Request) {
       priority: priority || 'medium',
       expiresAt,
     };
-
-    // Add metadata if provided
-    if (body.metadata) {
-      newNotification.metadata = {};
-      
-      if (body.metadata.en) {
-        newNotification.metadata.en = {
-          title: body.metadata.en.title,
-          content: body.metadata.en.content
-        };
-      }
-      
-      if (body.metadata.es) {
-        newNotification.metadata.es = {
-          title: body.metadata.es.title,
-          content: body.metadata.es.content
-        };
-      }
-    }
 
     notifications.unshift(newNotification); // Thêm vào đầu danh sách
     await saveNotifications(notifications);

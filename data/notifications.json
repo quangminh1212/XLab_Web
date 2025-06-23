@@ -7,45 +7,17 @@
     "isRead": {
       "xlab.rnd@gmail.com": true
     },
-<<<<<<< HEAD
-    "createdAt": "2025-05-29T02:06:10.000Z",
-=======
     "createdAt": "2025-05-28T19:06:10.590Z",
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
     "link": "/products/1",
-    "priority": "medium",
-    "metadata": {
-      "es": {
-        "title": "Actualización",
-        "content": "La versión 2.0 ha sido lanzada con muchas nuevas funciones"
-      },
-      "en": {
-        "title": "Media",
-        "content": "Version 2.0 has been released with many new features"
-      },
-      "readCount": 1
-    }
+    "priority": "medium"
   },
   {
     "id": "3",
     "title": "Thông báo hệ thống",
     "content": "Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.",
     "type": "system",
-    "isRead": {
-      "xlab.rnd@gmail.com": true
-    },
-    "createdAt": "2025-05-28T02:06:10.000Z",
-    "priority": "high",
-    "metadata": {
-      "es": {
-        "title": "Sistema",
-        "content": "El sistema estará en mantenimiento a las 10:00 PM esta noche. Disculpe las molestias."
-      },
-      "en": {
-        "title": "Alta",
-        "content": "The system will be under maintenance at 10:00 PM tonight. Sorry for the inconvenience."
-      },
-      "readCount": 1
-    }
+    "isRead": {},
+    "createdAt": "2025-05-27T19:06:10.590Z",
+    "priority": "high"
   }
 ]

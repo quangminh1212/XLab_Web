@@ -127,7 +127,7 @@ function createDefaultUserData(user: User): UserData {
     orders: [],
     settings: {
       notifications: true,
-      language: 'vie',
+      language: 'vi',
       theme: 'light',
     },
     metadata: {
@@ -614,7 +614,7 @@ export async function migrateToIndividualFiles(): Promise<void> {
         orders: [], // Đơn hàng trống ban đầu
         settings: {
           notifications: true,
-          language: 'vie',
+          language: 'vi',
           theme: 'light',
         },
         metadata: {

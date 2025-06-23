@@ -8,10 +8,9 @@ import ProductImage from '@/components/product/ProductImage';
 import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/common/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 export default function ProductsPage() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -181,14 +180,6 @@ export default function ProductsPage() {
     }
 
     return '/images/placeholder/product-placeholder.jpg';
-  };
-
-  // Function to display price with correct currency based on language
-  const displayPrice = (amount: number) => {
-    // Convert to appropriate currency based on language
-    const convertedAmount = convertCurrency(amount, language);
-    // Format with the correct currency symbol and format
-    return formatCurrency(convertedAmount, language);
   };
 
   // Only show loading for a maximum of 1 second
@@ -404,7 +395,7 @@ export default function ProductsPage() {
                   console.log(`Processed image URL for ${product.name}:`, imageUrl);
 
                   return (
-                    <div key={product.id} className="aspect-[1/1.7]">
+                    <div key={product.id} className="aspect-[1/1.5]">
                       <ProductCard
                         id={product.id.toString()}
                         name={product.name}
@@ -430,4 +421,14 @@ export default function ProductsPage() {
       </div>
     </div>
   );
+}
+
+// Helper function to format currency
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Header, Footer } from '@/components/layout';
 import {
   Analytics,
@@ -8,38 +8,15 @@ import {
   StyleLoader,
   CssErrorHandler,
   GlobalStyles,
-  ErrorPatcher
 } from '@/components/common';
 import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
-import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
-import TitleUpdater from '@/components/TitleUpdater';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
-}
-
-// Inner component that has access to language context
-function InnerLayout({ children }: { children: React.ReactNode }) {
-  const { language } = useLanguage();
-  
-  // Update HTML lang attribute when language changes
-  useEffect(() => {
-    if (language) {
-      document.documentElement.lang = language === 'eng' ? 'en' : 'vi';
-    }
-  }, [language]);
-  
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <TitleUpdater />
-      <main className="flex-grow">{children}</main>
-      <Footer />
-    </div>
-  );
 }
 
 export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperProps) {
@@ -49,13 +26,16 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
         <NotificationProvider>
           <BalanceProvider>
             <CartProvider>
-              <InnerLayout>{children}</InnerLayout>
+              <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+              </div>
               <Analytics />
               <CompileIndicator />
               <StyleLoader />
               <CssErrorHandler />
               <GlobalStyles />
-              <ErrorPatcher />
             </CartProvider>
           </BalanceProvider>
         </NotificationProvider>

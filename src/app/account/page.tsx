@@ -17,7 +17,6 @@ interface OrderItem {
   originalPrice: number;
   licenseKey: string;
   expiryDate: string;
-  quantity?: number;
 }
 
 interface Order {
@@ -45,31 +44,27 @@ interface Coupon {
   endDate: string;
 }
 
+// This would normally come from a database or API
+const userProfile = {
+  name: 'Nguyễn Văn A',
+  email: 'nguyenvana@example.com',
+  avatar: '/images/avatar-placeholder.svg',
+  memberSince: '01/01/2023',
+  licenseCount: 0, // Đặt thành 0 vì chưa có sản phẩm
+  phone: '',
+};
+
 export default function AccountPage() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
   const [imageError, setImageError] = useState(false);
-  const [profile, setProfile] = useState({
-    name: '',
-    email: '',
-    avatar: '/images/avatar-placeholder.svg',
-    memberSince: new Date().toLocaleDateString('vi-VN'),
-    licenseCount: 0,
-    phone: '',
-  });
+  const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [purchaseHistory, setPurchaseHistory] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-<<<<<<< HEAD
-  const [supportProduct, setSupportProduct] = useState('');
-  const [supportTitle, setSupportTitle] = useState('');
-  const [supportDescription, setSupportDescription] = useState('');
-  const [supportSuccess, setSupportSuccess] = useState(false);
-=======
   const [passwordMessage, setPasswordMessage] = useState('');
   const [showPasswordMessage, setShowPasswordMessage] = useState(false);
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
   const [notificationSettings, setNotificationSettings] = useState({
     email: true,
     productUpdates: true,
@@ -173,12 +168,13 @@ export default function AccountPage() {
 
       // Khởi tạo thông tin cơ bản từ session
       const updatedProfile = {
-        name: session.user.name || '',
-        email: session.user.email || '',
+        ...userProfile,
+        name: session.user.name || userProfile.name,
+        email: session.user.email || userProfile.email,
         avatar: session.user.image || '/images/avatar-placeholder.svg',
-        memberSince: session.user.memberSince || new Date().toLocaleDateString('vi-VN'),
-        licenseCount: 0,
-        phone: session.user.phone || '',
+        // Sử dụng thông tin bổ sung từ session nếu có
+        phone: session.user.phone || userProfile.phone,
+        memberSince: session.user.memberSince || userProfile.memberSince,
       };
 
       // Kiểm tra xem có thông tin đã lưu trong localStorage không
@@ -679,7 +675,28 @@ export default function AccountPage() {
                     </svg>
                     {t('account.myProducts')}
                   </a>
-
+                  <a
+                    href="#coupons"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      style={{ verticalAlign: '-0.125em' }}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.293 10.293l-7.586-7.586A1 1 0 008.586 2H4a2 2 0 00-2 2v4.586a1 1 0 00.293.707l7.586 7.586a1 1 0 001.414 0l6-6a1 1 0 000-1.414z"
+                      />
+                      <circle cx="6.5" cy="6.5" r="1.5" />
+                    </svg>
+                    {t('account.coupons')}
+                  </a>
                   <a
                     href="#licenses"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
@@ -880,12 +897,200 @@ export default function AccountPage() {
                     </form>
                   </div>
 
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-gray-800 mb-3">{t('account.changePassword')}</h3>
+                    {showPasswordMessage && (
+                      <div className="mb-4 p-3 bg-blue-50 text-blue-600 text-sm rounded-md flex items-start justify-between">
+                        <div className="flex items-start">
+                          <svg
+                            className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <span>{passwordMessage}</span>
+                        </div>
+                        <button
+                          onClick={() => setShowPasswordMessage(false)}
+                          className="text-blue-400 hover:text-blue-600"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {t('account.currentPassword')}
+                        </label>
+                        <input
+                          type="password"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {t('account.newPassword')}
+                        </label>
+                        <input
+                          type="password"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {t('account.confirmPassword')}
+                        </label>
+                        <input
+                          type="password"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                      </div>
+                    </div>
 
+                    <div className="mt-4 text-right">
+                      <button
+                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPasswordMessage(
+                            t('account.passwordChangeInstructions'),
+                          );
+                          setShowPasswordMessage(true);
+                        }}
+                      >
+                        {t('account.changePassword')}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              
+              {/* Section mã giảm giá chuyển lên ngay sau hồ sơ cá nhân */}
+              <div id="coupons" className="bg-white rounded-lg shadow p-6 mb-8">
+                <h2 className="text-xl font-semibold mb-4">{t('account.coupons')}</h2>
 
+                {loadingCoupons ? (
+                  <div className="flex justify-center py-8">
+                    <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                ) : availableCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {availableCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-primary-100 p-3 rounded-full mr-3">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 text-primary-600"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">
+                              {t(`coupon.${coupon.code.toLowerCase()}`) || coupon.name}
+                            </h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} -{' '}
+                              {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                {t('account.appliesToOrder', { amount: formatCurrency(coupon.minOrder) })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : publicCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {publicCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-green-100 p-3 rounded-full mr-3">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 text-green-600"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">
+                              {t(`coupon.${coupon.code.toLowerCase()}`) || coupon.name}
+                            </h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} -{' '}
+                              {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                {t('account.appliesToOrder', { amount: formatCurrency(coupon.minOrder) })}
+                              </div>
+                            )}
+                            <div className="text-xs font-medium text-green-600 mt-1">
+                              {coupon.type === 'percentage'
+                                ? coupon.maxDiscount 
+                                  ? `Giảm ${coupon.value}% (tối đa ${formatCurrency(coupon.maxDiscount)})`
+                                  : `Giảm ${coupon.value}%` 
+                                : `Giảm ${formatCurrency(coupon.value)}`}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>{t('account.noCoupons')}</p>
+                  </div>
+                )}
+              </div>
 
               {/* Phần Sản phẩm đã mua */}
               <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
@@ -905,10 +1110,6 @@ export default function AccountPage() {
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.price')}</span>
                               <span className="font-semibold">{formatCurrency(item.price)}</span>
-                            </div>
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-600">{t('account.quantity')}</span>
-                              <span className="font-semibold">{item.quantity || 1}</span>
                             </div>
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-gray-600">{t('account.savingsFromSale')}</span>
@@ -1039,12 +1240,6 @@ export default function AccountPage() {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            {t('account.quantity')}
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
                             {t('account.activationDate')}
                           </th>
                           <th
@@ -1085,11 +1280,6 @@ export default function AccountPage() {
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-900 font-mono">
                                   {item.licenseKey}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">
-                                  {item.quantity || 1}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
@@ -1186,18 +1376,27 @@ export default function AccountPage() {
                           </div>
                         </div>
                         <div className="p-4">
-                          <div className="space-y-4">
+                          <div className="divide-y divide-gray-200">
                             {order.items.map((item, itemIndex) => (
-                              <div key={itemIndex} className="flex flex-col sm:flex-row sm:items-center justify-between">
-                                <div className="space-y-1">
+                              <div
+                                key={itemIndex}
+                                className="py-3 flex flex-col md:flex-row md:justify-between md:items-center"
+                              >
+                                <div className="mb-2 md:mb-0">
                                   <div className="font-medium">{item.name}</div>
-                                  <div className="text-sm text-gray-500">{item.version}</div>
-                                  <div className="text-sm text-gray-500">
-                                    {t('account.quantity')}: {item.quantity || 1}
-                                  </div>
+                                  <div className="text-sm text-gray-600">{item.version}</div>
                                 </div>
-                                <div className="text-right mt-2 sm:mt-0">
-                                  <div className="font-semibold">{formatCurrency(item.price)}</div>
+                                <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
+                                  <div className="text-sm">
+                                    <span className="text-gray-600">{t('account.price')}: </span>
+                                    <span className="font-semibold">
+                                      {formatCurrency(item.price)}
+                                    </span>
+                                  </div>
+                                  <div className="text-sm">
+                                    <span className="text-gray-600">{t('account.expiryDate')}: </span>
+                                    <span className="font-semibold">{item.expiryDate}</span>
+                                  </div>
                                 </div>
                               </div>
                             ))}

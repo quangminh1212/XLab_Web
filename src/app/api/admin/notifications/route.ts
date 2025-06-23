@@ -3,9 +3,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs/promises';
 import path from 'path';
-import { notifications as vieNotifications } from '@/locales/vie/notifications';
-import { notifications as engNotifications } from '@/locales/eng/notifications';
-import { notifications as spaNotifications } from '@/locales/spa/notifications';
 
 const NOTIFICATIONS_FILE = path.join(process.cwd(), 'data', 'notifications.json');
 
@@ -20,17 +17,6 @@ interface Notification {
   link?: string;
   priority: 'low' | 'medium' | 'high';
   expiresAt?: string;
-  metadata?: {
-    es?: {
-      title?: string;
-      content?: string;
-    };
-    en?: {
-      title?: string;
-      content?: string;
-    };
-    readCount?: number;
-  };
 }
 
 // Đảm bảo thư mục data tồn tại
@@ -54,63 +40,33 @@ async function getNotifications(): Promise<Notification[]> {
     const defaultNotifications: Notification[] = [
       {
         id: '1',
-        title: vieNotifications['notifications.default.promotion.title'],
-        content: vieNotifications['notifications.default.promotion.content'],
+        title: 'Khuyến mãi đặc biệt',
+        content: 'Giảm 50% tất cả sản phẩm phần mềm trong tuần này!',
         type: 'promotion',
         isRead: {},
         createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 giờ trước
         link: '/products',
         priority: 'high',
         expiresAt: new Date(Date.now() + 7 * 24 * 3600000).toISOString(), // 7 ngày sau
-        metadata: {
-          en: {
-            title: engNotifications['notifications.default.promotion.title'],
-            content: engNotifications['notifications.default.promotion.content']
-          },
-          es: {
-            title: spaNotifications['notifications.default.promotion.title'],
-            content: spaNotifications['notifications.default.promotion.content']
-          }
-        }
       },
       {
         id: '2',
-        title: vieNotifications['notifications.default.update.title'],
-        content: vieNotifications['notifications.default.update.content'],
+        title: 'Cập nhật mới',
+        content: 'Phiên bản 2.0 đã ra mắt với nhiều tính năng mới',
         type: 'update',
         isRead: {},
         createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 ngày trước
         link: '/products/1',
         priority: 'medium',
-        metadata: {
-          en: {
-            title: engNotifications['notifications.default.update.title'],
-            content: engNotifications['notifications.default.update.content']
-          },
-          es: {
-            title: spaNotifications['notifications.default.update.title'],
-            content: spaNotifications['notifications.default.update.content']
-          }
-        }
       },
       {
         id: '3',
-        title: vieNotifications['notifications.default.system.title'],
-        content: vieNotifications['notifications.default.system.content'],
+        title: 'Thông báo hệ thống',
+        content: 'Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.',
         type: 'system',
         isRead: {},
         createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), // 2 ngày trước
         priority: 'high',
-        metadata: {
-          en: {
-            title: engNotifications['notifications.default.system.title'],
-            content: engNotifications['notifications.default.system.content']
-          },
-          es: {
-            title: spaNotifications['notifications.default.system.title'],
-            content: spaNotifications['notifications.default.system.content']
-          }
-        }
       },
     ];
     await saveNotifications(defaultNotifications);

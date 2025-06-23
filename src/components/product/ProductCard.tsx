@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, convertCurrency } from '@/shared/utils/formatCurrency';
 
 interface ProductCardProps {
   id: string;
@@ -58,24 +57,8 @@ export default function ProductCard({
 
   // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
   useEffect(() => {
-    // Nếu có mã định danh sản phẩm đặc biệt (chatgpt, grok), sử dụng bản dịch từ file
-    if (id === 'chatgpt' || id === 'grok') {
-      const translationKey = `product.products.${id}.shortDescription`;
-      const translation = t(translationKey);
-      console.log(`Looking up translation for ${translationKey}:`, translation);
-      setTranslatedDescription(translation || description);
-      setTranslatedName(name); // Giữ nguyên tên
-    } 
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-<<<<<<< HEAD
-<<<<<<< HEAD
-    else if (language === 'eng') {
-=======
     if (language === 'eng') {
->>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
-=======
-    if (language === 'eng') {
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
@@ -112,7 +95,7 @@ export default function ProductCard({
       setTranslatedDescription(description);
       setTranslatedName(name);
     }
-  }, [description, name, language, id, t]);
+  }, [description, name, language, id]);
 
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
@@ -142,8 +125,7 @@ export default function ProductCard({
   const cleanImageUrl = getValidImageUrl(image);
 
   // Sử dụng mô tả đã được dịch
-  // Giới hạn độ dài của mô tả để đảm bảo hiển thị đúng - giảm xuống 50 ký tự cho 2 dòng
-  const shortDescription = (translatedDescription || '').substring(0, 50) + (translatedDescription && translatedDescription.length > 50 ? '...' : '');
+  const shortDescription = translatedDescription || '';
 
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage =
@@ -157,8 +139,8 @@ export default function ProductCard({
     : cleanImageUrl;
 
   // Xử lý category có thể là object phức tạp
-  const getCategoryName = (categoryValue: string | object | undefined): string => {
-    if (!categoryValue) return "";
+  const getCategoryName = (categoryValue: string | object | undefined): string | undefined => {
+    if (!categoryValue) return undefined;
     
     if (typeof categoryValue === 'string') {
       return categoryValue;
@@ -173,7 +155,7 @@ export default function ProductCard({
         if (typeof categoryObj.name === 'string') {
           return categoryObj.name;
         } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
-          return String(categoryObj.name.id);
+          return categoryObj.name.id;
         }
       }
       
@@ -182,23 +164,27 @@ export default function ProductCard({
         if (typeof categoryObj.id === 'string') {
           return categoryObj.id;
         } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
-          return String(categoryObj.id.id);
+          return categoryObj.id.id;
         }
       }
     }
     
-    return ""; // Return empty string instead of undefined
+    return undefined;
   };
 
   // Lấy tên category để hiển thị
   const displayCategory = getCategoryName(category);
 
-  // Format currency based on selected language
-  const displayPrice = (amount: number) => {
-    // Convert to appropriate currency based on language
-    const convertedAmount = convertCurrency(amount, language);
-    // Format with the correct currency symbol and format
-    return formatCurrency(convertedAmount, language);
+  // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
+  const formatCurrency = (amount: number) => {
+    // Đảm bảo amount là số
+    const safeAmount = isNaN(amount) ? 0 : amount;
+    
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+    }).format(safeAmount);
   };
 
   const renderRatingStars = (rating: number) => {
@@ -496,42 +482,42 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="px-4 pt-4 pb-8 flex-1 flex flex-col bg-white">
+      <div className="p-3 flex-1 flex flex-col bg-white">
         {displayCategory && (
-          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+          <div className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">
             {displayCategory}
           </div>
         )}
-        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-3 group-hover:text-gray-700 transition-colors duration-200">
+        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-1 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-xs text-gray-600 line-clamp-2 mb-5 leading-relaxed">
+        <p className="text-xs text-gray-600 line-clamp-3 min-h-[3.6rem] mb-4 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between mt-auto">
           <div className="flex-1">
-            <div className="flex items-baseline flex-wrap gap-2 mb-2">
+            <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
                 className={`text-base font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
-                {displayPrice(price)}
+                {formatCurrency(price)}
               </span>
               {originalPrice && originalPrice > price && (
                 <span className="text-xs text-gray-400 line-through">
-                  {displayPrice(originalPrice)}
+                  {formatCurrency(originalPrice)}
                 </span>
               )}
             </div>
-            <div className="mt-1">{rating > 0 ? renderRatingStars(rating) : <div className="h-2"></div>}</div>
+            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-2"></div>}</div>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col items-end gap-1">
             {weeklyPurchases > 0 && (
               <div
-                className={`text-[10px] ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-2.5 w-2.5 mr-1.5 ${currentColor.statsIcon}`}
+                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -548,11 +534,11 @@ export default function ProductCard({
             )}
             {totalSold > 0 && (
               <div
-                className={`text-[10px] ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-2.5 w-2.5 mr-1.5 ${currentColor.statsIcon}`}
+                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -564,7 +550,7 @@ export default function ProductCard({
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                <span className="font-semibold">{t('product.totalSold', { count: totalSold })}</span>
+                <span className="font-semibold">{totalSold}</span>
               </div>
             )}
           </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
 interface AvatarProps {
@@ -28,55 +28,21 @@ const sizePixels = {
   '2xl': { width: 64, height: 64 },
 };
 
-// Check if a URL is valid
-const isValidUrl = (url: string): boolean => {
-  try {
-    new URL(url);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
 const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', className = '' }) => {
   const [imageError, setImageError] = useState(false);
-  const [validatedSrc, setValidatedSrc] = useState<string | null>(null);
   const { width, height } = sizePixels[size];
 
-  // Validate the source URL when the component mounts or src changes
-  useEffect(() => {
-    if (!src) {
-      setValidatedSrc(null);
-      return;
-    }
-
-    // Check if it's a relative path (starts with /) or a valid absolute URL
-    if (src.startsWith('/') || isValidUrl(src)) {
-      setValidatedSrc(src);
-      setImageError(false);
-    } else {
-      console.warn('Invalid avatar URL format:', src);
-      setValidatedSrc(null);
-      setImageError(true);
-    }
-  }, [src]);
-
   const handleImageError = () => {
-    console.log('Avatar image failed to load:', validatedSrc);
-    // Log additional debug info
-    if (validatedSrc && validatedSrc.startsWith('http')) {
-      console.log('External URL failed - CORS or resource issues may exist');
-    }
+    console.log('Avatar image failed to load:', src);
     setImageError(true);
   };
 
   const handleImageLoad = () => {
-    console.log('Avatar image loaded successfully:', validatedSrc);
     setImageError(false);
   };
 
   // Determine which image to show
-  const imageSrc = !imageError && validatedSrc ? validatedSrc : '/images/avatar-placeholder.svg';
+  const imageSrc = !imageError && src ? src : '/images/avatar-placeholder.svg';
 
   return (
     <div className={`relative ${sizeClasses[size]} ${className}`}>
@@ -89,7 +55,6 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', className = '' }
         onError={handleImageError}
         onLoad={handleImageLoad}
         unoptimized={true}
-        referrerPolicy="no-referrer"
       />
     </div>
   );

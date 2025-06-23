@@ -45,15 +45,11 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Tải thông báo từ API
   const fetchNotifications = async () => {
     try {
-<<<<<<< HEAD
-      const response = await fetch(`/api/notifications?language=${language}`);
-=======
       const response = await fetch('/api/notifications', {
         headers: {
           'x-user-language': language
         }
       });
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
       if (response.ok) {
         const data = await response.json();
         setNotifications(data.notifications || []);
@@ -124,10 +120,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setNotifications((prev) => [newNotification, ...prev]);
   };
 
-  // Tải thông báo khi component mount hoặc khi ngôn ngữ thay đổi
+  // Tải thông báo khi component mount
   useEffect(() => {
     fetchNotifications();
-  }, [language]);
+  }, []);
 
   const value = {
     notifications,

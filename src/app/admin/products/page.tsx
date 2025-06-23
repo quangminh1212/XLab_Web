@@ -14,7 +14,7 @@ function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const { t } = useLanguage();
+  const { language } = useLanguage();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,28 +23,28 @@ function AdminProductsPage() {
         const response = await fetch('/api/admin/products');
 
         if (!response.ok) {
-          throw new Error(t('admin.products.loadError') || 'Could not load products list');
+          throw new Error(language === 'vi' ? 'Không thể tải danh sách sản phẩm' : 'Could not load products list');
         }
 
         const data = await response.json();
         setProductList(data);
       } catch (err) {
         setError((err as Error).message);
-        console.error(t('admin.products.loadErrorLog') || 'Error loading products list:', err);
+        console.error(language === 'vi' ? 'Lỗi khi tải danh sách sản phẩm:' : 'Error loading products list:', err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, [t]);
+  }, [language]);
 
   const handleEdit = (productId: string) => {
     router.push(`/admin/products/${productId}`);
   };
 
   const handleDelete = async (productId: string) => {
-    if (confirm(t('admin.products.confirmDelete') || 'Are you sure you want to delete this product?')) {
+    if (confirm(language === 'vi' ? 'Bạn có chắc chắn muốn xóa sản phẩm này?' : 'Are you sure you want to delete this product?')) {
       try {
         setLoading(true);
         const response = await fetch(`/api/admin/products/${productId}`, {
@@ -52,15 +52,15 @@ function AdminProductsPage() {
         });
 
         if (!response.ok) {
-          throw new Error(t('admin.products.deleteError') || 'Could not delete product');
+          throw new Error(language === 'vi' ? 'Không thể xóa sản phẩm' : 'Could not delete product');
         }
 
         // Remove the product from the list
         setProductList(productList.filter((product) => product.id !== productId));
-        alert(t('admin.products.deleteSuccess') || 'Product deleted successfully!');
+        alert(language === 'vi' ? 'Đã xóa sản phẩm thành công!' : 'Product deleted successfully!');
       } catch (err) {
         setError((err as Error).message);
-        console.error(t('admin.products.deleteErrorLog') || 'Error deleting product:', err);
+        console.error(language === 'vi' ? 'Lỗi khi xóa sản phẩm:' : 'Error deleting product:', err);
       } finally {
         setLoading(false);
       }
@@ -68,50 +68,44 @@ function AdminProductsPage() {
   };
 
   // Filter products based on search term
-  const filteredProducts = searchTerm
-    ? productList.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.id.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : productList;
-
-  // Format currency function
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  // Xử lý dịch mô tả ngắn cho sản phẩm
-  const getProductShortDescription = (product: Product) => {
-    // Nếu có mã định danh sản phẩm đặc biệt (chatgpt, grok), sử dụng bản dịch từ file
-    if (product.id === 'chatgpt' || product.id === 'grok') {
-      return t(`product.${product.id}.shortDescription`) || product.shortDescription;
-    } else {
-      return product.shortDescription;
-    }
-  };
-
-  // Xử lý hiển thị trạng thái sản phẩm
-  const getProductStatusText = (isPublished: boolean) => {
-    return isPublished ? t('product.status.public') || t('admin.products.statusPublic') : t('product.status.draft') || t('admin.products.statusDraft');
-  };
+  const filteredProducts = productList.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.id.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{t('admin.products.title')}</h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {language === 'vi' ? 'Quản lý sản phẩm' : 'Product Management'}
+          </h1>
+          <p className="text-gray-500 text-base mt-1">
+            {language === 'vi' ? 'Quản lý danh sách sản phẩm của cửa hàng' : 'Manage your store products list'}
+          </p>
+        </div>
         <Link
           href="/admin"
-          className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
+          className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors text-base"
         >
-          <span>← {t('admin.products.backToDashboard') || 'Back to Dashboard'}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          {language === 'vi' ? 'Quay lại Dashboard' : 'Back to Dashboard'}
         </Link>
       </div>
-
-      <p className="text-gray-600">{t('admin.products.subtitle')}</p>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-5 border-b border-gray-100">
@@ -119,7 +113,7 @@ function AdminProductsPage() {
             <div className="relative w-full md:w-96">
               <input
                 type="text"
-                placeholder={t('admin.products.searchPlaceholder') || "Search products..."}
+                placeholder={language === 'vi' ? "Tìm kiếm sản phẩm..." : "Search products..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base"
@@ -140,27 +134,45 @@ function AdminProductsPage() {
                 </svg>
               </div>
             </div>
-            {/* Add Product Button */}
-            <button
-              onClick={() => router.push('/admin/products/new')}
-              className="flex items-center justify-center space-x-2 bg-primary-600 text-white py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+
+            <Link
+              href="/admin/products/new"
+              className="bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center shadow-sm font-medium text-base"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
                 <path
-                  fillRule="evenodd"
-                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                  clipRule="evenodd"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                 />
               </svg>
-              <span>{t('admin.products.addNew') || 'Add new product'}</span>
-            </button>
+              {language === 'vi' ? 'Thêm sản phẩm mới' : 'Add new product'}
+            </Link>
           </div>
         </div>
+
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 m-4 rounded">
+            <div className="flex">
+              <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <span className="text-base">{error}</span>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -183,13 +195,15 @@ function AdminProductsPage() {
               />
             </svg>
             <p className="text-gray-500 text-xl">
-              {t('admin.products.noProducts') || 'No products found'}
+              {language === 'vi' ? 'Không tìm thấy sản phẩm nào' : 'No products found'}
             </p>
             <p className="text-gray-400 mt-1 text-base">
-              {t('admin.products.noProductsSubtext') || 'Add new products or change your search query'}
+              {language === 'vi' 
+                ? 'Hãy thêm sản phẩm mới hoặc thay đổi từ khóa tìm kiếm' 
+                : 'Add new products or change your search query'}
             </p>
           </div>
-        ) :
+        ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 table-fixed">
               <thead className="bg-gray-50">
@@ -198,13 +212,13 @@ function AdminProductsPage() {
                     scope="col"
                     className="w-16 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {t('admin.products.image') || 'Image'}
+                    {language === 'vi' ? 'Hình ảnh' : 'Image'}
                   </th>
                   <th
                     scope="col"
                     className="w-1/3 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {t('admin.products.name') || 'Product name'}
+                    {language === 'vi' ? 'Tên sản phẩm' : 'Product name'}
                   </th>
                   <th
                     scope="col"
@@ -216,19 +230,19 @@ function AdminProductsPage() {
                     scope="col"
                     className="w-1/6 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {t('admin.products.price') || 'Price'}
+                    {language === 'vi' ? 'Giá' : 'Price'}
                   </th>
                   <th
                     scope="col"
                     className="w-1/6 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {t('admin.products.status') || 'Status'}
+                    {language === 'vi' ? 'Trạng thái' : 'Status'}
                   </th>
                   <th
                     scope="col"
                     className="w-20 px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {t('admin.products.actions') || 'Actions'}
+                    {language === 'vi' ? 'Tùy chọn' : 'Actions'}
                   </th>
                 </tr>
               </thead>
@@ -260,35 +274,103 @@ function AdminProductsPage() {
                       </div>
                       <div
                         className="text-sm text-gray-500 truncate max-w-[250px]"
-                        dangerouslySetInnerHTML={{ __html: getProductShortDescription(product) || '' }}
+                        dangerouslySetInnerHTML={{ __html: product.shortDescription || '' }}
                       ></div>
                     </td>
                     <td className="px-3 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500 font-mono truncate">{product.id}</div>
                     </td>
                     <td className="px-3 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {formatCurrency(product.versions && product.versions.length > 0 ? product.versions[0].price : 0)}
+                      <div className="text-base font-medium text-gray-900">
+                        {(() => {
+                          // Tìm giá thấp nhất từ tất cả các nguồn
+                          let minPrice = Infinity;
+                          let minPriceOption = '';
+
+                          // Kiểm tra giá cơ bản của phiên bản đầu tiên (nếu có)
+                          if (product.versions && product.versions.length > 0) {
+                            product.versions.forEach((version) => {
+                              // Bỏ qua giá 0
+                              if (version.price > 0 && version.price < minPrice) {
+                                minPrice = version.price;
+                                minPriceOption = version.name || (language === 'vi' ? 'Phiên bản mặc định' : 'Default version');
+                              }
+                            });
+                          }
+
+                          // Kiểm tra các tùy chọn sản phẩm
+                          if (
+                            product.optionPrices &&
+                            Object.keys(product.optionPrices).length > 0
+                          ) {
+                            Object.entries(product.optionPrices).forEach(([option, priceData]) => {
+                              // Bỏ qua giá 0
+                              if (priceData.price > 0 && priceData.price < minPrice) {
+                                minPrice = priceData.price;
+                                minPriceOption = option;
+                              }
+                            });
+                          }
+
+                          // Kiểm tra salePrice trước (nếu có và hợp lệ)
+                          if (
+                            product.salePrice &&
+                            product.salePrice > 0 &&
+                            product.salePrice < minPrice
+                          ) {
+                            minPrice = product.salePrice;
+                            minPriceOption = language === 'vi' ? 'Giá khuyến mãi' : 'Sale price';
+                          }
+
+                          // Kiểm tra giá gốc của sản phẩm (nếu có)
+                          if (product.price && product.price > 0 && product.price < minPrice) {
+                            minPrice = product.price;
+                            minPriceOption = language === 'vi' ? 'Giá gốc' : 'Original price';
+                          }
+
+                          // Nếu không có giá nào hợp lệ (khác 0) hoặc giá vẫn là Infinity
+                          if (minPrice === Infinity) {
+                            return language === 'vi' ? 'Chưa có giá' : 'No price set';
+                          }
+
+                          // Format giá tiền
+                          const formattedPrice = new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          }).format(minPrice);
+
+                          return (
+                            <div>
+                              <div className="font-medium text-primary-600">{formattedPrice}</div>
+                              {minPriceOption && (
+                                <div className="text-xs text-gray-500 mt-1">{minPriceOption}</div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </td>
                     <td className="px-3 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                        ${
-                          product.isPublished
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {getProductStatusText(product.isPublished)}
-                      </span>
+                      {product.isPublished ? (
+                        <span className="px-3 py-1.5 text-sm font-medium rounded-full bg-green-100 text-green-800 inline-flex items-center">
+                          <span className="w-2 h-2 bg-green-600 rounded-full mr-1.5"></span>
+                          {language === 'vi' ? 'Công khai' : 'Public'}
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-800 inline-flex items-center">
+                          <span className="w-2 h-2 bg-gray-500 rounded-full mr-1.5"></span>
+                          {language === 'vi' ? 'Nháp' : 'Draft'}
+                        </span>
+                      )}
                     </td>
                     <td className="px-3 py-4 whitespace-nowrap text-center">
-                      <div className="flex items-center justify-center space-x-2">
+                      <div className="flex justify-center space-x-2">
                         <button
+                          className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors focus:outline-none p-1.5"
                           onClick={() => handleEdit(product.id)}
-                          className="text-blue-600 hover:text-blue-800"
-                          title={t('admin.products.edit')}
+                          title={language === 'vi' ? "Sửa sản phẩm" : "Edit product"}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -306,9 +388,9 @@ function AdminProductsPage() {
                           </svg>
                         </button>
                         <button
+                          className="inline-flex items-center text-red-600 hover:text-red-800 transition-colors focus:outline-none p-1.5"
                           onClick={() => handleDelete(product.id)}
-                          className="text-red-600 hover:text-red-800"
-                          title={t('admin.products.delete')}
+                          title={language === 'vi' ? "Xóa sản phẩm" : "Delete product"}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -332,7 +414,7 @@ function AdminProductsPage() {
               </tbody>
             </table>
           </div>
-        }
+        )}
       </div>
     </div>
   );

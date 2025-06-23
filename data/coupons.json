@@ -2,8 +2,8 @@
   {
     "id": "2",
     "code": "WELCOME50",
-    "name": "Ưu đãi chào mừng thành viên mới",
-    "description": "Ưu đãi đặc biệt dành cho thành viên mới",
+    "name": "Welcome offer for new members",
+    "description": "Welcome offer for new members",
     "type": "fixed",
     "value": 50000,
     "minOrder": 200000,
@@ -16,23 +16,13 @@
     "createdAt": "2024-01-01T00:00:00Z",
     "applicableProducts": [],
     "isPublic": true,
-    "updatedAt": "2025-06-02T19:57:06.508Z",
-    "metadata": {
-      "en": {
-        "name": "Welcome offer for new members",
-        "description": "Special discount for new members"
-      },
-      "es": {
-        "name": "Oferta de bienvenida para nuevos miembros",
-        "description": "Descuento especial para nuevos miembros"
-      }
-    }
+    "updatedAt": "2025-06-02T19:57:06.508Z"
   },
   {
     "id": "3",
     "code": "XLABRND10",
-    "name": "Giảm giá đặc biệt 10%",
-    "description": "Mã giảm giá đặc biệt cho khách hàng trung thành",
+    "name": "Special 10% Discount",
+    "description": "Special discount code for loyal customers",
     "type": "percentage",
     "value": 10,
     "minOrder": 50000,
@@ -50,23 +40,13 @@
     "applicableProducts": [],
     "isPublic": true,
     "forUsers": ["xlab.rnd@gmail.com"],
-    "updatedAt": "2025-06-03T12:39:22.017Z",
-    "metadata": {
-      "en": {
-        "name": "Special 10% Discount",
-        "description": "Special discount code for loyal customers"
-      },
-      "es": {
-        "name": "Descuento especial del 10%",
-        "description": "Código de descuento especial para clientes fieles"
-      }
-    }
+    "updatedAt": "2025-06-03T12:39:22.017Z"
   },
   {
     "id": "4",
     "code": "MEMBER100K",
-    "name": "Giảm giá 100K cho thành viên",
-    "description": "Mã giảm giá 100K cho thành viên hoạt động",
+    "name": "100K Discount for Members",
+    "description": "100K discount code for active members",
     "type": "fixed",
     "value": 100000,
     "minOrder": 500000,
@@ -83,46 +63,6 @@
     "applicableProducts": [],
     "isPublic": false,
     "forUsers": ["xlab.rnd@gmail.com"],
-    "updatedAt": "2025-06-03T09:16:03.567Z",
-    "metadata": {
-      "en": {
-        "name": "100K Discount for Members",
-        "description": "100K discount code for active members"
-      },
-      "es": {
-        "name": "Descuento de 100K para miembros",
-        "description": "Código de descuento de 100K para miembros activos"
-      }
-    }
-  },
-  {
-    "id": "5",
-    "code": "SUMMER2024",
-    "name": "Giảm giá mùa hè 2024",
-    "description": "Giảm giá đặc biệt cho mùa hè 2024",
-    "type": "percentage",
-    "value": 20,
-    "minOrder": 100000,
-    "maxDiscount": 500000,
-    "usageLimit": 100,
-    "userLimit": 2,
-    "usedCount": 15,
-    "userUsage": {},
-    "isActive": true,
-    "startDate": "2024-06-01T00:00:00Z",
-    "endDate": "2024-08-31T23:59:59Z",
-    "createdAt": "2024-05-01T00:00:00Z",
-    "applicableProducts": [],
-    "isPublic": true,
-    "metadata": {
-      "en": {
-        "name": "Summer Discount 2024",
-        "description": "Special discount for Summer 2024"
-      },
-      "es": {
-        "name": "Descuento de verano 2024",
-        "description": "Descuento especial para el verano 2024"
-      }
-    }
+    "updatedAt": "2025-06-03T09:16:03.567Z"
   }
 ]

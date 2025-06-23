@@ -19,7 +19,6 @@
 - [Authentication](#-authentication)
 - [Performance Optimizations](#-performance-optimizations)
 - [License](#-license)
-- [Internationalization (i18n)](#-internationalization-i18n)
 
 ## ✨ Features
 
@@ -29,10 +28,7 @@
 - **Payment Integration**: Support for multiple payment methods
 - **Admin Dashboard**: Manage products, orders, and users
 - **Responsive Design**: Optimized for all device sizes
-- **Internationalization**: Support for multiple languages (Vietnamese, English, and Spanish)
-  - Organized in `src/locales` with language-specific directories
-  - Verification script available to ensure correct language usage: `node scripts/verify-locales.js`
-  - Default language: Vietnamese with fallback to English
+- **Internationalization**: Support for multiple languages (Vietnamese and English)
 - **SEO Optimized**: Built with SEO best practices
 
 ## 🏗️ Project Structure
@@ -154,7 +150,6 @@ npm run dev
 - `npm run format` - Format with Prettier
 - `npm run type-check` - Run TypeScript checks
 - `npm run analyze` - Analyze bundle size
-- `node scripts/verify-locales.js` - Verify language consistency in localization files
 
 ### Development Guidelines
 
@@ -230,108 +225,3 @@ Routes can be protected using middleware:
 ## 📄 License
 
 Copyright © 2023-2024 XLab. All rights reserved.
-
-<<<<<<< HEAD
-## React Hooks Best Practices
-
-### useLayoutEffect in Server-Side Rendering
-
-When working with Next.js and server-side rendering, using `useLayoutEffect` directly can cause warnings because it cannot be executed during server rendering. To solve this issue, we use a custom hook called `useIsomorphicLayoutEffect` that automatically uses:
-
-- `useLayoutEffect` when running in the browser
-- `useEffect` when running on the server
-
-```tsx
-// Import the proper hook
-import { useIsomorphicLayoutEffect } from '@/lib';
-
-function MyComponent() {
-  // Use it instead of useLayoutEffect
-  useIsomorphicLayoutEffect(() => {
-    // Your code here
-  }, [dependencies]);
-}
-```
-
-This approach eliminates the "useLayoutEffect does nothing on the server" warning while maintaining the same behavior as useLayoutEffect in the browser.
-
-ESLint is configured to prevent direct usage of useLayoutEffect in favor of our isomorphic version.
-=======
-## Internationalization (i18n)
-
-This project supports multiple languages using a custom implementation. The translations are stored in JSON files organized by features in the `locales` directory.
-
-### Structure
-
-- `locales/`
-  - `index.ts` - Exports all translations
-  - `en/`
-    - `features/` - Feature-specific translations
-      - `admin.json` - Admin related translations
-      - `auth.json` - Authentication translations
-      - `home.json` - Homepage translations
-      - `navigation.json` - Navigation menu translations
-      - `product.json` - Product related translations
-      - `terms.json` - Terms of service translations
-      - `about.json` - About page translations
-      - ... (other features)
-  - `vi/`
-    - `features/` - Feature-specific translations
-      - `admin.json` - Admin related translations
-      - `auth.json` - Authentication translations
-      - `home.json` - Homepage translations
-      - `navigation.json` - Navigation menu translations
-      - `product.json` - Product related translations
-      - `terms.json` - Terms of service translations
-      - `about.json` - About page translations
-      - ... (other features)
-
-### Usage
-
-To use translations in components:
-
-```tsx
-import { useLanguage } from '@/contexts/LanguageContext';
-
-const MyComponent = () => {
-  const { t } = useLanguage();
-  
-  return <h1>{t('home.title')}</h1>;
-};
-```
-
-For text with parameters:
-
-```tsx
-// Using parameter
-const welcomeMessage = t('welcome.message', { name: 'John' });
-// Assuming translation is: "Hello, {name}!"
-// Result: "Hello, John!"
-```
-
-### Adding New Translations
-
-1. Find the appropriate feature file in `locales/[language]/features/`.
-2. Add new strings to both language versions to keep them in sync.
-3. Follow existing naming conventions for keys.
-4. If creating translations for a new feature:
-   - Create new JSON files in both `en/features/` and `vi/features/` directories
-   - Add imports and configuration in `locales/index.ts`
-
-### Extracting Hardcoded Texts
-
-Run the translation extraction script to find potential untranslated texts:
-
-```bash
-node scripts/extract-texts.js
-```
-
-This will generate suggestion files that you can review and incorporate into the appropriate feature translation files.
-
-### Benefits of Feature-Based Organization
-
-- Better maintainability with smaller files
-- Easier collaboration across team members
-- Clearer organization of translation keys
-- Simplified updates for specific features
->>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce

@@ -336,7 +336,7 @@ function HomePage() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {featuredProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.7]">
+                      <div key={product.id} className="aspect-[1/1.5]">
                         <ProductCard 
                           id={product.id}
                           name={product.name}
@@ -357,8 +357,8 @@ function HomePage() {
                 </section>
 
                 {/* New Products Section */}
-                <section className="mt-12 pt-6 border-t border-gray-100">
-                  <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <section>
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
                     <h2 className="heading-3 text-gray-800">{t('home.newProducts')}</h2>
                     <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
                       {t('home.viewAll')}
@@ -366,7 +366,7 @@ function HomePage() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {newProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.7]">
+                      <div key={product.id} className="aspect-[1/1.5]">
                         <ProductCard 
                           id={product.id}
                           name={product.name}

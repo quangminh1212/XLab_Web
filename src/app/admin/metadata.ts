@@ -1,2 +1,6 @@
-// Removed static metadata since we need dynamic titles based on language
-// The title will be set dynamically in the layout component
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
+  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
+};

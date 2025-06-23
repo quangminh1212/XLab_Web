@@ -24,7 +24,7 @@ function AdminDashboard() {
     orders: 0,
     revenue: 0,
   });
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
 
   // Chuyển đổi số thành định dạng tiền tệ
   // Convert number to currency format
@@ -78,7 +78,7 @@ function AdminDashboard() {
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-4">
-          {t('admin.dashboard.overview')}
+          {language === 'vi' ? 'Thống kê tổng quan' : 'Overview Statistics'}
         </h2>
 
         {isLoading ? (
@@ -89,53 +89,53 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {t('admin.dashboard.products')}
+                {language === 'vi' ? 'Sản phẩm' : 'Products'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.products}</p>
               <Link
                 href="/admin/products"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {t('admin.dashboard.manage')}
+                {language === 'vi' ? 'Quản lý →' : 'Manage →'}
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {t('admin.dashboard.users')}
+                {language === 'vi' ? 'Người dùng' : 'Users'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.users}</p>
               <Link
                 href="/admin/users"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {t('admin.dashboard.manage')}
+                {language === 'vi' ? 'Quản lý →' : 'Manage →'}
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {t('admin.dashboard.orders')}
+                {language === 'vi' ? 'Đơn hàng' : 'Orders'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{stats.orders}</p>
               <Link
                 href="/admin/orders"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {t('admin.dashboard.manage')}
+                {language === 'vi' ? 'Quản lý →' : 'Manage →'}
               </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">
-                {t('admin.dashboard.revenue')}
+                {language === 'vi' ? 'Doanh thu' : 'Revenue'}
               </h3>
               <p className="mt-2 text-3xl font-bold">{formatCurrency(stats.revenue)}</p>
               <Link
                 href="/admin/orders"
                 className="text-teal-600 hover:text-teal-800 text-sm mt-1 inline-block"
               >
-                {t('admin.dashboard.viewDetails')}
+                {language === 'vi' ? 'Xem chi tiết →' : 'View details →'}
               </Link>
             </div>
           </div>
@@ -144,20 +144,9 @@ function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">
-              {t('admin.dashboard.latestProducts')}
-            </h2>
-            <Link
-              href="/admin/products"
-              className="text-teal-600 hover:text-teal-800 text-sm font-medium flex items-center"
-            >
-              {t('admin.dashboard.viewAll')} 
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
-            </Link>
-          </div>
+          <h2 className="text-xl font-bold mb-4">
+            {language === 'vi' ? 'Sản phẩm mới nhất' : 'Latest Products'}
+          </h2>
           {isLoading ? (
             <div className="flex justify-center items-center h-32">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
@@ -166,40 +155,38 @@ function AdminDashboard() {
             <ul className="divide-y divide-gray-200">
               {products.slice(0, 5).map((product) => (
                 <li key={product.id} className="py-3">
-                  <Link href={`/admin/products/${product.id}`}>
-                    <div className="flex items-center justify-between hover:bg-gray-50 p-2 rounded transition-colors cursor-pointer">
-                      <div>
-                        <h3 className="font-medium">{product.name}</h3>
-                        <p className="text-sm text-gray-500">
-                          {formatCurrency(product.versions[0]?.price || 0)}
-                        </p>
-                      </div>
-                      <div>
-                        {product.isPublished ? (
-                          <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                            {t('admin.dashboard.public')}
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
-                            {t('admin.dashboard.draft')}
-                          </span>
-                        )}
-                      </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-medium">{product.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        {formatCurrency(product.versions[0]?.price || 0)}
+                      </p>
                     </div>
-                  </Link>
+                    <div>
+                      {product.isPublished ? (
+                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                          {language === 'vi' ? 'Công khai' : 'Public'}
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
+                          {language === 'vi' ? 'Nháp' : 'Draft'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>
           ) : (
             <p className="text-gray-500 text-center py-4">
-              {t('admin.dashboard.noProducts')}
+              {language === 'vi' ? 'Chưa có sản phẩm nào' : 'No products yet'}
             </p>
           )}
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">
-            {t('admin.dashboard.quickActions')}
+            {language === 'vi' ? 'Tác vụ nhanh' : 'Quick Actions'}
           </h2>
           <div className="space-y-3">
             <Link
@@ -223,10 +210,12 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {t('admin.dashboard.addNewProduct')}
+                    {language === 'vi' ? 'Thêm sản phẩm mới' : 'Add New Product'}
                   </h3>
                   <p className="text-sm">
-                    {t('admin.dashboard.createManageProducts')}
+                    {language === 'vi' 
+                      ? 'Tạo và quản lý sản phẩm của bạn' 
+                      : 'Create and manage your products'}
                   </p>
                 </div>
               </div>
@@ -253,10 +242,12 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {t('admin.dashboard.addNotification')}
+                    {language === 'vi' ? 'Thêm thông báo' : 'Add Notification'}
                   </h3>
                   <p className="text-sm">
-                    {t('admin.dashboard.createNotifications')}
+                    {language === 'vi' 
+                      ? 'Tạo thông báo mới cho người dùng' 
+                      : 'Create new notifications for users'}
                   </p>
                 </div>
               </div>
@@ -283,10 +274,12 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {t('admin.dashboard.addCoupon')}
+                    {language === 'vi' ? 'Thêm mã giảm giá' : 'Add Coupon'}
                   </h3>
                   <p className="text-sm">
-                    {t('admin.dashboard.createCoupons')}
+                    {language === 'vi' 
+                      ? 'Tạo mã giảm giá mới cho hệ thống' 
+                      : 'Create new coupons for the system'}
                   </p>
                 </div>
               </div>
@@ -313,10 +306,12 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {t('admin.dashboard.manageOrders')}
+                    {language === 'vi' ? 'Quản lý đơn hàng' : 'Manage Orders'}
                   </h3>
                   <p className="text-sm">
-                    {t('admin.dashboard.processOrders')}
+                    {language === 'vi' 
+                      ? 'Xem và xử lý đơn hàng của khách hàng' 
+                      : 'View and process customer orders'}
                   </p>
                 </div>
               </div>
@@ -349,10 +344,12 @@ function AdminDashboard() {
                 </svg>
                 <div>
                   <h3 className="font-medium">
-                    {t('admin.dashboard.systemSettings')}
+                    {language === 'vi' ? 'Cài đặt hệ thống' : 'System Settings'}
                   </h3>
                   <p className="text-sm">
-                    {t('admin.dashboard.configureSystem')}
+                    {language === 'vi' 
+                      ? 'Cấu hình và quản lý hệ thống' 
+                      : 'Configure and manage system'}
                   </p>
                 </div>
               </div>
@@ -362,7 +359,7 @@ function AdminDashboard() {
               href="/"
               className="px-4 py-2 bg-white text-teal-600 rounded hover:bg-gray-100 transition-colors duration-200"
             >
-              {t('admin.dashboard.backToMain')}
+              {language === 'vi' ? 'Về trang chính' : 'Back to main page'}
             </Link>
           </div>
         </div>

@@ -76,16 +76,6 @@ export default function PublicVouchersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState<{ [key: string]: boolean }>({});
   const [activeTab, setActiveTab] = useState<'available' | 'used' | 'expired'>('available');
-  const { t, language } = useLanguage();
-
-  // Force Vietnamese title
-  useEffect(() => {
-    const titleValue = `${t('voucher.title')} | XLab - ${t('common.softwareAndServices')}`;
-    document.title = titleValue;
-    // Thêm log để debug
-    console.log('Setting title in page.tsx:', titleValue);
-    console.log('Current language:', language);
-  }, [t, language]);
 
   useEffect(() => {
     const fetchVouchers = async () => {
@@ -155,19 +145,11 @@ export default function PublicVouchersPage() {
     <div className="max-w-5xl mx-auto py-10 px-4 min-h-screen bg-gradient-to-b from-white to-gray-50/50">
       <div className="text-center mb-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600 mb-3">
-<<<<<<< HEAD
-          {t('voucher.public.title')}
-        </h1>
-        <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full mb-4"></div>
-        <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-          {t('voucher.public.description')}
-=======
           {t('discountCodes.title')}
         </h1>
         <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full mb-4"></div>
         <p className="text-gray-600 max-w-2xl mx-auto mb-8">
           {t('discountCodes.subtitle')}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
         </p>
 
         {/* Tab navigation - improved design */}
@@ -196,11 +178,7 @@ export default function PublicVouchersPage() {
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-<<<<<<< HEAD
-                {t('voucher.public.available')}
-=======
                 {t('discountCodes.available')}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
               </div>
             </button>
             <button
@@ -226,11 +204,7 @@ export default function PublicVouchersPage() {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-<<<<<<< HEAD
-                {t('voucher.public.used')}
-=======
                 {t('discountCodes.used')}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
               </div>
             </button>
             <button
@@ -256,11 +230,7 @@ export default function PublicVouchersPage() {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-<<<<<<< HEAD
-                {t('voucher.public.expired_tab')}
-=======
                 {t('discountCodes.expired')}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
               </div>
             </button>
           </div>
@@ -275,15 +245,14 @@ export default function PublicVouchersPage() {
               <div className="h-7 w-7 bg-white rounded-full"></div>
             </div>
           </div>
-          <p className="ml-4 text-gray-600 font-medium">{t('voucher.public.loading')}</p>
+          <p className="ml-4 text-gray-600 font-medium">Loading discount codes...</p>
         </div>
       ) : filteredVouchers.length === 0 ? (
         <div className="text-center max-w-lg mx-auto">
           <div className="bg-gradient-to-br from-white to-teal-50 rounded-xl p-8 shadow-sm border border-teal-100">
-            <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 mx-auto bg-teal-50 rounded-full flex items-center justify-center mb-4">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-teal-500 opacity-75"
+                className="h-8 w-8 text-teal-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -291,27 +260,11 @@ export default function PublicVouchersPage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                  strokeWidth={2}
+                  d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                 />
               </svg>
             </div>
-<<<<<<< HEAD
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {activeTab === 'available' && t('voucher.public.noAvailable')}
-              {activeTab === 'used' && t('voucher.public.noUsed')}
-              {activeTab === 'expired' && t('voucher.public.noExpired')}
-            </h3>
-            <p className="text-gray-500 text-sm">
-              {activeTab === 'available' &&
-                t('voucher.public.noAvailable')}
-              {activeTab === 'used' && t('voucher.public.noUsed')}
-              {activeTab === 'expired' &&
-                t('voucher.public.noExpired')}
-            </p>
-
-            {/* rest of your empty state UI */}
-=======
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               {activeTab === 'available' && t('discountCodes.noAvailable')}
               {activeTab === 'used' && t('discountCodes.noCodesYet')}
@@ -342,7 +295,6 @@ export default function PublicVouchersPage() {
               </svg>
               {t('discountCodes.returnHome')}
             </Link>
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
           </div>
         </div>
       ) : (
@@ -392,33 +344,19 @@ export default function PublicVouchersPage() {
                         : 'bg-white'
                   }`}
                 >
-<<<<<<< HEAD
-                  <span>
-                    {voucher.type === 'percentage'
-                      ? `${voucher.value}% Off`
-                      : `${formatCurrency(voucher.value)} Off`}
-                    {activeTab === 'expired' && ` (${t('voucher.public.expired')})`}
-                    {activeTab === 'used' && ` (${t('voucher.public.used')})`}
-                  </span>
-=======
                   {voucher.type === 'percentage'
                     ? `${voucher.value}% ${t('discountCodes.off')}`
                     : `${formatCurrency(voucher.value)} ${t('discountCodes.off')}`}
                   {activeTab === 'expired' && ` (${t('discountCodes.expired')})`}
                   {activeTab === 'used' && ` (${t('discountCodes.used')})`}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                 </div>
               </div>
 
               {/* Coupon body */}
               <div className="p-4 flex-1 flex flex-col">
-                <h3 className="font-semibold text-gray-800 text-lg mb-2">
-                  {t(`coupon.${voucher.code.toLowerCase()}`, { default: voucher.name })}
-                </h3>
+                <h3 className="font-semibold text-gray-800 text-lg mb-2">{voucher.name}</h3>
                 {voucher.description && (
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {t(`coupon.${voucher.code.toLowerCase()}.description`, { default: voucher.description })}
-                  </p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{voucher.description}</p>
                 )}
 
                 <div className="flex-1 flex flex-col">
@@ -439,11 +377,7 @@ export default function PublicVouchersPage() {
                           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-<<<<<<< HEAD
-                      <span>{t('voucher.expiryDate')} {formatDate(voucher.endDate)}</span>
-=======
                       <span>{t('discountCodes.expires')} {formatDate(voucher.endDate)}</span>
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                     </div>
 
                     {voucher.userUsage && (
@@ -463,19 +397,7 @@ export default function PublicVouchersPage() {
                           />
                         </svg>
                         <span>
-<<<<<<< HEAD
-                          {t('voucher.welcome50.used', { 
-                            used: voucher.userUsage ? voucher.userUsage.current : 0, 
-                            total: voucher.userUsage ? voucher.userUsage.limit : 1 
-                          })} | {' '}
-                          {t('voucher.usesLeft', {
-                            count: voucher.userUsage
-                              ? voucher.userUsage.limit - voucher.userUsage.current
-                              : 1
-                          })}
-=======
                           {t('discountCodes.usedCount')} {voucher.userUsage.current}/{voucher.userUsage.limit}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                         </span>
                       </div>
                     )}
@@ -516,11 +438,7 @@ export default function PublicVouchersPage() {
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-<<<<<<< HEAD
-                        <span>{t('voucher.welcome50.timesPerUser', { times: voucher.userLimit })}</span>
-=======
                         <span>{voucher.userLimit} {t('discountCodes.timesPerUser')}</span>
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                       </div>
                     ) : (
                       <div className="flex items-center text-xs text-gray-600">
@@ -538,11 +456,7 @@ export default function PublicVouchersPage() {
                             d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
                           />
                         </svg>
-<<<<<<< HEAD
-                        <span>{t('voucher.welcome50.unlimited')}</span>
-=======
                         <span>{t('discountCodes.quantity')} {t('discountCodes.unlimited')}</span>
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                       </div>
                     )}
                   </div>
@@ -552,11 +466,7 @@ export default function PublicVouchersPage() {
                     <div className="mb-4">
                       <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                         <span className="font-medium">
-<<<<<<< HEAD
-                          Còn lại: {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit}
-=======
                           {t('discountCodes.remaining')} {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                         </span>
                         <span
                           className={`${voucher.usageLimit - voucher.usedCount < 10 ? 'text-red-600 font-medium' : ''}`}
@@ -598,29 +508,25 @@ export default function PublicVouchersPage() {
                             d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
                           />
                         </svg>
-<<<<<<< HEAD
-                        <span>{t('voucher.welcome50.unlimited')}</span>
-=======
                         <span>{t('discountCodes.quantity')} {t('discountCodes.unlimited')}</span>
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                       </div>
                     </div>
                   )}
 
                   {/* Applicable products if any */}
-                                      {voucher.applicableProducts && voucher.applicableProducts.length > 0 && (
+                  {voucher.applicableProducts && voucher.applicableProducts.length > 0 && (
                     <div className="text-xs text-gray-500 mt-auto">
-                      <span className="font-medium">{t('voucher.public.applicableTo')} </span>
+                      <span className="font-medium">Applicable to: </span>
                       {voucher.applicableProducts.join(', ')}
                     </div>
                   )}
 
                   {/* Out of uses warning */}
-                                        {voucher.userUsage &&
+                  {voucher.userUsage &&
                     voucher.userUsage.current >= voucher.userUsage.limit &&
                     activeTab === 'available' && (
                       <div className="mt-auto mb-2 text-xs px-3 py-2 bg-red-50 rounded-md text-center text-red-600 font-medium">
-                        {t('voucher.public.noUsesLeft')}
+                        You have used all available uses
                       </div>
                     )}
                 </div>
@@ -635,19 +541,11 @@ export default function PublicVouchersPage() {
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
-<<<<<<< HEAD
-                        {t('voucher.minOrder')} {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} |
-                        {t('voucher.welcome50.used', { 
-                          used: voucher.userUsage ? voucher.userUsage.current : 0, 
-                          total: voucher.userUsage ? voucher.userUsage.limit : 1 
-                        })}
-=======
                         {t('discountCodes.minOrder')} {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} đ |
                         {t('discountCodes.usedCount')}{' '}
                         {voucher.userUsage
                           ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
                           : '0/1'}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                       </span>
                       <span className="text-gray-500">
                         {calculateUsagePercentage(
@@ -671,22 +569,11 @@ export default function PublicVouchersPage() {
                     <div>
                       <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                         <span>
-<<<<<<< HEAD
-                          {voucher.minOrder
-                            ? `${t('voucher.minOrder')} ${formatCurrency(voucher.minOrder)}`
-                            : ''}
-                          {voucher.minOrder ? ' | ' : ''}
-                          {t('voucher.welcome50.used', { 
-                            used: voucher.userUsage ? voucher.userUsage.current : 0, 
-                            total: voucher.userUsage ? voucher.userUsage.limit : 1 
-                          })}
-=======
                           {t('discountCodes.minOrder')} {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} đ |
                           {t('discountCodes.usedCount')}{' '}
                           {voucher.userUsage
                             ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
                             : '0/1'}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                         </span>
                         <span className="text-gray-500">
                           {calculateUsagePercentage(
@@ -713,20 +600,24 @@ export default function PublicVouchersPage() {
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
                         {voucher.minOrder
-                          ? `${t('voucher.minOrder')} ${formatCurrency(voucher.minOrder)}`
+                          ? `Min order: ${formatCurrency(voucher.minOrder)}`
                           : ''}
-                        {voucher.minOrder ? ' | ' : ''}
-                        {t('voucher.welcome50.used', { 
-                          used: voucher.userUsage ? voucher.userUsage.current : 0, 
-                          total: voucher.userUsage ? voucher.userUsage.limit : 1 
-                        })} | <span className="text-orange-600 font-medium">{t('voucher.public.noUsesLeft')}</span>
+                        {voucher.minOrder ? ' | ' : ''}Used:{' '}
+                        {voucher.userUsage
+                          ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
+                          : '1/1'}{' '}
+                        | <span className="text-orange-600 font-medium">No uses left</span>
                       </span>
+                      <span className="text-orange-600">100%</span>
                     </div>
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                       <div
                         className="h-full rounded-full bg-orange-500"
                         style={{ width: '100%' }}
                       ></div>
+                    </div>
+                    <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-orange-700 bg-orange-50">
+                      Used all allowed times
                     </div>
                   </div>
                 )}
@@ -749,15 +640,10 @@ export default function PublicVouchersPage() {
                         style={{ width: '100%' }}
                       ></div>
                     </div>
-                                          <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-gray-500 bg-gray-100">
+                    <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-gray-500 bg-gray-100">
                       {voucher.usageLimit !== undefined && voucher.usageLimit <= voucher.usedCount
-<<<<<<< HEAD
-                        ? 'Hết lượt sử dụng'
-                        : `Hết hạn ngày ${formatDate(voucher.endDate)}`}
-=======
                         ? 'Out of uses'
                         : `${t('discountCodes.expiredOn')} ${formatDate(voucher.endDate)}`}
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                     </div>
                   </div>
                 )}

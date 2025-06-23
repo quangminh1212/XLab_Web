@@ -67,14 +67,14 @@ function SettingsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage(data.message || (language === 'vie' ? 'Cài đặt đã được lưu thành công!' : 'Settings saved successfully!'));
+        setSuccessMessage(data.message || (language === 'vi' ? 'Cài đặt đã được lưu thành công!' : 'Settings saved successfully!'));
         setSettings(data.settings);
       } else {
-        setErrors(data.details || [data.error || (language === 'vie' ? 'Đã xảy ra lỗi khi lưu cài đặt' : 'An error occurred while saving settings')]);
+        setErrors(data.details || [data.error || (language === 'vi' ? 'Đã xảy ra lỗi khi lưu cài đặt' : 'An error occurred while saving settings')]);
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      setErrors([(language === 'vie' ? 'Không thể kết nối đến máy chủ' : 'Cannot connect to server')]);
+      setErrors([(language === 'vi' ? 'Không thể kết nối đến máy chủ' : 'Cannot connect to server')]);
     } finally {
       setIsSaving(false);
 
@@ -154,14 +154,14 @@ function SettingsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">
-          {t('admin.settings.title')}
+          {language === 'vi' ? 'Cài đặt hệ thống' : 'System Settings'}
         </h1>
       </div>
 
       {/* Thông báo lỗi */}
       {errors.length > 0 && (
         <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-6">
-          <h3 className="font-medium mb-2">{t('admin.settings.errorOccurred')}:</h3>
+          <h3 className="font-medium mb-2">{language === 'vi' ? 'Đã xảy ra lỗi' : 'Errors occurred'}:</h3>
           <ul className="list-disc list-inside">
             {errors.map((error, index) => (
               <li key={index}>{error}</li>
@@ -188,7 +188,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.general')}
+              {language === 'vi' ? 'Thông tin chung' : 'General'}
             </button>
             <button
               onClick={() => setActiveTab('payment')}
@@ -198,7 +198,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.payment')}
+              {language === 'vi' ? 'Thanh toán' : 'Payment'}
             </button>
             <button
               onClick={() => setActiveTab('email')}
@@ -208,7 +208,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.email')}
+              {language === 'vi' ? 'Email' : 'Email'}
             </button>
 
             <button
@@ -219,7 +219,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.advanced')}
+              {language === 'vi' ? 'Nâng cao' : 'Advanced'}
             </button>
           </nav>
         </div>
@@ -230,7 +230,7 @@ function SettingsPage() {
             {activeTab === 'site' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">
-                  {t('admin.settings.website')}
+                  {language === 'vi' ? 'Thông tin trang web' : 'Website Information'}
                 </h2>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -239,7 +239,7 @@ function SettingsPage() {
                       htmlFor="siteName"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.siteName')}
+                      {language === 'vi' ? 'Tên trang web' : 'Site Name'}
                     </label>
                     <input
                       type="text"
@@ -256,7 +256,7 @@ function SettingsPage() {
                       htmlFor="siteDescription"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.siteDescription')}
+                      {language === 'vi' ? 'Mô tả trang web' : 'Site Description'}
                     </label>
                     <input
                       type="text"
@@ -272,7 +272,7 @@ function SettingsPage() {
                       htmlFor="logoUrl"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.logoUrl')}
+                      {language === 'vi' ? 'Đường dẫn logo' : 'Logo URL'}
                     </label>
                     <input
                       type="text"
@@ -288,7 +288,7 @@ function SettingsPage() {
                       htmlFor="faviconUrl"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.faviconUrl')}
+                      {language === 'vi' ? 'Đường dẫn favicon' : 'Favicon URL'}
                     </label>
                     <input
                       type="text"
@@ -301,7 +301,7 @@ function SettingsPage() {
                 </div>
 
                 <h3 className="text-md font-medium text-gray-800 mt-6">
-                  {t('admin.settings.contact')}
+                  {language === 'vi' ? 'Thông tin liên hệ' : 'Contact Information'}
                 </h3>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -310,7 +310,7 @@ function SettingsPage() {
                       htmlFor="contactEmail"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.contactEmail')}
+                      {language === 'vi' ? 'Email liên hệ' : 'Contact Email'}
                     </label>
                     <input
                       type="email"
@@ -327,7 +327,7 @@ function SettingsPage() {
                       htmlFor="contactPhone"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.contactPhone')}
+                      {language === 'vi' ? 'Số điện thoại liên hệ' : 'Contact Phone'}
                     </label>
                     <input
                       type="text"
@@ -341,7 +341,7 @@ function SettingsPage() {
 
                   <div className="sm:col-span-2">
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                      {t('admin.settings.address')}
+                      {language === 'vi' ? 'Địa chỉ' : 'Address'}
                     </label>
                     <textarea
                       id="address"
@@ -359,7 +359,7 @@ function SettingsPage() {
             {activeTab === 'payment' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">
-                  {t('admin.settings.paymentSettings')}
+                  {language === 'vi' ? 'Cài đặt thanh toán' : 'Payment Settings'}
                 </h2>
 
                 <div className="space-y-4">
@@ -377,7 +377,7 @@ function SettingsPage() {
                       htmlFor="enableBankTransfer"
                       className="ml-2 block text-sm text-gray-700"
                     >
-                      {t('admin.settings.enableBankTransfer')}
+                      {language === 'vi' ? 'Cho phép thanh toán chuyển khoản ngân hàng' : 'Enable Bank Transfer Payment'}
                     </label>
                   </div>
 
@@ -395,7 +395,7 @@ function SettingsPage() {
                       htmlFor="enableCreditCard"
                       className="ml-2 block text-sm text-gray-700"
                     >
-                      {t('admin.settings.enableCreditCard')}
+                      {language === 'vi' ? 'Cho phép thanh toán thẻ tín dụng' : 'Enable Credit Card Payment'}
                     </label>
                   </div>
 
@@ -411,7 +411,7 @@ function SettingsPage() {
                       htmlFor="enableMomo"
                       className="ml-2 block text-sm text-gray-700"
                     >
-                      {t('admin.settings.enableMomo')}
+                      {language === 'vi' ? 'Cho phép thanh toán MoMo' : 'Enable MoMo Payment'}
                     </label>
                   </div>
 
@@ -427,13 +427,13 @@ function SettingsPage() {
                       htmlFor="enableZalopay"
                       className="ml-2 block text-sm text-gray-700"
                     >
-                      {t('admin.settings.enableZalopay')}
+                      {language === 'vi' ? 'Cho phép thanh toán ZaloPay' : 'Enable ZaloPay Payment'}
                     </label>
                   </div>
                 </div>
 
                 <h3 className="text-md font-medium text-gray-800 mt-6">
-                  {t('admin.settings.bankInfo')}
+                  {language === 'vi' ? 'Thông tin tài khoản ngân hàng' : 'Bank Account Information'}
                 </h3>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -442,7 +442,7 @@ function SettingsPage() {
                       htmlFor="bankName"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.bankName')}
+                      {language === 'vi' ? 'Tên ngân hàng' : 'Bank Name'}
                     </label>
                     <input
                       type="text"
@@ -458,7 +458,7 @@ function SettingsPage() {
                       htmlFor="bankBranch"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.bankBranch')}
+                      {language === 'vi' ? 'Chi nhánh' : 'Branch'}
                     </label>
                     <input
                       type="text"
@@ -474,7 +474,7 @@ function SettingsPage() {
                       htmlFor="bankAccountName"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.accountName')}
+                      {language === 'vi' ? 'Tên chủ tài khoản' : 'Account Name'}
                     </label>
                     <input
                       type="text"
@@ -490,7 +490,7 @@ function SettingsPage() {
                       htmlFor="bankAccountNumber"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.accountNumber')}
+                      {language === 'vi' ? 'Số tài khoản' : 'Account Number'}
                     </label>
                     <input
                       type="text"
@@ -510,7 +510,7 @@ function SettingsPage() {
             {activeTab === 'email' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">
-                  {t('admin.settings.emailSettings')}
+                  {language === 'vi' ? 'Cài đặt email' : 'Email Settings'}
                 </h2>
 
                 <div className="space-y-4">
@@ -528,7 +528,7 @@ function SettingsPage() {
                       htmlFor="enableEmailNotification"
                       className="ml-2 block text-sm text-gray-700"
                     >
-                      {t('admin.settings.enableEmailNotifications')}
+                      {language === 'vi' ? 'Bật thông báo qua email' : 'Enable Email Notifications'}
                     </label>
                   </div>
                 </div>
@@ -539,7 +539,7 @@ function SettingsPage() {
                       htmlFor="smtpServer"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.smtpServer')}
+                      {language === 'vi' ? 'Máy chủ SMTP' : 'SMTP Server'}
                     </label>
                     <input
                       type="text"
@@ -555,7 +555,7 @@ function SettingsPage() {
                       htmlFor="smtpPort"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.smtpPort')}
+                      {language === 'vi' ? 'Cổng SMTP' : 'SMTP Port'}
                     </label>
                     <input
                       type="number"
@@ -573,7 +573,7 @@ function SettingsPage() {
                       htmlFor="smtpUsername"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.smtpUsername')}
+                      {language === 'vi' ? 'Tên đăng nhập SMTP' : 'SMTP Username'}
                     </label>
                     <input
                       type="text"
@@ -589,7 +589,7 @@ function SettingsPage() {
                       htmlFor="smtpPassword"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.smtpPassword')}
+                      {language === 'vi' ? 'Mật khẩu SMTP' : 'SMTP Password'}
                     </label>
                     <input
                       type="password"
@@ -605,7 +605,7 @@ function SettingsPage() {
                       htmlFor="senderEmail"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.senderEmail')}
+                      {language === 'vi' ? 'Email người gửi' : 'Sender Email'}
                     </label>
                     <input
                       type="email"
@@ -621,7 +621,7 @@ function SettingsPage() {
                       htmlFor="senderName"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      {t('admin.settings.senderName')}
+                      {language === 'vi' ? 'Tên người gửi' : 'Sender Name'}
                     </label>
                     <input
                       type="text"
@@ -638,7 +638,7 @@ function SettingsPage() {
             {activeTab === 'advanced' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">
-                  {t('admin.settings.advancedSettings')}
+                  {language === 'vi' ? 'Cài đặt nâng cao' : 'Advanced Settings'}
                 </h2>
 
                 <div className="space-y-4">
@@ -651,7 +651,7 @@ function SettingsPage() {
                       className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                     />
                     <label htmlFor="maintenanceMode" className="ml-2 block text-sm text-gray-700">
-                      {t('admin.settings.maintenanceMode')}
+                      {language === 'vi' ? 'Chế độ bảo trì' : 'Maintenance Mode'}
                     </label>
                   </div>
 
@@ -667,7 +667,7 @@ function SettingsPage() {
                       htmlFor="disableRegistration"
                       className="ml-2 block text-sm text-gray-700"
                     >
-                      {t('admin.settings.disableNewUserRegistration')}
+                      {language === 'vi' ? 'Tạm ngừng đăng ký tài khoản mới' : 'Disable New User Registration'}
                     </label>
                   </div>
 
@@ -680,7 +680,7 @@ function SettingsPage() {
                       className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                     />
                     <label htmlFor="disableCheckout" className="ml-2 block text-sm text-gray-700">
-                      {t('admin.settings.disableCheckout')}
+                      {language === 'vi' ? 'Tạm ngừng thanh toán' : 'Disable Checkout'}
                     </label>
                   </div>
                 </div>
@@ -688,13 +688,13 @@ function SettingsPage() {
             )}
           </div>
 
-          <div className="flex justify-end pt-6 mt-6 mb-10 border-t border-gray-200">
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
             <button
               type="submit"
-              className="px-5 py-2 text-white bg-teal-600 hover:bg-teal-700 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 mr-4"
+              className="px-4 py-2 bg-primary-600 text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               disabled={isSaving}
             >
-              {isSaving ? (t('admin.settings.saving')) : (t('admin.settings.saveSettings'))}
+              {isSaving ? (language === 'vi' ? 'Đang lưu...' : 'Saving...') : (language === 'vi' ? 'Lưu cài đặt' : 'Save Settings')}
             </button>
           </div>
         </form>

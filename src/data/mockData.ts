@@ -59,7 +59,7 @@ export const stores: Store[] = [
     name: 'XLab Software',
     slug: 'xlab-software',
     description: 'Chuyên cung cấp phần mềm chất lượng cao',
-    owner: 'xlab.rnd@gmail.com',
+    owner: 'admin@xlab.com',
     imageUrl: '/images/categories/development.png',
     website: 'https://xlab.example.com',
     active: true,
@@ -70,7 +70,7 @@ export const stores: Store[] = [
     name: 'VN Tech Solutions',
     slug: 'vn-tech-solutions',
     description: 'Giải pháp phần mềm cho doanh nghiệp Việt',
-    owner: 'xlab.rnd@gmail.com',
+    owner: 'contact@vntech.vn',
     imageUrl: '/images/categories/productivity.png',
     website: 'https://vntech.example.com',
     active: true,
@@ -81,7 +81,7 @@ export const stores: Store[] = [
     name: 'Creative Tools',
     slug: 'creative-tools',
     description: 'Công cụ sáng tạo cho designer và họa sĩ',
-    owner: 'xlab.rnd@gmail.com',
+    owner: 'hello@creative-tools.com',
     imageUrl: '/images/categories/design.png',
     website: 'https://creative-tools.example.com',
     active: true,
@@ -91,5 +91,64 @@ export const stores: Store[] = [
 
 // Danh sách sản phẩm
 export const products: Product[] = [
-  // Example product - replace with your actual products
+  // VoiceTyping
+  {
+    id: 'prod-vt',
+    name: 'VoiceTyping',
+    slug: 'voicetyping',
+    description:
+      'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition.',
+    longDescription: `
+      <h2>VoiceTyping - Nhập liệu bằng giọng nói</h2>
+      <p>VoiceTyping là một ứng dụng Microsoft Office cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, tích hợp với bộ công cụ Microsoft Office.</p>
+
+      <h3>Kiến trúc:</h3>
+      <ul>
+        <li><strong>Frontend:</strong> Giao diện người dùng (GUI) xây dựng tích hợp với Microsoft Office.</li>
+        <li><strong>Backend:</strong>
+          <ul>
+            <li>Mô-đun nhận dạng giọng nói (Microsoft Speech Recognition API).</li>
+            <li>Mô-đun xử lý văn bản tích hợp với Word, Excel và PowerPoint.</li>
+            <li>Mô-đun điều khiển con trỏ thông minh.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>Công nghệ sử dụng:</h3>
+      <ul>
+        <li>Microsoft Office Add-in</li>
+        <li>Microsoft Speech API</li>
+        <li>Office 365 Integration</li>
+        <li>Cloud-based processing</li>
+      </ul>
+
+      <h3>Cài đặt và Sử dụng:</h3>
+      <p>Xem chi tiết trong file README đi kèm hoặc tải về bản cài đặt.</p>
+      <p><strong>Yêu cầu:</strong> Microsoft Office 2019 hoặc mới hơn.</p>
+
+      <h3>Giấy phép:</h3>
+      <p>Phân phối dưới giấy phép MIT.</p>
+    `,
+    price: 990000,
+    salePrice: 990000,
+    categoryId: 'cat-2', // Ứng dụng văn phòng
+    imageUrl: '/images/speech-text.svg',
+    isFeatured: true,
+    isNew: true,
+    downloadCount: 150,
+    viewCount: 320,
+    rating: 4.5,
+    version: '1.0.0',
+    size: '~50MB',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-05-15').toISOString(),
+    updatedAt: new Date('2023-05-15').toISOString(),
+    storeId: '1', // XLab Software
+    features: [
+      'Nhận dạng giọng nói chính xác với nhiều giọng địa phương',
+      'Tích hợp với Microsoft Office',
+      'Hỗ trợ điều khiển bằng hotkey',
+      'Tự động lưu lịch sử chuyển đổi',
+    ],
+  },
 ];

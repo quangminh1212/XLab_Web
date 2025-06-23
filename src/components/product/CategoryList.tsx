@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTranslation } from 'next-i18next';
 
 interface Category {
   id: string;
@@ -24,12 +23,11 @@ interface CategoryListProps {
 
 const CategoryList = ({
   categories,
-  title,
+  title = 'Danh mục sản phẩm',
   subtitle,
   layout = 'grid',
   onCategoryClick,
 }: CategoryListProps) => {
-  const { t } = useTranslation(['features/home']);
   const [activeIndex, setActiveIndex] = useState(0);
   const [carouselItems, setCarouselItems] = useState<Category[]>([]);
 
@@ -58,15 +56,12 @@ const CategoryList = ({
     return null;
   }
 
-  const defaultTitle = t('categories.title', 'Product Categories');
-  const productsCount = (count: number) => t('categories.productsCount', '{{count}} products', { count });
-
   return (
     <section className="py-8">
       <div className="container mx-auto px-4">
-        {(title || defaultTitle) && (
+        {title && (
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">{title || defaultTitle}</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             {subtitle && <p className="text-gray-600 mt-2">{subtitle}</p>}
           </div>
         )}
@@ -94,7 +89,7 @@ const CategoryList = ({
                         {category.name}
                       </h3>
                       {category.count !== undefined && (
-                        <span className="text-white/80 text-xs">{productsCount(category.count)}</span>
+                        <span className="text-white/80 text-xs">{category.count} sản phẩm</span>
                       )}
                     </div>
                   </div>
@@ -135,7 +130,7 @@ const CategoryList = ({
                             )}
                             {category.count !== undefined && (
                               <span className="inline-block mt-2 px-3 py-1 bg-white/20 text-white text-sm rounded">
-                                {productsCount(category.count)}
+                                {category.count} sản phẩm
                               </span>
                             )}
                           </div>

@@ -8,6 +8,7 @@ import { useCart } from '@/components/cart/CartContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 import { useSession } from 'next-auth/react';
+import products from '@/data/products.json';
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
@@ -35,14 +36,34 @@ export default function CheckoutPage() {
   const [userBalance, setUserBalance] = useState(0);
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
 
-  // Use the cart items directly without transforming them based on products.json
+  // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map((item) => {
-    // Check if item already has a valid image
-    let imageUrl = item.image;
-    if (!imageUrl || imageUrl.includes('placeholder')) {
-      imageUrl = '/images/placeholder/product-placeholder.svg';
+    // Tìm sản phẩm tương ứng trong danh sách products
+    const productDetail = products.find((p: any) => {
+      const productId = String(p.id).toLowerCase();
+      const itemId = String(item.id).toLowerCase();
+      const productName = String(p.name).toLowerCase();
+      const itemName = String(item.name).toLowerCase();
+      return (
+        productId === itemId ||
+        productId === itemName ||
+        productName === itemId ||
+        productName === itemName ||
+        p.slug === itemId ||
+        p.slug === itemName
+      );
+    });
+    let imageUrl = '/images/placeholder/product-placeholder.svg';
+    if (
+      productDetail?.images &&
+      Array.isArray(productDetail.images) &&
+      productDetail.images.length > 0
+    ) {
+      const imagesArr = productDetail.images as string[];
+      imageUrl = imagesArr[0];
+    } else if (item.image && !item.image.includes('placeholder')) {
+      imageUrl = item.image;
     }
-    
     return {
       ...item,
       image: imageUrl,
@@ -84,6 +105,8 @@ export default function CheckoutPage() {
 
     fetchUserBalance();
   }, [session]);
+
+
 
   const validateShippingInfo = () => {
     const newErrors: Record<string, string> = {};
@@ -138,6 +161,8 @@ export default function CheckoutPage() {
     // Chỉ hỗ trợ thanh toán bằng số dư tài khoản
     router.push(`/account/deposit?amount=${total}&redirect=checkout`);
   };
+
+
 
   return (
     <div>
@@ -506,6 +531,8 @@ export default function CheckoutPage() {
                     </div>
                   ))}
                 </div>
+
+
 
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">

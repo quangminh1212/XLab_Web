@@ -60,7 +60,6 @@ next-env.d.ts
 
 # User generated data files (runtime data) - cho phép commit dữ liệu cơ bản
 /data/transactions.json
-/data/notifications.json
 
 # Secure user data - NEVER commit these!
 /data/backups/

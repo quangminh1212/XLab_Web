@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Coupon {
   id: string;
@@ -45,7 +44,6 @@ const isValidNow = (startDate: string, endDate: string) => {
 };
 
 export default function PublicCouponsPage() {
-  const { t } = useLanguage();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
@@ -138,13 +136,9 @@ export default function PublicCouponsPage() {
                       : formatCurrency(coupon.value)}
                   </span>
                 </div>
-                <div className="font-semibold text-gray-800 mb-1">
-                  {t(`coupon.${coupon.code.toLowerCase()}`, { default: coupon.name })}
-                </div>
+                <div className="font-semibold text-gray-800 mb-1">{coupon.name}</div>
                 {coupon.description && (
-                  <div className="text-gray-600 text-sm mb-1">
-                    {t(`coupon.${coupon.code.toLowerCase()}.description`, { default: coupon.description })}
-                  </div>
+                  <div className="text-gray-600 text-sm mb-1">{coupon.description}</div>
                 )}
                 <div className="text-xs text-gray-500">
                   Hiệu lực: {formatDate(coupon.startDate)} - {formatDate(coupon.endDate)}

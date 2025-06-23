@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 interface UserVoucher {
   code: string;
@@ -29,7 +28,6 @@ export default function UsedVouchersPage() {
   const [vouchers, setVouchers] = useState<UserVoucher[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchVouchers = async () => {
@@ -47,13 +45,13 @@ export default function UsedVouchersPage() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || t('pages.vouchers.cannotLoadVoucher'));
+          throw new Error(errorData.error || 'Không thể tải dữ liệu voucher');
         }
 
         const data = await response.json();
         setVouchers(data.vouchers || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('pages.vouchers.errorLoadingVoucher'));
+        setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi khi tải voucher');
         console.error('Error fetching vouchers:', err);
       } finally {
         setIsLoading(false);
@@ -61,7 +59,7 @@ export default function UsedVouchersPage() {
     };
 
     fetchVouchers();
-  }, [status, t]);
+  }, [status]);
 
   if (status === 'loading') {
     return (
@@ -129,7 +127,7 @@ export default function UsedVouchersPage() {
           className="text-sm bg-primary-50 text-primary-700 px-3 py-1 rounded-md hover:bg-primary-100 transition-colors"
           disabled={isLoading}
         >
-          {isLoading ? t('pages.vouchers.syncingVouchers') : t('pages.vouchers.syncData')}
+          {isLoading ? 'Đang đồng bộ...' : 'Đồng bộ dữ liệu'}
         </button>
       </div>
 

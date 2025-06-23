@@ -24,22 +24,6 @@ export default function Footer() {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
-<<<<<<< HEAD
-      <div className="relative container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10 sm:pb-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
-          {/* Logo và social icons - Cột riêng bên trái */}
-          <div className="flex flex-col items-center">
-            <Link href="/" className="flex items-center justify-center group mb-6 sm:mb-8">
-              <div className="relative overflow-hidden rounded-lg">
-                <Image
-                  src="/images/logo.jpg"
-                  alt={`${siteConfig.name} Logo`}
-                  width={560}
-                  height={224}
-                  className="w-auto h-40 sm:h-48 md:h-56 transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-=======
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-x-8 gap-y-12">
           {/* Column 1: Logo and Company Info */}
@@ -49,7 +33,6 @@ export default function Footer() {
                 <Link href="/" className="inline-block">
                   <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} className="max-w-full" />
                 </Link>
->>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
               </div>
               <div className="sm:max-w-[280px]">
                 <p className="text-sm text-slate-400 leading-relaxed mb-4">
