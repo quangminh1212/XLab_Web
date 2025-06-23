@@ -39,6 +39,19 @@ const common = {
   'Grok': 'Grok',
   'Grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực như phân tích thị trường, chăm sóc khách hàng tự động, phát hiện gian lận, và tối ưu hóa quy trình kinh doanh.',
   
+  // Vouchers
+  'voucher.title': 'Mã giảm giá',
+  'voucher.viewAll': 'Xem tất cả',
+  'voucher.welcome': 'Ưu đãi chào mừng cho thành viên mới',
+  'voucher.expiryDate': 'Ngày hết hạn',
+  'voucher.usesLeft': 'Lượt sử dụng còn lại',
+  'voucher.minOrder': 'Đơn hàng tối thiểu',
+  'voucher.noVouchers': 'Không có mã giảm giá nào',
+  'voucher.yourVouchers': 'Mã giảm giá của bạn',
+  'voucher.loading': 'Đang tải mã giảm giá...',
+  'voucher.noLimit': 'Không giới hạn',
+  'voucher.copyTooltip': 'Nhấn để sao chép mã',
+  
   // Page Titles
   'about.pageTitle': 'Giới thiệu - XLab',
   'contact.pageTitle': 'Liên hệ - XLab',

@@ -33,7 +33,7 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -240,8 +240,6 @@ const Header = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    const { language } = useLanguage();
-    
     if (language === 'eng') {
       // For English, convert VND to USD (rough approximation)
       const usdAmount = amount / 24000; // Approximate conversion rate
@@ -460,7 +458,7 @@ const Header = () => {
                                       <span
                                         onClick={() => handleCopyVoucher(coupon.code)}
                                         className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
-                                        title="Nhấn để sao chép mã"
+                                        title={t('voucher.copyTooltip')}
                                       >
                                         {coupon.code}
                                       </span>
@@ -539,7 +537,7 @@ const Header = () => {
                       ) : (
                         <div className="px-4 py-6 text-center">
                           <p className="text-xs sm:text-sm text-gray-500">
-                            Không có mã giảm giá nào
+                            {t('voucher.noVouchers')}
                           </p>
                         </div>
                       )}
