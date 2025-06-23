@@ -57,6 +57,7 @@ const common = {
   'products.sortPriceLow': 'Giá: Thấp đến cao',
   'products.sortPriceHigh': 'Giá: Cao đến thấp',
   'products.sortPopular': 'Phổ biến nhất',
+  'products.loading': 'Đang tải sản phẩm...',
   
   // Footer
   'footer.aboutLink': 'Giới thiệu',

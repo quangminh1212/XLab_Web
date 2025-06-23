@@ -57,6 +57,7 @@ const common = {
   'products.sortPriceLow': 'Price: Low to High',
   'products.sortPriceHigh': 'Price: High to Low',
   'products.sortPopular': 'Most Popular',
+  'products.loading': 'Loading products...',
   
   // Footer
   'footer.aboutLink': 'About',
