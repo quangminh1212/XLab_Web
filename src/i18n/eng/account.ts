@@ -101,7 +101,9 @@ const account = {
   'deposit.mbbank': 'MBBank (Military Commercial Joint Stock Bank)',
   'deposit.currency': 'USD',
   'deposit.currencySymbol': '$',
-  'deposit.amount': 'Required amount'
+  'deposit.amount': 'Required amount',
+  'balance.tooltip': 'Account balance - Click to deposit',
+  'balance.loading': 'Loading...'
 };
 
 export default account; 

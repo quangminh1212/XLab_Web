@@ -240,11 +240,24 @@ const Header = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      maximumFractionDigits: 0,
-    }).format(amount);
+    const { language } = useLanguage();
+    
+    if (language === 'eng') {
+      // For English, convert VND to USD (rough approximation)
+      const usdAmount = amount / 24000; // Approximate conversion rate
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+      }).format(usdAmount);
+    } else {
+      // For Vietnamese, use VND
+      return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+        maximumFractionDigits: 0,
+      }).format(amount).replace('₫', t('deposit.currencySymbol'));
+    }
   };
 
   const formatDate = (dateString: string) => {

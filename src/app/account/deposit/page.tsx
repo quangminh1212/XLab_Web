@@ -14,7 +14,7 @@ export default function DepositPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { balance, refreshBalance } = useBalance();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Lấy thông tin từ URL params
   const suggestedAmount = searchParams?.get('amount');
@@ -135,8 +135,6 @@ export default function DepositPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    const { language } = useLanguage();
-    
     if (language === 'eng') {
       // For English, convert VND to USD (rough approximation)
       const usdAmount = amount / 24000; // Approximate conversion rate

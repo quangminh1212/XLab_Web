@@ -101,7 +101,9 @@ const account = {
   'deposit.mbbank': 'MBBank (Ngân hàng Quân đội)',
   'deposit.currency': 'VND',
   'deposit.currencySymbol': 'đ',
-  'deposit.amount': 'Số tiền cần nạp'
+  'deposit.amount': 'Số tiền cần nạp',
+  'balance.tooltip': 'Số dư tài khoản - Click để nạp tiền',
+  'balance.loading': 'Đang tải...'
 };
 
 export default account; 
