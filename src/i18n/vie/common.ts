@@ -125,6 +125,7 @@ const common = {
   'notifications.loading': 'Đang tải...',
   'notifications.viewDetails': 'Xem chi tiết',
   'notifications.viewNow': 'Xem ngay',
+  'notifications.backToHome': 'Trở về trang chủ',
   
   // Page Titles
   'about.pageTitle': 'Giới thiệu - XLab',

@@ -125,6 +125,7 @@ const common = {
   'notifications.loading': 'Loading...',
   'notifications.viewDetails': 'View details',
   'notifications.viewNow': 'View now',
+  'notifications.backToHome': 'Back to Home',
   
   // Page Titles
   'about.pageTitle': 'About - XLab',
