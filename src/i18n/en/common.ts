@@ -33,6 +33,7 @@ const common = {
   'product.quantity': 'Quantity',
   'product.options': 'Options',
   'product.details': 'Product Details',
+  'product.metaTitle': 'Product Details',
   'Grok': 'Grok',
   'Grok.description': 'Grok AI helps automate analysis and processing of big data quickly, supporting accurate decision making and saving time. Widely applied in many fields such as market analysis, automated customer service, fraud detection, and business process optimization.',
   
