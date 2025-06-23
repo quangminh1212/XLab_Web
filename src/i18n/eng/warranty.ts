@@ -25,8 +25,6 @@ const warranty = {
   formProblemPlaceholder: "Please provide details about the problem you're experiencing...",
   formSubmit: "Submit Request",
   contactInfoTitle: "Contact Information",
-  supportInfo1: "Our dedicated support team is available to assist you with any issues or questions.",
-  supportInfo2: "We aim to respond to all support requests within 24 hours.",
   address: "Long Bien, Hanoi",
   workingHours: "Monday - Friday: 9:00 AM - 6:00 PM (GMT+7)",
   ourMission: "Our Support Mission",

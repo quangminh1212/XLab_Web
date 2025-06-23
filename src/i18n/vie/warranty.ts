@@ -25,8 +25,6 @@ const warranty = {
   formProblemPlaceholder: "Vui lòng cung cấp chi tiết về vấn đề bạn đang gặp phải...",
   formSubmit: "Gửi Yêu Cầu",
   contactInfoTitle: "Thông Tin Liên Hệ",
-  supportInfo1: "Đội ngũ hỗ trợ tận tâm của chúng tôi luôn sẵn sàng hỗ trợ bạn với bất kỳ vấn đề hoặc câu hỏi nào.",
-  supportInfo2: "Chúng tôi cố gắng phản hồi tất cả các yêu cầu hỗ trợ trong vòng 24 giờ.",
   address: "Long Biên, Hà Nội",
   workingHours: "Thứ Hai - Thứ Sáu: 9:00 - 18:00 (GMT+7)",
   ourMission: "Sứ Mệnh Hỗ Trợ Của Chúng Tôi",
