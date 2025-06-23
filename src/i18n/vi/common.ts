@@ -33,7 +33,13 @@ const common = {
   'Grok': 'Grok',
   'Grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực như phân tích thị trường, chăm sóc khách hàng tự động, phát hiện gian lận, và tối ưu hóa quy trình kinh doanh.',
   
+  // Page Titles
+  'about.pageTitle': 'Giới thiệu - XLab',
+  'contact.pageTitle': 'Liên hệ - XLab',
+  'testimonials.pageTitle': 'Đánh giá - XLab',
+  
   // Products page
+  'products.pageTitle': 'Sản phẩm - XLab',
   'products.title': 'Sản phẩm của chúng tôi',
   'products.subtitle': 'Khám phá các giải pháp phần mềm đa dạng của chúng tôi',
   'products.all': 'Tất cả sản phẩm',

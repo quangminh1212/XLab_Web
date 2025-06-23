@@ -33,7 +33,13 @@ const common = {
   'Grok': 'Grok',
   'Grok.description': 'Grok AI helps automate analysis and processing of big data quickly, supporting accurate decision making and saving time. Widely applied in many fields such as market analysis, automated customer service, fraud detection, and business process optimization.',
   
+  // Page Titles
+  'about.pageTitle': 'About - XLab',
+  'contact.pageTitle': 'Contact - XLab',
+  'testimonials.pageTitle': 'Testimonials - XLab',
+  
   // Products page
+  'products.pageTitle': 'Products - XLab',
   'products.title': 'Our Products',
   'products.subtitle': 'Discover our wide range of software solutions',
   'products.all': 'All Products',
