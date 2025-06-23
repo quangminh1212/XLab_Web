@@ -18,7 +18,8 @@ const contact = {
   address: "Địa chỉ",
   email: "Email",
   phone: "Số điện thoại",
-  connectWithUs: "Kết Nối Với Chúng Tôi"
+  connectWithUs: "Kết Nối Với Chúng Tôi",
+  week: "tuần"
 };
 
 export default contact; 

@@ -18,7 +18,8 @@ const contact = {
   address: "Long Bien, Hanoi",
   email: "xlab.rnd@gmail.com",
   phone: "+84 866 528 014",
-  connectWithUs: "Connect With Us"
+  connectWithUs: "Connect With Us",
+  week: "week"
 };
 
 export default contact; 
