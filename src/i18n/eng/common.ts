@@ -72,6 +72,13 @@ const common = {
   'discountCodes.noAvailableDesc': 'There are currently no available discount codes. Please check back later.',
   'discountCodes.noExpired': 'No expired or used up discount codes',
   'discountCodes.noExpiredDesc': 'There are no expired or used up discount codes. Current codes are still valid and have available uses.',
+  'discountCodes.discountExpired': 'Discount (Expired)',
+  'discountCodes.specialDiscount': 'Special {percent}% Discount',
+  'discountCodes.specialDiscountDesc': 'Special discount code for loyal customers',
+  'discountCodes.max': 'Max:',
+  'discountCodes.remaining': 'Remaining:',
+  'discountCodes.status': 'Status:',
+  'discountCodes.expiredOn': 'Expired on',
   
   // Page Titles
   'about.pageTitle': 'About - XLab',

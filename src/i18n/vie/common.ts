@@ -72,6 +72,13 @@ const common = {
   'discountCodes.noAvailableDesc': 'Hiện tại không có mã giảm giá nào khả dụng. Vui lòng kiểm tra lại sau.',
   'discountCodes.noExpired': 'Không có mã giảm giá hết hạn hoặc đã sử dụng hết',
   'discountCodes.noExpiredDesc': 'Không có mã giảm giá nào hết hạn hoặc đã sử dụng hết. Các mã hiện tại vẫn còn hiệu lực và có lượt sử dụng.',
+  'discountCodes.discountExpired': 'Giảm (Hết hạn)',
+  'discountCodes.specialDiscount': 'Giảm giá đặc biệt {percent}%',
+  'discountCodes.specialDiscountDesc': 'Mã giảm giá đặc biệt dành cho khách hàng thân thiết',
+  'discountCodes.max': 'Tối đa:',
+  'discountCodes.remaining': 'Còn lại:',
+  'discountCodes.status': 'Trạng thái:',
+  'discountCodes.expiredOn': 'Hết hạn vào',
   
   // Page Titles
   'about.pageTitle': 'Giới thiệu - XLab',

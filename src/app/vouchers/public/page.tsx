@@ -418,7 +418,7 @@ export default function PublicVouchersPage() {
                             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        <span>Max: {formatCurrency(voucher.maxDiscount)}</span>
+                        <span>{t('discountCodes.max')} {formatCurrency(voucher.maxDiscount)}</span>
                       </div>
                     )}
 
@@ -466,7 +466,7 @@ export default function PublicVouchersPage() {
                     <div className="mb-4">
                       <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                         <span className="font-medium">
-                          Remaining: {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit}
+                          {t('discountCodes.remaining')} {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit}
                         </span>
                         <span
                           className={`${voucher.usageLimit - voucher.usedCount < 10 ? 'text-red-600 font-medium' : ''}`}
@@ -627,10 +627,10 @@ export default function PublicVouchersPage() {
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
                         {voucher.minOrder
-                          ? `Min order: ${formatCurrency(voucher.minOrder)}`
+                          ? `${t('discountCodes.minOrder')} ${formatCurrency(voucher.minOrder)}`
                           : ''}
-                        {voucher.minOrder ? ' | ' : ''}Status:{' '}
-                        <span className="text-gray-600 font-medium">Expired</span>
+                        {voucher.minOrder ? ' | ' : ''}{t('discountCodes.status')}{' '}
+                        <span className="text-gray-600 font-medium">{t('discountCodes.expired')}</span>
                       </span>
                       <span className="text-gray-500">100%</span>
                     </div>
@@ -643,7 +643,7 @@ export default function PublicVouchersPage() {
                     <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-gray-500 bg-gray-100">
                       {voucher.usageLimit !== undefined && voucher.usageLimit <= voucher.usedCount
                         ? 'Out of uses'
-                        : `Expired on ${formatDate(voucher.endDate)}`}
+                        : `${t('discountCodes.expiredOn')} ${formatDate(voucher.endDate)}`}
                     </div>
                   </div>
                 )}
