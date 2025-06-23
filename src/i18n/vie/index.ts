@@ -6,6 +6,7 @@ import testimonials from './testimonials';
 import account from './account';
 import about from './about';
 import contact from './contact';
+import warranty from './warranty';
 
 // Hợp nhất tất cả các module lại thành một đối tượng
 const vie = {
@@ -16,6 +17,7 @@ const vie = {
   account,
   about,
   contact,
+  warranty,
 };
 
 export default vie; 

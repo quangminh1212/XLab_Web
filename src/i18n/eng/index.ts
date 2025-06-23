@@ -6,6 +6,7 @@ import testimonials from './testimonials';
 import account from './account';
 import about from './about';
 import contact from './contact';
+import warranty from './warranty';
 
 // Merge all modules into one object
 const eng = {
@@ -16,6 +17,7 @@ const eng = {
   account,
   about,
   contact,
+  warranty,
 };
 
 export default eng; 
