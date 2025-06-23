@@ -25,6 +25,14 @@ const common = {
   'button.contactUs': 'Liên hệ chúng tôi',
   'button.viewAll': 'Xem tất cả',
   
+  // Products
+  'product.addToCart': 'Thêm vào giỏ',
+  'product.buyNow': 'Mua ngay',
+  'product.purchasesPerWeek': 'Lượt mua mỗi tuần',
+  'product.newProducts': 'Sản phẩm mới',
+  'Grok': 'Grok',
+  'Grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực như phân tích thị trường, chăm sóc khách hàng tự động, phát hiện gian lận, và tối ưu hóa quy trình kinh doanh.',
+  
   // Footer
   'footer.aboutLink': 'Giới thiệu',
   'footer.contactLink': 'Liên hệ',
