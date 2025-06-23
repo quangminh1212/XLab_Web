@@ -80,6 +80,52 @@ const common = {
   'discountCodes.status': 'Status:',
   'discountCodes.expiredOn': 'Expired on',
   
+  // Notifications
+  'notifications.title': 'Notification Management',
+  'notifications.markAllRead': 'Mark All as Read',
+  'notifications.viewAll': 'View All',
+  'notifications.systemNotification': 'System Notification',
+  'notifications.newUpdate': 'New Update',
+  'notifications.daysAgo': '{days} days ago',
+  'notifications.hoursAgo': '{hours} hours ago',
+  'notifications.minutesAgo': '{minutes} minutes ago',
+  'notifications.justNow': 'Just now',
+  'notifications.systemMaintenance': 'The system will undergo maintenance at {time} tonight. We apologize for any inconvenience.',
+  'notifications.newVersion': 'Version {version} has been released with many new features',
+  'notifications.none': 'No notifications',
+  
+  // Notification Types
+  'notifications.type.promotion': 'Promotion',
+  'notifications.type.update': 'Update',
+  'notifications.type.order': 'Order',
+  'notifications.type.system': 'System',
+  
+  // Notification Demo
+  'notifications.demo.title': 'Notification Demo',
+  'notifications.demo.description': 'Create test notifications to see how they appear in the system.',
+  'notifications.demo.type': 'Notification Type',
+  'notifications.demo.create': 'Create Notification',
+  'notifications.demo.note': 'Note',
+  'notifications.demo.noteText': 'Demo notifications are temporary and will disappear when the page is refreshed.',
+  'notifications.demo.promotionTitle': 'Special Promotion',
+  'notifications.demo.promotionContent': '50% off all software products this week!',
+  'notifications.demo.updateTitle': 'New Update',
+  'notifications.demo.updateContent': 'Version 2.0 has been released with many new features',
+  'notifications.demo.orderTitle': 'Order Updated',
+  'notifications.demo.orderContent': 'Your order has been confirmed and is being processed.',
+  'notifications.demo.systemTitle': 'System Notification',
+  'notifications.demo.systemContent': 'The system will undergo maintenance at 10:00 PM tonight. We apologize for any inconvenience.',
+  
+  // Notification Page
+  'notifications.all': 'All',
+  'notifications.unread': 'Unread',
+  'notifications.empty': 'No Notifications',
+  'notifications.allRead': 'You have read all notifications',
+  'notifications.noNotifications': 'You don\'t have any notifications',
+  'notifications.loading': 'Loading...',
+  'notifications.viewDetails': 'View details',
+  'notifications.viewNow': 'View now',
+  
   // Page Titles
   'about.pageTitle': 'About - XLab',
   'contact.pageTitle': 'Contact - XLab',

@@ -80,6 +80,52 @@ const common = {
   'discountCodes.status': 'Trạng thái:',
   'discountCodes.expiredOn': 'Hết hạn vào',
   
+  // Notifications
+  'notifications.title': 'Quản lý thông báo',
+  'notifications.markAllRead': 'Đánh dấu tất cả đã đọc',
+  'notifications.viewAll': 'Xem tất cả',
+  'notifications.systemNotification': 'Thông báo hệ thống',
+  'notifications.newUpdate': 'Cập nhật mới',
+  'notifications.daysAgo': '{days} ngày trước',
+  'notifications.hoursAgo': '{hours} giờ trước',
+  'notifications.minutesAgo': '{minutes} phút trước',
+  'notifications.justNow': 'Vừa xong',
+  'notifications.systemMaintenance': 'Hệ thống sẽ bảo trì vào lúc {time} tối nay. Xin lỗi vì sự bất tiện này.',
+  'notifications.newVersion': 'Phiên bản {version} đã ra mắt với nhiều tính năng mới',
+  'notifications.none': 'Không có thông báo nào',
+  
+  // Notification Types
+  'notifications.type.promotion': 'Khuyến mãi',
+  'notifications.type.update': 'Cập nhật',
+  'notifications.type.order': 'Đơn hàng',
+  'notifications.type.system': 'Hệ thống',
+  
+  // Notification Demo
+  'notifications.demo.title': 'Thử nghiệm thông báo',
+  'notifications.demo.description': 'Tạo thông báo thử nghiệm để xem cách thông báo được hiển thị trong hệ thống.',
+  'notifications.demo.type': 'Loại thông báo',
+  'notifications.demo.create': 'Tạo thông báo',
+  'notifications.demo.note': 'Lưu ý',
+  'notifications.demo.noteText': 'Các thông báo thử nghiệm chỉ hiển thị tạm thời và sẽ biến mất khi làm mới trang.',
+  'notifications.demo.promotionTitle': 'Khuyến mãi đặc biệt',
+  'notifications.demo.promotionContent': 'Giảm 50% tất cả sản phẩm phần mềm trong tuần này!',
+  'notifications.demo.updateTitle': 'Cập nhật mới',
+  'notifications.demo.updateContent': 'Phiên bản 2.0 đã ra mắt với nhiều tính năng mới',
+  'notifications.demo.orderTitle': 'Đơn hàng đã cập nhật',
+  'notifications.demo.orderContent': 'Đơn hàng của bạn đã được xác nhận và đang được xử lý.',
+  'notifications.demo.systemTitle': 'Thông báo hệ thống',
+  'notifications.demo.systemContent': 'Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.',
+  
+  // Notification Page
+  'notifications.all': 'Tất cả',
+  'notifications.unread': 'Chưa đọc',
+  'notifications.empty': 'Không có thông báo',
+  'notifications.allRead': 'Bạn đã đọc tất cả thông báo',
+  'notifications.noNotifications': 'Bạn không có thông báo nào',
+  'notifications.loading': 'Đang tải...',
+  'notifications.viewDetails': 'Xem chi tiết',
+  'notifications.viewNow': 'Xem ngay',
+  
   // Page Titles
   'about.pageTitle': 'Giới thiệu - XLab',
   'contact.pageTitle': 'Liên hệ - XLab',

@@ -81,22 +81,22 @@ async function saveNotifications(notifications: Notification[]) {
 }
 
 // Format thời gian hiển thị
-function formatTimeAgo(dateString: string): string {
+function formatTimeAgo(dateString: string, language: string = 'vie'): string {
   const now = new Date();
   const date = new Date(dateString);
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   if (diffInSeconds < 60) {
-    return 'Vừa xong';
+    return language === 'eng' ? 'Just now' : 'Vừa xong';
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
-    return `${minutes} phút trước`;
+    return language === 'eng' ? `${minutes} minutes ago` : `${minutes} phút trước`;
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
-    return `${hours} giờ trước`;
+    return language === 'eng' ? `${hours} hours ago` : `${hours} giờ trước`;
   } else {
     const days = Math.floor(diffInSeconds / 86400);
-    return `${days} ngày trước`;
+    return language === 'eng' ? `${days} days ago` : `${days} ngày trước`;
   }
 }
 
@@ -104,6 +104,8 @@ function formatTimeAgo(dateString: string): string {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+    // Get user language preference
+    const language = request.headers.get('x-user-language') || 'vie';
 
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
@@ -112,10 +114,12 @@ export async function GET(request: Request) {
         const demoNotifications = [
           {
             id: 'demo-1',
-            title: 'Chào mừng đến với XLab!',
-            content: 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
+            title: language === 'eng' ? 'Welcome to XLab!' : 'Chào mừng đến với XLab!',
+            content: language === 'eng' 
+              ? 'This is a demo notification. Please sign in to see your actual notifications.' 
+              : 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
             type: 'system',
-            time: 'Vừa xong',
+            time: language === 'eng' ? 'Just now' : 'Vừa xong',
             isRead: false,
             priority: 'medium',
           },
@@ -127,6 +131,9 @@ export async function GET(request: Request) {
 
     const notifications = await getNotifications();
     const userId = session.user.email;
+    // Get user language preference from session if available
+    // Using safer access since language property may not be defined in the session type
+    const userLanguage = (session.user as any)?.language || language || 'vie';
 
     // Lọc thông báo theo người dùng và chưa hết hạn
     const now = new Date();
@@ -147,7 +154,7 @@ export async function GET(request: Request) {
         title: notification.title,
         content: notification.content,
         type: notification.type,
-        time: formatTimeAgo(notification.createdAt),
+        time: formatTimeAgo(notification.createdAt, userLanguage),
         isRead: notification.isRead[userId] || false,
         link: notification.link,
         priority: notification.priority,
