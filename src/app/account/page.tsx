@@ -92,7 +92,10 @@ export default function AccountPage() {
       const res = await fetch('/api/cart/validate-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: 'ALL' }), // code đặc biệt để trả về tất cả mã
+        body: JSON.stringify({ 
+          code: 'ALL',
+          orderTotal: 1000  // Use a dummy value for the special ALL code
+        }),
       });
       const data = await res.json();
       if (data.allCoupons) {
