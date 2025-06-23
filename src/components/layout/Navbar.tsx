@@ -59,6 +59,12 @@ export default function Navbar({ session }: { session: any }) {
           >
             {t('account.notifications')}
           </Link>
+          <Link
+            href="/support"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            {t('account.support')}
+          </Link>
           {session.user?.isAdmin && (
             <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               {t('account.adminPanel')}
