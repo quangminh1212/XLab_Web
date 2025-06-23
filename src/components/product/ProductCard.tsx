@@ -529,7 +529,7 @@ export default function ProductCard({
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                   />
                 </svg>
-                <span className="font-semibold">{t('product.purchasesPerWeek', { count: weeklyPurchases })}</span>
+                <span className="font-semibold">{weeklyPurchases}/week</span>
               </div>
             )}
             {totalSold > 0 && (
