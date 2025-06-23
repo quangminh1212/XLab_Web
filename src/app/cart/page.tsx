@@ -176,12 +176,13 @@ export default function CartPage() {
 
   // Áp dụng mã giảm giá
   const applyPromoCode = async () => {
-    setCouponError('');
-
-    if (!couponCode.trim()) {
+    if (!couponCode) {
       setCouponError('Vui lòng nhập mã giảm giá');
       return;
     }
+
+    // Calculate current subtotal
+    const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
     // Validate subtotal to ensure it's a valid number
     if (subtotal === undefined || subtotal === null || isNaN(subtotal) || subtotal <= 0) {

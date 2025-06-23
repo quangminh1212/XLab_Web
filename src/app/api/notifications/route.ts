@@ -106,6 +106,7 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
       : vieNotifications;
 
   if (diffInSeconds < 60) {
+<<<<<<< HEAD
     return localeMessages['notifications.justNow'];
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
@@ -140,6 +141,18 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
     } else {
       return localeMessages['notifications.daysAgo'].replace('{0}', days.toString());
     }
+=======
+    return language === 'eng' ? 'Just now' : 'Vừa xong';
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return language === 'eng' ? `${minutes} minutes ago` : `${minutes} phút trước`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return language === 'eng' ? `${hours} hours ago` : `${hours} giờ trước`;
+  } else {
+    const days = Math.floor(diffInSeconds / 86400);
+    return language === 'eng' ? `${days} days ago` : `${days} ngày trước`;
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
   }
 }
 
@@ -147,6 +160,7 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+<<<<<<< HEAD
     const url = new URL(request.url);
     const language = url.searchParams.get('language') || 'vie';
 
@@ -156,6 +170,10 @@ export async function GET(request: Request) {
       : language === 'spa' 
         ? spaNotifications 
         : vieNotifications;
+=======
+    // Get user language preference
+    const language = request.headers.get('x-user-language') || 'vie';
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
 
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
@@ -164,10 +182,19 @@ export async function GET(request: Request) {
         const demoNotifications = [
           {
             id: 'demo-1',
+<<<<<<< HEAD
             title: localeMessages['notifications.demo.title'],
             content: localeMessages['notifications.demo.content'],
             type: 'system',
             time: formatTimeAgo(new Date().toISOString(), language as string),
+=======
+            title: language === 'eng' ? 'Welcome to XLab!' : 'Chào mừng đến với XLab!',
+            content: language === 'eng' 
+              ? 'This is a demo notification. Please sign in to see your actual notifications.' 
+              : 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
+            type: 'system',
+            time: language === 'eng' ? 'Just now' : 'Vừa xong',
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
             isRead: false,
             priority: 'medium',
           },
@@ -179,6 +206,9 @@ export async function GET(request: Request) {
 
     const notifications = await getNotifications();
     const userId = session.user.email;
+    // Get user language preference from session if available
+    // Using safer access since language property may not be defined in the session type
+    const userLanguage = (session.user as any)?.language || language || 'vie';
 
     // Lọc thông báo theo người dùng và chưa hết hạn
     const now = new Date();
@@ -194,6 +224,7 @@ export async function GET(request: Request) {
         }
         return true;
       })
+<<<<<<< HEAD
       .map((notification) => {
         // Lấy nội dung thông báo theo ngôn ngữ từ metadata
         let title = notification.title;
@@ -221,6 +252,18 @@ export async function GET(request: Request) {
           priority: notification.priority,
         };
       })
+=======
+      .map((notification) => ({
+        id: notification.id,
+        title: notification.title,
+        content: notification.content,
+        type: notification.type,
+        time: formatTimeAgo(notification.createdAt, userLanguage),
+        isRead: notification.isRead[userId] || false,
+        link: notification.link,
+        priority: notification.priority,
+      }))
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
       .sort((a, b) => {
         // Sắp xếp theo độ ưu tiên và thời gian
         const priorityOrder = { high: 3, medium: 2, low: 1 };

@@ -1,0 +1,58 @@
+// English language data for home page
+const home = {
+  'slogan': 'Maximize efficiency, minimize costs!',
+  'search': 'Search software, apps...',
+  'loadMore': 'Load more',
+  'aboutTitle': 'About XLab',
+  'aboutDesc1': 'XLab is a platform providing advanced AI-integrated software solutions that help users enhance their work performance and daily lives.',
+  'aboutDesc2': 'Our mission is to provide Vietnamese people with access to tools for work, study, and entertainment at reasonable prices and international quality.',
+  'learnMore': 'Learn more',
+  'domesticProduct': 'Domestic Product',
+  'vietnamDevs': 'Developed by Vietnamese engineers',
+  'support247': '24/7 Support',
+  'supportTeam': 'Dedicated support team',
+  'highSecurity': 'High Security',
+  'encryptedData': 'Safely encrypted data',
+  'reasonablePrice': 'Reasonable Pricing',
+  'budgetOptions': 'Multiple options for every budget',
+  'aiIntegration': 'AI Integration',
+  'aiSupport': 'Advanced AI technology supporting you',
+  'continuousUpdates': 'Continuous Updates',
+  'newFeatures': 'Always updated with new features',
+  'achievements': 'Our Achievements',
+  'customers': 'Trusted customers',
+  'customersDescription': 'We are proud to serve over 10,000 customers who trust our products and services for their daily needs.',
+  'softwareSolutions': 'Software solutions',
+  'solutionsDescription': 'With more than 30 software solutions, we offer a wide range of tools to help improve your productivity and efficiency.',
+  'yearsExperience': 'Years of experience',
+  'experienceDescription': 'For over 5 years, we have been developing high-quality software solutions for businesses and individuals.',
+  'software': 'Software',
+  'services': 'Services',
+  'featuredProducts': 'Featured Products',
+  'newProducts': 'New Products',
+  'viewAll': 'View all',
+  'noSoftware': 'No software yet',
+  'updateSoon': 'We will update our software soon.',
+  'noServices': 'No services yet',
+  'updateServices': 'We will update our services soon.',
+  'faq': 'Frequently Asked Questions',
+  'faqDesc': 'Answers to common questions from customers about XLab products and services',
+  'faq1Title': 'How do I download software?',
+  'faq1Desc': 'You can download free software from the corresponding product page after logging into your account. For paid products, you need to complete payment before downloading.',
+  'faq2Title': 'How do I activate the license?',
+  'faq2Desc': 'After purchasing, you will receive an activation code by email. Open the application, go to "Activate License" and enter this code to use all features.',
+  'faq3Title': 'How many devices can I use?',
+  'faq3Desc': 'Each license allows you to use up to 3 different devices. If you want to use more devices, please purchase additional licenses or upgrade to a business plan.',
+  'ctaTitle': 'Ready to boost your productivity with XLab?',
+  'ctaDesc': 'We offer special discounts for customers who purchase in bulk. The more you buy, the higher the discount. We are committed to bringing you the best solutions at the most reasonable cost.',
+  'contactUs': 'Contact us',
+  
+  // Testimonials section
+  'testimonials': 'Customer Reviews',
+  'viewAllTestimonials': 'View all reviews',
+};
+
+// Check if the translations exist first
+// Add the description translations for the achievements section
+
+export default home; 

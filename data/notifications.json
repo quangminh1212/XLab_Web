@@ -7,7 +7,11 @@
     "isRead": {
       "xlab.rnd@gmail.com": true
     },
+<<<<<<< HEAD
     "createdAt": "2025-05-29T02:06:10.000Z",
+=======
+    "createdAt": "2025-05-28T19:06:10.590Z",
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
     "link": "/products/1",
     "priority": "medium",
     "metadata": {

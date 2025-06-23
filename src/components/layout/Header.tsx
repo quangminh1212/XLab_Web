@@ -250,6 +250,7 @@ const Header = () => {
     if (isNotificationOpen) setIsNotificationOpen(false);
   };
 
+<<<<<<< HEAD
   const formatCouponValue = (coupon: PublicCoupon) => {
     if (coupon.type === 'percentage') {
       return `${coupon.value}%`;
@@ -257,6 +258,24 @@ const Header = () => {
       // Convert to appropriate currency based on language
       const convertedAmount = convertCurrency(coupon.value, language);
       return formatCurrency(convertedAmount, language);
+=======
+  const formatCurrency = (amount: number) => {
+    if (language === 'eng') {
+      // For English, convert VND to USD (rough approximation)
+      const usdAmount = amount / 24000; // Approximate conversion rate
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+      }).format(usdAmount);
+    } else {
+      // For Vietnamese, use VND
+      return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+        maximumFractionDigits: 0,
+      }).format(amount).replace('₫', t('deposit.currencySymbol'));
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
     }
   };
 
@@ -460,7 +479,7 @@ const Header = () => {
                                       <span
                                         onClick={() => handleCopyVoucher(coupon.code)}
                                         className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
-                                        title="Nhấn để sao chép mã"
+                                        title={t('voucher.copyTooltip')}
                                       >
                                         {coupon.code}
                                       </span>
@@ -545,7 +564,7 @@ const Header = () => {
                       ) : (
                         <div className="px-4 py-6 text-center">
                           <p className="text-xs sm:text-sm text-gray-500">
-                            Không có mã giảm giá nào
+                            {t('voucher.noVouchers')}
                           </p>
                         </div>
                       )}

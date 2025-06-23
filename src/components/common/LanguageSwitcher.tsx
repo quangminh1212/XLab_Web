@@ -40,10 +40,14 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   }, []);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   const changeLanguage = (lang: LanguageKeys) => {
 =======
   const changeLanguage = (lang: 'vie' | 'eng') => {
 >>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
+=======
+  const changeLanguage = (lang: 'vie' | 'eng') => {
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
     setLanguage(lang);
     setIsOpen(false);
   };
@@ -93,6 +97,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         aria-expanded={isOpen}
       >
 <<<<<<< HEAD
+<<<<<<< HEAD
         <div className="relative w-6 h-4 mr-2">
           <Image 
             src={currentLang.flagPath} 
@@ -104,6 +109,8 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         </div>
         <span>{currentLang.name}</span>
 =======
+=======
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
         {language === 'vie' ? (
           <>
             <div className="relative w-6 h-4 mr-2">

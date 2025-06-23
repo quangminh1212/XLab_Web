@@ -205,6 +205,7 @@ const NotificationsPage = () => {
                         <span className="text-xs text-gray-500">{notification.time}</span>
                       </div>
                       <p className="mt-1 text-sm text-gray-600">{notification.content}</p>
+<<<<<<< HEAD
                       {notification.link && (
                         <div className="mt-2">
                           <span className="text-sm text-primary-600 hover:text-primary-800">
@@ -212,6 +213,8 @@ const NotificationsPage = () => {
                           </span>
                         </div>
                       )}
+=======
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
                     </div>
                     {!notification.isRead && (
                       <div className="flex-shrink-0 self-center">

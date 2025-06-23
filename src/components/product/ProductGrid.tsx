@@ -136,6 +136,7 @@ export default function ProductGrid({
   };
 
   // Xử lý category từ sản phẩm
+<<<<<<< HEAD
   const extractCategory = (product: Product): string => {
     // Nếu đã có category
     if (product.category) {
@@ -209,7 +210,28 @@ export default function ProductGrid({
             }
           }
         }
+=======
+  const getCategoryString = (category: string | object | undefined): string | undefined => {
+    if (!category) return undefined;
+    
+    if (typeof category === 'string') {
+      return category;
+    }
+    
+    if (typeof category === 'object' && category !== null) {
+      const categoryObj = category as any;
+      
+      // Try to get string representation from the category object
+      if (categoryObj.name && typeof categoryObj.name === 'string') {
+        return categoryObj.name;
       }
+      
+      if (categoryObj.id && typeof categoryObj.id === 'string') {
+        return categoryObj.id;
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
+      }
+      
+      return 'unknown';
     }
     
     // Nếu ko có category hoặc categories
@@ -230,6 +252,15 @@ export default function ProductGrid({
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
+          
+          // Extract category as string only
+          let categoryString;
+          
+          if (product.category) {
+            categoryString = getCategoryString(product.category);
+          } else if (product.categories && product.categories.length > 0) {
+            categoryString = getCategoryString(product.categories[0]);
+          }
 
           // Validate và đảm bảo tất cả props đều là primitive values
           const safeProps = {
@@ -240,7 +271,11 @@ export default function ProductGrid({
             price: Number(minPrice) || 0,
             originalPrice: originalPrice ? Number(originalPrice) : undefined,
             image: String(product.image || ''),
+<<<<<<< HEAD
             category: extractCategory(product), // Đảm bảo category luôn là string
+=======
+            category: categoryString,
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
             rating: product.rating ? Number(product.rating) : undefined,
             reviewCount: product.reviewCount ? Number(product.reviewCount) : undefined,
             totalSold: product.totalSold ? Number(product.totalSold) : undefined,

@@ -1,6 +1,7 @@
 'use client';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { LanguageKeys, defaultLanguage, getTranslation, translations } from '../locales';
 
@@ -16,6 +17,10 @@ import { createContext, useState, useContext, useEffect, ReactNode } from 'react
 import locales, { Translations } from '../../locales';
 
 type Language = 'vie' | 'eng';
+=======
+import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import translations, { Language } from '@/i18n';
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
 
 type LanguageContextType = {
   language: Language;
@@ -59,6 +64,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     }
   };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   useEffect(() => {
     // This will only run on the client side after hydration
@@ -117,8 +123,105 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
         }
       }
       setLanguageState(lang);
+=======
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  // Mặc định là tiếng Việt
+  const [language, setLanguageState] = useState<Language>('vie');
+
+  // Khởi tạo ngôn ngữ từ localStorage khi component được mount
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
+      setLanguageState(savedLanguage as Language);
     }
+  }, []);
+
+  // Cập nhật localStorage khi ngôn ngữ thay đổi
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
   };
+
+  // Hàm dịch
+  const t = (key: string, params?: Record<string, any>): string => {
+    // Get language data
+    const langData = translations[language];
+    if (!langData) {
+      console.warn(`No translations found for language: ${language}`);
+      return key;
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
+    }
+
+    // Try to get from flattened translations first (most direct approach)
+    const flatValue = (langData as any)._flat[key];
+    if (flatValue) {
+      // Apply parameters if they exist
+      if (params) {
+        return Object.keys(params).reduce((text, paramKey) => {
+          return text.replace(`{${paramKey}}`, String(params[paramKey]));
+        }, flatValue);
+      }
+      return flatValue;
+    }
+
+    // If not found in flattened translations, try the previous approaches
+    // Phân tách key để xác định module và khóa thực tế
+    const parts = key.split('.');
+    
+    // Hàm trả về giá trị dịch
+    const getTranslationValue = (moduleData: any, keyParts: string[]): string | undefined => {
+      let value = moduleData;
+      
+      for (const part of keyParts) {
+        if (!value || typeof value !== 'object') {
+          return undefined;
+        }
+        value = value[part];
+      }
+      
+      if (typeof value === 'string') {
+        // Xử lý các tham số (nếu có)
+        if (params) {
+          Object.keys(params).forEach(paramKey => {
+            value = value.replace(`{${paramKey}}`, String(params[paramKey]));
+          });
+        }
+        return value;
+      }
+      
+      return undefined;
+    };
+    
+    // Xử lý keys như 'module.key.subkey'
+    if (parts.length > 1) {
+      const moduleName = parts[0]; // Lấy module (common, home, admin, ...)
+      const moduleData = (langData as any)[moduleName];
+      
+      if (moduleData) {
+        const value = getTranslationValue(moduleData, parts.slice(1));
+        if (value) return value;
+      }
+    }
+    
+    // Tìm kiếm trong các module phổ biến nếu không có module prefix
+    // Thử trong common trước
+    const commonValue = getTranslationValue((langData as any).common, parts);
+    if (commonValue) return commonValue;
+    
+    // Thử trong các module khác
+    for (const moduleName in langData) {
+      if (moduleName !== 'common' && moduleName !== '_flat') {
+        const moduleData = (langData as any)[moduleName];
+        const value = getTranslationValue(moduleData, parts);
+        if (value) return value;
+      }
+    }
+    
+    // Nếu không tìm thấy, trả về key gốc
+    console.warn(`Translation key not found: ${key}`);
+    return key;
+  };
+<<<<<<< HEAD
 
   const t = (key: string, params?: Record<string, string | number>) => {
     // Get translation string or return key if not found
@@ -284,6 +387,8 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     
     return String(value);
   }
+=======
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, isClient, t }}>
@@ -294,9 +399,13 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const useLanguage = () => useContext(LanguageContext);
 =======
 export const useLanguage = (): LanguageContextType => {
+=======
+export const useLanguage = () => {
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
   const context = useContext(LanguageContext);
   if (context === undefined) {
     throw new Error('useLanguage must be used within a LanguageProvider');

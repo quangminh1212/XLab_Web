@@ -68,10 +68,14 @@ export default function ProductCard({
     } 
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
 <<<<<<< HEAD
+<<<<<<< HEAD
     else if (language === 'eng') {
 =======
     if (language === 'eng') {
 >>>>>>> 0e6a978e2821224c596be981352e1ca98e6637ce
+=======
+    if (language === 'eng') {
+>>>>>>> 77d40f007c10996d4a8a25a577d10a9b0f3ca33d
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
@@ -539,7 +543,7 @@ export default function ProductCard({
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                   />
                 </svg>
-                <span className="font-semibold">{t('product.purchasesPerWeek', { count: weeklyPurchases })}</span>
+                <span className="font-semibold">{weeklyPurchases}/{t('contact.week')}</span>
               </div>
             )}
             {totalSold > 0 && (

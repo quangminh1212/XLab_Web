@@ -71,16 +71,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (orderTotal === undefined || orderTotal === null || isNaN(orderTotal)) {
+    // Tải danh sách mã giảm giá từ file
+    const allCoupons = loadCoupons();
+    console.log('Loaded coupons:', allCoupons.length);
+    
+    // Special case for the 'ALL' code - returns all public coupons
+    if (code === 'ALL') {
+      console.log('Loading coupons from file');
+      const publicCoupons = allCoupons.filter(c => c.isPublic && c.isActive);
+      return NextResponse.json({
+        success: true,
+        allCoupons: publicCoupons
+      });
+    }
+
+    // Ensure orderTotal is a valid number
+    const numericOrderTotal = Number(orderTotal);
+    
+    if (isNaN(numericOrderTotal) || numericOrderTotal <= 0) {
       return NextResponse.json(
         { success: false, error: 'Tổng giá trị đơn hàng không hợp lệ' },
         { status: 400 },
       );
     }
-
-    // Tải danh sách mã giảm giá từ file
-    const allCoupons = loadCoupons();
-    console.log('Loaded coupons:', allCoupons.length);
 
     // Tìm mã giảm giá
     const coupon = allCoupons.find(
@@ -116,7 +129,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Kiểm tra giá trị đơn hàng tối thiểu
-    if (coupon.minOrder && orderTotal < coupon.minOrder) {
+    if (coupon.minOrder && numericOrderTotal < coupon.minOrder) {
       return NextResponse.json(
         {
           success: false,
@@ -164,7 +177,7 @@ export async function POST(request: NextRequest) {
     let isCashback = false;
 
     if (coupon.type === 'percentage') {
-      discountAmount = (orderTotal * coupon.value) / 100;
+      discountAmount = (numericOrderTotal * coupon.value) / 100;
       // Áp dụng giới hạn giảm giá tối đa nếu có
       if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
         discountAmount = coupon.maxDiscount;
@@ -173,7 +186,7 @@ export async function POST(request: NextRequest) {
       discountAmount = coupon.value;
     } else if (coupon.type === 'cashback') {
       // Với hoàn tiền, tính giá trị hoàn tiền tương tự như phần trăm
-      discountAmount = (orderTotal * coupon.value) / 100;
+      discountAmount = (numericOrderTotal * coupon.value) / 100;
       // Áp dụng giới hạn hoàn tiền tối đa nếu có
       if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
         discountAmount = coupon.maxDiscount;
@@ -183,10 +196,10 @@ export async function POST(request: NextRequest) {
 
     // Đảm bảo giảm giá không vượt quá tổng đơn hàng
     if (!isCashback) {
-      discountAmount = Math.min(discountAmount, orderTotal);
+      discountAmount = Math.min(discountAmount, numericOrderTotal);
     }
 
-    console.log('Coupon validated successfully. Discount amount:', discountAmount, 'isCashback:', isCashback);
+    console.log('Coupon validated successfully. Discount amount:', discountAmount, 'isCashback:', isCashback, 'orderTotal:', numericOrderTotal);
 
     return NextResponse.json({
       success: true,
