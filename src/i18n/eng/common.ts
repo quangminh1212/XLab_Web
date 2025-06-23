@@ -33,6 +33,19 @@ const common = {
   'Grok': 'Grok',
   'Grok.description': 'Grok AI helps automate analysis and processing of big data quickly, supporting accurate decision making and saving time. Widely applied in many fields such as market analysis, automated customer service, fraud detection, and business process optimization.',
   
+  // Products page
+  'products.title': 'Our Products',
+  'products.subtitle': 'Discover our wide range of software solutions',
+  'products.all': 'All Products',
+  'products.software': 'Software',
+  'products.service': 'Services',
+  'products.showing': 'Showing',
+  'products.sortBy': 'Sort By',
+  'products.sortNewest': 'Newest',
+  'products.sortPriceLow': 'Price: Low to High',
+  'products.sortPriceHigh': 'Price: High to Low',
+  'products.sortPopular': 'Most Popular',
+  
   // Footer
   'footer.aboutLink': 'About',
   'footer.contactLink': 'Contact',
