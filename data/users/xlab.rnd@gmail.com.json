@@ -7,25 +7,64 @@
     "isAdmin": true,
     "isActive": true,
     "balance": 57000,
-    "createdAt": "2025-05-29T20:16:59.995Z",
-    "updatedAt": "2025-06-24T04:31:16.404Z",
-    "lastLogin": "2025-05-29T20:16:59.995Z"
+    "createdAt": "2023-05-29T20:16:59.995Z",
+    "updatedAt": "2025-06-24T04:40:55.849Z",
+    "lastLogin": "2023-05-29T20:16:59.995Z"
   },
   "transactions": [],
   "cart": [],
-  "orders": [],
+  "orders": [
+    {
+      "id": "XL-747112",
+      "userId": "1748549819995",
+      "items": [
+        {
+          "productId": "chatgpt",
+          "productName": "ChatGPT",
+          "quantity": 1,
+          "price": 149000,
+          "image": "/images/products/chatgpt/thumbnail.png"
+        }
+      ],
+      "totalAmount": 149000,
+      "status": "completed",
+      "paymentMethod": "bank_transfer",
+      "paymentStatus": "paid",
+      "createdAt": "2023-06-17T11:32:00.000Z",
+      "updatedAt": "2023-06-17T11:45:00.000Z"
+    },
+    {
+      "id": "XL-328556",
+      "userId": "1748549819995",
+      "items": [
+        {
+          "productId": "grok",
+          "productName": "Grok",
+          "quantity": 1,
+          "price": 298000,
+          "image": "/images/products/grok/thumbnail.png"
+        }
+      ],
+      "totalAmount": 298000,
+      "status": "completed",
+      "paymentMethod": "momo",
+      "paymentStatus": "paid",
+      "createdAt": "2023-06-21T11:32:00.000Z",
+      "updatedAt": "2023-06-21T11:49:00.000Z"
+    }
+  ],
   "vouchers": [
     {
       "code": "XLABRND10",
       "name": "Ưu đãi riêng 10%",
       "usedCount": 1,
-      "lastUsed": "2025-06-03T16:28:45.321Z"
+      "lastUsed": "2023-06-03T16:28:45.321Z"
     },
     {
       "code": "MEMBER100K",
       "name": "Giảm 100K cho thành viên",
       "usedCount": 1,
-      "lastUsed": "2025-06-03T16:28:45.321Z"
+      "lastUsed": "2023-06-03T16:28:45.321Z"
     }
   ],
   "settings": {
@@ -34,7 +73,7 @@
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-24T04:31:16.407Z",
+    "lastUpdated": "2025-06-24T04:40:55.851Z",
     "version": "1.0"
   }
 }

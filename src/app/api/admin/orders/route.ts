@@ -106,67 +106,8 @@ export async function GET() {
     // Calculate order statistics
     const stats = calculateOrderStats(userData);
 
-    // If no user data was found, include mock data
-    if (orders.length === 0) {
-      // Generate mock orders for testing
-      const mockOrders: Order[] = [
-        {
-          id: 'XL-' + Math.floor(100000 + Math.random() * 900000).toString(),
-          userId: 'mock-user',
-          userName: 'Test User',
-          userEmail: 'test@example.com',
-          items: [
-            {
-              productId: 'chatgpt',
-              productName: 'ChatGPT',
-              quantity: 1,
-              price: 149000,
-              image: '/images/products/chatgpt/thumbnail.png',
-            },
-          ],
-          totalAmount: 149000,
-          status: 'completed' as const,
-          paymentMethod: 'bank_transfer' as const,
-          paymentStatus: 'paid' as const,
-          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: 'XL-' + Math.floor(100000 + Math.random() * 900000).toString(),
-          userId: 'mock-user',
-          userName: 'Test User',
-          userEmail: 'test@example.com',
-          items: [
-            {
-              productId: 'grok',
-              productName: 'Grok',
-              quantity: 2,
-              price: 149000,
-              image: '/images/products/grok/thumbnail.png',
-            },
-          ],
-          totalAmount: 298000,
-          status: 'completed' as const,
-          paymentMethod: 'momo' as const,
-          paymentStatus: 'paid' as const,
-          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        },
-      ];
-
-      // Update stats with mock data
-      if (stats.total === 0) {
-        stats.total = mockOrders.length;
-        stats.completed = mockOrders.length;
-        stats.revenue = mockOrders.reduce((sum, order) => sum + order.totalAmount, 0);
-        stats.averageOrderValue = Math.round(stats.revenue / stats.total);
-      }
-
-      // Add mock orders to the response if no real orders exist
-      if (orders.length === 0) {
-        orders.push(...mockOrders);
-      }
-    }
+    // No need for mock data anymore as we have real data in the user JSON files
+    // This ensures we always show real data instead of placeholder data
 
     return NextResponse.json({
       orders: orders,

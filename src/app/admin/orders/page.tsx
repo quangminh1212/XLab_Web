@@ -24,14 +24,8 @@ function OrdersPage() {
   const [timeFilter, setTimeFilter] = useState<string>('all');
   const { language } = useLanguage();
 
-  // Giả lập dữ liệu đơn hàng
+  // Fetch real order data from the API
   useEffect(() => {
-    // CHÚ Ý: Đây là dữ liệu mẫu để hiển thị giao diện
-    // Trong ứng dụng thực tế, cần thay thế bằng API call đến backend
-
-    // QUAN TRỌNG: Đã tạo API endpoint tại /api/admin/orders
-    // Bỏ comment dưới đây để sử dụng API thực tế khi đã có dữ liệu thật
-
     const fetchOrders = async () => {
       try {
         setIsLoading(true);
