@@ -232,14 +232,6 @@ export default function CartPage() {
   const EmptyCartIcon = () => (
     <div className="relative w-32 h-32 mx-auto mb-6 text-gray-300">
       <AiOutlineShoppingCart className="w-full h-full stroke-1" />
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500"
-      >
-        <AiOutlinePlus className="w-8 h-8 rotate-45" />
-      </motion.div>
     </div>
   );
 
