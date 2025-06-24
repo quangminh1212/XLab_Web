@@ -188,12 +188,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!loaded) return;
 
+    console.log('🛒 Cart items changed - saving cart:', { 
+      itemCount: items.length, 
+      isAuthenticated 
+    });
+
     // Always save to localStorage
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    console.log('🛒 Cart saved to localStorage:', items.length + ' items');
 
     // If user is logged in, also save to server
     if (isAuthenticated) {
-      saveCartToServer(items);
+      console.log('🛒 Attempting to save cart to server...');
+      saveCartToServer(items)
+        .then(() => console.log('🛒 Cart successfully synced with server'))
+        .catch(error => console.error('🛒 Error syncing cart with server:', error));
     }
   }, [items, loaded, isAuthenticated, saveCartToServer]);
 
@@ -248,20 +257,39 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
    * Add item to cart
    */
   const addItem = useCallback((newItem: CartItem) => {
+    console.log('🛒 Adding item to cart - START:', { 
+      id: newItem.id, 
+      name: newItem.name, 
+      price: newItem.price,
+      quantity: newItem.quantity || 1,
+      uniqueKey: newItem.uniqueKey || generateUniqueKey(newItem),
+      authStatus: isAuthenticated ? 'Logged in' : 'Guest user'
+    });
+    
     setItems((prevItems) => {
       // Find product with the same attributes
+      const uniqueKey = generateUniqueKey(newItem);
+      console.log('🛒 Generated unique key:', uniqueKey);
+      
       const existingItemIndex = prevItems.findIndex((item) => 
-        generateUniqueKey(item) === generateUniqueKey(newItem)
+        generateUniqueKey(item) === uniqueKey
       );
+
+      console.log('🛒 Existing item found?', existingItemIndex > -1 ? 'Yes' : 'No');
 
       if (existingItemIndex > -1) {
         // If item already exists, update quantity
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex].quantity += newItem.quantity || 1;
+        
+        console.log('🛒 Updated quantity for existing item:', {
+          oldQuantity: prevItems[existingItemIndex].quantity,
+          newQuantity: updatedItems[existingItemIndex].quantity
+        });
 
         // Ensure item has uniqueKey
         if (!updatedItems[existingItemIndex].uniqueKey) {
-          updatedItems[existingItemIndex].uniqueKey = generateUniqueKey(updatedItems[existingItemIndex]);
+          updatedItems[existingItemIndex].uniqueKey = uniqueKey;
         }
 
         // Keep best image URL
@@ -277,14 +305,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           ...newItem,
           image: normalizeImageUrl(newItem.image),
           quantity: newItem.quantity || 1,
-          uniqueKey: generateUniqueKey(newItem),
+          uniqueKey: uniqueKey,
         };
-
+        
+        console.log('🛒 Adding new item to cart:', itemWithUniqueKey);
+        
         return [...prevItems, itemWithUniqueKey];
       }
     });
 
-    console.log('🛒 Item added to cart:', newItem.name);
+    // Log cart after update (needs to be done in next tick since state update is async)
+    setTimeout(() => {
+      console.log('🛒 Current cart after add:', items);
+      console.log('🛒 Items count in cart:', items.length);
+    }, 100);
   }, []);
 
   /**

@@ -47,8 +47,13 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+    console.log('🔄 Cart API - PUT request received', { 
+      hasSession: !!session,
+      userEmail: session?.user?.email 
+    });
 
     if (!session?.user?.email) {
+      console.log('❌ Cart API - Unauthorized: No valid session');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -56,10 +61,17 @@ export async function PUT(request: Request) {
     const { cart } = data;
 
     if (!Array.isArray(cart)) {
+      console.log('❌ Cart API - Invalid cart data:', cart);
       return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
     }
 
+    console.log(`✅ Cart API - Updating cart for ${session.user.email}:`, { 
+      itemCount: cart.length,
+      items: cart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity }))
+    });
+
     await updateUserCartSync(session.user.email, cart);
+    console.log(`✅ Cart API - Cart updated successfully for ${session.user.email}`);
 
     return NextResponse.json({
       success: true,
@@ -67,7 +79,7 @@ export async function PUT(request: Request) {
       cart: cart,
     });
   } catch (error: any) {
-    console.error('Error updating cart:', error);
+    console.error('❌ Cart API - Error updating cart:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }

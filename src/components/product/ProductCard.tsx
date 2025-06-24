@@ -232,6 +232,13 @@ export default function ProductCard({
     e.preventDefault();
     e.stopPropagation();
 
+    console.log('🛒 Add to cart button clicked for product:', {
+      id,
+      name: translatedName,
+      price,
+      displayImageUrl
+    });
+
     // Thêm sản phẩm vào giỏ hàng trực tiếp từ component
     addItem({
       id,
@@ -241,6 +248,8 @@ export default function ProductCard({
       image: displayImageUrl,
     });
 
+    console.log('🛒 Product added to cart via ProductCard');
+
     // Hiển thị hiệu ứng đã thêm vào giỏ
     setShowAddedEffect(true);
     setTimeout(() => {
@@ -249,6 +258,16 @@ export default function ProductCard({
 
     // Call onAddToCart prop if provided (for parent components to react)
     onAddToCart(id);
+    
+    // Debug cart state after adding
+    setTimeout(() => {
+      try {
+        const cartData = localStorage.getItem('cart');
+        console.log('🛒 Current cart in localStorage:', cartData ? JSON.parse(cartData) : 'No cart found');
+      } catch (error) {
+        console.error('Error reading cart from localStorage:', error);
+      }
+    }, 300);
   };
 
   const handleView = () => {

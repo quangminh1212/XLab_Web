@@ -767,16 +767,35 @@ export async function updateUserProfileData(
 // Cập nhật cart và đảm bảo metadata được cập nhật
 export async function updateUserCartSync(email: string, cart: CartItem[]): Promise<void> {
   try {
+    console.log(`🔄 Beginning cart sync for user: ${email}`, {
+      cartItemCount: cart.length,
+      items: cart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity }))
+    });
+    
     const userData = await ensureUserDataExists(email);
+    console.log(`📝 Found user data for: ${email}, current cart items: ${userData.cart.length}`);
 
     userData.cart = cart;
     userData.metadata.lastUpdated = new Date().toISOString();
     userData.profile.updatedAt = new Date().toISOString();
 
+    console.log(`💾 Saving updated cart for: ${email}`, { 
+      newCartSize: cart.length,
+      timestamp: userData.metadata.lastUpdated
+    });
+    
     await saveUserDataToFile(email, userData);
+    console.log(`✅ Cart saved to user file for: ${email}`);
 
     // Trigger sync để đảm bảo consistency
-    await syncAllUserData(email);
+    try {
+      console.log(`🔄 Starting comprehensive sync for user: ${email}`);
+      await syncAllUserData(email);
+      console.log(`✅ Comprehensive sync completed for user: ${email}`);
+    } catch (syncError) {
+      console.error(`⚠️ Warning: Sync after cart update failed: ${syncError instanceof Error ? syncError.message : 'Unknown error'}`);
+      console.log('Continuing with cart update despite sync error');
+    }
 
     console.log(`✅ Cart updated and synced for user: ${email}`);
   } catch (error) {
