@@ -81,6 +81,17 @@ module.exports = {
           700: '#B91C1C',
         },
       },
+      keyframes: {
+        fadeInOut: {
+          '0%': { opacity: 0 },
+          '10%': { opacity: 1 },
+          '80%': { opacity: 1 },
+          '100%': { opacity: 0 },
+        },
+      },
+      animation: {
+        fadeInOut: 'fadeInOut 3s ease-in-out forwards',
+      },
       boxShadow: {
         sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',

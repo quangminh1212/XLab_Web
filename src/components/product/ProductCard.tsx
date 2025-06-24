@@ -247,10 +247,8 @@ export default function ProductCard({
       setShowAddedEffect(false);
     }, 1000);
 
-    // Gọi callback nếu được cung cấp
-    if (onAddToCart) {
-      onAddToCart(id);
-    }
+    // Call onAddToCart prop if provided (for parent components to react)
+    onAddToCart(id);
   };
 
   const handleView = () => {

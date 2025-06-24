@@ -48,6 +48,8 @@ export default function CartPage() {
   const [showCouponInfo, setShowCouponInfo] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addedProductName, setAddedProductName] = useState<string | null>(null);
+  const [showAddedToast, setShowAddedToast] = useState(false);
 
   // Fetch products from API when component loads
   useEffect(() => {
@@ -198,6 +200,34 @@ export default function CartPage() {
     }
   };
 
+  // Show a toast notification when adding product to cart
+  const handleAddToCart = (product: any) => {
+    addItemToCart({
+      id: product.id.toString(),
+      name: product.name,
+      price:
+        product.versions && product.versions.length > 0
+          ? product.versions[0].price
+          : product.salePrice || product.price,
+      quantity: 1,
+      image:
+        product.images &&
+        Array.isArray(product.images) &&
+        product.images.length > 0
+          ? product.images[0]
+          : product.imageUrl || '/images/placeholder/product-placeholder.svg',
+    });
+    
+    // Show toast notification
+    setAddedProductName(product.name);
+    setShowAddedToast(true);
+    
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+      setShowAddedToast(false);
+    }, 3000);
+  };
+
   // Biểu tượng giỏ hàng trống
   const EmptyCartIcon = () => (
     <div className="relative w-32 h-32 mx-auto mb-6 text-gray-300">
@@ -260,6 +290,26 @@ export default function CartPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      {showAddedToast && addedProductName && (
+        <div className="fixed top-20 right-4 bg-green-600 text-white py-2 px-4 rounded-md shadow-lg z-50 animate-fadeInOut">
+          <div className="flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span>Đã thêm {addedProductName} vào giỏ hàng</span>
+          </div>
+        </div>
+      )}
+
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white py-10 md:py-16">
         <div className="container mx-auto px-4">
@@ -681,23 +731,7 @@ export default function CartPage() {
                     </div>
                     <button
                       className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs font-medium transition-colors border border-primary-200 flex items-center"
-                      onClick={() =>
-                        addItemToCart({
-                          id: product.id.toString(),
-                          name: product.name,
-                          price:
-                            product.versions && product.versions.length > 0
-                              ? product.versions[0].price
-                              : product.salePrice || product.price,
-                          quantity: 1,
-                          image:
-                            product.images &&
-                            Array.isArray(product.images) &&
-                            product.images.length > 0
-                              ? product.images[0]
-                              : product.imageUrl || '/images/placeholder/product-placeholder.svg',
-                        })
-                      }
+                      onClick={() => handleAddToCart(product)}
                     >
                       <AiOutlinePlus className="mr-1 w-3 h-3" />
                       Thêm

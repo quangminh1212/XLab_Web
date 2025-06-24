@@ -558,6 +558,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       }
     }
 
+    // Thêm sản phẩm vào giỏ hàng - header sẽ tự cập nhật vì itemCount được tính lại qua useCart()
     addItem({
       id: product.id.toString(),
       name: product.name,
