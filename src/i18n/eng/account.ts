@@ -49,6 +49,7 @@ const account = {
   'orders.viewDetails': 'View Details',
   'orders.orderDetails': 'Order Details',
   'orders.paymentMethod': 'Payment Method',
+  'orders.myOrders': 'My Orders',
   
   // Settings
   'settings.title': 'Account Settings',

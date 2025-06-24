@@ -49,6 +49,7 @@ const account = {
   'orders.viewDetails': 'Xem chi tiết',
   'orders.orderDetails': 'Chi tiết đơn hàng',
   'orders.paymentMethod': 'Phương thức thanh toán',
+  'orders.myOrders': 'Đơn hàng của tôi',
   
   // Settings
   'settings.title': 'Cài đặt tài khoản',
