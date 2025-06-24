@@ -126,6 +126,7 @@ const account = {
   'totalSaved': 'Tổng tiết kiệm',
   'comparedToOriginal': 'So với giá gốc',
   'memberSince': 'Thành viên từ',
+  'memberDuration': 'Thời gian thành viên',
   'profile': 'Hồ sơ',
   'myProducts': 'Sản phẩm của tôi',
   'coupons': 'Mã giảm giá',
