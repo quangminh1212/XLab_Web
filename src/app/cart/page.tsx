@@ -230,16 +230,16 @@ export default function CartPage() {
 
   // Biểu tượng giỏ hàng trống
   const EmptyCartIcon = () => (
-    <div className="relative w-32 h-32 mx-auto mb-6 text-gray-300">
-      <AiOutlineShoppingCart className="w-full h-full stroke-1" />
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500"
-      >
-        <AiOutlinePlus className="w-8 h-8 rotate-45" />
-      </motion.div>
+    <div className="relative w-32 h-32 mx-auto mb-6">
+      <div className="w-full h-full flex items-center justify-center">
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24"
+          className="w-full h-full text-gray-400 fill-current"
+        >
+          <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+        </svg>
+      </div>
     </div>
   );
 
