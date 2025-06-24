@@ -50,6 +50,16 @@ const account = {
   'orders.orderDetails': 'Order Details',
   'orders.paymentMethod': 'Payment Method',
   'orders.myOrders': 'My Orders',
+  'orders.history': 'Order History',
+  'orders.orderCode': 'Order Code',
+  'orders.orderDate': 'Order Date',
+  'orders.quantity': 'Quantity',
+  'orders.completed': 'Completed',
+  'orders.needLogin': 'Please Login',
+  'orders.needLoginDesc': 'You need to login to view your order history',
+  'orders.login': 'Login',
+  'orders.noOrdersDesc': 'You haven\'t placed any orders yet. Browse our products to get started.',
+  'orders.exploreProducts': 'Explore Products',
   
   // Settings
   'settings.title': 'Account Settings',
