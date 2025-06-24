@@ -7,27 +7,18 @@
     "isActive": true,
     "balance": 0,
     "createdAt": "2025-06-01T17:01:31.672Z",
-    "updatedAt": "2025-06-09T04:12:45.515Z",
+    "updatedAt": "2025-06-24T17:53:04.263Z",
     "lastLogin": "2025-06-01T17:01:31.672Z"
   },
   "transactions": [],
-  "cart": [
-    {
-      "id": "grok",
-      "name": "Grok",
-      "price": 149000,
-      "quantity": 1,
-      "image": "http://localhost:3000/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png",
-      "uniqueKey": "grok_default_"
-    }
-  ],
+  "cart": [],
   "settings": {
     "notifications": true,
     "language": "vi",
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-09T04:12:45.516Z",
+    "lastUpdated": "2025-06-24T17:53:04.268Z",
     "version": "1.0"
   }
 }

@@ -591,11 +591,11 @@ export default function AccountPage() {
             <div className="lg:w-1/4">
               <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <div className="flex flex-col items-center mb-6">
-                  <div className="relative w-24 h-24 mb-4">
-                    <Avatar src={session?.user?.image} alt={profile.name} size="xl" className="" />
+                  <div className="relative w-32 h-32 mb-4 flex items-center justify-center overflow-hidden rounded-full border-4 border-gray-100 shadow-sm">
+                    <Avatar src={session?.user?.image} alt={profile.name} size="2xl" />
                     <label
                       htmlFor="avatar-upload"
-                      className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100"
+                      className="absolute bottom-1 right-1 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100 shadow-sm"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
