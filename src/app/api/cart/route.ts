@@ -21,24 +21,67 @@ export interface CartItem {
   uniqueKey?: string;
 }
 
+// Global request counter and timestamp tracker to prevent excessive calls
+let requestCounter = 0;
+let lastRequestTime = 0;
+const MIN_REQUEST_INTERVAL = 1000; // 1 second minimum between API calls (reduced from 5 seconds)
+const CACHED_CART_DATA: CartItem[] = []; // Keep a cached empty cart for rapid responses
+
 // Get cart items từ user data
 export async function GET(request: Request) {
   try {
+    const timestamp = Date.now();
     const session = await getServerSession(authOptions);
+    requestCounter++;
+    
+    // Add artificial delay to prevent rapid requests
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     if (!session?.user?.email) {
+      console.log(`[${timestamp}] ❌ CART API - Unauthorized request #${requestCounter}`);
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const cart = await getUserCart(session.user.email);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Cart retrieved successfully',
-      cart: cart,
-    });
+    // Check if we've had too many requests recently
+    if (timestamp - lastRequestTime < MIN_REQUEST_INTERVAL && requestCounter > 2) {
+      console.log(`[${timestamp}] 🛑 CART API - RATE LIMITED - Too many requests (${requestCounter} requests, last at ${lastRequestTime})`);
+      
+      // Just return the cached cart data to avoid database hits
+      return NextResponse.json({
+        success: true,
+        message: 'Rate limited - using cached cart data',
+        cart: CACHED_CART_DATA,
+      });
+    }
+    
+    console.log(`[${timestamp}] 🔄 CART API - Getting cart for user: ${session.user.email} (request #${requestCounter})`);
+    
+    // On first few requests, actually get the cart and cache it
+    if (requestCounter <= 2 || timestamp - lastRequestTime >= MIN_REQUEST_INTERVAL) {
+      const cart = await getUserCart(session.user.email);
+      console.log(`[${timestamp}] ✅ CART API - Retrieved cart for user: ${session.user.email}, items: ${cart.length}`);
+      
+      // Update the cached cart and last request time
+      CACHED_CART_DATA.length = 0;
+      CACHED_CART_DATA.push(...cart);
+      lastRequestTime = timestamp;
+      
+      return NextResponse.json({
+        success: true,
+        message: 'Cart retrieved successfully',
+        cart: cart,
+      });
+    } else {
+      console.log(`[${timestamp}] 🔄 CART API - Using cached cart data for ${session.user.email}`);
+      return NextResponse.json({
+        success: true,
+        message: 'Using cached cart data',
+        cart: CACHED_CART_DATA,
+      });
+    }
   } catch (error: any) {
-    console.error('Error getting cart:', error);
+    const timestamp = Date.now();
+    console.error(`[${timestamp}] ❌ Error getting cart:`, error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
