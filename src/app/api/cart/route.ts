@@ -64,19 +64,29 @@ export async function PUT(request: Request) {
       console.log('❌ Cart API - Invalid cart data:', cart);
       return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
     }
+    
+    // Ensure each cart item has the required fields
+    const validCart = cart.map(item => ({
+      ...item,
+      id: item.id || '',
+      name: item.name || '',
+      price: item.price || 0,
+      quantity: item.quantity || 1,
+      uniqueKey: item.uniqueKey || `${item.id}_${item.version || 'default'}_${Date.now()}`
+    }));
 
     console.log(`✅ Cart API - Updating cart for ${session.user.email}:`, { 
-      itemCount: cart.length,
-      items: cart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity }))
+      itemCount: validCart.length,
+      items: validCart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity }))
     });
 
-    await updateUserCartSync(session.user.email, cart);
+    await updateUserCartSync(session.user.email, validCart);
     console.log(`✅ Cart API - Cart updated successfully for ${session.user.email}`);
 
     return NextResponse.json({
       success: true,
       message: 'Cart updated successfully',
-      cart: cart,
+      cart: validCart,
     });
   } catch (error: any) {
     console.error('❌ Cart API - Error updating cart:', error);

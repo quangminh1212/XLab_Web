@@ -75,20 +75,37 @@ export default function CartPage() {
 
   // Enrich cart items with image and description from product data
   const cart = cartItems.map((item) => {
+    console.log("Processing cart item:", JSON.stringify(item));
+    
+    // Safety check - ensure item has all required properties
+    if (!item || !item.id) {
+      console.error("Invalid cart item:", item);
+      return {
+        id: item?.id || "unknown",
+        name: item?.name || "Unknown Product",
+        price: item?.price || 0,
+        quantity: item?.quantity || 1,
+        image: '/images/placeholder/product-placeholder.svg',
+        description: '',
+        uniqueKey: item?.uniqueKey || `unknown-${Date.now()}`
+      };
+    }
+    
     // Find product with multiple matching strategies
     const productDetail = products.find((p: any) => {
+      if (!p || !p.id) return false;
+      
       const productId = String(p.id).toLowerCase();
       const itemId = String(item.id).toLowerCase();
-      const productName = String(p.name).toLowerCase();
-      const itemName = String(item.name).toLowerCase();
+      const productName = (p.name ? String(p.name).toLowerCase() : '');
+      const itemName = (item.name ? String(item.name).toLowerCase() : '');
 
       return (
         productId === itemId ||
         productId === itemName ||
         productName === itemId ||
         productName === itemName ||
-        p.slug === itemId ||
-        p.slug === itemName
+        (p.slug && (p.slug === itemId || p.slug === itemName))
       );
     });
 
@@ -119,11 +136,15 @@ export default function CartPage() {
           .substring(0, 150) + '...';
     }
 
-    return {
+    const enrichedItem = {
       ...item,
       image: imageUrl,
       description: description,
+      uniqueKey: item.uniqueKey || `${item.id}_default_${Date.now()}`
     };
+    
+    console.log("Enriched cart item:", enrichedItem);
+    return enrichedItem;
   });
 
   // Tính tổng giá trị giỏ hàng

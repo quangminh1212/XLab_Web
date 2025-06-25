@@ -102,9 +102,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const result = await response.json();
         if (result.success && result.cart) {
           console.log('🛒 Cart loaded from server:', result.cart);
-          setItems(result.cart);
+          
+          // Ensure each cart item has a uniqueKey and proper structure
+          const processedCart = result.cart.map((item: CartItem) => ({
+            ...item,
+            id: item.id || '',
+            name: item.name || '',
+            price: item.price || 0,
+            quantity: item.quantity || 1,
+            uniqueKey: item.uniqueKey || generateUniqueKey(item)
+          }));
+          
+          console.log('🛒 Processed cart with uniqueKeys:', processedCart);
+          setItems(processedCart);
+          
           // Backup to localStorage
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(result.cart));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(processedCart));
         }
       } else {
         console.error('Failed to load cart from server:', response.statusText);
