@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
-import fs from 'fs';
+import { NextRequest, NextResponse } from 'next/server';
+import * as fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
-import products, { getProductById } from '@/i8n/vie/product';
+import products, { getProductById as getVietnameseProductById } from '@/i8n/vie/product';
+import { getProductById as getEnglishProductById } from '@/i8n/eng/product';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -36,36 +37,69 @@ function saveProducts(products: Product[]): void {
 }
 
 // GET: Lấy thông tin sản phẩm theo ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    // Find product by ID using the i18n product data
-    console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${params.id}`);
-    const product = getProductById(params.id);
+    // Get language from query parameter or default to Vietnamese
+    const searchParams = req.nextUrl.searchParams;
+    const lang = searchParams.get('lang') || 'vie';
+
+    // Get product file path based on ID and language
+    const productFilePath = path.join(process.cwd(), `i8n/${lang}/product/${params.id}.json`);
+    
+    // Check if product file exists
+    console.log(`Looking for product with ID: ${params.id}, language: ${lang}`);
+    
+    let product: Product | null = null;
+    
+    try {
+      if (fs.existsSync(productFilePath)) {
+        const fileContent = fs.readFileSync(productFilePath, 'utf-8');
+        product = JSON.parse(fileContent) as Product;
+      } else {
+        // Try finding by slug if not found by ID
+        const productsDir = path.join(process.cwd(), `i8n/${lang}/product`);
+        const files = fs.readdirSync(productsDir);
+        const jsonFiles = files.filter(file => file.endsWith('.json'));
+        
+        for (const file of jsonFiles) {
+          const filePath = path.join(productsDir, file);
+          const fileContent = fs.readFileSync(filePath, 'utf-8');
+          const productData = JSON.parse(fileContent) as Product;
+          
+          if (productData.slug === params.id) {
+            product = productData;
+            break;
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`Error reading product file for ${params.id}:`, error);
+    }
 
     if (!product) {
-      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${params.id}`);
+      console.log(`Could not find product with ID or slug: ${params.id}`);
       return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
     }
 
-    console.log(
-      `Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`,
-    );
+    console.log(`User is viewing product: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`);
 
-    // Xử lý blob URLs trong ảnh
+    // Process blob URLs in images
     const processedProduct = {
       ...product,
-      images:
-        product.images?.map((img: any) => {
-          if (typeof img === 'string') {
-            return img.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : img;
-          }
-          return img.url;
-        }) || [],
+      images: product.images?.map((img: any) => {
+        if (typeof img === 'string') {
+          return img.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : img;
+        }
+        return img.url;
+      }) || [],
     };
 
     return NextResponse.json({ success: true, data: processedProduct }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching product:', error);
+    console.error(`Error fetching product with ID ${params.id}:`, error);
     return NextResponse.json({ success: false, error: 'Failed to fetch product' }, { status: 500 });
   }
 }

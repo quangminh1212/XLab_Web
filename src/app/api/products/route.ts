@@ -1,25 +1,43 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import * as fs from 'fs';
+import path from 'path';
 import { Product } from '@/models/ProductModel';
-import { getAllProducts } from '@/i8n/vie/product';
 
-export async function GET(request: Request) {
+export async function GET(req: NextRequest) {
   try {
-    // Use products from i18n directory instead of reading from file
-    let productList: Product[] = getAllProducts();
-    
-    console.log(`Retrieved ${productList.length} products from file`);
-
-    // Now proceed with filtering and processing
-    const { searchParams } = new URL(request.url);
+    // Get language from query parameter or default to Vietnamese
+    const searchParams = req.nextUrl.searchParams;
+    const lang = searchParams.get('lang') || 'vie';
     const categoryId = searchParams.get('categoryId');
     const exclude = searchParams.get('exclude');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
+    
+    // Get products directory path based on language
+    const productsDir = path.join(process.cwd(), `i8n/${lang}/product`);
+    
+    // Read all product files
+    let productList: Product[] = [];
+    try {
+      const files = fs.readdirSync(productsDir);
+      const jsonFiles = files.filter(file => file.endsWith('.json'));
+      
+      productList = jsonFiles.map(file => {
+        const filePath = path.join(productsDir, file);
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+        return JSON.parse(fileContent) as Product;
+      });
+      
+      console.log(`Retrieved ${productList.length} products from ${lang} files`);
+    } catch (error) {
+      console.error(`Error reading ${lang} product files:`, error);
+      return NextResponse.json({ error: `Failed to read ${lang} product files` }, { status: 500 });
+    }
 
-    // Chỉ lấy sản phẩm được xuất bản
+    // Only get published products
     productList = productList.filter((p) => p.isPublished);
-    console.log(`Found ${productList.length} published products`);
+    console.log(`Found ${productList.length} published ${lang} products`);
 
-    // Lọc theo categoryId nếu được cung cấp
+    // Filter by categoryId if provided
     if (categoryId) {
       productList = productList.filter(
         (p) =>
@@ -31,19 +49,19 @@ export async function GET(request: Request) {
       console.log(`Filtered to ${productList.length} products in category ${categoryId}`);
     }
 
-    // Loại trừ sản phẩm cụ thể nếu exclude được cung cấp
+    // Exclude specific product if exclude is provided
     if (exclude) {
       productList = productList.filter((p) => p.id !== exclude && p.slug !== exclude);
       console.log(`Excluded product ${exclude}, remaining ${productList.length} products`);
     }
 
-    // Giới hạn số lượng kết quả nếu limit được cung cấp
+    // Limit results if limit is provided
     if (limit && !isNaN(limit)) {
       productList = productList.slice(0, limit);
       console.log(`Limited to ${productList.length} products`);
     }
 
-    // Xử lý blob URLs trong ảnh
+    // Process blob URLs in images
     const processedProducts = productList.map((product) => {
       const processedProduct = {
         ...product,
@@ -59,14 +77,14 @@ export async function GET(request: Request) {
           : [],
       };
 
-      // Đảm bảo có giá của sản phẩm để hiển thị
+      // Ensure product has price for display
       if (processedProduct.versions && processedProduct.versions.length > 0) {
-        // Thêm các trường giá để tương thích với giao diện
+        // Add price fields for compatibility with UI
         const firstVersion = processedProduct.versions[0];
         (processedProduct as any).price = firstVersion.price;
         (processedProduct as any).originalPrice = firstVersion.originalPrice;
 
-        // Tính toán discount percentage nếu có
+        // Calculate discount percentage if applicable
         if (firstVersion.originalPrice > firstVersion.price) {
           (processedProduct as any).discountPercentage = Math.round(
             (1 - firstVersion.price / firstVersion.originalPrice) * 100,
