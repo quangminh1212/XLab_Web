@@ -26,33 +26,34 @@ const ProductDescription = ({ description, productId }: { description: string, p
   const [translatedDescription, setTranslatedDescription] = useState<string>(description);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
-      const fetchTranslation = async () => {
+    const fetchTranslation = async () => {
+      if (description && description.trim() !== '') {
         try {
-          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
-          if (response.ok) {
-            const data = await response.json();
-            console.log("ProductDescription translation data:", data); // Ghi log để debug
-            if (data && data.description) {
-              setTranslatedDescription(data.description);
+          // Only attempt to translate if not in English
+          if (language && language !== 'eng') {
+            const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
+            if (response.ok) {
+              const data = await response.json();
+              console.log("ProductDescription translation data:", data); // Ghi log để debug
+              if (data && data.translatedText) {
+                setTranslatedDescription(data.translatedText);
+              } else {
+                setTranslatedDescription(description); // Fallback to original
+              }
             } else {
-              setTranslatedDescription(description); // Fallback to original if no translation
+              setTranslatedDescription(description); // Fallback to original
             }
           } else {
-            setTranslatedDescription(description); // Fallback to original
+            setTranslatedDescription(description); // Use original for English
           }
         } catch (error) {
-          console.error('Error fetching translation:', error);
+          console.error('Error translating description:', error);
           setTranslatedDescription(description); // Fallback to original
         }
-      };
+      }
+    };
 
-      fetchTranslation();
-    } else {
-      // Nếu tiếng Việt, sử dụng mô tả gốc
-      setTranslatedDescription(description);
-    }
+    fetchTranslation();
   }, [description, language, productId]);
 
   return (
@@ -120,7 +121,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -160,7 +161,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -170,21 +171,21 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
             if (data && data.features) {
               setTranslatedFeatures(data.features);
             } else {
-              setTranslatedFeatures(features); // Fallback to original if no translation
+              setTranslatedFeatures([...features]); // Fallback to original if no translation
             }
           } else {
-            setTranslatedFeatures(features); // Fallback to original
+            setTranslatedFeatures([...features]); // Fallback to original
           }
         } catch (error) {
           console.error('Error fetching feature translations:', error);
-          setTranslatedFeatures(features); // Fallback to original
+          setTranslatedFeatures([...features]); // Fallback to original
         }
       };
 
       fetchTranslation();
     } else {
       // Nếu tiếng Việt, sử dụng tính năng gốc
-      setTranslatedFeatures(features);
+      setTranslatedFeatures([...features]);
     }
   }, [features, language, productId]);
 
@@ -228,7 +229,7 @@ const ProductOptions = ({
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -546,39 +547,55 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
-    let productImage = '/images/placeholder/product-placeholder.svg';
+    try {
+      let productImage = '/images/placeholder/product-placeholder.svg';
 
-    if (product.images && product.images.length > 0) {
-      const firstImage = product.images[0];
-      // Xử lý đường dẫn ảnh
-      if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
-        productImage = firstImage;
-      } else if (typeof firstImage !== 'string' && firstImage.url) {
-        productImage = firstImage.url;
+      if (product.images && product.images.length > 0) {
+        const firstImage = product.images[0];
+        // Xử lý đường dẫn ảnh
+        if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
+          productImage = firstImage;
+        } else if (typeof firstImage !== 'string' && firstImage.url) {
+          productImage = firstImage.url;
+        }
       }
+
+      const productPrice = calculateSelectedPrice();
+      console.log('🛒 Adding product to cart:', {
+        id: product.id,
+        name: product.name,
+        price: productPrice,
+        quantity: quantity,
+        version: selectedOption || selectedVersion
+      });
+
+      // Thêm sản phẩm vào giỏ hàng - header sẽ tự cập nhật vì itemCount được tính lại qua useCart()
+      addItem({
+        id: product.id.toString(),
+        name: product.name,
+        price: productPrice,
+        quantity: quantity,
+        image: productImage,
+        version: selectedOption || selectedVersion,
+        options: selectedOption ? [selectedOption] : selectedVersion ? [selectedVersion] : undefined,
+      });
+
+      console.log('🛒 Product successfully added to cart');
+
+      // Hiển thị thông báo đã thêm vào giỏ
+      setAddedToCartMessage(t('product.addedToCart', { quantity }));
+      setShowAddToCartAnimation(true);
+
+      // Ẩn thông báo sau 3 giây
+      setTimeout(() => {
+        setShowAddToCartAnimation(false);
+      }, 3000);
+
+      return true;
+    } catch (error) {
+      console.error('❌ Error adding product to cart:', error);
+      return false;
     }
-
-    // Thêm sản phẩm vào giỏ hàng - header sẽ tự cập nhật vì itemCount được tính lại qua useCart()
-    addItem({
-      id: product.id.toString(),
-      name: product.name,
-      price: calculateSelectedPrice(),
-      quantity: quantity,
-      image: productImage,
-      version: selectedOption || selectedVersion,
-      options: selectedOption ? [selectedOption] : selectedVersion ? [selectedVersion] : undefined,
-    });
-
-    // Hiển thị thông báo đã thêm vào giỏ
-    setAddedToCartMessage(t('product.addedToCart', { quantity }));
-    setShowAddToCartAnimation(true);
-
-    // Ẩn thông báo sau 3 giây
-    setTimeout(() => {
-      setShowAddToCartAnimation(false);
-    }, 3000);
-
-    return true;
   };
 
   // Tăng số lượt xem khi người dùng truy cập trang

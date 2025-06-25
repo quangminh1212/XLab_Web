@@ -85,6 +85,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [intentionalCartChange, setIntentionalCartChange] = useState(false);
   const { data: session, status } = useSession();
   
   const isAuthenticated = !!session?.user?.email;
@@ -132,26 +134,40 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   /**
    * Save cart to server for authenticated users
    */
-  const saveCartToServer = useCallback(async (cartItems: CartItem[]) => {
+  const saveCartToServer = useCallback(async (cartItems: CartItem[], forceClear = false) => {
     if (!isAuthenticated) return;
 
+    // Skip saving empty carts to prevent accidental cart clearing
+    if (cartItems.length === 0 && !forceClear) {
+      console.log('🛒 Skipping empty cart sync to prevent accidental cart clearing');
+      return { success: true, message: 'Empty cart sync skipped' };
+    }
+
     try {
+      console.log('🛒 Starting cart server sync with items:', cartItems.length, forceClear ? '(force clear requested)' : '');
       const response = await fetch('/api/cart', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ cart: cartItems }),
+        body: JSON.stringify({ 
+          cart: cartItems,
+          forceEmpty: forceClear && cartItems.length === 0
+        }),
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log('🛒 Cart saved to server:', result.message);
+        console.log('🛒 Cart saved to server successfully:', result.message);
+        return result;
       } else {
-        console.error('Failed to save cart to server:', response.statusText);
+        const errorText = await response.text();
+        console.error('❌ Failed to save cart to server:', response.status, response.statusText, errorText);
+        throw new Error(`Server error: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Error saving cart to server:', error);
+      console.error('❌ Error saving cart to server:', error);
+      throw error;
     }
   }, [isAuthenticated]);
 
@@ -203,7 +219,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     console.log('🛒 Cart items changed - saving cart:', { 
       itemCount: items.length, 
-      isAuthenticated 
+      isAuthenticated,
+      isIntentional: intentionalCartChange
     });
 
     // Always save to localStorage
@@ -212,12 +229,30 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     // If user is logged in, also save to server
     if (isAuthenticated) {
-      console.log('🛒 Attempting to save cart to server...');
-      saveCartToServer(items)
-        .then(() => console.log('🛒 Cart successfully synced with server'))
-        .catch(error => console.error('🛒 Error syncing cart with server:', error));
+      console.log('🛒 Attempting to save cart to server with debounce...');
+      
+      // Clear any pending timeout to prevent multiple rapid saves
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+      
+      // Only save non-empty carts or if explicitly cleared by user action
+      if (items.length > 0 || intentionalCartChange) {
+        // Set new timeout for saving cart with debounce
+        const newTimeout = setTimeout(() => {
+          saveCartToServer(items, intentionalCartChange && items.length === 0)
+            .then(() => {
+              console.log('🛒 Cart successfully synced with server');
+              // Reset the intentional flag after successful sync
+              setIntentionalCartChange(false);
+            })
+            .catch(error => console.error('🛒 Error syncing cart with server:', error));
+        }, 300); // Longer debounce to prevent race conditions
+        
+        setSaveTimeout(newTimeout);
+      }
     }
-  }, [items, loaded, isAuthenticated, saveCartToServer]);
+  }, [items, loaded, isAuthenticated, saveCartToServer, saveTimeout, intentionalCartChange]);
 
   /**
    * Merge local cart with server when user logs in
@@ -270,6 +305,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
    * Add item to cart
    */
   const addItem = useCallback((newItem: CartItem) => {
+    // Mark this as an intentional cart change
+    setIntentionalCartChange(true);
+    
     console.log('🛒 Adding item to cart - START:', { 
       id: newItem.id, 
       name: newItem.name, 
@@ -332,12 +370,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       console.log('🛒 Current cart after add:', items);
       console.log('🛒 Items count in cart:', items.length);
     }, 100);
-  }, []);
+  }, [isAuthenticated, items]);
 
   /**
    * Remove item from cart
    */
   const removeItem = useCallback((uniqueKey: string) => {
+    // Mark this as an intentional cart change
+    setIntentionalCartChange(true);
+    
     setItems((prevItems) => {
       const newItems = prevItems.filter((item) => item.uniqueKey !== uniqueKey);
       console.log('🛒 Item removed from cart, uniqueKey:', uniqueKey);
@@ -349,6 +390,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
    * Update item quantity
    */
   const updateQuantity = useCallback((uniqueKey: string, quantity: number) => {
+    // Mark this as an intentional cart change
+    setIntentionalCartChange(true);
+    
     if (quantity <= 0) {
       removeItem(uniqueKey);
       return;
@@ -365,8 +409,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
    * Clear all items from cart
    */
   const clearCart = useCallback(() => {
+    // Mark this as an intentional cart change
+    setIntentionalCartChange(true);
+    
     setItems([]);
-    console.log('🛒 Cart cleared');
+    console.log('🛒 Cart explicitly cleared by user action');
   }, []);
 
   // Calculate cart stats with memoization to prevent unnecessary recalculations

@@ -232,42 +232,46 @@ export default function ProductCard({
     e.preventDefault();
     e.stopPropagation();
 
-    console.log('🛒 Add to cart button clicked for product:', {
-      id,
-      name: translatedName,
-      price,
-      displayImageUrl
-    });
+    try {
+      console.log('🛒 Add to cart button clicked for product:', {
+        id,
+        name: translatedName,
+        price,
+        displayImageUrl
+      });
 
-    // Thêm sản phẩm vào giỏ hàng trực tiếp từ component
-    addItem({
-      id,
-      name: translatedName,
-      price,
-      quantity: 1,
-      image: displayImageUrl,
-    });
+      // Thêm sản phẩm vào giỏ hàng trực tiếp từ component
+      addItem({
+        id,
+        name: translatedName,
+        price,
+        quantity: 1,
+        image: displayImageUrl,
+      });
 
-    console.log('🛒 Product added to cart via ProductCard');
+      console.log('🛒 Product added to cart via ProductCard');
 
-    // Hiển thị hiệu ứng đã thêm vào giỏ
-    setShowAddedEffect(true);
-    setTimeout(() => {
-      setShowAddedEffect(false);
-    }, 1000);
+      // Hiển thị hiệu ứng đã thêm vào giỏ
+      setShowAddedEffect(true);
+      setTimeout(() => {
+        setShowAddedEffect(false);
+      }, 1000);
 
-    // Call onAddToCart prop if provided (for parent components to react)
-    onAddToCart(id);
-    
-    // Debug cart state after adding
-    setTimeout(() => {
-      try {
-        const cartData = localStorage.getItem('cart');
-        console.log('🛒 Current cart in localStorage:', cartData ? JSON.parse(cartData) : 'No cart found');
-      } catch (error) {
-        console.error('Error reading cart from localStorage:', error);
-      }
-    }, 300);
+      // Call onAddToCart prop if provided (for parent components to react)
+      onAddToCart(id);
+      
+      // Debug cart state after adding
+      setTimeout(() => {
+        try {
+          const cartData = localStorage.getItem('cart');
+          console.log('🛒 Current cart in localStorage:', cartData ? JSON.parse(cartData) : 'No cart found');
+        } catch (error) {
+          console.error('Error reading cart from localStorage:', error);
+        }
+      }, 300);
+    } catch (error) {
+      console.error('❌ Error adding product to cart:', error);
+    }
   };
 
   const handleView = () => {

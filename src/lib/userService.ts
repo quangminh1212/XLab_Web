@@ -106,12 +106,53 @@ async function saveUserDataToFile(email: string, userData: UserData): Promise<vo
     await ensureUsersDir();
     const fileName = getFileNameFromEmail(email);
     const filePath = path.join(USERS_DIR, fileName);
+    const tempFilePath = path.join(USERS_DIR, `${fileName}.temp.${Date.now()}`);
+    const backupFilePath = path.join(USERS_DIR, `${fileName}.backup.${Date.now()}`);
 
     userData.metadata.lastUpdated = new Date().toISOString();
     userData.metadata.version = '1.0';
-
-    await fs.writeFile(filePath, JSON.stringify(userData, null, 2), 'utf8');
-    console.log(`✅ User data saved for: ${email}`);
+    
+    // Prepare data to save
+    const dataToSave = JSON.stringify(userData, null, 2);
+    
+    // First write to a temporary file
+    await fs.writeFile(tempFilePath, dataToSave, 'utf8');
+    
+    // Check if the current file exists
+    try {
+      await fs.access(filePath);
+      // If it exists, make a backup
+      await fs.copyFile(filePath, backupFilePath);
+    } catch (err) {
+      // File doesn't exist, no need for backup
+    }
+    
+    // Now move the temp file to the actual location (atomic operation)
+    try {
+      await fs.rename(tempFilePath, filePath);
+      console.log(`✅ User data saved for: ${email}`);
+      
+      // Clean up backup if everything went well
+      try {
+        await fs.access(backupFilePath);
+        await fs.unlink(backupFilePath);
+      } catch (err) {
+        // No backup file to delete
+      }
+    } catch (renameError) {
+      console.error(`❌ Error during rename operation for ${email}:`, renameError);
+      
+      // Try to restore from backup if rename failed
+      try {
+        await fs.access(backupFilePath);
+        await fs.copyFile(backupFilePath, filePath);
+        console.log(`⚠️ Restored from backup for: ${email}`);
+      } catch (restoreError) {
+        console.error(`❌ Could not restore from backup for ${email}:`, restoreError);
+      }
+      
+      throw renameError;
+    }
   } catch (error) {
     console.error(`❌ Error saving user data for ${email}:`, error);
     throw error;
@@ -320,8 +361,17 @@ export async function updateUserBalance(email: string, amount: number): Promise<
 
 // Lấy giỏ hàng của user
 export async function getUserCart(email: string): Promise<CartItem[]> {
-  const userData = await ensureUserDataExists(email);
-  return userData.cart || [];
+  try {
+    console.log(`🔄 Getting cart for user: ${email}`);
+    const userData = await ensureUserDataExists(email);
+    const cart = userData.cart || [];
+    console.log(`✅ Retrieved cart for user: ${email}, items: ${cart.length}`);
+    return cart;
+  } catch (error) {
+    console.error(`❌ Error getting cart for ${email}:`, error);
+    // Return empty cart instead of throwing to prevent UI errors
+    return [];
+  }
 }
 
 // Cập nhật giỏ hàng của user (legacy - sử dụng updateUserCartSync thay thế)
@@ -334,39 +384,102 @@ export async function updateUserCart(email: string, cart: CartItem[]): Promise<v
 
 // Thêm sản phẩm vào giỏ hàng
 export async function addToUserCart(email: string, item: CartItem): Promise<void> {
-  const currentCart = await getUserCart(email);
-
-  // Tìm sản phẩm đã tồn tại
-  const existingItemIndex = currentCart.findIndex(
-    (cartItem) =>
-      cartItem.uniqueKey === item.uniqueKey ||
-      (cartItem.id === item.id && cartItem.version === item.version),
-  );
-
-  if (existingItemIndex > -1) {
-    // Cập nhật số lượng
-    currentCart[existingItemIndex].quantity += item.quantity || 1;
-  } else {
-    // Thêm mới
-    currentCart.push({
-      ...item,
-      uniqueKey: item.uniqueKey || `${item.id}_${item.version || 'default'}_${Date.now()}`,
+  try {
+    console.log(`🔄 Adding item to cart for user ${email}:`, {
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity || 1
     });
-  }
+    
+    const userData = await ensureUserDataExists(email);
+    const currentCart = userData.cart || [];
+    
+    // Make sure the item has a uniqueKey
+    const uniqueKey = item.uniqueKey || `${item.id}_${item.version || 'default'}_${Date.now()}`;
+    const itemWithUniqueKey = { ...item, uniqueKey, quantity: item.quantity || 1 };
+    
+    // Tìm sản phẩm đã tồn tại
+    const existingItemIndex = currentCart.findIndex(
+      (cartItem) =>
+        cartItem.uniqueKey === uniqueKey ||
+        (cartItem.id === item.id && cartItem.version === item.version)
+    );
 
-  await updateUserCart(email, currentCart);
+    let updatedCart = [...currentCart];
+    
+    if (existingItemIndex > -1) {
+      // Cập nhật số lượng
+      console.log(`🔄 Updating quantity for existing item in cart:`, {
+        oldQuantity: updatedCart[existingItemIndex].quantity,
+        newQuantity: updatedCart[existingItemIndex].quantity + (item.quantity || 1)
+      });
+      
+      updatedCart[existingItemIndex] = {
+        ...updatedCart[existingItemIndex],
+        quantity: updatedCart[existingItemIndex].quantity + (item.quantity || 1)
+      };
+    } else {
+      // Thêm mới
+      console.log(`🔄 Adding new item to cart:`, itemWithUniqueKey);
+      updatedCart.push(itemWithUniqueKey);
+    }
+
+    // Use the improved updateUserCartSync method
+    await updateUserCartSync(email, updatedCart);
+    console.log(`✅ Item successfully added to cart for user: ${email}`);
+  } catch (error) {
+    console.error(`❌ Error adding item to cart for ${email}:`, error);
+    throw error;
+  }
 }
 
-// Xóa sản phẩm khỏi giỏ hàng
+// Xóa sản phẩm khỏi giỏ hàng dựa trên uniqueKey
 export async function removeFromUserCart(email: string, uniqueKey: string): Promise<void> {
-  const currentCart = await getUserCart(email);
-  const updatedCart = currentCart.filter((item) => item.uniqueKey !== uniqueKey);
-  await updateUserCart(email, updatedCart);
+  try {
+    console.log(`🔄 Removing item from cart for user ${email}, uniqueKey: ${uniqueKey}`);
+    
+    const userData = await ensureUserDataExists(email);
+    const currentCart = userData.cart || [];
+    
+    // Find the item index
+    const itemIndex = currentCart.findIndex(item => item.uniqueKey === uniqueKey);
+    
+    if (itemIndex === -1) {
+      console.log(`⚠️ Item with uniqueKey ${uniqueKey} not found in cart for user ${email}`);
+      return; // Item not found, nothing to remove
+    }
+    
+    // Log the item being removed
+    console.log(`🔄 Found item to remove:`, {
+      id: currentCart[itemIndex].id,
+      name: currentCart[itemIndex].name,
+      quantity: currentCart[itemIndex].quantity
+    });
+    
+    // Filter out the item with the given uniqueKey
+    const updatedCart = currentCart.filter(item => item.uniqueKey !== uniqueKey);
+    
+    // Use the improved updateUserCartSync method
+    await updateUserCartSync(email, updatedCart);
+    console.log(`✅ Item successfully removed from cart for user: ${email}`);
+  } catch (error) {
+    console.error(`❌ Error removing item from cart for ${email}:`, error);
+    throw error;
+  }
 }
 
 // Xóa toàn bộ giỏ hàng
 export async function clearUserCart(email: string): Promise<void> {
-  await updateUserCart(email, []);
+  try {
+    console.log(`🔄 Clearing entire cart for user ${email}`);
+    
+    // Use the improved updateUserCartSync method with an empty cart
+    await updateUserCartSync(email, []);
+    console.log(`✅ Cart successfully cleared for user: ${email}`);
+  } catch (error) {
+    console.error(`❌ Error clearing cart for ${email}:`, error);
+    throw error;
+  }
 }
 
 // ===== TRANSACTION FUNCTIONS =====
@@ -775,7 +888,8 @@ export async function updateUserCartSync(email: string, cart: CartItem[]): Promi
     const userData = await ensureUserDataExists(email);
     console.log(`📝 Found user data for: ${email}, current cart items: ${userData.cart.length}`);
 
-    userData.cart = cart;
+    // Make a deep copy of the cart to avoid reference issues
+    userData.cart = JSON.parse(JSON.stringify(cart));
     userData.metadata.lastUpdated = new Date().toISOString();
     userData.profile.updatedAt = new Date().toISOString();
 
@@ -784,8 +898,24 @@ export async function updateUserCartSync(email: string, cart: CartItem[]): Promi
       timestamp: userData.metadata.lastUpdated
     });
     
-    await saveUserDataToFile(email, userData);
-    console.log(`✅ Cart saved to user file for: ${email}`);
+    // Ensure the users directory exists before saving
+    await ensureUsersDir();
+    
+    try {
+      await saveUserDataToFile(email, userData);
+      console.log(`✅ Cart saved to user file for: ${email}`);
+    } catch (saveError) {
+      console.error(`❌ Error saving cart to file: ${saveError instanceof Error ? saveError.message : 'Unknown error'}`);
+      // Retry the save operation
+      try {
+        await new Promise(resolve => setTimeout(resolve, 500)); // Wait a bit
+        await saveUserDataToFile(email, userData);
+        console.log(`✅ Cart saved to user file after retry for: ${email}`);
+      } catch (retrySaveError) {
+        console.error(`❌ Failed to save cart after retry: ${retrySaveError instanceof Error ? retrySaveError.message : 'Unknown error'}`);
+        throw retrySaveError;
+      }
+    }
 
     // Trigger sync để đảm bảo consistency
     try {

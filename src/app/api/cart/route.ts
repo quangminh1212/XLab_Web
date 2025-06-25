@@ -58,11 +58,27 @@ export async function PUT(request: Request) {
     }
 
     const data = await request.json();
-    const { cart } = data;
+    const { cart, forceEmpty = false } = data;
 
     if (!Array.isArray(cart)) {
       console.log('❌ Cart API - Invalid cart data:', cart);
       return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
+    }
+    
+    // Prevent accidental empty cart updates without explicit confirmation
+    if (cart.length === 0 && !forceEmpty) {
+      // Get the current cart to check if it has items
+      const currentCart = await getUserCart(session.user.email);
+      if (currentCart.length > 0) {
+        console.log('⚠️ Cart API - Attempted to clear non-empty cart without confirmation:', { 
+          currentItems: currentCart.length
+        });
+        return NextResponse.json({ 
+          success: false, 
+          message: 'Empty cart update rejected. Use forceEmpty:true to explicitly clear the cart.',
+          cart: currentCart
+        }, { status: 400 });
+      }
     }
     
     // Ensure each cart item has the required fields
