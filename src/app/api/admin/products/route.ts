@@ -1,85 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { Product, ProductCategory } from '@/models/ProductModel';
+import { Product, ProductCategory, ProductSpecification } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { getAllProducts, saveProduct, deleteProduct, updateProduct } from '@/lib/i18n/products';
 
-const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-
-// Hàm đọc dữ liệu từ file JSON
-const getProducts = (): Product[] => {
-  try {
-    if (!fs.existsSync(dataFilePath)) {
-      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
-      return [];
-    }
-
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-
-    try {
-      // Thử phân tích trực tiếp
-      return JSON.parse(fileContent);
-    } catch (parseError) {
-      // Nếu có lỗi phân tích, thử sửa lỗi cú pháp JSON
-      console.error('JSON parse error:', parseError);
-
-      // Hàm sửa lỗi cú pháp JSON phổ biến
-      const fixedContent = fileContent
-        .replace(/}\s*"/g, '},"') // Thiếu dấu phẩy giữa các đối tượng
-        .replace(/,\s*}/g, '}') // Dấu phẩy thừa trước dấu đóng ngoặc
-        .replace(/,\s*]/g, ']'); // Dấu phẩy thừa trước dấu đóng mảng
-
-      try {
-        // Thử phân tích lại sau khi sửa
-        const parsedData = JSON.parse(fixedContent);
-
-        // Nếu phân tích thành công, ghi lại file đã sửa
-        fs.writeFileSync(dataFilePath, JSON.stringify(parsedData, null, 2), 'utf8');
-        console.log('JSON syntax errors fixed and file updated');
-
-        return parsedData;
-      } catch (secondError) {
-        // Nếu vẫn không sửa được, trả về mảng rỗng
-        console.error('Could not fix JSON syntax errors:', secondError);
-        return [];
-      }
-    }
-  } catch (error) {
-    console.error('Error reading products data:', error);
-    return [];
-  }
-};
-
-// Hàm lưu dữ liệu vào file JSON
-const saveProducts = (products: Product[]) => {
-  try {
-    const dirPath = path.dirname(dataFilePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-    fs.writeFileSync(dataFilePath, JSON.stringify(products, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Error saving products data:', error);
-  }
-};
-
-// GET - Lấy danh sách sản phẩm
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session || !session.user.isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const products = getProducts();
-    return NextResponse.json(products);
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
-  }
+/**
+ * Normalize language code from Accept-Language header
+ * @param lang The Accept-Language header value
+ * @returns 'eng' or 'vie' based on the primary language
+ */
+function normalizeLanguageHeader(lang: string | null): string {
+  if (!lang) return 'vie'; // Default to Vietnamese
+  
+  // Extract primary language code before any quality values
+  const primaryLang = lang.split(',')[0].split('-')[0].toLowerCase();
+  
+  // Map to our supported codes
+  if (primaryLang === 'en') return 'eng';
+  
+  // Default to Vietnamese for any other language
+  return 'vie';
 }
 
 // POST - Thêm sản phẩm mới
@@ -135,19 +78,45 @@ export async function POST(request: NextRequest) {
       })) as ProductCategory[];
     }
 
-    // Đọc dữ liệu hiện tại
-    const products = getProducts();
-
-    // Thêm sản phẩm mới
-    products.push(newProduct);
-
-    // Lưu lại vào file
-    saveProducts(products);
-
-    return NextResponse.json(newProduct, { status: 201 });
+    // Get language from header or default to 'vie'
+    const language = request.headers.get('accept-language') || 'vie';
+    
+    // Save the new product using the i18n product function
+    const saveResult = await saveProduct(newProduct, language);
+    
+    if (saveResult) {
+      return NextResponse.json(newProduct, { status: 201 });
+    } else {
+      return NextResponse.json({ error: 'Failed to save product' }, { status: 500 });
+    }
   } catch (error) {
     console.error('Error adding product:', error);
     return NextResponse.json({ error: 'Failed to add product' }, { status: 500 });
+  }
+}
+
+// GET - Lấy danh sách sản phẩm
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user.isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Get language from header and normalize it
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = normalizeLanguageHeader(acceptLanguage);
+    console.log(`Fetching admin products with normalized language: ${language}`);
+
+    // Get products based on language using the i18n product function
+    const products = await getAllProducts(language);
+    console.log(`Retrieved ${products.length} products from ${language} files`);
+
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
 }
 

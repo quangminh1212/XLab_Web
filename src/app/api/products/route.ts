@@ -1,52 +1,84 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as fs from 'fs';
-import path from 'path';
-import { Product } from '@/models/ProductModel';
+import { getAllProducts } from '@/lib/i18n/products';
 
 export async function GET(req: NextRequest) {
   try {
-    // Get language from query parameter or default to Vietnamese
-    const searchParams = req.nextUrl.searchParams;
-    const lang = searchParams.get('lang') || 'vie';
-    const categoryId = searchParams.get('categoryId');
+    // Get query parameters
+    const { searchParams } = req.nextUrl;
+    const category = searchParams.get('category');
+    const featured = searchParams.get('featured');
+    const limit = parseInt(searchParams.get('limit') || '0');
     const exclude = searchParams.get('exclude');
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
+    const sort = searchParams.get('sort') || 'newest';
+    const type = searchParams.get('type');
+    const search = searchParams.get('search');
+
+    // Get language from header or query parameter (default to 'vie')
+    const langParam = searchParams.get('lang');
+    const acceptLanguage = req.headers.get('accept-language');
+    const language = langParam || acceptLanguage || 'vie';
+
+    console.log(`Getting products with language: ${language}`);
+
+    // Get all products using i18n library
+    const allProducts = await getAllProducts(language);
     
-    // Get products directory path based on language
-    const productsDir = path.join(process.cwd(), `i8n/${lang}/product`);
-    
-    // Read all product files
-    let productList: Product[] = [];
-    try {
-      const files = fs.readdirSync(productsDir);
-      const jsonFiles = files.filter(file => file.endsWith('.json'));
-      
-      productList = jsonFiles.map(file => {
-        const filePath = path.join(productsDir, file);
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
-        return JSON.parse(fileContent) as Product;
+    // Filter by published status
+    let productList = allProducts.filter((p) => p.isPublished !== false);
+
+    // Filter by category if provided
+    if (category) {
+      productList = productList.filter((product) => {
+        if (!product.categories) return false;
+        // Handle both string array and object array formats
+        return product.categories.some((cat: any) => {
+          if (typeof cat === 'string') return cat === category;
+          if (cat.id) return cat.id === category || cat.slug === category;
+          return false;
+        });
       });
-      
-      console.log(`Retrieved ${productList.length} products from ${lang} files`);
-    } catch (error) {
-      console.error(`Error reading ${lang} product files:`, error);
-      return NextResponse.json({ error: `Failed to read ${lang} product files` }, { status: 500 });
+      console.log(`Filtered by category ${category}, found ${productList.length} products`);
     }
 
-    // Only get published products
-    productList = productList.filter((p) => p.isPublished);
-    console.log(`Found ${productList.length} published ${lang} products`);
+    // Filter by type if provided
+    if (type) {
+      productList = productList.filter((p) => p.type === type);
+      console.log(`Filtered by type ${type}, found ${productList.length} products`);
+    }
 
-    // Filter by categoryId if provided
-    if (categoryId) {
-      productList = productList.filter(
-        (p) =>
-          p.categories &&
-          p.categories.some((cat) =>
-            typeof cat === 'string' ? cat === categoryId : cat.id === categoryId,
-          ),
-      );
-      console.log(`Filtered to ${productList.length} products in category ${categoryId}`);
+    // Filter by featured if provided
+    if (featured === 'true') {
+      productList = productList.filter((p) => (p as any).isFeatured === true);
+      console.log(`Filtered by featured, found ${productList.length} products`);
+    }
+
+    // Filter by search term if provided
+    if (search) {
+      const searchLower = search.toLowerCase();
+      productList = productList.filter((product) => {
+        return (
+          (product.name && product.name.toLowerCase().includes(searchLower)) ||
+          (product.description && product.description.toLowerCase().includes(searchLower)) ||
+          (product.shortDescription && product.shortDescription.toLowerCase().includes(searchLower))
+        );
+      });
+      console.log(`Filtered by search "${search}", found ${productList.length} products`);
+    }
+
+    // Sort products
+    if (sort === 'price-low') {
+      productList.sort((a, b) => getPrice(a) - getPrice(b));
+    } else if (sort === 'price-high') {
+      productList.sort((a, b) => getPrice(b) - getPrice(a));
+    } else if (sort === 'popular') {
+      productList.sort((a, b) => (b.totalSold || 0) - (a.totalSold || 0));
+    } else {
+      // Default sort by newest
+      productList.sort((a, b) => {
+        const dateA = a.updatedAt || a.createdAt || '';
+        const dateB = b.updatedAt || b.createdAt || '';
+        return dateB.localeCompare(dateA);
+      });
     }
 
     // Exclude specific product if exclude is provided
@@ -100,14 +132,15 @@ export async function GET(req: NextRequest) {
       data: processedProducts,
       total: processedProducts.length,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching products:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || 'Internal server error',
-      },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
+}
+
+// Helper function to get product price
+function getPrice(product: any): number {
+  if (product.price) return product.price;
+  if (product.versions && product.versions.length > 0) return product.versions[0].price;
+  return 0;
 }
