@@ -34,7 +34,7 @@ function normalizeLanguageCode(lang: string): string {
  */
 function ensureProductDirectory(lang: string): void {
   const normalizedLang = normalizeLanguageCode(lang);
-  const productDir = path.join(process.cwd(), `i8n/${normalizedLang}/product`);
+  const productDir = path.join(process.cwd(), `src/i18n/${normalizedLang}/product`);
   if (!fs.existsSync(productDir)) {
     fs.mkdirSync(productDir, { recursive: true });
     console.log(`Created product directory for language: ${normalizedLang}`);
@@ -50,7 +50,7 @@ export async function saveProduct(product: Product, lang = 'vie'): Promise<boole
   try {
     const normalizedLang = normalizeLanguageCode(lang);
     ensureProductDirectory(normalizedLang);
-    const productFilePath = path.join(process.cwd(), `i8n/${normalizedLang}/product/${product.id}.json`);
+    const productFilePath = path.join(process.cwd(), `src/i18n/${normalizedLang}/product/${product.id}.json`);
     fs.writeFileSync(productFilePath, JSON.stringify(product, null, 2), 'utf-8');
     console.log(`Product ${product.id} saved for language ${normalizedLang}`);
     return true;
@@ -73,7 +73,7 @@ export async function getProductById(id: string, lang = 'vie'): Promise<Product 
     console.log(`Getting product ${id} with normalized language: ${normalizedLang}`);
     
     // Get product file path based on ID and language
-    const productFilePath = path.join(process.cwd(), `i8n/${normalizedLang}/product/${id}.json`);
+    const productFilePath = path.join(process.cwd(), `src/i18n/${normalizedLang}/product/${id}.json`);
     
     let product: Product | null = null;
     
@@ -112,7 +112,7 @@ export async function deleteProduct(id: string, lang?: string): Promise<boolean>
     let success = false;
     
     for (const language of languages) {
-      const productFilePath = path.join(process.cwd(), `i8n/${language}/product/${id}.json`);
+      const productFilePath = path.join(process.cwd(), `src/i18n/${language}/product/${id}.json`);
       
       if (fs.existsSync(productFilePath)) {
         fs.unlinkSync(productFilePath);
@@ -141,8 +141,8 @@ export async function getAllProducts(lang = 'vie'): Promise<Product[]> {
     
     const products: Product[] = [];
     
-    // Get products from i8n directory
-    const productsDir = path.join(process.cwd(), `i8n/${normalizedLang}/product`);
+    // Get products from i18n directory
+    const productsDir = path.join(process.cwd(), `src/i18n/${normalizedLang}/product`);
     
     if (fs.existsSync(productsDir)) {
       const files = fs.readdirSync(productsDir);
