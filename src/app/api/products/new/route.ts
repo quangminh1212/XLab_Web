@@ -3,6 +3,7 @@ import { products } from '@/data/mockData';
 import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
+import { saveProduct } from '@/lib/i18n/products';
 
 // Hàm tạo ID từ tên sản phẩm
 function generateIdFromName(name: string): string {
@@ -180,6 +181,19 @@ export async function POST(request: Request) {
 
     // Thêm sản phẩm vào danh sách products (in-memory)
     products.push(newProduct as any);
+    
+    // Lấy ngôn ngữ từ header hoặc mặc định là 'vie'
+    const acceptLanguage = request.headers.get('accept-language') || 'vie';
+    const language = acceptLanguage.split(',')[0].trim().toLowerCase();
+    
+    // Lưu sản phẩm vào thư mục i18n theo ngôn ngữ
+    try {
+      await saveProduct(newProduct, language);
+      console.log(`Product saved to i18n/${language}/product/${newId}.json`);
+    } catch (i18nError) {
+      console.error('Error saving product to i18n directory:', i18nError);
+      // Không trả về lỗi vì đã lưu thành công vào products.json
+    }
 
     return NextResponse.json(
       {
