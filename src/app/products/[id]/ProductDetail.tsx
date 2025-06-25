@@ -583,12 +583,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // Tăng số lượt xem khi người dùng truy cập trang
   useEffect(() => {
-    // Tăng số lượt xem khi component được mount
+    // Tăng số lượt xem khi component được mount và chỉ mount lần đầu 
     setViewCount((prev) => prev + 1);
 
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
-    console.log(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
-  }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Không tham chiếu đến viewCount trong effect để tránh vòng lặp vô hạn
+    console.log(`Đang xem sản phẩm: ${product.name}`);
+  }, [product.id, product.name]); // Chỉ phụ thuộc vào ID và tên sản phẩm
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
   const isAccount = product.categories?.some((cat) => cat.id === 'tai-khoan-hoc-tap');
