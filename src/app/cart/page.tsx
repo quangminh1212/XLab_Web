@@ -169,42 +169,21 @@ export default function CartPage() {
   }, []);
 
   // Enrich cart items with image and description from product data
-<<<<<<< HEAD
-  const cart = cartItems.map((item) => {
-    console.log("Processing cart item:", JSON.stringify(item));
-    
-    // Safety check - ensure item has all required properties
-    if (!item || !item.id) {
-      console.error("Invalid cart item:", item);
-      return {
-        id: item?.id || "unknown",
-        name: item?.name || "Unknown Product",
-        price: item?.price || 0,
-        quantity: item?.quantity || 1,
-        image: '/images/placeholder/product-placeholder.svg',
-        description: '',
-        uniqueKey: item?.uniqueKey || `unknown-${Date.now()}`
-      };
-    }
-    
-=======
   const cart = (cartItems.length > 0 ? cartItems : forcedCartItems).map((item) => {
->>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     // Find product with multiple matching strategies
     const productDetail = products.find((p: any) => {
-      if (!p || !p.id) return false;
-      
       const productId = String(p.id).toLowerCase();
       const itemId = String(item.id).toLowerCase();
-      const productName = (p.name ? String(p.name).toLowerCase() : '');
-      const itemName = (item.name ? String(item.name).toLowerCase() : '');
+      const productName = String(p.name).toLowerCase();
+      const itemName = String(item.name).toLowerCase();
 
       return (
         productId === itemId ||
         productId === itemName ||
         productName === itemId ||
         productName === itemName ||
-        (p.slug && (p.slug === itemId || p.slug === itemName))
+        p.slug === itemId ||
+        p.slug === itemName
       );
     });
 
@@ -237,15 +216,11 @@ export default function CartPage() {
           .substring(0, 150) + '...';
     }
 
-    const enrichedItem = {
+    return {
       ...item,
       image: imageUrl,
       description: description,
-      uniqueKey: item.uniqueKey || `${item.id}_default_${Date.now()}`
     };
-    
-    console.log("Enriched cart item:", enrichedItem);
-    return enrichedItem;
   });
 
   // Tính tổng giá trị giỏ hàng
@@ -352,8 +327,16 @@ export default function CartPage() {
 
   // Biểu tượng giỏ hàng trống
   const EmptyCartIcon = () => (
-    <div className="relative w-32 h-32 mx-auto mb-6 text-gray-300">
-      <AiOutlineShoppingCart className="w-full h-full stroke-1" />
+    <div className="relative w-32 h-32 mx-auto mb-6">
+      <div className="w-full h-full flex items-center justify-center">
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24"
+          className="w-full h-full text-gray-400 fill-current"
+        >
+          <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+        </svg>
+      </div>
     </div>
   );
 

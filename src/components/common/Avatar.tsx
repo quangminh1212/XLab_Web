@@ -45,7 +45,7 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', className = '' }
   const imageSrc = !imageError && src ? src : '/images/avatar-placeholder.svg';
 
   return (
-    <div className={`relative flex items-center justify-center ${sizeClasses[size]} ${className}`}>
+    <div className={`relative ${sizeClasses[size]} ${className}`}>
       <Image
         src={imageSrc}
         alt={alt}

@@ -433,43 +433,6 @@ export default function AccountPage() {
     return dateString;
   };
 
-  // Hàm tính thời gian thành viên
-  const calculateMembershipDuration = (startDate: string) => {
-    try {
-      // Parse ngày bắt đầu (format DD/MM/YYYY)
-      const parts = startDate.split('/');
-      if (parts.length !== 3) return '';
-      
-      const day = parseInt(parts[0]);
-      const month = parseInt(parts[1]) - 1; // Tháng trong JS là 0-11
-      const year = parseInt(parts[2]);
-      
-      const start = new Date(year, month, day);
-      const today = new Date();
-      
-      const diffTime = Math.abs(today.getTime() - start.getTime());
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays < 30) {
-        return `${diffDays} ngày`;
-      } else if (diffDays < 365) {
-        const months = Math.floor(diffDays / 30);
-        return `${months} tháng`;
-      } else {
-        const years = Math.floor(diffDays / 365);
-        const remainingMonths = Math.floor((diffDays % 365) / 30);
-        if (remainingMonths > 0) {
-          return `${years} năm ${remainingMonths} tháng`;
-        } else {
-          return `${years} năm`;
-        }
-      }
-    } catch (error) {
-      console.error("Lỗi khi tính thời gian thành viên:", error);
-      return '';
-    }
-  };
-
   // Thêm liên kết đến trang đơn hàng
   const goToOrdersPage = () => {
     router.push('/orders');
@@ -532,27 +495,7 @@ export default function AccountPage() {
       {/* Thống kê tổng quan */}
       <section className="py-8 bg-gray-50">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.memberDuration')}</h3>
-              <p className="text-3xl font-bold text-gray-800">{profile.memberSince}</p>
-              <div className="mt-2 flex items-center text-sm text-gray-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-1 text-primary-500"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>{calculateMembershipDuration(profile.memberSince)}</span>
-              </div>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalProducts')}</h3>
               <p className="text-3xl font-bold text-gray-800">{totalProducts}</p>
@@ -648,11 +591,11 @@ export default function AccountPage() {
             <div className="lg:w-1/4">
               <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <div className="flex flex-col items-center mb-6">
-                  <div className="relative w-32 h-32 mb-4 flex items-center justify-center overflow-hidden rounded-full border-4 border-gray-100 shadow-sm">
-                    <Avatar src={session?.user?.image} alt={profile.name} size="2xl" />
+                  <div className="relative w-24 h-24 mb-4">
+                    <Avatar src={session?.user?.image} alt={profile.name} size="xl" className="" />
                     <label
                       htmlFor="avatar-upload"
-                      className="absolute bottom-1 right-1 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100 shadow-sm"
+                      className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -688,12 +631,7 @@ export default function AccountPage() {
                   </div>
                   <h2 className="text-xl font-bold">{profile.name}</h2>
                   <p className="text-gray-600">{profile.email}</p>
-                  <div className="flex items-center text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded-full mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{calculateMembershipDuration(profile.memberSince)}</span>
-                  </div>
+                  <p className="text-sm text-gray-500">{t('account.memberSince', { date: profile.memberSince })}</p>
                 </div>
 
                 <nav className="space-y-1">

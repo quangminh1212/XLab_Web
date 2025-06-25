@@ -8,11 +8,7 @@
     "isActive": true,
     "balance": 57000,
     "createdAt": "2023-05-29T20:16:59.995Z",
-<<<<<<< HEAD
-    "updatedAt": "2025-06-25T08:51:46.080Z",
-=======
     "updatedAt": "2025-06-25T15:57:14.378Z",
->>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     "lastLogin": "2023-05-29T20:16:59.995Z"
   },
   "transactions": [],
@@ -21,11 +17,6 @@
       "id": "chatgpt",
       "name": "ChatGPT",
       "price": 149000,
-<<<<<<< HEAD
-      "quantity": 1,
-      "image": "/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png",
-      "uniqueKey": "chatgpt_default_"
-=======
       "quantity": 3,
       "image": "/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png",
       "uniqueKey": "chatgpt_default_"
@@ -37,7 +28,6 @@
       "quantity": 1,
       "image": "/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png",
       "uniqueKey": "grok_default_"
->>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     }
   ],
   "orders": [],
@@ -47,11 +37,7 @@
     "theme": "light"
   },
   "metadata": {
-<<<<<<< HEAD
-    "lastUpdated": "2025-06-25T08:51:46.084Z",
-=======
     "lastUpdated": "2025-06-25T15:57:14.378Z",
->>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     "version": "1.0"
   }
 }

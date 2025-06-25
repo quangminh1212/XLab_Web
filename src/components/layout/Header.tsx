@@ -46,14 +46,7 @@ const Header = () => {
   const [notificationMessage, setNotificationMessage] = React.useState('');
 
   // Lấy thông tin giỏ hàng
-  const { itemCount, syncWithServer } = useCart();
-
-  // Cache itemCount để tránh render lại không cần thiết
-  const cachedItemCount = React.useMemo(() => {
-    console.log(`[${Date.now()}] 🛒 Header: Using cart itemCount: ${itemCount}`);
-    // Giới hạn hiển thị ở mức 99+
-    return itemCount > 99 ? 99 : itemCount;
-  }, [itemCount]); // Thêm lại dependency array với itemCount
+  const { itemCount } = useCart();
 
   // Tạo ref để tham chiếu đến phần tử dropdown profile
   const profileRef = useRef<HTMLDivElement>(null);
@@ -347,11 +340,6 @@ const Header = () => {
     { href: '/contact', label: t('nav.contact') },
     { href: '/bao-hanh', label: t('nav.warranty') },
   ];
-
-  // Hàm để đồng bộ giỏ hàng
-  const handleCartClick = () => {
-    syncWithServer().catch(console.error);
-  };
 
   return (
     <>
@@ -658,7 +646,6 @@ const Header = () => {
               <Link
                 href="/cart"
                 className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                onClick={handleCartClick}
               >
                 <span className="sr-only">View cart</span>
                 <svg
@@ -675,9 +662,9 @@ const Header = () => {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                {cachedItemCount > 0 && (
+                {itemCount > 0 && (
                   <span className="absolute top-0 right-0 -mt-1 -mr-1 bg-primary-500 rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
-                    {cachedItemCount}
+                    {itemCount}
                   </span>
                 )}
               </Link>
@@ -788,7 +775,6 @@ const Header = () => {
                 <Link
                   href="/cart"
                   className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
-                  onClick={handleCartClick}
                 >
                   <span className="sr-only">View cart</span>
                   <svg
@@ -805,9 +791,9 @@ const Header = () => {
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                   </svg>
-                  {cachedItemCount > 0 && (
+                  {itemCount > 0 && (
                     <span className="absolute top-0 right-0 -mt-1 -mr-1 bg-primary-500 rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
-                      {cachedItemCount}
+                      {itemCount}
                     </span>
                   )}
                 </Link>
