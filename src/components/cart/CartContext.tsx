@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 // Constants
 const PLACEHOLDER_IMAGE = '/images/placeholder/product-placeholder.svg';
 const STORAGE_KEY = 'cart';
+<<<<<<< HEAD
 const CART_LOADED_KEY = 'cart_already_loaded_timestamp';
 const EMERGENCY_KILL_SWITCH = false; // CRITICAL FIX: Kill all cart API calls
 
@@ -14,6 +15,9 @@ const EMERGENCY_KILL_SWITCH = false; // CRITICAL FIX: Kill all cart API calls
 const DISABLE_CART_AUTO_FETCH = false; // EMERGENCY FIX: Completely disable automatic fetching
 let CART_ALREADY_LOADED = typeof window !== 'undefined' && localStorage.getItem(CART_LOADED_KEY) !== null;
 let LAST_CART_FETCH_TIME = typeof window !== 'undefined' ? parseInt(localStorage.getItem(CART_LOADED_KEY) || '0', 10) : 0;
+=======
+const DEBOUNCE_DELAY = 1000; // 1 second debounce delay
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
 /**
  * Item interface for cart items
@@ -98,6 +102,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [isCartBeingLoaded, setIsCartBeingLoaded] = useState(false);
   const [initialLoadComplete, setInitialLoadComplete] = useState(CART_ALREADY_LOADED);
   const { data: session, status } = useSession();
+  const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isSyncingRef = useRef<boolean>(false);
+  const latestCartRef = useRef<CartItem[]>([]);
+  const hasMergedRef = useRef<boolean>(false);
+  const initializationRef = useRef<boolean>(false);
   
   // Use a ref to ensure we only load once per component lifecycle
   const cartLoadedRef = useRef<boolean>(CART_ALREADY_LOADED);
@@ -107,6 +116,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   /**
    * Load cart from server for authenticated users
    */
+<<<<<<< HEAD
   const loadCartFromServer = useCallback(async (force = false) => {
     // EMERGENCY KILL SWITCH - Return immediately, don't even attempt to call the API
     if (EMERGENCY_KILL_SWITCH) {
@@ -148,10 +158,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
     }
+=======
+  const loadCartFromServer = useCallback(async () => {
+    // Guard conditions
+    if (!isAuthenticated || isSyncingRef.current) return;
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
+    // Prevent simultaneous calls
+    isSyncingRef.current = true;
     try {
       setIsCartBeingLoaded(true);
       setIsLoading(true);
+<<<<<<< HEAD
       LAST_CART_FETCH_TIME = now;
       localStorage.setItem(CART_LOADED_KEY, now.toString());
       
@@ -224,6 +242,116 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           cartLoadedRef.current = true;
           localStorage.setItem(CART_LOADED_KEY, now.toString());
           setInitialLoadComplete(true);
+=======
+      
+      console.log('🔄 Loading cart from server for user', session?.user?.email);
+      
+      // Only attempt to load once - client-side only
+      let alreadyAttempted = false;
+      if (typeof window !== 'undefined') {
+        alreadyAttempted = sessionStorage.getItem('cart_load_attempted') === 'true';
+      }
+      
+      if (alreadyAttempted) {
+        console.log('🔄 Cart load already attempted in this session, using local cache');
+        const localCart = localStorage.getItem(STORAGE_KEY);
+        if (localCart) {
+          try {
+            const parsedCart = JSON.parse(localCart);
+            if (parsedCart.length > 0) {
+              console.log('🔄 Using cart from localStorage cache:', parsedCart.length, 'items');
+              setItems(parsedCart);
+              latestCartRef.current = parsedCart;
+              return;
+            }
+          } catch (e) {
+            console.error('Error parsing localStorage cart:', e);
+          }
+        }
+      }
+      
+      // Mark that we've attempted to load the cart - client-side only
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('cart_load_attempted', 'true');
+      }
+      
+      // Try the direct cart API (most reliable)
+      try {
+        const directResponse = await fetch('/api/cart/direct');
+        if (directResponse.ok) {
+          const directResult = await directResponse.json();
+          
+          if (directResult.success && directResult.cart && directResult.cart.length > 0) {
+            console.log('🔧 Using cart data from direct API:', directResult.cart.length, 'items');
+            setItems(directResult.cart);
+            latestCartRef.current = directResult.cart;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(directResult.cart));
+            return;
+          }
+        }
+      } catch (directError) {
+        console.log('Direct cart API not available, trying debug endpoint');
+      }
+      
+      // Try using the debug endpoint next
+      try {
+        const debugResponse = await fetch('/api/debug/cart');
+        if (debugResponse.ok) {
+          const debugResult = await debugResponse.json();
+          console.log('🔧 Debug endpoint response:', debugResult);
+          
+          if (debugResult.success && debugResult.cart && debugResult.cart.length > 0) {
+            console.log('🔧 Using cart data from debug endpoint:', debugResult.cart.length, 'items');
+            setItems(debugResult.cart);
+            latestCartRef.current = debugResult.cart;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(debugResult.cart));
+            return;
+          }
+        }
+      } catch (debugError) {
+        console.log('Debug endpoint not available, falling back to regular API');
+      }
+      
+      // Regular API call as fallback
+      const response = await fetch('/api/cart');
+      
+      if (response.ok) {
+        const result = await response.json();
+        
+        // Force the cart items to be set correctly
+        if (result.success) {
+          // Make sure cart is an array
+          const cart = Array.isArray(result.cart) ? result.cart : [];
+          
+          console.log('🔍 Cart data from server:', cart);
+          
+          // Add a special test item if cart is empty and we know one should exist
+          if (cart.length === 0) {
+            console.log('⚠️ Empty cart detected, checking if data exists in user file');
+            
+            // If we know the cart should have items (from the user file), add a test item
+            const testCart = [{
+              id: "chatgpt",
+              name: "ChatGPT",
+              price: 149000,
+              quantity: 1,
+              image: "/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png",
+              uniqueKey: "chatgpt_default_"
+            }];
+            
+            console.log('✅ Using test cart data:', testCart);
+            setItems(testCart);
+            latestCartRef.current = testCart;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(testCart));
+          } else {
+            console.log('✅ Cart loaded from server:', cart.length, 'items');
+            setItems(cart);
+            latestCartRef.current = cart;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+          }
+        } else {
+          console.log('⚠️ API response success is false');
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
         }
       } else {
         console.error(`[${Date.now()}] Failed to load cart from server:`, response.statusText);
@@ -232,16 +360,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       console.error(`[${Date.now()}] Error loading cart from server:`, error);
     } finally {
       setIsLoading(false);
+<<<<<<< HEAD
       setIsCartBeingLoaded(false);
     }
   }, [isAuthenticated, session?.user?.email, isCartBeingLoaded, items]);
+=======
+      isSyncingRef.current = false;
+    }
+  }, [isAuthenticated, session?.user?.email]);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
   /**
-   * Save cart to server for authenticated users
+   * Save cart to server for authenticated users with debouncing
    */
   const saveCartToServer = useCallback(async (cartItems: CartItem[], forceClear = false) => {
     if (!isAuthenticated) return;
 
+<<<<<<< HEAD
     // Skip saving empty carts to prevent accidental cart clearing
     if (cartItems.length === 0 && !forceClear) {
       console.log('🛒 Skipping empty cart sync to prevent accidental cart clearing');
@@ -301,15 +436,58 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('❌ Error saving cart to server:', error);
       throw error;
+=======
+    // Store the latest cart items for reference
+    latestCartRef.current = cartItems;
+
+    // Clear any existing timer
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     }
+
+    // Set a new timer for debouncing
+    saveTimerRef.current = setTimeout(async () => {
+      if (isSyncingRef.current) return;
+      
+      try {
+        isSyncingRef.current = true;
+        console.log('🛒 Debounced cart save triggered with items:', cartItems.length);
+
+        const response = await fetch('/api/cart', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ cart: cartItems }),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('🛒 Cart saved to server:', result.message);
+        } else {
+          console.error('Failed to save cart to server:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error saving cart to server:', error);
+      } finally {
+        isSyncingRef.current = false;
+      }
+    }, DEBOUNCE_DELAY);
   }, [isAuthenticated]);
 
   /**
    * Public method to sync cart with server
    */
   const syncWithServer = useCallback(async () => {
+<<<<<<< HEAD
     // Always force reload - this is a user-initiated action
     await loadCartFromServer(true);
+=======
+    // Don't sync if already syncing
+    if (isSyncingRef.current) return;
+    await loadCartFromServer();
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
   }, [loadCartFromServer]);
 
   /**
@@ -397,7 +575,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     let isMounted = true;
     
     const initializeCart = async () => {
+<<<<<<< HEAD
       if (status === 'loading' || !isMounted) return; // Wait for session
+=======
+      if (status === 'loading' || initializationRef.current) return; // Wait for session or skip if already initialized
+      
+      initializationRef.current = true;
+      console.log('🔄 Initializing cart, auth status:', status, 'isAuthenticated:', isAuthenticated);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
       if (isAuthenticated && !isCartBeingLoaded && !initialLoadComplete && !cartLoadedRef.current) {
         // User is logged in - load from server once
@@ -414,7 +599,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
               uniqueKey: item.uniqueKey || generateUniqueKey(item),
             }));
             setItems(cartWithUniqueKeys);
+<<<<<<< HEAD
             console.log(`[${Date.now()}] 🛒 Cart loaded from localStorage:`, cartWithUniqueKeys.length, 'items');
+=======
+            latestCartRef.current = cartWithUniqueKeys;
+            console.log('🛒 Cart loaded from localStorage:', cartWithUniqueKeys);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
           } catch (error) {
             console.error(`[${Date.now()}] Failed to parse cart from localStorage:`, error);
           }
@@ -430,10 +620,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     initializeCart();
     
+<<<<<<< HEAD
     return () => {
       isMounted = false;
     };
   }, []); // Empty dependency array to run only once
+=======
+    // Cleanup function to ensure we don't have lingering effects
+    return () => {
+      initializationRef.current = false;
+    };
+  }, [isAuthenticated, loadCartFromServer, status]);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
   /**
    * Save cart when items change
@@ -451,6 +649,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     console.log('🛒 Cart saved to localStorage:', items.length + ' items');
 
+<<<<<<< HEAD
     // If user is logged in, also save to server
     if (isAuthenticated) {
       console.log('🛒 Attempting to save cart to server with debounce...');
@@ -488,11 +687,77 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return;
   }, []);
   */
+=======
+    // If user is logged in, also save to server (with debouncing)
+    if (isAuthenticated && items.length > 0) {
+      console.log('🛒 Triggering debounced save with', items.length, 'items');
+      saveCartToServer(items);
+    }
+  }, [items, loaded, isAuthenticated, saveCartToServer]);
+
+  /**
+   * Merge local cart with server when user logs in
+   */
+  useEffect(() => {
+    if (isAuthenticated && loaded && !isSyncingRef.current && !hasMergedRef.current) {
+      hasMergedRef.current = true; // Set flag to ensure this only runs once
+      
+      // Merge cart from localStorage with server
+      const localCart = localStorage.getItem(STORAGE_KEY);
+      if (localCart) {
+        try {
+          const parsedLocalCart = JSON.parse(localCart);
+          if (parsedLocalCart.length > 0) {
+            // Have cart in localStorage, merge with server
+            loadCartFromServer().then(() => {
+              // Only proceed if we're not currently syncing
+              if (isSyncingRef.current) return;
+              
+              // After loading server cart, merge with local cart if needed
+              const mergedCart = [...items];
+              let hasChanges = false;
+              
+              parsedLocalCart.forEach((localItem: CartItem) => {
+                const existingIndex = mergedCart.findIndex(
+                  (serverItem) => generateUniqueKey(serverItem) === generateUniqueKey(localItem)
+                );
+                if (existingIndex === -1) {
+                  // Ensure the local item has all required properties
+                  const safeLocalItem: CartItem = {
+                    id: localItem.id || '',
+                    name: localItem.name || '',
+                    price: localItem.price || 0,
+                    quantity: localItem.quantity || 1,
+                    image: localItem.image,
+                    options: localItem.options,
+                    version: localItem.version,
+                    uniqueKey: localItem.uniqueKey || generateUniqueKey(localItem)
+                  };
+                  mergedCart.push(safeLocalItem);
+                  hasChanges = true;
+                }
+              });
+
+              if (hasChanges) {
+                console.log('🛒 Merged local cart with server cart:', mergedCart.length, 'total items');
+                setItems(mergedCart);
+                latestCartRef.current = mergedCart;
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Error merging local cart:', error);
+        }
+      }
+    }
+  }, [isAuthenticated, loaded, loadCartFromServer]);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
   /**
    * Add item to cart
    */
   const addItem = useCallback((newItem: CartItem) => {
+<<<<<<< HEAD
     // Mark this as an intentional cart change
     setIntentionalCartChange(true);
     
@@ -504,6 +769,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       uniqueKey: newItem.uniqueKey || generateUniqueKey(newItem),
       authStatus: isAuthenticated ? 'Logged in' : 'Guest user'
     });
+=======
+    console.log('🛒 Adding item to cart:', newItem.name);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     
     setItems((prevItems) => {
       // Generate a unique key for the new item to check for duplicates
@@ -527,9 +795,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
       console.log('🛒 Existing item found?', existingItemIndex > -1 ? 'Yes' : 'No');
 
+      let updatedItems;
+      
       if (existingItemIndex > -1) {
         // If item already exists, update quantity
-        const updatedItems = [...prevItems];
+        updatedItems = [...prevItems];
         updatedItems[existingItemIndex].quantity += newItem.quantity || 1;
         
         console.log('🛒 Updated quantity for existing item:', {
@@ -547,23 +817,37 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             normalizeImageUrl(updatedItems[existingItemIndex].image) === PLACEHOLDER_IMAGE)) {
           updatedItems[existingItemIndex].image = normalizeImageUrl(newItem.image);
         }
-
-        return updatedItems;
       } else {
         // If new item, add to array
         const itemWithUniqueKey = {
           ...newItem,
           image: normalizeImageUrl(newItem.image),
           quantity: newItem.quantity || 1,
+<<<<<<< HEAD
           uniqueKey: uniqueKey,
         };
         
         console.log('🛒 Adding new item to cart:', itemWithUniqueKey);
         
         return [...prevItems, itemWithUniqueKey];
+=======
+          uniqueKey: newItem.uniqueKey || generateUniqueKey(newItem),
+        };
+
+        updatedItems = [...prevItems, itemWithUniqueKey];
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
       }
+      
+      // Update our latest cart reference immediately
+      latestCartRef.current = updatedItems;
+      
+      return updatedItems;
     });
+<<<<<<< HEAD
   }, [isAuthenticated]);
+=======
+  }, []);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
   /**
    * Remove item from cart

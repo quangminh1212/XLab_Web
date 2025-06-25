@@ -12,6 +12,36 @@ const BALANCES_FILE = path.join(process.cwd(), 'data', 'balances.json');
 // Thư mục lưu dữ liệu user riêng lẻ
 const USERS_DIR = path.join(process.cwd(), 'data', 'users');
 
+// Map to track active sync operations by user
+const activeSyncOperations = new Map<string, { timestamp: number, inProgress: boolean }>();
+
+// Lock timeout (5 seconds)
+const SYNC_LOCK_TIMEOUT = 5000;
+
+// Function to acquire a sync lock
+function acquireSyncLock(email: string): boolean {
+  const now = Date.now();
+  const currentLock = activeSyncOperations.get(email);
+  
+  // If there's an active lock that hasn't timed out, synchronization is already in progress
+  if (currentLock && currentLock.inProgress && (now - currentLock.timestamp < SYNC_LOCK_TIMEOUT)) {
+    console.log(`⏳ Sync already in progress for ${email}, skipping`);
+    return false;
+  }
+  
+  // Set or update the lock
+  activeSyncOperations.set(email, { timestamp: now, inProgress: true });
+  return true;
+}
+
+// Function to release a sync lock
+function releaseSyncLock(email: string): void {
+  const currentLock = activeSyncOperations.get(email);
+  if (currentLock) {
+    activeSyncOperations.set(email, { ...currentLock, inProgress: false });
+  }
+}
+
 // Interface cho giỏ hàng
 interface CartItem {
   id: string;
@@ -361,6 +391,7 @@ export async function updateUserBalance(email: string, amount: number): Promise<
 
 // Lấy giỏ hàng của user
 export async function getUserCart(email: string): Promise<CartItem[]> {
+<<<<<<< HEAD
   try {
     console.log(`🔄 Getting cart for user: ${email}`);
     const userData = await ensureUserDataExists(email);
@@ -370,6 +401,51 @@ export async function getUserCart(email: string): Promise<CartItem[]> {
   } catch (error) {
     console.error(`❌ Error getting cart for ${email}:`, error);
     // Return empty cart instead of throwing to prevent UI errors
+=======
+  console.log(`🔍 getUserCart - Fetching cart for user: ${email}`);
+  
+  try {
+    // Try direct file access first as the most reliable method
+    try {
+      const fileName = getFileNameFromEmail(email);
+      const filePath = path.join(process.cwd(), 'data', 'users', fileName);
+      
+      // Check if file exists
+      await fs.access(filePath);
+      
+      // Read file directly
+      const fileData = await fs.readFile(filePath, 'utf8');
+      const userData = JSON.parse(fileData);
+      
+      if (userData && userData.cart && Array.isArray(userData.cart)) {
+        console.log(`🔍 getUserCart - Direct file read success: ${userData.cart.length} items`);
+        return userData.cart;
+      }
+    } catch (fileError) {
+      console.log(`🔍 getUserCart - Direct file read failed:`, fileError);
+    }
+    
+    // Fall back to standard method if direct read fails
+    const userData = await ensureUserDataExists(email);
+    
+    if (!userData) {
+      console.log(`🔍 getUserCart - No user data found for: ${email}`);
+      return [];
+    }
+    
+    if (!userData.cart || !Array.isArray(userData.cart)) {
+      console.log(`🔍 getUserCart - Invalid cart data for: ${email}, creating empty array`);
+      userData.cart = [];
+      await saveUserDataToFile(email, userData);
+      return [];
+    }
+    
+    console.log(`🔍 getUserCart - Successfully retrieved cart with ${userData.cart.length} items for: ${email}`);
+    
+    return userData.cart || [];
+  } catch (error) {
+    console.error(`🔍 getUserCart - Error retrieving cart for: ${email}`, error);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     return [];
   }
 }
@@ -785,6 +861,12 @@ export async function syncAllUserData(
   updateData?: Partial<User>,
 ): Promise<User | null> {
   try {
+    // Try to acquire a lock for this user's sync
+    if (!acquireSyncLock(email)) {
+      console.log(`⏭️ Skipping comprehensive sync for ${email} due to active sync`);
+      return null;
+    }
+    
     console.log(`🔄 Starting comprehensive sync for user: ${email}`);
 
     // 1. Lấy dữ liệu từ file riêng (nguồn chính)
@@ -866,6 +948,9 @@ export async function syncAllUserData(
   } catch (error) {
     console.error(`❌ Error in comprehensive sync for ${email}:`, error);
     throw error;
+  } finally {
+    // Always release the lock when done
+    releaseSyncLock(email);
   }
 }
 
@@ -880,14 +965,27 @@ export async function updateUserProfileData(
 // Cập nhật cart và đảm bảo metadata được cập nhật
 export async function updateUserCartSync(email: string, cart: CartItem[]): Promise<void> {
   try {
+<<<<<<< HEAD
     console.log(`🔄 Beginning cart sync for user: ${email}`, {
       cartItemCount: cart.length,
       items: cart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity }))
+=======
+    // Try to acquire a lock for this user's cart sync
+    if (!acquireSyncLock(email)) {
+      console.log(`⏭️ Skipping cart update for ${email} due to active sync`);
+      return;
+    }
+    
+    console.log(`🔄 Beginning cart sync for user: ${email}`, {
+      cartItemCount: cart.length,
+      items: cart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity })),
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     });
     
     const userData = await ensureUserDataExists(email);
     console.log(`📝 Found user data for: ${email}, current cart items: ${userData.cart.length}`);
 
+<<<<<<< HEAD
     // Make a deep copy of the cart to avoid reference issues
     userData.cart = JSON.parse(JSON.stringify(cart));
     userData.metadata.lastUpdated = new Date().toISOString();
@@ -925,12 +1023,61 @@ export async function updateUserCartSync(email: string, cart: CartItem[]): Promi
     } catch (syncError) {
       console.error(`⚠️ Warning: Sync after cart update failed: ${syncError instanceof Error ? syncError.message : 'Unknown error'}`);
       console.log('Continuing with cart update despite sync error');
+=======
+    // Only update if cart has items or is explicitly being cleared
+    if (cart.length > 0 || userData.cart.length > 0) {
+      userData.cart = cart;
+      userData.metadata.lastUpdated = new Date().toISOString();
+      userData.profile.updatedAt = new Date().toISOString();
+
+      await saveUserDataToFile(email, userData);
+
+      // Trigger sync để đảm bảo consistency, but use a different function 
+      // that doesn't cause a recursive sync
+      await syncUserDataWithoutCart(email);
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     }
 
     console.log(`✅ Cart updated and synced for user: ${email}`);
   } catch (error) {
     console.error(`❌ Error updating cart for ${email}:`, error);
     throw error;
+  } finally {
+    // Always release the lock when done
+    releaseSyncLock(email);
+  }
+}
+
+// Simplified sync that doesn't update cart (to prevent recursive sync)
+async function syncUserDataWithoutCart(email: string): Promise<void> {
+  try {
+    // Get data from individual file
+    const userData = await getUserDataFromFile(email);
+    if (!userData) return;
+
+    // Sync with users.json but don't modify the cart
+    const allUsers = await getUsers();
+    const userIndex = allUsers.findIndex((u) => u.email === email);
+    
+    if (userIndex >= 0) {
+      // Update user in users.json without changing cart data
+      // Just pass the profile properties that are part of the User type
+      allUsers[userIndex] = {
+        ...allUsers[userIndex],
+        name: userData.profile.name,
+        email: userData.profile.email,
+        image: userData.profile.image,
+        isAdmin: userData.profile.isAdmin,
+        isActive: userData.profile.isActive,
+        balance: userData.profile.balance,
+        createdAt: userData.profile.createdAt,
+        updatedAt: new Date().toISOString(),
+        lastLogin: userData.profile.lastLogin,
+      };
+      await saveUsers(allUsers);
+    }
+  } catch (error) {
+    console.error(`Error in syncUserDataWithoutCart for ${email}:`, error);
   }
 }
 

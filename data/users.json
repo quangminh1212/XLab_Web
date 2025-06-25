@@ -8,7 +8,11 @@
     "isActive": true,
     "balance": 57000,
     "createdAt": "2023-05-29T20:16:59.995Z",
+<<<<<<< HEAD
     "updatedAt": "2025-06-25T08:51:46.080Z",
+=======
+    "updatedAt": "2025-06-25T15:57:14.382Z",
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
     "lastLogin": "2023-05-29T20:16:59.995Z"
   },
   {

@@ -32,6 +32,7 @@ export async function GET(request: Request) {
   try {
     const timestamp = Date.now();
     const session = await getServerSession(authOptions);
+<<<<<<< HEAD
     requestCounter++;
     
     // Add artificial delay to prevent rapid requests
@@ -79,6 +80,54 @@ export async function GET(request: Request) {
         cart: CACHED_CART_DATA,
       });
     }
+=======
+    console.log('🔍 API DEBUG - GET /api/cart - Session:', session?.user?.email);
+
+    if (!session?.user?.email) {
+      console.log('🔍 API DEBUG - GET /api/cart - Unauthorized, no session');
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const cart = await getUserCart(session.user.email);
+    
+    // Make sure cart is always an array
+    const safeCart = Array.isArray(cart) ? cart : [];
+    
+    // Check if we need to force-populate the cart with test data when empty
+    if (safeCart.length === 0) {
+      console.log('🔍 API DEBUG - GET /api/cart - Cart is empty, adding fallback data');
+      
+      // Check if user's data file has cart items that aren't being returned
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const filePath = path.join(process.cwd(), 'data', 'users', `${session.user.email.replace(/[^a-zA-Z0-9@.-]/g, '_')}.json`);
+        
+        if (fs.existsSync(filePath)) {
+          const userData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          if (userData.cart && userData.cart.length > 0) {
+            console.log('🔍 API DEBUG - GET /api/cart - Found cart data in user file:', userData.cart.length, 'items');
+            // Return the cart data from the file directly
+            return NextResponse.json({
+              success: true,
+              message: 'Cart retrieved from user file directly',
+              cart: userData.cart,
+            });
+          }
+        }
+      } catch (fileError) {
+        console.error('Error reading user file directly:', fileError);
+      }
+    }
+    
+    console.log('🔍 API DEBUG - GET /api/cart - Cart retrieved:', safeCart.length, 'items');
+
+    return NextResponse.json({
+      success: true,
+      message: 'Cart retrieved successfully',
+      cart: safeCart,
+    });
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
   } catch (error: any) {
     const timestamp = Date.now();
     console.error(`[${timestamp}] ❌ Error getting cart:`, error);
@@ -90,6 +139,7 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+<<<<<<< HEAD
     console.log('🔄 Cart API - PUT request received', { 
       hasSession: !!session,
       userEmail: session?.user?.email 
@@ -97,14 +147,28 @@ export async function PUT(request: Request) {
 
     if (!session?.user?.email) {
       console.log('❌ Cart API - Unauthorized: No valid session');
+=======
+    console.log('🔍 API DEBUG - PUT /api/cart - Session:', session?.user?.email);
+
+    if (!session?.user?.email) {
+      console.log('🔍 API DEBUG - PUT /api/cart - Unauthorized, no session');
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const data = await request.json();
+<<<<<<< HEAD
     const { cart, forceEmpty = false } = data;
 
     if (!Array.isArray(cart)) {
       console.log('❌ Cart API - Invalid cart data:', cart);
+=======
+    console.log('🔍 API DEBUG - PUT /api/cart - Request data:', data);
+    const { cart } = data;
+
+    if (!Array.isArray(cart)) {
+      console.log('🔍 API DEBUG - PUT /api/cart - Invalid cart data, not an array');
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
       return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
     }
     
@@ -134,6 +198,7 @@ export async function PUT(request: Request) {
       uniqueKey: item.uniqueKey || `${item.id}_${item.version || 'default'}_${Date.now()}`
     }));
 
+<<<<<<< HEAD
     console.log(`✅ Cart API - Updating cart for ${session.user.email}:`, { 
       itemCount: validCart.length,
       items: validCart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity }))
@@ -141,6 +206,10 @@ export async function PUT(request: Request) {
 
     await updateUserCartSync(session.user.email, validCart);
     console.log(`✅ Cart API - Cart updated successfully for ${session.user.email}`);
+=======
+    await updateUserCartSync(session.user.email, cart);
+    console.log('🔍 API DEBUG - PUT /api/cart - Cart updated successfully');
+>>>>>>> e85ddb2e5fefc852cab1361b27c387043bc20016
 
     return NextResponse.json({
       success: true,

@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import '../styles/app-layout.css';
+import '@/lib/init';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { siteConfig } from '@/config/siteConfig';

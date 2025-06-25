@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
 import { Product, ProductCategory } from '@/models/ProductModel';
+import { getProductById, updateProduct, deleteProduct } from '@/lib/i18n/products';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -117,9 +118,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const safeParams = await params;
     const id = safeParams.id;
 
-    // Find product
-    const products = getProducts();
-    const product = products.find((p) => p.id === id);
+    // Get language from header or default to 'vie'
+    const language = request.headers.get('accept-language') || 'vie';
+    console.log(`Fetching product ${id} with language: ${language}`);
+
+    // Find product using i18n product function
+    const product = await getProductById(id, language);
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
@@ -132,7 +136,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-// UPDATE product handler
+// PUT product handler
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Check admin authentication
@@ -145,115 +149,35 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const safeParams = await params;
     const id = safeParams.id;
 
-    // Find product
-    const products = getProducts();
-    const productIndex = products.findIndex((p) => p.id === id);
+    // Get language from header or default to 'vie'
+    const language = request.headers.get('accept-language') || 'vie';
+    console.log(`Updating product ${id} with language: ${language}`);
 
-    if (productIndex === -1) {
+    // Get the updated product data from the request
+    const updatedProductData = await request.json();
+
+    // Get the existing product
+    const existingProduct = await getProductById(id, language);
+    if (!existingProduct) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    // Process request data
-    const productData = await request.json();
-
-    console.log('PUT API received product data:', {
-      id: productData.id,
-      name: productData.name,
-      images: productData.images,
-    });
-
-    // Lưu lại ảnh cũ để xóa sau khi cập nhật
-    const oldImages = [...(products[productIndex].images || [])];
-    const oldDescriptionImages = [...(products[productIndex].descriptionImages || [])];
-
-    // Ensure all required fields are present
-    const requiredFields = ['id', 'name', 'slug', 'description', 'shortDescription'] as const;
-    for (const field of requiredFields) {
-      if (!productData[field]) {
-        // Type-safe field access
-        productData[field] =
-          productData[field] || products[productIndex][field as keyof Product] || '';
-      }
-    }
-
-    // Ensure arrays exist
-    productData.images = Array.isArray(productData.images)
-      ? productData.images
-      : products[productIndex].images || [];
-    productData.descriptionImages = Array.isArray(productData.descriptionImages)
-      ? productData.descriptionImages
-      : products[productIndex].descriptionImages || [];
-    productData.features = Array.isArray(productData.features)
-      ? productData.features
-      : products[productIndex].features || [];
-    productData.specifications = Array.isArray(productData.specifications)
-      ? productData.specifications
-      : products[productIndex].specifications || [];
-    productData.requirements = Array.isArray(productData.requirements)
-      ? productData.requirements
-      : products[productIndex].requirements || [];
-    productData.categories = Array.isArray(productData.categories)
-      ? productData.categories
-      : products[productIndex].categories || [];
-    productData.versions = Array.isArray(productData.versions)
-      ? productData.versions
-      : products[productIndex].versions || [];
-
-    // Process categories
-    if (productData.categories && Array.isArray(productData.categories)) {
-      productData.categories = (productData.categories as unknown as string[]).map(
-        (categoryId: string) => ({
-          id: categoryId,
-          name: getCategoryName(categoryId),
-          slug: categoryId,
-        }),
-      ) as ProductCategory[];
-    }
-
-    // Check if name changed and update ID accordingly
-    let newId = productData.id;
-    if (productData.name !== products[productIndex].name) {
-      // Generate new ID from name
-      newId = generateIdFromName(productData.name);
-
-      // Check if this ID already exists
-      const idExists = products.some((p, idx) => idx !== productIndex && p.id === newId);
-      if (idExists) {
-        // Add a numeric suffix if needed
-        let counter = 1;
-        let updatedId = `${newId}-${counter}`;
-        while (products.some((p, idx) => idx !== productIndex && p.id === updatedId)) {
-          counter++;
-          updatedId = `${newId}-${counter}`;
-        }
-        console.log(`ID ${newId} đã tồn tại, sử dụng ID mới: ${updatedId}`);
-        newId = updatedId;
-      }
-
-      console.log(
-        `Product name changed from "${products[productIndex].name}" to "${productData.name}", updated ID from "${id}" to "${newId}"`,
-      );
-    }
-
-    // Create updated product
-    const updatedProduct = {
-      ...products[productIndex],
-      ...productData,
-      id: newId, // Use new ID based on name
+    // Merge existing and updated data
+    const mergedProduct: Product = {
+      ...existingProduct,
+      ...updatedProductData,
+      id, // Ensure ID doesn't change
       updatedAt: new Date().toISOString(),
     };
 
-    console.log('Saving product with images:', updatedProduct.images);
+    // Update product using i18n product function
+    const updateResult = await updateProduct(mergedProduct, language);
+    
+    if (!updateResult) {
+      return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
+    }
 
-    // Save product
-    products[productIndex] = updatedProduct;
-    saveProducts(products);
-
-    // Xóa ảnh cũ sau khi đã cập nhật thành công
-    deleteOldImages(oldImages, updatedProduct.images || []);
-    deleteOldImages(oldDescriptionImages, updatedProduct.descriptionImages || []);
-
-    return NextResponse.json(updatedProduct);
+    return NextResponse.json(mergedProduct);
   } catch (error) {
     console.error('Error updating product:', error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
@@ -273,26 +197,16 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     const safeParams = await params;
     const id = safeParams.id;
 
-    // Find product to get images for deletion
-    const products = getProducts();
-    const productToDelete = products.find((p) => p.id === id);
+    // Get language from header or default to both languages
+    const language = request.headers.get('accept-language');
+    console.log(`Deleting product ${id} ${language ? `for language: ${language}` : 'for all languages'}`);
 
-    if (!productToDelete) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    // Delete product using i18n product function (if language is specified, only delete that language version)
+    const deleteResult = await deleteProduct(id, language || undefined);
+    
+    if (!deleteResult) {
+      return NextResponse.json({ error: 'Product not found or failed to delete' }, { status: 404 });
     }
-
-    // Delete all product images
-    if (productToDelete.images && productToDelete.images.length > 0) {
-      deleteOldImages(productToDelete.images, []);
-    }
-
-    if (productToDelete.descriptionImages && productToDelete.descriptionImages.length > 0) {
-      deleteOldImages(productToDelete.descriptionImages, []);
-    }
-
-    // Remove product
-    const newProducts = products.filter((p) => p.id !== id);
-    saveProducts(newProducts);
 
     return NextResponse.json({ message: 'Product deleted successfully' });
   } catch (error) {

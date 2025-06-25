@@ -29,9 +29,9 @@ export interface ProductVersion {
 }
 
 export interface ProductCategory {
-  id: string;
-  name: string;
-  slug: string;
+  id: string | { id: string };
+  name: string | { id: string };
+  slug: string | { id: string };
 }
 
 // Định nghĩa kiểu dữ liệu cho tùy chọn sản phẩm
@@ -48,20 +48,20 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
-  shortDescription: string;
-  images: ProductImage[] | string[];
+  shortDescription?: string;
+  images?: ProductImage[] | string[];
   descriptionImages?: string[];
-  features: ProductFeature[];
-  specifications?: ProductSpecification[];
-  requirements: ProductRequirement[];
-  versions: ProductVersion[];
-  categories: ProductCategory[];
-  createdAt: string;
-  updatedAt: string;
-  isPublished: boolean;
-  rating?: number;
-  weeklyPurchases?: number;
-  type?: 'software' | 'account';
+  features?: ProductFeature[] | any[];
+  specifications?: ProductSpecification[] | any[];
+  requirements?: ProductRequirement[] | any[];
+  versions?: ProductVersion[];
+  categories?: ProductCategory[] | any;
+  createdAt?: string;
+  updatedAt?: string;
+  isPublished?: boolean;
+  rating?: number | string;
+  weeklyPurchases?: number | string;
+  type?: string;
   isAccount?: boolean;
   productOptions?: ProductOption[];
   defaultProductOption?: ProductOption;
@@ -71,6 +71,12 @@ export interface Product {
   options?: string[];
   quantity?: number;
   details?: string;
+  price?: number;
+  salePrice?: number;
+  totalSold?: number;
+  specs?: string;
+  totalPurchases?: string | number;
+  optionDurations?: any;
 }
 
 export interface ProductFormData {

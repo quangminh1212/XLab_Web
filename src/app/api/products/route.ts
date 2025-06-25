@@ -1,69 +1,99 @@
-import { NextResponse } from 'next/server';
-import { Product } from '@/models/ProductModel';
-import fs from 'fs';
-import path from 'path';
-import JSON5 from 'json5';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAllProducts } from '@/lib/i18n/products';
 
-export async function GET(request: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    let raw: string;
-    try {
-      raw = fs.readFileSync(dataFilePath, 'utf8');
-    } catch (err) {
-      console.error('Error reading products data file:', err);
-      return NextResponse.json({ success: false, data: [], total: 0 }, { status: 500 });
-    }
-    let productList: Product[] = [];
-    if (raw.trim()) {
-      try {
-        productList = JSON.parse(raw);
-      } catch (jsonErr) {
-        try {
-          productList = JSON5.parse(raw);
-        } catch (json5Err) {
-          console.error('Error parsing products data with JSON and JSON5:', jsonErr, json5Err);
-          productList = [];
-        }
-      }
-    }
-    // Now proceed with filtering and processing
-    const { searchParams } = new URL(request.url);
-    const categoryId = searchParams.get('categoryId');
+    // Get query parameters
+    const { searchParams } = req.nextUrl;
+    const category = searchParams.get('category');
+    const featured = searchParams.get('featured');
+    const limit = parseInt(searchParams.get('limit') || '0');
     const exclude = searchParams.get('exclude');
-    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
+    const sort = searchParams.get('sort') || 'newest';
+    const type = searchParams.get('type');
+    const search = searchParams.get('search');
 
-    console.log(`Retrieved ${productList.length} products from file`);
+    // Get language from header or query parameter (default to 'vie')
+    const langParam = searchParams.get('lang');
+    const acceptLanguage = req.headers.get('accept-language');
+    const language = langParam || acceptLanguage || 'vie';
 
-    // Chỉ lấy sản phẩm được xuất bản
-    productList = productList.filter((p) => p.isPublished);
-    console.log(`Found ${productList.length} published products`);
+    console.log(`Getting products with language: ${language}`);
 
-    // Lọc theo categoryId nếu được cung cấp
-    if (categoryId) {
-      productList = productList.filter(
-        (p) =>
-          p.categories &&
-          p.categories.some((cat) =>
-            typeof cat === 'string' ? cat === categoryId : cat.id === categoryId,
-          ),
-      );
-      console.log(`Filtered to ${productList.length} products in category ${categoryId}`);
+    // Get all products using i18n library
+    const allProducts = await getAllProducts(language);
+    
+    // Filter by published status
+    let productList = allProducts.filter((p) => p.isPublished !== false);
+
+    // Filter by category if provided
+    if (category) {
+      productList = productList.filter((product) => {
+        if (!product.categories) return false;
+        // Handle both string array and object array formats
+        return product.categories.some((cat: any) => {
+          if (typeof cat === 'string') return cat === category;
+          if (cat.id) return cat.id === category || cat.slug === category;
+          return false;
+        });
+      });
+      console.log(`Filtered by category ${category}, found ${productList.length} products`);
     }
 
-    // Loại trừ sản phẩm cụ thể nếu exclude được cung cấp
+    // Filter by type if provided
+    if (type) {
+      productList = productList.filter((p) => p.type === type);
+      console.log(`Filtered by type ${type}, found ${productList.length} products`);
+    }
+
+    // Filter by featured if provided
+    if (featured === 'true') {
+      productList = productList.filter((p) => (p as any).isFeatured === true);
+      console.log(`Filtered by featured, found ${productList.length} products`);
+    }
+
+    // Filter by search term if provided
+    if (search) {
+      const searchLower = search.toLowerCase();
+      productList = productList.filter((product) => {
+        return (
+          (product.name && product.name.toLowerCase().includes(searchLower)) ||
+          (product.description && product.description.toLowerCase().includes(searchLower)) ||
+          (product.shortDescription && product.shortDescription.toLowerCase().includes(searchLower))
+        );
+      });
+      console.log(`Filtered by search "${search}", found ${productList.length} products`);
+    }
+
+    // Sort products
+    if (sort === 'price-low') {
+      productList.sort((a, b) => getPrice(a) - getPrice(b));
+    } else if (sort === 'price-high') {
+      productList.sort((a, b) => getPrice(b) - getPrice(a));
+    } else if (sort === 'popular') {
+      productList.sort((a, b) => (b.totalSold || 0) - (a.totalSold || 0));
+    } else {
+      // Default sort by newest
+      productList.sort((a, b) => {
+        const dateA = a.updatedAt || a.createdAt || '';
+        const dateB = b.updatedAt || b.createdAt || '';
+        return dateB.localeCompare(dateA);
+      });
+    }
+
+    // Exclude specific product if exclude is provided
     if (exclude) {
       productList = productList.filter((p) => p.id !== exclude && p.slug !== exclude);
       console.log(`Excluded product ${exclude}, remaining ${productList.length} products`);
     }
 
-    // Giới hạn số lượng kết quả nếu limit được cung cấp
+    // Limit results if limit is provided
     if (limit && !isNaN(limit)) {
       productList = productList.slice(0, limit);
       console.log(`Limited to ${productList.length} products`);
     }
 
-    // Xử lý blob URLs trong ảnh
+    // Process blob URLs in images
     const processedProducts = productList.map((product) => {
       const processedProduct = {
         ...product,
@@ -79,14 +109,14 @@ export async function GET(request: Request) {
           : [],
       };
 
-      // Đảm bảo có giá của sản phẩm để hiển thị
+      // Ensure product has price for display
       if (processedProduct.versions && processedProduct.versions.length > 0) {
-        // Thêm các trường giá để tương thích với giao diện
+        // Add price fields for compatibility with UI
         const firstVersion = processedProduct.versions[0];
         (processedProduct as any).price = firstVersion.price;
         (processedProduct as any).originalPrice = firstVersion.originalPrice;
 
-        // Tính toán discount percentage nếu có
+        // Calculate discount percentage if applicable
         if (firstVersion.originalPrice > firstVersion.price) {
           (processedProduct as any).discountPercentage = Math.round(
             (1 - firstVersion.price / firstVersion.originalPrice) * 100,
@@ -102,14 +132,15 @@ export async function GET(request: Request) {
       data: processedProducts,
       total: processedProducts.length,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching products:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || 'Internal server error',
-      },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
+}
+
+// Helper function to get product price
+function getPrice(product: any): number {
+  if (product.price) return product.price;
+  if (product.versions && product.versions.length > 0) return product.versions[0].price;
+  return 0;
 }
