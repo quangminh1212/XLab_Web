@@ -52,12 +52,20 @@ export default function RelatedProducts({
             `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
           );
           if (categoryResponse.ok) {
-            const allProducts = await categoryResponse.json();
-            // Filter out the current product
-            const filtered = allProducts
-              .filter((p: Product) => p.id !== currentProductId)
-              .slice(0, limit);
-            setProducts(filtered);
+            const data = await categoryResponse.json();
+            const allProducts = data.data || [];
+            
+            // Kiểm tra xem allProducts có phải là một mảng không
+            if (Array.isArray(allProducts)) {
+              // Filter out the current product
+              const filtered = allProducts
+                .filter((p: Product) => p.id !== currentProductId)
+                .slice(0, limit);
+              setProducts(filtered);
+            } else {
+              console.error('Expected array but received:', allProducts);
+              setProducts([]);
+            }
           } else {
             setProducts([]);
           }

@@ -7,7 +7,7 @@ import { Product } from '@/models/ProductModel';
  * @param lang Language code from header (e.g., 'vi-VN,vi;q=0.7', 'en-US', etc.)
  * @returns Normalized language code ('vie' or 'eng')
  */
-function normalizeLanguageCode(lang: string): string {
+export function normalizeLanguageCode(lang: string): string {
   // If empty, default to Vietnamese
   if (!lang) return 'vie';
 

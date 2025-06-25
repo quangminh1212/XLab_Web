@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { getAllProducts } from '@/lib/i18n/products';
+import { Product } from '@/models/ProductModel';
 
 // Đọc dữ liệu sản phẩm từ JSON file
 const productsPath = path.join(process.cwd(), 'src/data/products.json');
@@ -18,29 +20,34 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Product ID là bắt buộc' }, { status: 400 });
     }
 
-    // Đọc dữ liệu từ file
-    const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
+    // Lấy ngôn ngữ từ header hoặc tham số truy vấn (mặc định là 'vie')
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = acceptLanguage || 'vie';
+
+    // Lấy tất cả sản phẩm từ thư viện i18n thay vì đọc từ file
+    const productsData = await getAllProducts(language);
 
     // Tìm sản phẩm hiện tại để lấy thông tin
     const currentProduct = productsData.find(
-      (p: any) => p.id === productId || p.slug === productId,
+      (p: Product) => p.id === productId || p.slug === productId,
     );
 
     if (!currentProduct) {
       return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
     }
 
-    let relatedProducts = [];
+    let relatedProducts: Product[] = [];
 
     // Nếu sản phẩm hiện tại có danh sách relatedProducts, ưu tiên lấy từ đây
-    if (currentProduct.relatedProducts && currentProduct.relatedProducts.length > 0) {
+    const relatedProductIds = (currentProduct as any).relatedProducts;
+    if (relatedProductIds && Array.isArray(relatedProductIds) && relatedProductIds.length > 0) {
       relatedProducts = productsData.filter(
-        (p: any) => currentProduct.relatedProducts.includes(p.id) && p.id !== productId,
+        (p: Product) => relatedProductIds.includes(p.id) && p.id !== productId,
       );
     }
     // Nếu không, lấy sản phẩm từ cùng danh mục
     else if (categoryId) {
-      relatedProducts = productsData.filter((p: any) => {
+      relatedProducts = productsData.filter((p: Product) => {
         const productCategories = p.categories || [];
         const hasCategory = productCategories.some((cat: any) =>
           typeof cat === 'string' ? cat === categoryId : cat.id === categoryId,
@@ -52,7 +59,7 @@ export async function GET(request: NextRequest) {
     // Nếu vẫn không có, lấy các sản phẩm ngẫu nhiên
     if (relatedProducts.length === 0) {
       relatedProducts = productsData
-        .filter((p: any) => p.id !== productId)
+        .filter((p: Product) => p.id !== productId)
         .sort(() => 0.5 - Math.random());
     }
 
@@ -60,9 +67,9 @@ export async function GET(request: NextRequest) {
     relatedProducts = relatedProducts.slice(0, limit);
     
     // Xử lý dữ liệu sản phẩm để đảm bảo định dạng hình ảnh đúng
-    const formattedProducts = relatedProducts.map((product: any) => {
+    const formattedProducts = relatedProducts.map((product: Product) => {
       // Tạo bản sao của sản phẩm để không ảnh hưởng đến dữ liệu gốc
-      const formattedProduct = { ...product };
+      const formattedProduct: any = { ...product };
       
       // Xử lý trường images nếu là mảng
       if (Array.isArray(formattedProduct.images) && formattedProduct.images.length > 0) {

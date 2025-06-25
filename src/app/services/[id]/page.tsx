@@ -4,20 +4,82 @@ import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
+import { getAllProducts, normalizeLanguageCode } from '@/lib/i18n/products';
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
-// Đọc dữ liệu sản phẩm từ file JSON
-function getProducts(): Product[] {
+// Hàm chuyển đổi dữ liệu sản phẩm từ bất kỳ nguồn nào sang kiểu Product
+function normalizeProduct(product: any): Product {
+  // Đảm bảo các trường bắt buộc
+  const normalizedProduct: Product = {
+    id: product.id || '',
+    name: product.name || '',
+    slug: product.slug || '',
+    description: product.description || '',
+    shortDescription: product.shortDescription || '',
+    // Đảm bảo specifications là mảng
+    specifications: Array.isArray(product.specifications) 
+      ? product.specifications 
+      : product.specifications 
+        ? Object.entries(product.specifications).map(([key, value]) => ({ key, value: String(value) }))
+        : [],
+    // Đảm bảo features là mảng
+    features: Array.isArray(product.features)
+      ? product.features
+      : [],
+    // Các trường khác
+    ...product
+  };
+  
+  return normalizedProduct;
+}
+
+// Đọc dữ liệu sản phẩm từ file JSON và thư mục i18n
+async function getProducts(lang = 'vie'): Promise<Product[]> {
   try {
-    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    if (!fs.existsSync(dataFilePath)) {
-      return [];
+    // Lấy sản phẩm từ file products.json
+    const dataFilePath = path.join(process.cwd(), 'products.json');
+    let productsFromJson: any[] = [];
+    
+    if (fs.existsSync(dataFilePath)) {
+      const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+      try {
+        // Đảm bảo dữ liệu từ file JSON tuân thủ kiểu Product
+        const parsedData = JSON.parse(fileContent);
+        if (parsedData && parsedData.data && Array.isArray(parsedData.data)) {
+          productsFromJson = parsedData.data;
+        } else if (Array.isArray(parsedData)) {
+          productsFromJson = parsedData;
+        }
+      } catch (error) {
+        console.error('Error parsing products.json:', error);
+      }
     }
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-    return JSON.parse(fileContent);
+    
+    // Lấy sản phẩm từ thư mục i18n theo ngôn ngữ
+    const i18nProducts = await getAllProducts(lang);
+    
+    // Kết hợp sản phẩm từ cả hai nguồn, ưu tiên sản phẩm từ i18n
+    const combinedProducts: Product[] = [];
+    const productIds = new Set<string>();
+    
+    // Thêm sản phẩm từ i18n trước và chuẩn hóa
+    for (const product of i18nProducts) {
+      combinedProducts.push(normalizeProduct(product));
+      productIds.add(product.id);
+    }
+    
+    // Thêm sản phẩm từ products.json nếu chưa có trong i18n và chuẩn hóa
+    for (const product of productsFromJson) {
+      if (!productIds.has(product.id)) {
+        combinedProducts.push(normalizeProduct(product));
+        productIds.add(product.id);
+      }
+    }
+    
+    return combinedProducts;
   } catch (error) {
     console.error('Error reading products data:', error);
     return [];
@@ -28,12 +90,17 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   // Await params trước khi sử dụng thuộc tính của nó
   const { id: accountId } = await params;
 
+  // Lấy ngôn ngữ từ headers hoặc mặc định là 'vie'
+  // Trong môi trường server component, không thể trực tiếp lấy headers
+  // Nên tạm thời sử dụng 'vie' làm mặc định
+  const language = 'vie'; // Mặc định sử dụng tiếng Việt
+
   console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
 
-  // Lấy danh sách sản phẩm từ file JSON
-  const productsFromJson = getProducts();
+  // Lấy danh sách sản phẩm từ file JSON và i18n
+  const productsFromJson = await getProducts(language);
 
-  // Tìm kiếm trong products.json trước
+  // Tìm kiếm trong products.json và i18n trước
   let selectedProduct = productsFromJson.find(
     (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
   );
