@@ -348,6 +348,11 @@ const Header = () => {
     { href: '/bao-hanh', label: t('nav.warranty') },
   ];
 
+  // Hàm để đồng bộ giỏ hàng
+  const handleCartClick = () => {
+    syncWithServer().catch(console.error);
+  };
+
   return (
     <>
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -652,16 +657,13 @@ const Header = () => {
               {/* Cart Icon */}
               <Link
                 href="/cart"
-                className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
-                onClick={() => {
-                  // Đồng bộ giỏ hàng khi nhấp vào
-                  syncWithServer().catch(console.error);
-                }}
+                className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                onClick={handleCartClick}
               >
                 <span className="sr-only">View cart</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
+                  className="h-6 w-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -786,10 +788,7 @@ const Header = () => {
                 <Link
                   href="/cart"
                   className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
-                  onClick={() => {
-                    // Đồng bộ giỏ hàng khi nhấp vào
-                    syncWithServer().catch(console.error);
-                  }}
+                  onClick={handleCartClick}
                 >
                   <span className="sr-only">View cart</span>
                   <svg
