@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
+import products, { getProductById } from '@/i8n/vie/product';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -37,12 +38,9 @@ function saveProducts(products: Product[]): void {
 // GET: Lấy thông tin sản phẩm theo ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    // Get products data
-    const products = getProducts();
-
-    // Find product by ID or slug
+    // Find product by ID using the i18n product data
     console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${params.id}`);
-    const product = products.find((p) => p.id === params.id || p.slug === params.id);
+    const product = getProductById(params.id);
 
     if (!product) {
       console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${params.id}`);
@@ -57,7 +55,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const processedProduct = {
       ...product,
       images:
-        product.images?.map((img) => {
+        product.images?.map((img: any) => {
           if (typeof img === 'string') {
             return img.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : img;
           }

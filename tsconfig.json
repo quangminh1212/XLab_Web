@@ -30,7 +30,8 @@
       "@/features/*": ["./src/features/*"],
       "@/core/*": ["./src/core/*"],
       "@/infrastructure/*": ["./src/infrastructure/*"],
-      "@/config/*": ["./src/config/*"]
+      "@/config/*": ["./src/config/*"],
+      "@/i8n/*": ["./i8n/*"]
     }
   },
   "include": [

@@ -1,39 +1,19 @@
 import { NextResponse } from 'next/server';
 import { Product } from '@/models/ProductModel';
-import fs from 'fs';
-import path from 'path';
-import JSON5 from 'json5';
+import { getAllProducts } from '@/i8n/vie/product';
 
 export async function GET(request: Request) {
   try {
-    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    let raw: string;
-    try {
-      raw = fs.readFileSync(dataFilePath, 'utf8');
-    } catch (err) {
-      console.error('Error reading products data file:', err);
-      return NextResponse.json({ success: false, data: [], total: 0 }, { status: 500 });
-    }
-    let productList: Product[] = [];
-    if (raw.trim()) {
-      try {
-        productList = JSON.parse(raw);
-      } catch (jsonErr) {
-        try {
-          productList = JSON5.parse(raw);
-        } catch (json5Err) {
-          console.error('Error parsing products data with JSON and JSON5:', jsonErr, json5Err);
-          productList = [];
-        }
-      }
-    }
+    // Use products from i18n directory instead of reading from file
+    let productList: Product[] = getAllProducts();
+    
+    console.log(`Retrieved ${productList.length} products from file`);
+
     // Now proceed with filtering and processing
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get('categoryId');
     const exclude = searchParams.get('exclude');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
-
-    console.log(`Retrieved ${productList.length} products from file`);
 
     // Chỉ lấy sản phẩm được xuất bản
     productList = productList.filter((p) => p.isPublished);
