@@ -100,9 +100,8 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    // Only check if user is logged in, but don't require admin permissions
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized - Please log in' }, { status: 401 });
+    if (!session || !session.user.isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Get language from header and normalize it
