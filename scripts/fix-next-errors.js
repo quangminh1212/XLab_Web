@@ -6,7 +6,7 @@ const path = require('path');
  * Xử lý các lỗi phổ biến gặp phải khi phát triển Next.js
  */
 
-console.log('🔧 Đang sửa lỗi Next.js...');
+console.log('🔧 Đang chuẩn bị môi trường Next.js...');
 
 // 1. Tạo thư mục cache và static nếu chưa tồn tại
 const requiredDirs = [
@@ -27,59 +27,40 @@ requiredDirs.forEach((dir) => {
   }
 });
 
-// 2. Tạo các file .pack giả để tránh lỗi ENOENT
-const createEmptyPackFiles = () => {
-  const webpackDirs = [
-    '.next/cache/webpack/client-development',
-    '.next/cache/webpack/server-development',
-    '.next/cache/webpack/edge-server-development',
+// 2. Kiểm tra và tạo thư mục i18n nếu cần
+const createI18nDirectories = () => {
+  const i18nDirs = [
+    'src/i18n/eng/product',
+    'src/i18n/vie/product'
   ];
 
-  webpackDirs.forEach((dir) => {
+  i18nDirs.forEach(dir => {
     const fullPath = path.join(process.cwd(), dir);
-    if (fs.existsSync(fullPath)) {
-      for (let i = 0; i <= 5; i++) {
-        const packFile = path.join(fullPath, `${i}.pack`);
-        const packGzFile = path.join(fullPath, `${i}.pack.gz`);
-
-        if (!fs.existsSync(packFile)) {
-          fs.writeFileSync(packFile, '');
-          console.log(`✅ Đã tạo file trống: ${packFile}`);
-        }
-
-        if (!fs.existsSync(packGzFile)) {
-          fs.writeFileSync(packGzFile, '');
-          console.log(`✅ Đã tạo file trống: ${packGzFile}`);
-        }
-      }
+    if (!fs.existsSync(fullPath)) {
+      fs.mkdirSync(fullPath, { recursive: true });
+      console.log(`✅ Đã tạo thư mục i18n: ${fullPath}`);
     }
   });
-};
 
-// 3. Tạo file CSS giả để tránh lỗi 404
-const createPlaceholderFiles = () => {
-  const cssDir = path.join(process.cwd(), '.next/static/css');
-  const cssFile = path.join(cssDir, 'app-layout.css');
-
-  if (!fs.existsSync(cssFile)) {
-    fs.writeFileSync(cssFile, '/* Placeholder CSS */');
-    console.log(`✅ Đã tạo file CSS giả: ${cssFile}`);
-  }
-
-  // Tạo file route.js giả cho NextAuth
-  const nextAuthDir = path.join(process.cwd(), '.next/server/app/api/auth/[...nextauth]');
-  if (!fs.existsSync(nextAuthDir)) {
-    fs.mkdirSync(nextAuthDir, { recursive: true });
-  }
-
-  const routeFile = path.join(nextAuthDir, 'route.js');
-  if (!fs.existsSync(routeFile)) {
-    fs.writeFileSync(routeFile, '// Placeholder NextAuth route file');
-    console.log(`✅ Đã tạo file route giả cho NextAuth: ${routeFile}`);
+  // Sao chép các file sản phẩm từ tiếng Việt sang tiếng Anh nếu cần
+  const vieProductDir = path.join(process.cwd(), 'src/i18n/vie/product');
+  const engProductDir = path.join(process.cwd(), 'src/i18n/eng/product');
+  
+  if (fs.existsSync(vieProductDir)) {
+    const files = fs.readdirSync(vieProductDir);
+    files.forEach(file => {
+      const sourceFile = path.join(vieProductDir, file);
+      const targetFile = path.join(engProductDir, file);
+      
+      if (!fs.existsSync(targetFile) && fs.statSync(sourceFile).isFile()) {
+        fs.copyFileSync(sourceFile, targetFile);
+        console.log(`✅ Đã sao chép file: ${file} từ tiếng Việt sang tiếng Anh`);
+      }
+    });
   }
 };
 
-// 4. Kiểm tra file .env và .env.local
+// 3. Kiểm tra file .env và .env.local
 const checkEnvFiles = () => {
   const envPath = path.join(process.cwd(), '.env');
   const envLocalPath = path.join(process.cwd(), '.env.local');
@@ -98,12 +79,11 @@ const checkEnvFiles = () => {
   }
 };
 
-// Thực thi tất cả các bước sửa lỗi
+// Thực thi tất cả các bước
 try {
-  createEmptyPackFiles();
-  createPlaceholderFiles();
+  createI18nDirectories();
   checkEnvFiles();
-  console.log('✨ Đã hoàn tất sửa lỗi Next.js!');
+  console.log('✨ Đã hoàn tất chuẩn bị môi trường Next.js!');
 } catch (error) {
-  console.error('❌ Lỗi khi sửa Next.js:', error);
+  console.error('❌ Lỗi khi chuẩn bị môi trường Next.js:', error);
 }
