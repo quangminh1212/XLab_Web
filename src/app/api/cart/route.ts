@@ -25,17 +25,51 @@ export interface CartItem {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+    console.log('🔍 API DEBUG - GET /api/cart - Session:', session?.user?.email);
 
     if (!session?.user?.email) {
+      console.log('🔍 API DEBUG - GET /api/cart - Unauthorized, no session');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const cart = await getUserCart(session.user.email);
+    
+    // Make sure cart is always an array
+    const safeCart = Array.isArray(cart) ? cart : [];
+    
+    // Check if we need to force-populate the cart with test data when empty
+    if (safeCart.length === 0) {
+      console.log('🔍 API DEBUG - GET /api/cart - Cart is empty, adding fallback data');
+      
+      // Check if user's data file has cart items that aren't being returned
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const filePath = path.join(process.cwd(), 'data', 'users', `${session.user.email.replace(/[^a-zA-Z0-9@.-]/g, '_')}.json`);
+        
+        if (fs.existsSync(filePath)) {
+          const userData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          if (userData.cart && userData.cart.length > 0) {
+            console.log('🔍 API DEBUG - GET /api/cart - Found cart data in user file:', userData.cart.length, 'items');
+            // Return the cart data from the file directly
+            return NextResponse.json({
+              success: true,
+              message: 'Cart retrieved from user file directly',
+              cart: userData.cart,
+            });
+          }
+        }
+      } catch (fileError) {
+        console.error('Error reading user file directly:', fileError);
+      }
+    }
+    
+    console.log('🔍 API DEBUG - GET /api/cart - Cart retrieved:', safeCart.length, 'items');
 
     return NextResponse.json({
       success: true,
       message: 'Cart retrieved successfully',
-      cart: cart,
+      cart: safeCart,
     });
   } catch (error: any) {
     console.error('Error getting cart:', error);
@@ -47,19 +81,24 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+    console.log('🔍 API DEBUG - PUT /api/cart - Session:', session?.user?.email);
 
     if (!session?.user?.email) {
+      console.log('🔍 API DEBUG - PUT /api/cart - Unauthorized, no session');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const data = await request.json();
+    console.log('🔍 API DEBUG - PUT /api/cart - Request data:', data);
     const { cart } = data;
 
     if (!Array.isArray(cart)) {
+      console.log('🔍 API DEBUG - PUT /api/cart - Invalid cart data, not an array');
       return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
     }
 
     await updateUserCartSync(session.user.email, cart);
+    console.log('🔍 API DEBUG - PUT /api/cart - Cart updated successfully');
 
     return NextResponse.json({
       success: true,
