@@ -45,6 +45,7 @@ function calculateOrderStats(userData: any[]): OrderStats {
 
   // Process all users' orders
   userData.forEach((user) => {
+    // Tính doanh thu từ đơn hàng
     if (user.orders && Array.isArray(user.orders)) {
       // Count orders
       stats.total += user.orders.length;
@@ -61,6 +62,15 @@ function calculateOrderStats(userData: any[]): OrderStats {
         // Add to revenue if order is completed and paid
         if (order.status === 'completed' && order.paymentStatus === 'paid') {
           stats.revenue += order.totalAmount;
+        }
+      });
+    }
+    
+    // Tính doanh thu tiềm năng từ giỏ hàng
+    if (user.cart && Array.isArray(user.cart)) {
+      user.cart.forEach((item: any) => {
+        if (item.price && item.quantity) {
+          stats.revenue += item.price * item.quantity;
         }
       });
     }
