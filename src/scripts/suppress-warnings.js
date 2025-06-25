@@ -3,6 +3,14 @@
  * Đặc biệt hữu ích khi dev Next.js 15.x
  */
 
+// Tạo timestamp cho logs (trước khi import logger để không bị ghi đè)
+const getTimestamp = () => {
+  const now = new Date();
+  return `[${now.toISOString().replace('T', ' ').slice(0, -1)}]`;
+};
+
+// Lưu các hàm console gốc
+const originalConsoleLog = console.log;
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
 
@@ -25,9 +33,9 @@ console.error = function (...args) {
 
   const shouldSuppressError = suppressPatterns.some((pattern) => pattern.test(errorMessage));
 
-  // Nếu không cần lọc, ghi log bình thường
+  // Nếu không cần lọc, ghi log bình thường với timestamp
   if (!shouldSuppressError) {
-    originalConsoleError.apply(console, args);
+    originalConsoleError.apply(console, [getTimestamp(), ...args]);
   }
 };
 
@@ -38,10 +46,15 @@ console.warn = function (...args) {
 
   const shouldSuppressWarning = suppressPatterns.some((pattern) => pattern.test(warnMessage));
 
-  // Nếu không cần lọc, ghi log bình thường
+  // Nếu không cần lọc, ghi log bình thường với timestamp
   if (!shouldSuppressWarning) {
-    originalConsoleWarn.apply(console, args);
+    originalConsoleWarn.apply(console, [getTimestamp(), ...args]);
   }
+};
+
+// Thay thế console.log để thêm timestamp
+console.log = function (...args) {
+  originalConsoleLog.apply(console, [getTimestamp(), ...args]);
 };
 
 // Ghi đè xử lý lỗi không bắt được để ngăn chặn crash
@@ -51,9 +64,9 @@ process.on('unhandledRejection', (reason, promise) => {
   // Kiểm tra xem có nên lọc lỗi này không
   const shouldSuppressError = suppressPatterns.some((pattern) => pattern.test(errorMessage));
 
-  // Nếu không cần lọc, log lỗi để debug
+  // Nếu không cần lọc, log lỗi để debug với timestamp
   if (!shouldSuppressError) {
-    originalConsoleError('Unhandled Rejection at Promise:', promise, 'Reason:', reason);
+    originalConsoleError(getTimestamp(), 'Unhandled Rejection at Promise:', promise, 'Reason:', reason);
   }
 });
 
