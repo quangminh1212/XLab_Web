@@ -16,7 +16,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Luôn bắt đầu với bước 2 (thanh toán)
   const [step, setStep] = useState(2);
@@ -179,9 +179,9 @@ export default function CheckoutPage() {
       {/* Page Header */}
       <section className="bg-teal-600 text-white py-8 md:py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">Thanh toán</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">{t('checkout.title')}</h1>
           <p className="text-base md:text-lg max-w-3xl">
-            Hoàn tất đơn hàng của bạn với các phương thức thanh toán an toàn.
+            {t('checkout.subtitle')}
           </p>
         </div>
       </section>
@@ -194,7 +194,7 @@ export default function CheckoutPage() {
             <div className="lg:w-2/3">
               {/* Payment Methods */}
               <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
-                <h2 className="text-xl font-bold mb-6">Chọn phương thức thanh toán</h2>
+                <h2 className="text-xl font-bold mb-6">{t('checkout.paymentMethods')}</h2>
 
                 <div className="space-y-4">
                   {/* Thanh toán bằng số dư tài khoản - PHƯƠNG THỨC DUY NHẤT */}
@@ -209,13 +209,13 @@ export default function CheckoutPage() {
                           <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
                         </div>
                         <div>
-                          <h3 className="font-semibold">Số dư tài khoản</h3>
+                          <h3 className="font-semibold">{t('checkout.accountBalance')}</h3>
                           <p className="text-sm text-gray-600">
                             {isLoadingBalance ? (
-                              'Đang tải số dư...'
+                              t('checkout.checkingBalance')
                             ) : (
                               <>
-                                Số dư hiện tại:{' '}
+                                {t('checkout.currentBalance')}{' '}
                                 <span className="font-semibold">
                                   {formatCurrency(userBalance, language)}
                                 </span>
@@ -247,13 +247,11 @@ export default function CheckoutPage() {
                             </svg>
                           </div>
                           <div className="flex-1">
-                            <h4 className="text-sm font-medium text-teal-800">Số dư không đủ</h4>
+                            <h4 className="text-sm font-medium text-teal-800">{t('checkout.insufficientBalance')}</h4>
                             <p className="text-sm text-teal-700 mt-1">
-                              Bạn cần thêm{' '}
-                              <span className="font-semibold">
-                                {formatCurrency(total - userBalance, language)}
-                              </span>{' '}
-                              để hoàn tất đơn hàng này.
+                              {t('checkout.needMore', {
+                                amount: formatCurrency(total - userBalance, language)
+                              })}
                             </p>
                           </div>
                         </div>
@@ -279,12 +277,10 @@ export default function CheckoutPage() {
                       </div>
                       <div>
                         <h4 className="text-sm font-medium text-teal-800">
-                          Thanh toán đơn giản và an toàn
+                          {t('checkout.simpleSecure')}
                         </h4>
                         <p className="text-sm text-teal-700 mt-1">
-                          Hiện tại chúng tôi chỉ hỗ trợ thanh toán bằng số dư tài khoản để đảm bảo
-                          tính bảo mật và xử lý nhanh chóng. Bạn có thể nạp tiền vào tài khoản
-                          thông qua các phương thức chuyển khoản ngân hàng.
+                          {t('checkout.supportInfo')}
                         </p>
                       </div>
                     </div>
@@ -298,14 +294,14 @@ export default function CheckoutPage() {
                       disabled
                       className="flex-1 bg-gray-400 text-white px-6 py-3 rounded font-medium cursor-not-allowed"
                     >
-                      Đang kiểm tra số dư...
+                      {t('checkout.checkingBalance')}
                     </button>
                   ) : userBalance >= total ? (
                     <button
                       onClick={handlePayment}
                       className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded font-medium transition-colors"
                     >
-                      Thanh toán {formatCurrency(total, language)}
+                      {t('checkout.pay', { amount: formatCurrency(total, language) })}
                     </button>
                   ) : (
                     <div className="flex-1 space-y-3">
@@ -328,13 +324,13 @@ export default function CheckoutPage() {
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                           />
                         </svg>
-                        <span>Nạp tiền ({formatCurrency(total - userBalance, language)})</span>
+                        <span>{t('checkout.topUp', { amount: formatCurrency(total - userBalance, language) })}</span>
                       </button>
                       <button
                         disabled
                         className="w-full bg-gray-300 text-gray-500 px-6 py-2 rounded font-medium cursor-not-allowed text-sm"
                       >
-                        Thanh toán sẽ khả dụng sau khi nạp tiền
+                        {t('checkout.availableAfterTopUp')}
                       </button>
                     </div>
                   )}
@@ -345,7 +341,7 @@ export default function CheckoutPage() {
             {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-md p-4 md:p-6 sticky top-4">
-                <h2 className="text-xl font-bold mb-4">Tóm tắt đơn hàng</h2>
+                <h2 className="text-xl font-bold mb-4">{t('checkout.orderSummary')}</h2>
 
                 <div className="space-y-4 mb-6">
                   {cart.map((item, index) => (
@@ -361,7 +357,7 @@ export default function CheckoutPage() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-medium text-sm">{item.name}</h3>
-                        <p className="text-gray-500 text-xs">Số lượng: {item.quantity}</p>
+                        <p className="text-gray-500 text-xs">{t('cart.quantity')}: {item.quantity}</p>
                       </div>
                       <span className="font-medium text-sm">
                         {formatCurrency(item.price * item.quantity, language)}
@@ -372,11 +368,11 @@ export default function CheckoutPage() {
 
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Tạm tính:</span>
+                    <span>{t('checkout.subtotal')}</span>
                     <span>{formatCurrency(subtotal, language)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-base pt-2 border-t">
-                    <span>Tổng cộng:</span>
+                    <span>{t('checkout.total')}</span>
                     <span className="text-teal-600">{formatCurrency(total, language)}</span>
                   </div>
 
@@ -384,7 +380,7 @@ export default function CheckoutPage() {
                   {session?.user && (
                     <div className="border-t pt-3 mt-3">
                       <div className="flex justify-between text-sm">
-                        <span>Số dư tài khoản:</span>
+                        <span>{t('checkout.accountBalanceStatus')}</span>
                         <span
                           className={
                             isLoadingBalance
@@ -394,12 +390,12 @@ export default function CheckoutPage() {
                                 : 'text-teal-600'
                           }
                         >
-                          {isLoadingBalance ? 'Đang tải...' : formatCurrency(userBalance, language)}
+                          {isLoadingBalance ? t('checkout.checkingBalance') : formatCurrency(userBalance, language)}
                         </span>
                       </div>
                       {!isLoadingBalance && userBalance < total && (
                         <div className="flex justify-between text-sm mt-1">
-                          <span className="text-teal-600">Cần nạp thêm:</span>
+                          <span className="text-teal-600">{t('checkout.needToTopUp')}</span>
                           <span className="text-teal-600 font-semibold">
                             {formatCurrency(total - userBalance, language)}
                           </span>
@@ -411,15 +407,18 @@ export default function CheckoutPage() {
 
                 <div className="mt-6 text-center">
                   <p className="text-xs text-gray-500">
-                    Bằng cách đặt hàng, bạn đồng ý với{' '}
-                    <Link href="/terms" className="text-teal-600 hover:underline">
-                      Điều khoản dịch vụ
-                    </Link>{' '}
-                    và{' '}
-                    <Link href="/privacy" className="text-teal-600 hover:underline">
-                      Chính sách bảo mật
-                    </Link>{' '}
-                    của chúng tôi.
+                    {t('checkout.termsAgreement', {
+                      terms: (
+                        <Link href="/terms" className="text-teal-600 hover:underline">
+                          {t('checkout.terms')}
+                        </Link>
+                      ),
+                      privacy: (
+                        <Link href="/privacy" className="text-teal-600 hover:underline">
+                          {t('checkout.privacy')}
+                        </Link>
+                      ),
+                    })}
                   </p>
                 </div>
               </div>
