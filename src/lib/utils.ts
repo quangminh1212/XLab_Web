@@ -32,13 +32,38 @@ export function containerClass(...additionalClasses: ClassValue[]) {
 }
 
 /**
- * Format a number as Vietnamese currency (VND)
+ * Format a number as currency based on the current language
  */
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(amount);
+  // Lấy ngôn ngữ hiện tại từ localStorage
+  let currentLang = 'vie'; // Mặc định là tiếng Việt
+  
+  // Kiểm tra xem có đang chạy ở môi trường trình duyệt không
+  if (typeof window !== 'undefined') {
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
+      currentLang = savedLanguage;
+    }
+  }
+  
+  // Định dạng tiền tệ dựa trên ngôn ngữ
+  if (currentLang === 'eng') {
+    // Tiếng Anh - USD
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount / 24000); // Quy đổi từ VND sang USD với tỉ giá ước tính
+  } else {
+    // Tiếng Việt - VND
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  }
 }
 
 /**
