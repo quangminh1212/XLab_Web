@@ -8,7 +8,7 @@ import { useCart } from '@/components/cart/CartContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 import { useSession } from 'next-auth/react';
-import products from '@/data/products.json';
+import products from '../../../products.json';
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
@@ -39,7 +39,7 @@ export default function CheckoutPage() {
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map((item) => {
     // Tìm sản phẩm tương ứng trong danh sách products
-    const productDetail = products.find((p: any) => {
+    const productDetail = products.data.find((p: any) => {
       const productId = String(p.id).toLowerCase();
       const itemId = String(item.id).toLowerCase();
       const productName = String(p.name).toLowerCase();
@@ -106,8 +106,6 @@ export default function CheckoutPage() {
     fetchUserBalance();
   }, [session]);
 
-
-
   const validateShippingInfo = () => {
     const newErrors: Record<string, string> = {};
 
@@ -161,8 +159,6 @@ export default function CheckoutPage() {
     // Chỉ hỗ trợ thanh toán bằng số dư tài khoản
     router.push(`/account/deposit?amount=${total}&redirect=checkout`);
   };
-
-
 
   return (
     <div>
@@ -531,8 +527,6 @@ export default function CheckoutPage() {
                     </div>
                   ))}
                 </div>
-
-
 
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
