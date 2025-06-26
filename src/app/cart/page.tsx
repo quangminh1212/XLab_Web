@@ -15,6 +15,7 @@ import {
   AiOutlineInfoCircle,
 } from 'react-icons/ai';
 import { motion } from 'framer-motion';
+import { useTranslation } from '@/i18n/client';
 
 // Kết hợp interface CartItem từ CartContext và utils
 interface CartItemWithVersion {
@@ -31,6 +32,7 @@ interface CartItemWithVersion {
 // Danh sách mã giảm giá sẽ được lấy từ API
 
 export default function CartPage() {
+  const { t, i18n } = useTranslation();
   const {
     items: cartItems,
     removeItem: removeItemFromCart,
@@ -249,73 +251,54 @@ export default function CartPage() {
     }
   };
 
-  // Áp dụng mã giảm giá
+  // Apply promo code
   const applyPromoCode = async () => {
-    if (!couponCode) {
-      setCouponError('Vui lòng nhập mã giảm giá');
+    if (!couponCode.trim()) {
+      setCouponError(t('cart.enterCouponCode'));
       return;
     }
 
-    // Calculate current subtotal
-    const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-
-    // Validate subtotal to ensure it's a valid number
-    if (subtotal === undefined || subtotal === null || isNaN(subtotal) || subtotal <= 0) {
-      setCouponError('Tổng giá trị giỏ hàng không hợp lệ');
-      return;
-    }
+    setCouponError('');
 
     try {
-      console.log('Applying coupon:', couponCode, 'with orderTotal:', subtotal);
+      // Thực hiện call API kiểm tra mã giảm giá
+      const response = await fetch(`/api/coupons/validate?code=${encodeURIComponent(couponCode)}`);
+      const data = await response.json();
 
-      const response = await fetch('/api/cart/validate-coupon', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code: couponCode.toUpperCase(),
-          orderTotal: Number(subtotal),
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
+      if (data.success && data.coupon) {
         setAppliedCoupon({
-          code: result.coupon.code,
-          discount: result.coupon.discountAmount,
-          name: result.coupon.name,
+          code: data.coupon.code,
+          discount: data.coupon.discountAmount,
+          name: data.coupon.name || data.coupon.code,
         });
         setCouponCode('');
       } else {
-        setCouponError(result.error);
+        setCouponError(t('cart.couponInvalid'));
+        setAppliedCoupon(null);
       }
     } catch (error) {
-      console.error('Error applying coupon:', error);
-      setCouponError('Đã xảy ra lỗi khi áp dụng mã giảm giá');
+      console.error('Error validating coupon:', error);
+      setCouponError(t('cart.couponInvalid'));
     }
   };
 
-  // Show a toast notification when adding product to cart
+  // Remove applied coupon
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError('');
+  };
+
   const handleAddToCart = (product: any) => {
     addItemToCart({
-      id: product.id.toString(),
+      id: product.id,
       name: product.name,
-      price:
-        product.versions && product.versions.length > 0
-          ? product.versions[0].price
-          : product.salePrice || product.price,
+      price: product.price,
       quantity: 1,
-      image:
-        product.images &&
-        Array.isArray(product.images) &&
-        product.images.length > 0
-          ? product.images[0]
-          : product.imageUrl || '/images/placeholder/product-placeholder.svg',
+      image: product.images && product.images.length > 0 ? product.images[0] : undefined,
     });
     
-    // Show toast notification
+    // Set the product name for the toast notification
     setAddedProductName(product.name);
     setShowAddedToast(true);
     
@@ -367,9 +350,9 @@ export default function CartPage() {
         <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white py-10 md:py-16">
           <div className="container mx-auto px-4">
             <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
+              <h1 className="text-3xl md:text-4xl font-bold">{t('cart.title')}</h1>
               <p className="text-base md:text-lg max-w-3xl opacity-90">
-                Đang tải thông tin sản phẩm...
+                {t('products.loading')}
               </p>
             </div>
           </div>
@@ -402,7 +385,7 @@ export default function CartPage() {
                 clipRule="evenodd"
               />
             </svg>
-            <span>Đã thêm {addedProductName} vào giỏ hàng</span>
+            <span>{t('product.addToCart')}: {addedProductName}</span>
           </div>
         </div>
       )}
@@ -416,10 +399,9 @@ export default function CartPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
+            <h1 className="text-3xl md:text-4xl font-bold">{t('cart.title')}</h1>
             <p className="text-base md:text-lg max-w-3xl opacity-90 whitespace-nowrap">
-              Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng
-              tôi.
+              {t('cart.subtitle')}
             </p>
           </motion.div>
         </div>
@@ -440,10 +422,10 @@ export default function CartPage() {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 mb-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg md:text-xl font-semibold text-gray-800">
-                      Sản phẩm trong giỏ
+                      {t('cart.productInCart')}
                     </h2>
                     <span className="px-2.5 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-medium">
-                      {cart.length} sản phẩm
+                      {cart.length} {t('product.quantity')}
                     </span>
                   </div>
 
@@ -481,7 +463,7 @@ export default function CartPage() {
                               </h3>
                               {item.version && (
                                 <span className="text-xs text-gray-500 block mt-0.5">
-                                  Phiên bản: {item.version}
+                                  {t('product.options')}: {item.version}
                                 </span>
                               )}
                               {item.description && (
@@ -507,7 +489,7 @@ export default function CartPage() {
                                         item.quantity - 1,
                                       )
                                     }
-                                    aria-label="Giảm số lượng"
+                                    aria-label={t('cart.quantity')}
                                   >
                                     <AiOutlineMinus className="w-3 h-3" />
                                   </button>
@@ -525,7 +507,7 @@ export default function CartPage() {
                                         item.quantity + 1,
                                       )
                                     }
-                                    aria-label="Tăng số lượng"
+                                    aria-label={t('cart.quantity')}
                                   >
                                     <AiOutlinePlus className="w-3 h-3" />
                                   </button>
@@ -533,7 +515,7 @@ export default function CartPage() {
                                 <button
                                   className="text-red-500 hover:text-red-700 transition-colors p-1"
                                   onClick={() => removeItemFromCart(item.uniqueKey || item.id)}
-                                  aria-label="Xóa sản phẩm"
+                                  aria-label={t('form.delete')}
                                 >
                                   <AiOutlineDelete className="w-4 h-4" />
                                 </button>
@@ -551,14 +533,14 @@ export default function CartPage() {
                     href="/accounts"
                     className="border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 px-4 py-2 rounded text-xs font-medium transition-colors text-center"
                   >
-                    Tiếp tục mua sắm
+                    {t('cart.continueShopping')}
                   </Link>
                   <button
                     className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-4 py-2 rounded text-xs font-medium transition-colors flex items-center justify-center"
                     onClick={() => clearCart()}
                   >
                     <AiOutlineDelete className="w-3 h-3 mr-1" />
-                    Xóa giỏ hàng
+                    {t('cart.clearCart')}
                   </button>
                 </div>
               </motion.div>
@@ -568,276 +550,169 @@ export default function CartPage() {
                 className="lg:w-2/5"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 sticky top-20">
-                  <h2 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-100 text-gray-800">
-                    Tóm tắt đơn hàng
+                <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 mb-4">
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4">
+                    {t('cart.summary')}
                   </h2>
 
-                  <div className="space-y-3 mb-5">
+                  <div className="space-y-3 pb-4 border-b border-gray-100">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">
-                        Tạm tính ({cart.reduce((total, item) => total + item.quantity, 0)} sản phẩm)
-                      </span>
-                      <span className="font-medium">{formatCurrency(subtotal)}</span>
+                      <span className="text-gray-600">{t('cart.subtotal')}</span>
+                      <span className="font-semibold">{formatCurrency(subtotal)}</span>
                     </div>
-
-                    {/* Coupon code input */}
-                    <div className="pt-2 border-t border-gray-50">
-                      <div className="flex items-center justify-between mb-2">
-                        <label htmlFor="coupon" className="flex items-center text-sm font-medium">
-                          <AiOutlineTag className="mr-2" />
-                          Mã khuyến mãi
-                        </label>
-                        <button
-                          className="text-xs text-primary-600 hover:text-primary-700 flex items-center"
-                          onClick={() => setShowCouponInfo(!showCouponInfo)}
-                        >
-                          <AiOutlineInfoCircle className="mr-1" />
-                          Mã khuyến mãi
-                        </button>
-                      </div>
-
-                      {showCouponInfo && (
-                        <motion.div
-                          className="bg-gray-50 p-3 rounded-md mb-3 text-xs space-y-1.5"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                        >
-                          <p className="font-medium">Mã khuyến mãi có sẵn:</p>
-                          <div className="space-y-1">
-                            <div className="flex justify-between">
-                              <span className="font-mono text-primary-700">WELCOME50</span>
-                              <span>Giảm 50.000đ (tối thiểu 200.000đ)</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="font-mono text-primary-700">WELCOME10</span>
-                              <span>Giảm 10% cho đơn hàng đầu tiên</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="font-mono text-primary-700">FREESHIP</span>
-                              <span>Miễn phí vận chuyển (30.000đ)</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="font-mono text-primary-700">XLAB20</span>
-                              <span>Giảm 20% cho sản phẩm XLab</span>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {appliedCoupon ? (
-                        <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-3 flex justify-between items-center">
-                          <div>
-                            <p className="font-medium text-green-700 text-sm">
-                              {appliedCoupon.name}
-                            </p>
-                            <p className="text-green-600 text-xs mt-1">Mã: {appliedCoupon.code}</p>
-                          </div>
-                          <button
-                            onClick={() => setAppliedCoupon(null)}
-                            className="text-red-500 hover:text-red-700 text-xs"
-                          >
-                            Hủy
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex">
-                          <input
-                            type="text"
-                            id="coupon"
-                            placeholder="Nhập mã khuyến mãi"
-                            className="flex-grow border rounded-l-md px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary-600 focus:border-primary-600"
-                            value={couponCode}
-                            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                          />
-                          <button
-                            className="bg-primary-600 text-white px-4 py-2.5 rounded-r-md text-sm whitespace-nowrap hover:bg-primary-700 transition-colors"
-                            onClick={applyPromoCode}
-                          >
-                            Áp dụng
-                          </button>
-                        </div>
-                      )}
-
-                      {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Tạm tính</span>
-                      <span className="whitespace-nowrap text-sm">{formatCurrency(subtotal)}</span>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">{t('cart.tax')}</span>
+                      <span className="font-semibold">{formatCurrency(tax)}</span>
                     </div>
                     {appliedCoupon && (
-                      <div className="flex justify-between items-center text-green-600">
-                        <span className="text-sm">Giảm giá</span>
-                        <span className="whitespace-nowrap text-sm">
-                          -{formatCurrency(couponDiscount)}
+                      <div className="flex justify-between text-green-600">
+                        <span className="flex items-center">
+                          <AiOutlineTag className="mr-1" />
+                          {t('cart.discount')}
                         </span>
+                        <span className="font-semibold">-{formatCurrency(couponDiscount)}</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="border-t border-b border-gray-100 py-3 mb-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-base font-semibold">Tổng cộng</span>
-                      <span className="text-lg font-bold text-primary-600 whitespace-nowrap">
-                        {formatCurrency(total)}
-                      </span>
-                    </div>
+                  <div className="flex justify-between pt-4 pb-4 text-lg font-bold">
+                    <span>{t('cart.total')}</span>
+                    <span className="text-primary-600">{formatCurrency(total)}</span>
                   </div>
 
-                  <Link
-                    href="/checkout?skipInfo=true"
-                    className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-4 block text-center py-4 rounded-lg text-base font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
+                  {/* Coupon Code Form */}
+                  <div className="my-4">
+                    <div className="flex items-center">
+                      <h3 className="text-base font-medium text-gray-700 mb-2 flex items-center">
+                        {t('cart.couponCode')}
+                        <button
+                          className="ml-1 text-gray-400 hover:text-gray-600"
+                          onClick={() => setShowCouponInfo(!showCouponInfo)}
+                        >
+                          <AiOutlineInfoCircle className="w-4 h-4" />
+                        </button>
+                      </h3>
+                    </div>
+
+                    {showCouponInfo && (
+                      <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded mb-2">
+                        {t('discountCodes.specialDiscountDesc')}
+                      </div>
+                    )}
+
+                    {appliedCoupon ? (
+                      <div className="flex items-center justify-between bg-green-50 border border-green-200 p-2 rounded">
+                        <div>
+                          <span className="text-xs font-medium text-green-800 mr-2">
+                            {appliedCoupon.code}
+                          </span>
+                          <span className="text-xs text-green-600">
+                            (-{formatCurrency(appliedCoupon.discount)})
+                          </span>
+                        </div>
+                        <button
+                          onClick={removeCoupon}
+                          className="text-xs text-red-600 hover:text-red-800"
+                        >
+                          {t('cart.removeCoupon')}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex">
+                        <input
+                          type="text"
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          placeholder={t('cart.enterCouponCode')}
+                          className="flex-1 border border-gray-300 rounded-l px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                        <button
+                          onClick={applyPromoCode}
+                          className="bg-primary-600 text-white px-3 py-2 rounded-r text-sm font-medium hover:bg-primary-700 transition-colors"
+                        >
+                          {t('cart.applyCoupon')}
+                        </button>
+                      </div>
+                    )}
+                    {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
+                  </div>
+
+                  <button
+                    className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded font-medium transition-colors flex items-center justify-center"
+                    onClick={() => {
+                      // Tạm thời xử lý thanh toán tại đây
+                      console.log('Proceeding to checkout with items:', cart);
+                      // Chuyển hướng đến trang thanh toán sau khi xử lý
+                      window.location.href = '/checkout';
+                    }}
                   >
-                    🚀 Tiến hành thanh toán
-                  </Link>
+                    {t('cart.checkout')}
+                  </button>
                 </div>
+
+                {/* Recommended Products */}
+                {featuredProducts.length > 0 && (
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                      {t('cart.recommendedProducts')}
+                    </h2>
+                    <div className="space-y-3">
+                      {featuredProducts.map((product) => (
+                        <div
+                          key={product.id}
+                          className="flex items-center gap-3 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
+                        >
+                          <div className="w-16 h-16 bg-gray-50 rounded flex items-center justify-center p-2 border border-gray-100 flex-shrink-0">
+                            <Image
+                              src={
+                                product.images && product.images.length > 0
+                                  ? product.images[0]
+                                  : '/images/placeholder/product-placeholder.svg'
+                              }
+                              alt={product.name}
+                              width={60}
+                              height={60}
+                              className="w-full h-full object-contain"
+                              unoptimized={true}
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-sm font-medium text-gray-800 hover:text-primary-600 transition-colors">
+                              <Link href={`/products/${product.id}`}>{product.name}</Link>
+                            </h3>
+                            <p className="text-xs text-gray-500">
+                              {formatCurrency(product.price)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            className="bg-primary-50 text-primary-600 hover:bg-primary-100 p-1.5 rounded transition-colors"
+                            aria-label={t('product.addToCart')}
+                          >
+                            <AiOutlinePlus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             </div>
           ) : (
-            /* Thiết kế mới cho giỏ hàng trống */
-            <motion.div
-              className="max-w-xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 md:p-8 mb-4 text-center">
-                <EmptyCartIcon />
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
-                  Giỏ hàng của bạn đang trống
-                </h2>
-                <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                  Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá các sản phẩm của chúng tôi
-                  và bắt đầu mua sắm ngay.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link
-                    href="/accounts"
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded text-sm font-medium transition-colors shadow-sm"
-                  >
-                    Xem danh sách sản phẩm
-                  </Link>
-                  <Link
-                    href="/categories"
-                    className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-5 py-2.5 rounded text-sm font-medium transition-colors"
-                  >
-                    Xem danh mục
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </section>
-
-      {/* Sản phẩm đề xuất */}
-      <section className="py-8 md:py-12 bg-gray-100">
-        <div className="container mx-auto px-4">
-          <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">
-            {cart.length > 0 ? 'Sản phẩm bạn có thể quan tâm' : 'Sản phẩm đề xuất cho bạn'}
-          </h2>
-
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {featuredProducts.map((product) => (
-              <motion.div
-                key={product.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full"
-                variants={itemVariants}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center max-w-2xl mx-auto">
+              <EmptyCartIcon />
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">{t('cart.emptyCart')}</h2>
+              <p className="text-gray-600 mb-6">{t('cart.emptyCartMessage')}</p>
+              <Link
+                href="/accounts"
+                className="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded font-medium transition-colors"
               >
-                {/* Thay đổi thành hình vuông nhỏ hơn */}
-                <div className="aspect-square bg-gradient-to-r from-gray-50 to-gray-100 relative overflow-hidden">
-                  {/* Hình ảnh sản phẩm */}
-                  <div className="w-full h-full flex items-center justify-center p-4">
-                    <Image
-                      src={
-                        product.images && Array.isArray(product.images) && product.images.length > 0
-                          ? product.images[0]
-                          : product.imageUrl || '/images/placeholder/product-placeholder.jpg'
-                      }
-                      alt={product.name}
-                      width={160}
-                      height={160}
-                      className="w-3/4 h-3/4 object-contain transition-transform group-hover:scale-110"
-                      unoptimized={true}
-                    />
-                  </div>
-                  {product.isNew && (
-                    <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                      Mới
-                    </div>
-                  )}
-                  {product.salePrice && product.salePrice < product.price && (
-                    <div className="absolute top-2 right-2 bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded">
-                      -{Math.round(((product.price - product.salePrice) / product.price) * 100)}%
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-4 flex-grow flex flex-col">
-                  <Link href={`/products/${product.id}`} className="group">
-                    <h3 className="text-base font-bold mb-1 text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">
-                      {product.name}
-                    </h3>
-                  </Link>
-                  <p className="text-gray-600 text-xs mb-2 line-clamp-2 flex-grow">
-                    {product.description}
-                  </p>
-                  <div className="flex justify-between items-center mt-auto">
-                    <div>
-                      {(() => {
-                        // Xác định giá hiển thị từ versions hoặc fallback
-                        const displayPrice =
-                          product.versions && product.versions.length > 0
-                            ? product.versions[0].price
-                            : product.salePrice || product.price;
-                        const originalPrice =
-                          product.versions && product.versions.length > 0
-                            ? product.versions[0].originalPrice
-                            : product.price;
-
-                        if (originalPrice && originalPrice > displayPrice) {
-                          return (
-                            <div className="flex items-center gap-2">
-                              <span className="text-base font-bold text-primary-600 whitespace-nowrap">
-                                {formatCurrency(displayPrice)}
-                              </span>
-                              <span className="text-xs text-gray-500 line-through whitespace-nowrap">
-                                {formatCurrency(originalPrice)}
-                              </span>
-                            </div>
-                          );
-                        } else {
-                          return (
-                            <span className="text-base font-bold text-primary-600 whitespace-nowrap">
-                              {formatCurrency(displayPrice)}
-                            </span>
-                          );
-                        }
-                      })()}
-                    </div>
-                    <button
-                      className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs font-medium transition-colors border border-primary-200 flex items-center"
-                      onClick={() => handleAddToCart(product)}
-                    >
-                      <AiOutlinePlus className="mr-1 w-3 h-3" />
-                      Thêm
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                {t('cart.continueShopping')}
+              </Link>
+            </div>
+          )}
         </div>
       </section>
     </div>
