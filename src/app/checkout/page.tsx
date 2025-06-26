@@ -8,7 +8,6 @@ import { useCart } from '@/components/cart/CartContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 import { useSession } from 'next-auth/react';
-import products from '@/data/products.json';
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
@@ -16,6 +15,8 @@ export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const skipInfo = searchParams?.get('skipInfo') === 'true';
   const { data: session } = useSession();
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   // Mặc định là bước 1 (thông tin), nhưng nếu có tham số skipInfo=true thì chuyển thẳng bước 2 (thanh toán)
   const [step, setStep] = useState(skipInfo ? 2 : 1);
@@ -35,6 +36,27 @@ export default function CheckoutPage() {
   >('balance');
   const [userBalance, setUserBalance] = useState(0);
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            setProducts(result.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map((item) => {
@@ -162,7 +184,13 @@ export default function CheckoutPage() {
     router.push(`/account/deposit?amount=${total}&redirect=checkout`);
   };
 
-
+  if (isLoadingProducts) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div>
