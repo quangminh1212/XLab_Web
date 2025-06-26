@@ -2,6 +2,7 @@ import { type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { products } from '@/data/mockData';
 import { Product } from '@/types';
+import { Language } from '@/i18n';
 
 // Safe imports to handle potential undefined modules
 let clsx: any;
@@ -32,17 +33,34 @@ export function containerClass(...additionalClasses: ClassValue[]) {
 }
 
 /**
- * Format a number as currency based on the current language
+ * Lấy đơn vị tiền tệ dựa trên ngôn ngữ
  */
-export function formatCurrency(amount: number): string {
-  // Lấy ngôn ngữ hiện tại từ localStorage
-  let currentLang = 'vie'; // Mặc định là tiếng Việt
+export function getCurrencyByLanguage(language: Language = 'vie') {
+  return language === 'eng' ? 'USD' : 'VND';
+}
+
+/**
+ * Lấy tỉ giá quy đổi từ VND sang USD
+ */
+export function getExchangeRate() {
+  return 24000; // Tỉ giá ước tính VND/USD
+}
+
+/**
+ * Format a number as currency based on the current language
+ * @param amount Số tiền (trong VND)
+ * @param language Ngôn ngữ hiện tại ('vie' hoặc 'eng')
+ */
+export function formatCurrency(amount: number, language?: Language): string {
+  // Lấy ngôn ngữ hiện tại từ localStorage nếu không được truyền vào
+  let currentLang = language;
   
-  // Kiểm tra xem có đang chạy ở môi trường trình duyệt không
-  if (typeof window !== 'undefined') {
+  if (!currentLang && typeof window !== 'undefined') {
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
-      currentLang = savedLanguage;
+      currentLang = savedLanguage as Language;
+    } else {
+      currentLang = 'vie'; // Mặc định là tiếng Việt
     }
   }
   
@@ -54,7 +72,7 @@ export function formatCurrency(amount: number): string {
       currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(amount / 24000); // Quy đổi từ VND sang USD với tỉ giá ước tính
+    }).format(amount / getExchangeRate());
   } else {
     // Tiếng Việt - VND
     return new Intl.NumberFormat('vi-VN', {

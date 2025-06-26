@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { memo, useMemo } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency, getExchangeRate } from '@/lib/utils';
 
 interface BalanceDisplayProps {
   className?: string;
@@ -16,23 +17,8 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { language, t } = useLanguage();
 
   const formattedBalance = useMemo(() => {
-    if (language === 'eng') {
-      // For English, convert VND to USD (rough approximation)
-      const usdAmount = balance / 24000; // Approximate conversion rate
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-      }).format(usdAmount);
-    } else {
-      // For Vietnamese, use VND
-      return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-        maximumFractionDigits: 0,
-      }).format(balance).replace('₫', t('deposit.currencySymbol'));
-    }
-  }, [balance, language, t]);
+    return formatCurrency(balance, language);
+  }, [balance, language]);
 
   if (!session?.user) {
     return null;

@@ -9,12 +9,14 @@ import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 import { useSession } from 'next-auth/react';
 import products from '../../../products.json';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+  const { language } = useLanguage();
 
   // Luôn bắt đầu với bước 2 (thanh toán)
   const [step, setStep] = useState(2);
@@ -215,7 +217,7 @@ export default function CheckoutPage() {
                               <>
                                 Số dư hiện tại:{' '}
                                 <span className="font-semibold">
-                                  {formatCurrency(userBalance)}
+                                  {formatCurrency(userBalance, language)}
                                 </span>
                               </>
                             )}
@@ -249,7 +251,7 @@ export default function CheckoutPage() {
                             <p className="text-sm text-teal-700 mt-1">
                               Bạn cần thêm{' '}
                               <span className="font-semibold">
-                                {formatCurrency(total - userBalance)}
+                                {formatCurrency(total - userBalance, language)}
                               </span>{' '}
                               để hoàn tất đơn hàng này.
                             </p>
@@ -303,7 +305,7 @@ export default function CheckoutPage() {
                       onClick={handlePayment}
                       className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded font-medium transition-colors"
                     >
-                      Thanh toán {formatCurrency(total)}
+                      Thanh toán {formatCurrency(total, language)}
                     </button>
                   ) : (
                     <div className="flex-1 space-y-3">
@@ -326,7 +328,7 @@ export default function CheckoutPage() {
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                           />
                         </svg>
-                        <span>Nạp tiền ({formatCurrency(total - userBalance)})</span>
+                        <span>Nạp tiền ({formatCurrency(total - userBalance, language)})</span>
                       </button>
                       <button
                         disabled
@@ -362,7 +364,7 @@ export default function CheckoutPage() {
                         <p className="text-gray-500 text-xs">Số lượng: {item.quantity}</p>
                       </div>
                       <span className="font-medium text-sm">
-                        {formatCurrency(item.price * item.quantity)}
+                        {formatCurrency(item.price * item.quantity, language)}
                       </span>
                     </div>
                   ))}
@@ -371,11 +373,11 @@ export default function CheckoutPage() {
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Tạm tính:</span>
-                    <span>{formatCurrency(subtotal)}</span>
+                    <span>{formatCurrency(subtotal, language)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-base pt-2 border-t">
                     <span>Tổng cộng:</span>
-                    <span className="text-teal-600">{formatCurrency(total)}</span>
+                    <span className="text-teal-600">{formatCurrency(total, language)}</span>
                   </div>
 
                   {/* Hiển thị thông tin số dư */}
@@ -392,14 +394,14 @@ export default function CheckoutPage() {
                                 : 'text-teal-600'
                           }
                         >
-                          {isLoadingBalance ? 'Đang tải...' : formatCurrency(userBalance)}
+                          {isLoadingBalance ? 'Đang tải...' : formatCurrency(userBalance, language)}
                         </span>
                       </div>
                       {!isLoadingBalance && userBalance < total && (
                         <div className="flex justify-between text-sm mt-1">
                           <span className="text-teal-600">Cần nạp thêm:</span>
                           <span className="text-teal-600 font-semibold">
-                            {formatCurrency(total - userBalance)}
+                            {formatCurrency(total - userBalance, language)}
                           </span>
                         </div>
                       )}
