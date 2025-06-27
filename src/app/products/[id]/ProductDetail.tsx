@@ -278,11 +278,6 @@ const ProductOptions = ({
             <span className="text-gray-900 font-medium text-sm mr-2">
               {translatedOptions[option] || option}
             </span>
-            {option === product?.defaultProductOption && (
-              <span className="bg-teal-100 text-teal-700 text-xs px-1.5 py-0.5 rounded-full font-medium mr-2">
-                Mặc định
-              </span>
-            )}
             {optionPrices && optionPrices[option] && (
               <span className="text-primary-600 font-medium text-sm">
                 {formatCurrency(optionPrices[option].price)}
