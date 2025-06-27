@@ -162,24 +162,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           fullWidthBtn.onclick = (e) => {
             e.preventDefault();
             
-            // Lấy kích thước thực của hình ảnh
-            const naturalWidth = img.naturalWidth;
-            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-            const newWidth = Math.min(naturalWidth, parentWidth);
+            // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+            img.style.cssText += 'width: 100% !important; max-width: 100% !important;';
+            img.style.display = 'inline-block';
+            img.removeAttribute('width'); // Xóa attribute width nếu có
             
-            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-            img.style.width = `${newWidth}px`;
-            img.style.maxWidth = '100%';
-            img.removeAttribute('width'); // Xóa thuộc tính width để tránh xung đột
-            
-            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-            img.style.opacity = '0.7';
-            setTimeout(() => { 
-              img.style.opacity = '1'; 
-            }, 50);
+            // Hiệu ứng nhìn thấy được khi thay đổi
+            img.style.outline = '2px solid #2196f3';
+            setTimeout(() => {
+              img.style.outline = 'none';
+            }, 300);
             
             // Cập nhật nội dung
             handleInput();
+            
+            // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+            const parent = img.parentElement;
+            if (parent) {
+              const next = img.nextSibling;
+              parent.removeChild(img);
+              setTimeout(() => {
+                if (next) {
+                  parent.insertBefore(img, next);
+                } else {
+                  parent.appendChild(img);
+                }
+              }, 10);
+            }
           };
           
           // Nút resize ảnh về 75%
@@ -190,24 +199,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           threeQuarterBtn.onclick = (e) => {
             e.preventDefault();
             
-            // Lấy kích thước thực của hình ảnh
-            const naturalWidth = img.naturalWidth;
-            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-            const newWidth = Math.min(naturalWidth, parentWidth) * 0.75;
+            // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+            img.style.cssText += 'width: 75% !important; max-width: 75% !important;';
+            img.style.display = 'inline-block';
+            img.removeAttribute('width'); // Xóa attribute width nếu có
             
-            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-            img.style.width = `${newWidth}px`;
-            img.style.maxWidth = '75%';
-            img.removeAttribute('width');
-            
-            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-            img.style.opacity = '0.7';
-            setTimeout(() => { 
-              img.style.opacity = '1'; 
-            }, 50);
+            // Hiệu ứng nhìn thấy được khi thay đổi
+            img.style.outline = '2px solid #2196f3';
+            setTimeout(() => {
+              img.style.outline = 'none';
+            }, 300);
             
             // Cập nhật nội dung
             handleInput();
+            
+            // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+            const parent = img.parentElement;
+            if (parent) {
+              const next = img.nextSibling;
+              parent.removeChild(img);
+              setTimeout(() => {
+                if (next) {
+                  parent.insertBefore(img, next);
+                } else {
+                  parent.appendChild(img);
+                }
+              }, 10);
+            }
           };
           
           // Nút resize ảnh về 50%
@@ -218,24 +236,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           halfBtn.onclick = (e) => {
             e.preventDefault();
             
-            // Lấy kích thước thực của hình ảnh
-            const naturalWidth = img.naturalWidth;
-            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-            const newWidth = Math.min(naturalWidth, parentWidth) * 0.5;
+            // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+            img.style.cssText += 'width: 50% !important; max-width: 50% !important;';
+            img.style.display = 'inline-block';
+            img.removeAttribute('width'); // Xóa attribute width nếu có
             
-            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-            img.style.width = `${newWidth}px`;
-            img.style.maxWidth = '50%';
-            img.removeAttribute('width');
-            
-            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-            img.style.opacity = '0.7';
-            setTimeout(() => { 
-              img.style.opacity = '1'; 
-            }, 50);
+            // Hiệu ứng nhìn thấy được khi thay đổi
+            img.style.outline = '2px solid #2196f3';
+            setTimeout(() => {
+              img.style.outline = 'none';
+            }, 300);
             
             // Cập nhật nội dung
             handleInput();
+            
+            // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+            const parent = img.parentElement;
+            if (parent) {
+              const next = img.nextSibling;
+              parent.removeChild(img);
+              setTimeout(() => {
+                if (next) {
+                  parent.insertBefore(img, next);
+                } else {
+                  parent.appendChild(img);
+                }
+              }, 10);
+            }
           };
           
           // Nút resize ảnh về 25%
@@ -246,24 +273,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           quarterBtn.onclick = (e) => {
             e.preventDefault();
             
-            // Lấy kích thước thực của hình ảnh
-            const naturalWidth = img.naturalWidth;
-            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-            const newWidth = Math.min(naturalWidth, parentWidth) * 0.25;
+            // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+            img.style.cssText += 'width: 25% !important; max-width: 25% !important;';
+            img.style.display = 'inline-block';
+            img.removeAttribute('width'); // Xóa attribute width nếu có
             
-            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-            img.style.width = `${newWidth}px`;
-            img.style.maxWidth = '25%';
-            img.removeAttribute('width');
-            
-            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-            img.style.opacity = '0.7';
-            setTimeout(() => { 
-              img.style.opacity = '1'; 
-            }, 50);
+            // Hiệu ứng nhìn thấy được khi thay đổi
+            img.style.outline = '2px solid #2196f3';
+            setTimeout(() => {
+              img.style.outline = 'none';
+            }, 300);
             
             // Cập nhật nội dung
             handleInput();
+            
+            // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+            const parent = img.parentElement;
+            if (parent) {
+              const next = img.nextSibling;
+              parent.removeChild(img);
+              setTimeout(() => {
+                if (next) {
+                  parent.insertBefore(img, next);
+                } else {
+                  parent.appendChild(img);
+                }
+              }, 10);
+            }
           };
           
           // Nút thêm chú thích cho ảnh
@@ -444,24 +480,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     fullWidthBtn.onclick = (e) => {
       e.preventDefault();
       
-      // Lấy kích thước thực của hình ảnh
-      const naturalWidth = img.naturalWidth;
-      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-      const newWidth = Math.min(naturalWidth, parentWidth);
+      // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+      img.style.cssText += 'width: 100% !important; max-width: 100% !important;';
+      img.style.display = 'inline-block';
+      img.removeAttribute('width'); // Xóa attribute width nếu có
       
-      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-      img.style.width = `${newWidth}px`;
-      img.style.maxWidth = '100%';
-      img.removeAttribute('width'); // Xóa thuộc tính width để tránh xung đột
-      
-      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-      img.style.opacity = '0.7';
-      setTimeout(() => { 
-        img.style.opacity = '1'; 
-      }, 50);
+      // Hiệu ứng nhìn thấy được khi thay đổi
+      img.style.outline = '2px solid #2196f3';
+      setTimeout(() => {
+        img.style.outline = 'none';
+      }, 300);
       
       // Cập nhật nội dung
       handleInput();
+      
+      // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+      const parent = img.parentElement;
+      if (parent) {
+        const next = img.nextSibling;
+        parent.removeChild(img);
+        setTimeout(() => {
+          if (next) {
+            parent.insertBefore(img, next);
+          } else {
+            parent.appendChild(img);
+          }
+        }, 10);
+      }
     };
 
     // Nút resize ảnh về 75%
@@ -472,24 +517,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     threeQuarterBtn.onclick = (e) => {
       e.preventDefault();
       
-      // Lấy kích thước thực của hình ảnh
-      const naturalWidth = img.naturalWidth;
-      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-      const newWidth = Math.min(naturalWidth, parentWidth) * 0.75;
+      // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+      img.style.cssText += 'width: 75% !important; max-width: 75% !important;';
+      img.style.display = 'inline-block';
+      img.removeAttribute('width'); // Xóa attribute width nếu có
       
-      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-      img.style.width = `${newWidth}px`;
-      img.style.maxWidth = '75%';
-      img.removeAttribute('width');
-      
-      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-      img.style.opacity = '0.7';
-      setTimeout(() => { 
-        img.style.opacity = '1'; 
-      }, 50);
+      // Hiệu ứng nhìn thấy được khi thay đổi
+      img.style.outline = '2px solid #2196f3';
+      setTimeout(() => {
+        img.style.outline = 'none';
+      }, 300);
       
       // Cập nhật nội dung
       handleInput();
+      
+      // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+      const parent = img.parentElement;
+      if (parent) {
+        const next = img.nextSibling;
+        parent.removeChild(img);
+        setTimeout(() => {
+          if (next) {
+            parent.insertBefore(img, next);
+          } else {
+            parent.appendChild(img);
+          }
+        }, 10);
+      }
     };
 
     // Nút resize ảnh về 50%
@@ -500,24 +554,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     halfBtn.onclick = (e) => {
       e.preventDefault();
       
-      // Lấy kích thước thực của hình ảnh
-      const naturalWidth = img.naturalWidth;
-      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-      const newWidth = Math.min(naturalWidth, parentWidth) * 0.5;
+      // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+      img.style.cssText += 'width: 50% !important; max-width: 50% !important;';
+      img.style.display = 'inline-block';
+      img.removeAttribute('width'); // Xóa attribute width nếu có
       
-      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-      img.style.width = `${newWidth}px`;
-      img.style.maxWidth = '50%';
-      img.removeAttribute('width');
-      
-      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-      img.style.opacity = '0.7';
-      setTimeout(() => { 
-        img.style.opacity = '1'; 
-      }, 50);
+      // Hiệu ứng nhìn thấy được khi thay đổi
+      img.style.outline = '2px solid #2196f3';
+      setTimeout(() => {
+        img.style.outline = 'none';
+      }, 300);
       
       // Cập nhật nội dung
       handleInput();
+      
+      // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+      const parent = img.parentElement;
+      if (parent) {
+        const next = img.nextSibling;
+        parent.removeChild(img);
+        setTimeout(() => {
+          if (next) {
+            parent.insertBefore(img, next);
+          } else {
+            parent.appendChild(img);
+          }
+        }, 10);
+      }
     };
 
     // Nút resize ảnh về 25%
@@ -528,24 +591,33 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     quarterBtn.onclick = (e) => {
       e.preventDefault();
       
-      // Lấy kích thước thực của hình ảnh
-      const naturalWidth = img.naturalWidth;
-      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
-      const newWidth = Math.min(naturalWidth, parentWidth) * 0.25;
+      // Thay đổi kích thước bằng cách áp dụng cả style và attribute
+      img.style.cssText += 'width: 25% !important; max-width: 25% !important;';
+      img.style.display = 'inline-block';
+      img.removeAttribute('width'); // Xóa attribute width nếu có
       
-      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
-      img.style.width = `${newWidth}px`;
-      img.style.maxWidth = '25%';
-      img.removeAttribute('width');
-      
-      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
-      img.style.opacity = '0.7';
-      setTimeout(() => { 
-        img.style.opacity = '1'; 
-      }, 50);
+      // Hiệu ứng nhìn thấy được khi thay đổi
+      img.style.outline = '2px solid #2196f3';
+      setTimeout(() => {
+        img.style.outline = 'none';
+      }, 300);
       
       // Cập nhật nội dung
       handleInput();
+      
+      // Buộc trình duyệt vẽ lại - trick bằng cách tạm thay đổi thuộc tính
+      const parent = img.parentElement;
+      if (parent) {
+        const next = img.nextSibling;
+        parent.removeChild(img);
+        setTimeout(() => {
+          if (next) {
+            parent.insertBefore(img, next);
+          } else {
+            parent.appendChild(img);
+          }
+        }, 10);
+      }
     };
 
     // Nút thêm chú thích cho ảnh
