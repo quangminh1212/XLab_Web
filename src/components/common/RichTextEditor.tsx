@@ -70,13 +70,287 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     const handleImageClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
-      // Nếu click vào ảnh trong editor, hiển thị toolbar
-      if (target.tagName === 'IMG' && target.classList.contains('editor-image')) {
-        const toolbar = target.parentElement?.querySelector('.image-toolbar');
-        if (toolbar) {
-          toolbar.classList.add('visible');
+      // Xử lý khi click vào ảnh bất kỳ trong editor
+      if (target.tagName === 'IMG') {
+        // Nếu ảnh đã có wrapper với toolbar, chỉ hiển thị toolbar
+        if (target.classList.contains('editor-image')) {
+          const toolbar = target.parentElement?.querySelector('.image-toolbar');
+          if (toolbar) {
+            toolbar.classList.add('visible');
+          }
+        } 
+        // Nếu ảnh chưa có wrapper và toolbar, tạo mới
+        else if (editorRef.current) {
+          // Tạo wrapper bao quanh ảnh đã có
+          const imageWrapper = document.createElement('div');
+          imageWrapper.className = 'image-wrapper';
+          imageWrapper.contentEditable = 'false';
+          
+          // Lấy thông tin ảnh hiện tại
+          const originalSrc = target.getAttribute('src') || '';
+          const originalWidth = target.style.width || '100%';
+          const originalMargin = target.style.margin || '0 auto';
+          const originalDisplay = target.style.display || 'block';
+          
+          // Thay thế ảnh với phiên bản mới có toolbar
+          const img = document.createElement('img');
+          img.src = originalSrc;
+          img.className = 'editor-image';
+          img.style.width = originalWidth;
+          img.style.display = originalDisplay;
+          img.style.margin = originalMargin;
+          
+          // Thêm thuộc tính từ ảnh cũ vào ảnh mới
+          for (const attr of target.attributes) {
+            if (attr.name !== 'src' && attr.name !== 'style' && attr.name !== 'class') {
+              img.setAttribute(attr.name, attr.value);
+            }
+          }
+          
+          // Tạo toolbar điều chỉnh ảnh
+          const imageToolbar = document.createElement('div');
+          imageToolbar.className = 'image-toolbar visible';
+          
+          // Function để update editor content khi thay đổi
+          const updateContent = () => {
+            if (editorRef.current) {
+              onChange(editorRef.current.innerHTML);
+            }
+          };
+          
+          // Nút căn giữa ảnh
+          const centerBtn = document.createElement('button');
+          centerBtn.innerHTML = '&#8592;&#8594;';
+          centerBtn.title = 'Căn giữa';
+          centerBtn.className = 'image-tool-btn';
+          centerBtn.onclick = (e) => {
+            e.preventDefault();
+            img.style.display = 'block';
+            img.style.margin = '0 auto';
+            handleInput();
+          };
+          
+          // Nút căn trái ảnh
+          const leftBtn = document.createElement('button');
+          leftBtn.innerHTML = '&#8592;';
+          leftBtn.title = 'Căn trái';
+          leftBtn.className = 'image-tool-btn';
+          leftBtn.onclick = (e) => {
+            e.preventDefault();
+            img.style.display = 'block';
+            img.style.margin = '0 auto 0 0';
+            handleInput();
+          };
+          
+          // Nút căn phải ảnh
+          const rightBtn = document.createElement('button');
+          rightBtn.innerHTML = '&#8594;';
+          rightBtn.title = 'Căn phải';
+          rightBtn.className = 'image-tool-btn';
+          rightBtn.onclick = (e) => {
+            e.preventDefault();
+            img.style.display = 'block';
+            img.style.margin = '0 0 0 auto';
+            handleInput();
+          };
+          
+          // Nút resize ảnh về 100%
+          const fullWidthBtn = document.createElement('button');
+          fullWidthBtn.innerHTML = '100%';
+          fullWidthBtn.title = 'Kích thước đầy đủ';
+          fullWidthBtn.className = 'image-tool-btn';
+          fullWidthBtn.onclick = (e) => {
+            e.preventDefault();
+            
+            // Lấy kích thước thực của hình ảnh
+            const naturalWidth = img.naturalWidth;
+            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+            const newWidth = Math.min(naturalWidth, parentWidth);
+            
+            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+            img.style.width = `${newWidth}px`;
+            img.style.maxWidth = '100%';
+            img.removeAttribute('width'); // Xóa thuộc tính width để tránh xung đột
+            
+            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+            img.style.opacity = '0.7';
+            setTimeout(() => { 
+              img.style.opacity = '1'; 
+            }, 50);
+            
+            // Cập nhật nội dung
+            handleInput();
+          };
+          
+          // Nút resize ảnh về 75%
+          const threeQuarterBtn = document.createElement('button');
+          threeQuarterBtn.innerHTML = '75%';
+          threeQuarterBtn.title = 'Kích thước 75%';
+          threeQuarterBtn.className = 'image-tool-btn';
+          threeQuarterBtn.onclick = (e) => {
+            e.preventDefault();
+            
+            // Lấy kích thước thực của hình ảnh
+            const naturalWidth = img.naturalWidth;
+            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+            const newWidth = Math.min(naturalWidth, parentWidth) * 0.75;
+            
+            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+            img.style.width = `${newWidth}px`;
+            img.style.maxWidth = '75%';
+            img.removeAttribute('width');
+            
+            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+            img.style.opacity = '0.7';
+            setTimeout(() => { 
+              img.style.opacity = '1'; 
+            }, 50);
+            
+            // Cập nhật nội dung
+            handleInput();
+          };
+          
+          // Nút resize ảnh về 50%
+          const halfBtn = document.createElement('button');
+          halfBtn.innerHTML = '50%';
+          halfBtn.title = 'Kích thước 50%';
+          halfBtn.className = 'image-tool-btn';
+          halfBtn.onclick = (e) => {
+            e.preventDefault();
+            
+            // Lấy kích thước thực của hình ảnh
+            const naturalWidth = img.naturalWidth;
+            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+            const newWidth = Math.min(naturalWidth, parentWidth) * 0.5;
+            
+            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+            img.style.width = `${newWidth}px`;
+            img.style.maxWidth = '50%';
+            img.removeAttribute('width');
+            
+            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+            img.style.opacity = '0.7';
+            setTimeout(() => { 
+              img.style.opacity = '1'; 
+            }, 50);
+            
+            // Cập nhật nội dung
+            handleInput();
+          };
+          
+          // Nút resize ảnh về 25%
+          const quarterBtn = document.createElement('button');
+          quarterBtn.innerHTML = '25%';
+          quarterBtn.title = 'Kích thước 25%';
+          quarterBtn.className = 'image-tool-btn';
+          quarterBtn.onclick = (e) => {
+            e.preventDefault();
+            
+            // Lấy kích thước thực của hình ảnh
+            const naturalWidth = img.naturalWidth;
+            const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+            const newWidth = Math.min(naturalWidth, parentWidth) * 0.25;
+            
+            // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+            img.style.width = `${newWidth}px`;
+            img.style.maxWidth = '25%';
+            img.removeAttribute('width');
+            
+            // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+            img.style.opacity = '0.7';
+            setTimeout(() => { 
+              img.style.opacity = '1'; 
+            }, 50);
+            
+            // Cập nhật nội dung
+            handleInput();
+          };
+          
+          // Nút thêm chú thích cho ảnh
+          const captionBtn = document.createElement('button');
+          captionBtn.innerHTML = 'Abc';
+          captionBtn.title = 'Thêm chú thích';
+          captionBtn.className = 'image-tool-btn';
+          captionBtn.onclick = (e) => {
+            e.preventDefault();
+            
+            // Kiểm tra xem đã có caption chưa
+            let caption = imageWrapper.querySelector('.image-caption');
+            
+            if (!caption) {
+              // Tạo mới caption nếu chưa có
+              caption = document.createElement('div');
+              caption.className = 'image-caption';
+              (caption as HTMLDivElement).contentEditable = 'true';
+              caption.innerHTML = 'Nhập chú thích...';
+              imageWrapper.appendChild(caption);
+              
+              // Focus vào caption để người dùng nhập
+              setTimeout(() => {
+                (caption as HTMLDivElement)?.focus();
+                
+                // Chọn toàn bộ văn bản mặc định
+                const selection = window.getSelection();
+                const range = document.createRange();
+                if (selection && caption) {
+                  range.selectNodeContents(caption);
+                  selection.removeAllRanges();
+                  selection.addRange(range);
+                }
+              }, 0);
+              
+              // Xử lý sự kiện blur để cập nhật nội dung
+              caption.addEventListener('blur', () => {
+                if (caption instanceof HTMLElement && caption.innerHTML.trim() === 'Nhập chú thích...') {
+                  caption.remove();
+                }
+                updateContent();
+              });
+              
+              // Ngăn sự kiện click truyền ra ngoài
+              caption.addEventListener('click', (e) => {
+                e.stopPropagation();
+              });
+            } else {
+              // Nếu đã có caption thì xóa đi
+              caption.remove();
+              updateContent();
+            }
+          };
+          
+          // Nút xóa ảnh
+          const deleteBtn = document.createElement('button');
+          deleteBtn.innerHTML = '✕';
+          deleteBtn.title = 'Xóa ảnh';
+          deleteBtn.className = 'image-tool-btn delete-btn';
+          deleteBtn.onclick = (e) => {
+            e.preventDefault();
+            imageWrapper.remove();
+            updateContent(); // Cập nhật nội dung sau khi xóa
+          };
+          
+          // Thêm các nút vào toolbar
+          imageToolbar.appendChild(centerBtn);
+          imageToolbar.appendChild(leftBtn);
+          imageToolbar.appendChild(rightBtn);
+          imageToolbar.appendChild(fullWidthBtn);
+          imageToolbar.appendChild(threeQuarterBtn);
+          imageToolbar.appendChild(halfBtn);
+          imageToolbar.appendChild(quarterBtn);
+          imageToolbar.appendChild(captionBtn);
+          imageToolbar.appendChild(deleteBtn);
+          
+          // Thay thế ảnh gốc bằng wrapper mới có toolbar
+          imageWrapper.appendChild(img);
+          imageWrapper.appendChild(imageToolbar);
+          
+          if (target.parentNode) {
+            target.parentNode.replaceChild(imageWrapper, target);
+            updateContent(); // Cập nhật nội dung sau khi thay đổi cấu trúc DOM
+          }
         }
-      } else if (!target.closest('.image-toolbar')) {
+      } 
+      else if (!target.closest('.image-toolbar')) {
         // Ẩn tất cả các toolbar nếu click ngoài ảnh và toolbar
         const toolbars = editorRef.current?.querySelectorAll('.image-toolbar');
         toolbars?.forEach((toolbar) => {
@@ -135,6 +409,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       e.preventDefault();
       img.style.display = 'block';
       img.style.margin = '0 auto';
+      handleInput();
     };
 
     // Nút căn trái ảnh
@@ -146,6 +421,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       e.preventDefault();
       img.style.display = 'block';
       img.style.margin = '0 auto 0 0';
+      handleInput();
     };
 
     // Nút căn phải ảnh
@@ -157,6 +433,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       e.preventDefault();
       img.style.display = 'block';
       img.style.margin = '0 0 0 auto';
+      handleInput();
     };
 
     // Nút resize ảnh về 100%
@@ -166,7 +443,25 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     fullWidthBtn.className = 'image-tool-btn';
     fullWidthBtn.onclick = (e) => {
       e.preventDefault();
-      img.style.width = '100%';
+      
+      // Lấy kích thước thực của hình ảnh
+      const naturalWidth = img.naturalWidth;
+      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+      const newWidth = Math.min(naturalWidth, parentWidth);
+      
+      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+      img.style.width = `${newWidth}px`;
+      img.style.maxWidth = '100%';
+      img.removeAttribute('width'); // Xóa thuộc tính width để tránh xung đột
+      
+      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+      img.style.opacity = '0.7';
+      setTimeout(() => { 
+        img.style.opacity = '1'; 
+      }, 50);
+      
+      // Cập nhật nội dung
+      handleInput();
     };
 
     // Nút resize ảnh về 75%
@@ -176,7 +471,25 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     threeQuarterBtn.className = 'image-tool-btn';
     threeQuarterBtn.onclick = (e) => {
       e.preventDefault();
-      img.style.width = '75%';
+      
+      // Lấy kích thước thực của hình ảnh
+      const naturalWidth = img.naturalWidth;
+      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+      const newWidth = Math.min(naturalWidth, parentWidth) * 0.75;
+      
+      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+      img.style.width = `${newWidth}px`;
+      img.style.maxWidth = '75%';
+      img.removeAttribute('width');
+      
+      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+      img.style.opacity = '0.7';
+      setTimeout(() => { 
+        img.style.opacity = '1'; 
+      }, 50);
+      
+      // Cập nhật nội dung
+      handleInput();
     };
 
     // Nút resize ảnh về 50%
@@ -186,7 +499,25 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     halfBtn.className = 'image-tool-btn';
     halfBtn.onclick = (e) => {
       e.preventDefault();
-      img.style.width = '50%';
+      
+      // Lấy kích thước thực của hình ảnh
+      const naturalWidth = img.naturalWidth;
+      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+      const newWidth = Math.min(naturalWidth, parentWidth) * 0.5;
+      
+      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+      img.style.width = `${newWidth}px`;
+      img.style.maxWidth = '50%';
+      img.removeAttribute('width');
+      
+      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+      img.style.opacity = '0.7';
+      setTimeout(() => { 
+        img.style.opacity = '1'; 
+      }, 50);
+      
+      // Cập nhật nội dung
+      handleInput();
     };
 
     // Nút resize ảnh về 25%
@@ -196,7 +527,25 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     quarterBtn.className = 'image-tool-btn';
     quarterBtn.onclick = (e) => {
       e.preventDefault();
-      img.style.width = '25%';
+      
+      // Lấy kích thước thực của hình ảnh
+      const naturalWidth = img.naturalWidth;
+      const parentWidth = img.parentElement?.offsetWidth || img.parentElement?.clientWidth || 800;
+      const newWidth = Math.min(naturalWidth, parentWidth) * 0.25;
+      
+      // Áp dụng kích thước mới bằng pixel cụ thể (không dùng %)
+      img.style.width = `${newWidth}px`;
+      img.style.maxWidth = '25%';
+      img.removeAttribute('width');
+      
+      // Hiệu ứng nhấp nháy để người dùng thấy sự thay đổi
+      img.style.opacity = '0.7';
+      setTimeout(() => { 
+        img.style.opacity = '1'; 
+      }, 50);
+      
+      // Cập nhật nội dung
+      handleInput();
     };
 
     // Nút thêm chú thích cho ảnh
@@ -735,37 +1084,48 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           margin: 8px 0;
         }
 
-        .image-wrapper {
+        .simple-editor .image-wrapper {
           position: relative;
-          display: inline-block;
-          margin: 8px auto;
-          max-width: 100%;
-          width: 100%;
-          text-align: center;
+          margin: 10px 0;
         }
 
-        .image-toolbar {
+        .simple-editor .editor-image {
+          max-width: 100%;
+          height: auto;
+          transition: width 0.2s ease-in-out;
+        }
+
+        .simple-editor .editor-image.resizing {
+          opacity: 0.9;
+          outline: 2px dashed #2196f3;
+        }
+
+        .simple-editor .image-toolbar {
           display: none;
           position: absolute;
-          top: 0;
+          top: -40px;
+          left: 0;
           right: 0;
-          background: rgba(0, 0, 0, 0.7);
-          border-radius: 4px;
+          background-color: rgba(0, 0, 0, 0.75);
           padding: 5px;
-          z-index: 10;
+          border-radius: 3px;
+          text-align: center;
+          z-index: 100;
         }
 
         .image-toolbar.visible {
           display: flex;
           gap: 5px;
           flex-wrap: wrap;
-          max-width: 200px;
+          max-width: 250px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+          border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .image-tool-btn {
-          background: transparent;
+          background: rgba(50, 50, 50, 0.8);
           color: white;
-          border: 1px solid white;
+          border: 1px solid rgba(255, 255, 255, 0.3);
           border-radius: 3px;
           width: 28px;
           height: 28px;
@@ -775,18 +1135,45 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           align-items: center;
           justify-content: center;
           padding: 0;
+          transition: all 0.2s ease;
         }
 
         .image-tool-btn:hover {
-          background: rgba(255, 255, 255, 0.2);
+          background: rgba(80, 80, 80, 0.9);
+          transform: scale(1.05);
+          border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Styling for different size buttons */
+        .image-tool-btn[title="Kích thước đầy đủ"] {
+          background: rgba(76, 175, 80, 0.7);
+        }
+
+        .image-tool-btn[title="Kích thước 75%"] {
+          background: rgba(33, 150, 243, 0.7);
+        }
+
+        .image-tool-btn[title="Kích thước 50%"] {
+          background: rgba(156, 39, 176, 0.7);
+        }
+
+        .image-tool-btn[title="Kích thước 25%"] {
+          background: rgba(255, 152, 0, 0.7);
+        }
+
+        .image-tool-btn[title="Kích thước đầy đủ"]:hover,
+        .image-tool-btn[title="Kích thước 75%"]:hover,
+        .image-tool-btn[title="Kích thước 50%"]:hover,
+        .image-tool-btn[title="Kích thước 25%"]:hover {
+          filter: brightness(1.2);
         }
 
         .delete-btn {
-          background: rgba(255, 0, 0, 0.5);
+          background: rgba(244, 67, 54, 0.7);
         }
 
         .delete-btn:hover {
-          background: rgba(255, 0, 0, 0.7);
+          background: rgba(244, 67, 54, 0.9);
         }
 
         .editor-image {
@@ -794,6 +1181,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           max-width: 100%;
           margin: 0 auto;
           text-align: center;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+          border: 1px solid transparent;
+        }
+
+        .editor-image:hover {
+          border-color: rgba(0, 120, 212, 0.5);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .image-caption {
@@ -806,6 +1201,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           font-style: italic;
           font-size: 0.9em;
           color: #666;
+          border-radius: 4px;
         }
 
         /* Định dạng cho thanh công cụ văn bản */

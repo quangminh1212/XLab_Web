@@ -60,6 +60,21 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
+  
+  // Thêm state cho tùy chọn resize ảnh
+  const [imageResizeOptions, setImageResizeOptions] = useState({
+    featuredImage: {
+      width: 800,
+      height: 800,
+      quality: 90,
+    },
+    descriptionImage: {
+      width: 1200,
+      height: null as number | null,
+      quality: 80,
+    },
+    showOptions: false,
+  });
 
   // Thêm state cho mô tả kỹ thuật
   const [specifications, setSpecifications] = useState<{ key: string; value: string }[]>([]);
@@ -225,6 +240,31 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     }
   };
 
+  // Thêm hàm xử lý thay đổi tùy chọn resize
+  const handleResizeOptionChange = (
+    type: 'featuredImage' | 'descriptionImage',
+    property: 'width' | 'height' | 'quality',
+    value: string,
+  ) => {
+    const parsedValue = property === 'quality' ? parseInt(value, 10) : value ? parseInt(value, 10) : null;
+    
+    setImageResizeOptions((prev) => ({
+      ...prev,
+      [type]: {
+        ...prev[type],
+        [property]: parsedValue,
+      },
+    }));
+  };
+
+  // Thêm hàm toggle hiển thị tùy chọn resize
+  const toggleResizeOptions = () => {
+    setImageResizeOptions((prev) => ({
+      ...prev,
+      showOptions: !prev.showOptions,
+    }));
+  };
+
   // Xử lý upload hình ảnh
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -255,6 +295,15 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       uploadFormData.append('productId', isNew ? newProductId : productId);
       uploadFormData.append('productSlug', slug);
       uploadFormData.append('productName', formData.name);
+      
+      // Thêm thông số resize ảnh mô tả từ state
+      if (imageResizeOptions.descriptionImage.width) {
+        uploadFormData.append('width', imageResizeOptions.descriptionImage.width.toString());
+      }
+      if (imageResizeOptions.descriptionImage.height) {
+        uploadFormData.append('height', imageResizeOptions.descriptionImage.height.toString());
+      }
+      uploadFormData.append('quality', imageResizeOptions.descriptionImage.quality.toString());
 
       // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
@@ -275,6 +324,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       }
 
       setDescriptionImages([...descriptionImages, imageUrl]);
+      
+      // Hiển thị thông tin ảnh đã xử lý
+      if (data.imageInfo) {
+        const { width, height, format, size } = data.imageInfo;
+        const sizeInKB = Math.round(size / 1024);
+        setSuccessMessage(`Đã tải lên ảnh: ${width}x${height}px, ${format}, ${sizeInKB}KB`);
+        setTimeout(() => setSuccessMessage(null), 3000);
+      }
     } catch (err) {
       console.error('Lỗi khi upload hình ảnh:', err);
       setError((err as Error).message || 'Không thể tải lên hình ảnh');
@@ -321,6 +378,15 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       uploadFormData.append('productId', isNew ? newProductId : productId);
       uploadFormData.append('productSlug', slug);
       uploadFormData.append('productName', formData.name);
+      
+      // Thêm thông số resize ảnh nổi bật từ state
+      if (imageResizeOptions.featuredImage.width) {
+        uploadFormData.append('width', imageResizeOptions.featuredImage.width.toString());
+      }
+      if (imageResizeOptions.featuredImage.height) {
+        uploadFormData.append('height', imageResizeOptions.featuredImage.height.toString());
+      }
+      uploadFormData.append('quality', imageResizeOptions.featuredImage.quality.toString());
 
       // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
@@ -346,6 +412,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
       console.log('Setting featured image to:', imageUrl);
       setFeaturedImage(imageUrl);
+      
+      // Hiển thị thông tin ảnh đã xử lý
+      if (data.imageInfo) {
+        const { width, height, format, size } = data.imageInfo;
+        const sizeInKB = Math.round(size / 1024);
+        setSuccessMessage(`Đã tải lên ảnh nổi bật: ${width}x${height}px, ${format}, ${sizeInKB}KB`);
+        setTimeout(() => setSuccessMessage(null), 3000);
+      }
     } catch (err) {
       console.error('Lỗi khi upload hình ảnh:', err);
       setError((err as Error).message || 'Không thể tải lên hình ảnh');
@@ -745,6 +819,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           uploadFormData.append('productId', isNew ? newProductId : productId);
           uploadFormData.append('productSlug', slug);
           uploadFormData.append('productName', formData.name);
+          
+          // Thêm thông số resize ảnh
+          uploadFormData.append('width', '800'); // Giới hạn chiều rộng tối đa
+          uploadFormData.append('quality', '85'); // Chất lượng nén
 
           // Upload hình ảnh lên server
           const response = await fetch('/api/upload', {
@@ -765,10 +843,19 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           }
 
           setFeaturedImage(imageUrl);
-          setSuccessMessage('Đã dán ảnh từ clipboard thành công');
+          
+          // Hiển thị thông tin ảnh đã xử lý
+          if (data.imageInfo) {
+            const { width, height, format, size } = data.imageInfo;
+            const sizeInKB = Math.round(size / 1024);
+            setSuccessMessage(`Đã dán ảnh từ clipboard: ${width}x${height}px, ${format}, ${sizeInKB}KB`);
+          } else {
+            setSuccessMessage('Đã dán ảnh từ clipboard thành công');
+          }
           setTimeout(() => setSuccessMessage(null), 3000);
-        } catch (err) {
-          console.error('Lỗi khi upload hình ảnh từ clipboard:', err);
+        } 
+        catch (err) {
+          console.error('Lỗi khi upload ảnh từ clipboard:', err);
           setError((err as Error).message || 'Không thể tải lên hình ảnh');
           setTimeout(() => setError(null), 3000);
         }
@@ -805,6 +892,15 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           uploadFormData.append('productId', isNew ? newProductId : productId);
           uploadFormData.append('productSlug', slug);
           uploadFormData.append('productName', formData.name);
+          
+          // Thêm thông số resize ảnh mô tả từ state
+          if (imageResizeOptions.descriptionImage.width) {
+            uploadFormData.append('width', imageResizeOptions.descriptionImage.width.toString());
+          }
+          if (imageResizeOptions.descriptionImage.height) {
+            uploadFormData.append('height', imageResizeOptions.descriptionImage.height.toString());
+          }
+          uploadFormData.append('quality', imageResizeOptions.descriptionImage.quality.toString());
 
           // Upload hình ảnh lên server
           const response = await fetch('/api/upload', {
@@ -825,7 +921,15 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           }
 
           setDescriptionImages([...descriptionImages, imageUrl]);
-          setSuccessMessage('Đã dán ảnh mô tả từ clipboard thành công');
+          
+          // Hiển thị thông tin ảnh đã xử lý
+          if (data.imageInfo) {
+            const { width, height, format, size } = data.imageInfo;
+            const sizeInKB = Math.round(size / 1024);
+            setSuccessMessage(`Đã dán ảnh mô tả từ clipboard: ${width}x${height}px, ${format}, ${sizeInKB}KB`);
+          } else {
+            setSuccessMessage('Đã dán ảnh mô tả từ clipboard thành công');
+          }
           setTimeout(() => setSuccessMessage(null), 3000);
         } catch (err) {
           console.error('Lỗi khi upload hình ảnh từ clipboard:', err);
