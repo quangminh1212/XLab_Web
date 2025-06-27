@@ -641,7 +641,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   }, [product.id, product.name]); // Chỉ phụ thuộc vào ID và tên sản phẩm
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
-  const isAccount = product.categories?.some((cat) => cat.id === 'tai-khoan-hoc-tap');
+  const isAccount = product.categories?.some((cat: {id: string}) => cat.id === 'tai-khoan-hoc-tap');
 
   // Xử lý tăng số lượng
   const increaseQuantity = () => {
