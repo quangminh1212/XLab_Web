@@ -23,17 +23,17 @@
     }
   ],
   "createdAt": "2025-06-27T05:53:56.009Z",
-  "updatedAt": "2025-06-27T16:42:29.323Z",
+  "updatedAt": "2025-06-27T17:35:22.377Z",
   "rating": 5,
   "weeklyPurchases": 12,
   "type": "account",
   "isAccount": true,
   "productOptions": [
-    "Dùng riêng - 1 tháng - Nâng cấp mail chính chủ"
+    "Dùng riêng - 1 tháng - chính chủ"
   ],
-  "defaultProductOption": "Dùng riêng - 1 tháng - Nâng cấp mail chính chủ",
+  "defaultProductOption": "Dùng riêng - 1 tháng - chính chủ",
   "optionPrices": {
-    "Dùng riêng - 1 tháng - Nâng cấp mail chính chủ": {
+    "Dùng riêng - 1 tháng - chính chủ": {
       "price": 59000,
       "originalPrice": 380000
     }
