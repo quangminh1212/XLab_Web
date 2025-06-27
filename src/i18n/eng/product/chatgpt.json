@@ -29,7 +29,7 @@
     }
   ],
   "createdAt": "2025-05-14T15:59:47.484Z",
-  "updatedAt": "2025-06-25T15:57:40.479Z",
+  "updatedAt": "2025-06-27T18:15:57.846Z",
   "price": 149000,
   "salePrice": 0,
   "rating": "4.7",
@@ -44,7 +44,7 @@
   "defaultProductOption": "Full - Dùng riêng - 1 Tháng",
   "optionPrices": {
     "Full - Dùng riêng - 1 Tháng": {
-      "price": 149000,
+      "price": 159000,
       "originalPrice": 500000
     }
   },
