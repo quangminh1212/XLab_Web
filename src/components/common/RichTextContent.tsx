@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface RichTextContentProps {
   content: string;
@@ -11,49 +11,70 @@ const RichTextContent: React.FC<RichTextContentProps> = ({ content, className = 
   // Nếu không có nội dung, không hiển thị gì cả
   if (!content) return null;
 
+  // State to store processed HTML
+  const [processedContent, setProcessedContent] = useState(content);
+  
   // Kiểm tra xem nội dung có phải là HTML không (có chứa thẻ HTML hoặc không)
   const isHtml = /<[a-z][\s\S]*>/i.test(content);
 
+  // Process HTML in useEffect to ensure browser environment
+  useEffect(() => {
+    if (isHtml) {
+      setProcessedContent(processHtml(content));
+    }
+  }, [content, isHtml]);
+
   // Xử lý HTML để loại bỏ các phần tử image-toolbar trước khi hiển thị
   const processHtml = (html: string): string => {
-    // Tạo một DOM parser để xử lý HTML
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      return html; // Return unprocessed HTML on server
+    }
     
-    // Tìm và xóa tất cả các phần tử image-toolbar
-    const toolbars = doc.querySelectorAll('.image-toolbar');
-    toolbars.forEach(toolbar => {
-      toolbar.remove();
-    });
-
-    // Tìm và xóa các nút điều khiển resize/alignment khác có thể tồn tại
-    const imageWrappers = doc.querySelectorAll('.image-wrapper');
-    imageWrappers.forEach(wrapper => {
-      // Giữ lại ảnh và chú thích, nhưng loại bỏ các nút điều khiển
-      const img = wrapper.querySelector('img');
-      const caption = wrapper.querySelector('.image-caption');
+    // Only run in browser environment
+    try {
+      // Tạo một DOM parser để xử lý HTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
       
-      if (img) {
-        const newWrapper = doc.createElement('div');
-        newWrapper.className = 'image-wrapper';
-        newWrapper.appendChild(img.cloneNode(true));
-        
-        if (caption) {
-          newWrapper.appendChild(caption.cloneNode(true));
-        }
-        
-        wrapper.replaceWith(newWrapper);
-      }
-    });
+      // Tìm và xóa tất cả các phần tử image-toolbar
+      const toolbars = doc.querySelectorAll('.image-toolbar');
+      toolbars.forEach(toolbar => {
+        toolbar.remove();
+      });
 
-    return doc.body.innerHTML;
+      // Tìm và xóa các nút điều khiển resize/alignment khác có thể tồn tại
+      const imageWrappers = doc.querySelectorAll('.image-wrapper');
+      imageWrappers.forEach(wrapper => {
+        // Giữ lại ảnh và chú thích, nhưng loại bỏ các nút điều khiển
+        const img = wrapper.querySelector('img');
+        const caption = wrapper.querySelector('.image-caption');
+        
+        if (img) {
+          const newWrapper = doc.createElement('div');
+          newWrapper.className = 'image-wrapper';
+          newWrapper.appendChild(img.cloneNode(true));
+          
+          if (caption) {
+            newWrapper.appendChild(caption.cloneNode(true));
+          }
+          
+          wrapper.replaceWith(newWrapper);
+        }
+      });
+
+      return doc.body.innerHTML;
+    } catch (error) {
+      console.error('Error processing HTML:', error);
+      return html; // Return original HTML if an error occurs
+    }
   };
 
-  // Nếu là HTML thì dùng dangerouslySetInnerHTML sau khi xử lý, nếu không thì hiển thị text thường
+  // Nếu là HTML thì dùng dangerouslySetInnerHTML, nếu không thì hiển thị text thường
   return isHtml ? (
     <div
       className={`rich-text-content ${className}`}
-      dangerouslySetInnerHTML={{ __html: processHtml(content) }}
+      dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   ) : (
     <div className={`rich-text-content ${className}`}>
