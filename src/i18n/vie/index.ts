@@ -7,6 +7,7 @@ import account from './account';
 import about from './about';
 import contact from './contact';
 import warranty from './warranty';
+import login from './login';
 
 // Hợp nhất tất cả các module lại thành một đối tượng
 const vie = {
@@ -18,6 +19,7 @@ const vie = {
   about,
   contact,
   warranty,
+  login,
 };
 
 export default vie; 
