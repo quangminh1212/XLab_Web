@@ -250,8 +250,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
 
-      // Append productSlug and productName for uploads
+      // Append productId, productSlug and productName for uploads
       const slug = product?.slug || generateSlug(formData.name);
+      uploadFormData.append('productId', isNew ? newProductId : productId);
       uploadFormData.append('productSlug', slug);
       uploadFormData.append('productName', formData.name);
 
@@ -290,12 +291,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     }
   };
 
-  // Xử lý upload ảnh đại diện
+  // Xử lý upload ảnh nổi bật
   const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
 
     const file = e.target.files[0];
-    console.log('Uploading featured image:', file.name);
 
     // Giới hạn kích thước file là 5MB
     if (file.size > 5 * 1024 * 1024) {
@@ -316,13 +316,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
 
-      // Append productSlug and productName for uploads
+      // Append productId, productSlug and productName for uploads
       const slug = product?.slug || generateSlug(formData.name);
+      uploadFormData.append('productId', isNew ? newProductId : productId);
       uploadFormData.append('productSlug', slug);
       uploadFormData.append('productName', formData.name);
 
       // Upload hình ảnh lên server
-      console.log('Sending upload request to /api/upload');
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: uploadFormData,
@@ -740,8 +740,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
 
-          // Append productSlug and productName for uploads
+          // Append productId, productSlug and productName for uploads
           const slug = product?.slug || generateSlug(formData.name);
+          uploadFormData.append('productId', isNew ? newProductId : productId);
           uploadFormData.append('productSlug', slug);
           uploadFormData.append('productName', formData.name);
 
@@ -799,8 +800,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
 
-          // Append productSlug and productName for uploads
+          // Append productId, productSlug and productName for uploads
           const slug = product?.slug || generateSlug(formData.name);
+          uploadFormData.append('productId', isNew ? newProductId : productId);
           uploadFormData.append('productSlug', slug);
           uploadFormData.append('productName', formData.name);
 

@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     // Lấy thông tin sản phẩm từ formData
+    const productId = formData.get('productId') as string;
     const productSlug = formData.get('productSlug') as string;
     const productName = formData.get('productName') as string;
 
@@ -53,8 +54,12 @@ export async function POST(request: NextRequest) {
     // Define the directory to save the uploaded image
     let targetDir = 'products';
 
-    // Nếu có slug sản phẩm, lưu vào thư mục tương ứng
-    if (productSlug) {
+    // Ưu tiên sử dụng productId thay vì slug
+    if (productId) {
+      targetDir = path.join('products', productId);
+    } 
+    // Nếu không có productId, sử dụng slug làm backup
+    else if (productSlug) {
       targetDir = path.join('products', productSlug);
     }
 

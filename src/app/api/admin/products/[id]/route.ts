@@ -184,6 +184,60 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       // Log the ID change
       console.log(`Product ID changed from ${id} to ${updatedProductData.id}`);
       
+      try {
+        // Move the images from old product folder to new product folder
+        const oldImagesDir = path.join(process.cwd(), 'public', 'images', 'products', id);
+        const newImagesDir = path.join(process.cwd(), 'public', 'images', 'products', updatedProductData.id);
+        
+        // Check if old images directory exists
+        if (fs.existsSync(oldImagesDir)) {
+          // Create new directory if it doesn't exist
+          if (!fs.existsSync(newImagesDir)) {
+            fs.mkdirSync(newImagesDir, { recursive: true });
+          }
+          
+          // Read all files in the old directory
+          const files = fs.readdirSync(oldImagesDir);
+          
+          // Move each file to the new directory
+          for (const file of files) {
+            const oldFilePath = path.join(oldImagesDir, file);
+            const newFilePath = path.join(newImagesDir, file);
+            
+            // Copy the file to new location
+            fs.copyFileSync(oldFilePath, newFilePath);
+            console.log(`Copied image from ${oldFilePath} to ${newFilePath}`);
+          }
+          
+          console.log(`All images moved from ${oldImagesDir} to ${newImagesDir}`);
+          
+          // Update image paths in the product data
+          if (mergedProduct.images && Array.isArray(mergedProduct.images)) {
+            mergedProduct.images = mergedProduct.images.map((img: any) => {
+              if (typeof img === 'string') {
+                // Replace old product ID with new product ID in image paths
+                return img.replace(`/images/products/${id}/`, `/images/products/${updatedProductData.id}/`);
+              } else if (img && typeof img === 'object' && img.url) {
+                return {
+                  ...img,
+                  url: img.url.replace(`/images/products/${id}/`, `/images/products/${updatedProductData.id}/`)
+                };
+              }
+              return img;
+            });
+          }
+          
+          // Update description image paths
+          if (mergedProduct.descriptionImages && Array.isArray(mergedProduct.descriptionImages)) {
+            mergedProduct.descriptionImages = mergedProduct.descriptionImages.map((img: string) => {
+              return img.replace(`/images/products/${id}/`, `/images/products/${updatedProductData.id}/`);
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error moving product images:', error);
+      }
+      
       // Delete the old product version with the old ID
       await deleteProduct(id, language);
     }
