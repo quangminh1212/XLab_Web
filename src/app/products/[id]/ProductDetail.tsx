@@ -30,6 +30,12 @@ const ProductDescription = ({ description, productId }: { description: string, p
     if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
+          // Skip translation request if productId is invalid
+          if (!productId || productId === 'undefined' || productId.startsWith('product-')) {
+            setTranslatedDescription(description);
+            return;
+          }
+          
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
@@ -132,6 +138,12 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
     if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
+          // Skip translation request if productId is invalid
+          if (!productId || productId === 'undefined' || productId.startsWith('product-')) {
+            setTranslatedShortDescription(shortDescription);
+            return;
+          }
+          
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
@@ -172,6 +184,12 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
     if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
+          // Skip translation request if productId is invalid
+          if (!productId || productId === 'undefined' || productId.startsWith('product-')) {
+            setTranslatedFeatures(features);
+            return;
+          }
+          
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();

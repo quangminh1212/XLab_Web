@@ -153,7 +153,11 @@ function HomePage() {
       const dateA = new Date(a.createdAt || '0');
       const dateB = new Date(b.createdAt || '0');
       return dateB.getTime() - dateA.getTime();
-    });
+    })
+    .map((product, index) => ({
+      ...product,
+      id: product.id || `product-${index}` // Đảm bảo mỗi sản phẩm có ID duy nhất
+    }));
   
   // Lấy số lượng sản phẩm hiển thị theo giá trị visibleProductCount
   const newProducts = sortedNewProducts.slice(0, visibleProductCount);
