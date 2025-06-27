@@ -8,23 +8,15 @@ import { useCart } from '@/components/cart/CartContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 import { useSession } from 'next-auth/react';
-<<<<<<< HEAD
-=======
 import products from '../../../products.json';
 import { useLanguage } from '@/contexts/LanguageContext';
->>>>>>> 3961a09c57e6e2162ad17f6e0fa21549c1574008
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-<<<<<<< HEAD
-  const [products, setProducts] = useState<any[]>([]);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-=======
   const { language, t } = useLanguage();
->>>>>>> 3961a09c57e6e2162ad17f6e0fa21549c1574008
 
   // Luôn bắt đầu với bước 2 (thanh toán)
   const [step, setStep] = useState(2);
@@ -45,28 +37,6 @@ export default function CheckoutPage() {
   const [userBalance, setUserBalance] = useState(0);
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
 
-<<<<<<< HEAD
-  // Fetch products from API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const result = await response.json();
-          if (result.success && result.data) {
-            setProducts(result.data);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setIsLoadingProducts(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-=======
   // Điền thông tin từ tài khoản đã đăng nhập
   useEffect(() => {
     if (session?.user) {
@@ -86,7 +56,6 @@ export default function CheckoutPage() {
       }));
     }
   }, [session]);
->>>>>>> 3961a09c57e6e2162ad17f6e0fa21549c1574008
 
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map((item) => {
@@ -205,17 +174,6 @@ export default function CheckoutPage() {
     router.push(`/account/deposit?amount=${total}&redirect=checkout`);
   };
 
-<<<<<<< HEAD
-  if (isLoadingProducts) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-=======
->>>>>>> 3961a09c57e6e2162ad17f6e0fa21549c1574008
   return (
     <div>
       {/* Page Header */}
