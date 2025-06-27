@@ -27,7 +27,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -107,6 +107,15 @@ const ProductDescription = ({ description, productId }: { description: string, p
           .product-description p {
             line-height: 1.7;
           }
+
+          /* Hide any editing controls that might be rendered */
+          .product-description .image-toolbar,
+          .product-description .image-tool-btn {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+          }
         `}</style>
       </div>
     </div>
@@ -120,7 +129,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -160,7 +169,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -230,7 +239,7 @@ const ProductOptions = ({
 
   useEffect(() => {
     // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'en') {
+    if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
