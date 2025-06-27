@@ -1,12 +1,11 @@
 /**
  * Script to start Next.js with logger configuration
- * Thêm timestamp vào log trong cmd để dễ sửa lỗi và phát triển
+ * Bỏ timestamp trong log trong cmd theo yêu cầu
  */
 
-// Định nghĩa hàm thêm timestamp cho console
+// Định nghĩa hàm timestamp rỗng
 const getTimestamp = () => {
-  const now = new Date();
-  return `[${now.toISOString().replace('T', ' ').slice(0, -1)}]`;
+  return '';
 };
 
 // Lưu các hàm console gốc
@@ -16,29 +15,29 @@ const originalConsoleWarn = console.warn;
 const originalConsoleError = console.error;
 const originalConsoleDebug = console.debug;
 
-// Ghi đè các phương thức console để thêm timestamp
+// Ghi đè các phương thức console để không thêm timestamp
 console.log = function (...args) {
-  originalConsoleLog(getTimestamp(), ...args);
+  originalConsoleLog(...args);
 };
 
 console.info = function (...args) {
-  originalConsoleInfo(getTimestamp(), ...args);
+  originalConsoleInfo(...args);
 };
 
 console.warn = function (...args) {
-  originalConsoleWarn(getTimestamp(), ...args);
+  originalConsoleWarn(...args);
 };
 
 console.error = function (...args) {
-  originalConsoleError(getTimestamp(), ...args);
+  originalConsoleError(...args);
 };
 
 console.debug = function (...args) {
-  originalConsoleDebug(getTimestamp(), ...args);
+  originalConsoleDebug(...args);
 };
 
 // Log khởi động ứng dụng
-console.log('🚀 Starting Next.js application with timestamped logging...');
+console.log('🚀 Starting Next.js application...');
 
 // Khởi động Next.js
 require('next/dist/bin/next'); 

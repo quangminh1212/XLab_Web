@@ -57,7 +57,6 @@ const logDebug = (request: NextRequest, token: any): void => {
     console.log('[Middleware Debug]:', {
       path: request.nextUrl.pathname,
       token: token ? `Found (${token.email})` : 'Not found',
-      timestamp: new Date().toISOString(),
     });
   }
 };

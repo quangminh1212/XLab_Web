@@ -5,8 +5,8 @@
 
 // Tạo timestamp cho logs (trước khi import logger để không bị ghi đè)
 const getTimestamp = () => {
-  const now = new Date();
-  return `[${now.toISOString().replace('T', ' ').slice(0, -1)}]`;
+  // Return empty string to remove timestamps from logs
+  return ``;
 };
 
 // Lưu các hàm console gốc
@@ -33,9 +33,9 @@ console.error = function (...args) {
 
   const shouldSuppressError = suppressPatterns.some((pattern) => pattern.test(errorMessage));
 
-  // Nếu không cần lọc, ghi log bình thường với timestamp
+  // Nếu không cần lọc, ghi log bình thường không có timestamp
   if (!shouldSuppressError) {
-    originalConsoleError.apply(console, [getTimestamp(), ...args]);
+    originalConsoleError.apply(console, [...args]);
   }
 };
 
@@ -46,15 +46,15 @@ console.warn = function (...args) {
 
   const shouldSuppressWarning = suppressPatterns.some((pattern) => pattern.test(warnMessage));
 
-  // Nếu không cần lọc, ghi log bình thường với timestamp
+  // Nếu không cần lọc, ghi log bình thường không có timestamp
   if (!shouldSuppressWarning) {
-    originalConsoleWarn.apply(console, [getTimestamp(), ...args]);
+    originalConsoleWarn.apply(console, [...args]);
   }
 };
 
-// Thay thế console.log để thêm timestamp
+// Thay thế console.log để không thêm timestamp
 console.log = function (...args) {
-  originalConsoleLog.apply(console, [getTimestamp(), ...args]);
+  originalConsoleLog.apply(console, [...args]);
 };
 
 // Ghi đè xử lý lỗi không bắt được để ngăn chặn crash
@@ -64,9 +64,9 @@ process.on('unhandledRejection', (reason, promise) => {
   // Kiểm tra xem có nên lọc lỗi này không
   const shouldSuppressError = suppressPatterns.some((pattern) => pattern.test(errorMessage));
 
-  // Nếu không cần lọc, log lỗi để debug với timestamp
+  // Nếu không cần lọc, log lỗi để debug không có timestamp
   if (!shouldSuppressError) {
-    originalConsoleError(getTimestamp(), 'Unhandled Rejection at Promise:', promise, 'Reason:', reason);
+    originalConsoleError('Unhandled Rejection at Promise:', promise, 'Reason:', reason);
   }
 });
 
