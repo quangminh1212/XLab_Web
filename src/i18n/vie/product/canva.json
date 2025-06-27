@@ -1,11 +1,13 @@
 {
-  "id": "canva-pro",
+  "id": "canva",
   "name": "Canva Pro",
   "slug": "21wefwq",
   "description": "<br>",
   "shortDescription": "qừdqwerqwerwe",
   "isPublished": false,
-  "images": [],
+  "images": [
+    "/images/products\\21wefwq/canva_pro-3cf49730-e9f8-40ea-b68a-f2b9ce9dd92b.png"
+  ],
   "descriptionImages": [],
   "features": [],
   "requirements": [],
@@ -21,19 +23,19 @@
     }
   ],
   "createdAt": "2025-06-27T05:53:56.009Z",
-  "updatedAt": "2025-06-27T06:24:35.953Z",
+  "updatedAt": "2025-06-27T06:26:20.893Z",
   "rating": 5,
   "weeklyPurchases": 12,
   "type": "software",
   "isAccount": false,
   "productOptions": [
-    "Dùng riêng - 1 tháng - Tài khoản chính chủ"
+    "Dùng riêng - 1 tháng - Nâng cấp mail chính chủ"
   ],
-  "defaultProductOption": "Dùng riêng - 1 tháng - Tài khoản chính chủ",
+  "defaultProductOption": "Dùng riêng - 1 tháng - Nâng cấp mail chính chủ",
   "optionPrices": {
-    "Dùng riêng - 1 tháng - Tài khoản chính chủ": {
-      "price": 12000,
-      "originalPrice": 420000
+    "Dùng riêng - 1 tháng - Nâng cấp mail chính chủ": {
+      "price": 59000,
+      "originalPrice": 380000
     }
   },
   "specs": "",
