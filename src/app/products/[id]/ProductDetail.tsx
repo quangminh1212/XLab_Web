@@ -410,6 +410,29 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     setDraggedItem(null);
   };
 
+  // Function to fix image paths
+  const fixImagePath = (url: string): string => {
+    if (!url) return '/images/placeholder/product-placeholder.svg';
+    
+    // Nếu đường dẫn ảnh sử dụng slug thay vì id trong đường dẫn, thay thế bằng id
+    if (url.includes('/images/products/')) {
+      // Kiểm tra xem đường dẫn có chứa id của sản phẩm không
+      if (!url.includes(`/images/products/${product.id}/`)) {
+        // Thay thế phần đường dẫn slug bằng id
+        const parts = url.split('/');
+        const productsIndex = parts.findIndex((part: string) => part === 'products');
+        
+        if (productsIndex >= 0 && productsIndex + 1 < parts.length) {
+          // Thay thế phần slug bằng id
+          parts[productsIndex + 1] = product.id;
+          return parts.join('/');
+        }
+      }
+    }
+    
+    return url;
+  };
+
   // Lấy ảnh sản phẩm
   const getProductImage = () => {
     if (product.images && product.images.length > 0) {
@@ -420,14 +443,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       }
 
       const imageUrl = typeof firstImage === 'string' ? firstImage : firstImage.url;
-
-      // Kiểm tra xem ảnh có tồn tại không
-      if (imageUrl && imageUrl.includes('/images/products/')) {
-        // Sử dụng đường dẫn ảnh đã được tổ chức theo thư mục sản phẩm
-        return imageUrl;
-      }
-
-      return '/images/placeholder/product-placeholder.svg';
+      return fixImagePath(imageUrl);
     }
     return '/images/placeholder/product-placeholder.svg';
   };
@@ -437,6 +453,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     // Nếu có giá tùy chọn, ưu tiên sử dụng giá của tùy chọn
     if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
       return product.optionPrices[selectedOption].price;
+    }
+
+    // Nếu không có tùy chọn nào được chọn, sử dụng tùy chọn mặc định
+    if (!selectedOption && product.defaultProductOption && 
+        product.optionPrices && product.optionPrices[product.defaultProductOption]) {
+      return product.optionPrices[product.defaultProductOption].price;
     }
 
     // Ngược lại sử dụng giá của version
@@ -453,6 +475,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     // Nếu có giá gốc tùy chọn, ưu tiên sử dụng giá gốc của tùy chọn
     if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
       return product.optionPrices[selectedOption].originalPrice;
+    }
+
+    // Nếu không có tùy chọn nào được chọn, sử dụng tùy chọn mặc định
+    if (!selectedOption && product.defaultProductOption && 
+        product.optionPrices && product.optionPrices[product.defaultProductOption]) {
+      return product.optionPrices[product.defaultProductOption].originalPrice;
     }
 
     // Ngược lại sử dụng giá gốc của version
@@ -552,9 +580,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       const firstImage = product.images[0];
       // Xử lý đường dẫn ảnh
       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
-        productImage = firstImage;
+        productImage = fixImagePath(firstImage);
       } else if (typeof firstImage !== 'string' && firstImage.url) {
-        productImage = firstImage.url;
+        productImage = fixImagePath(firstImage.url);
       }
     }
 
@@ -678,7 +706,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                       className="relative aspect-square bg-white rounded-lg overflow-hidden border border-gray-100"
                     >
                       <Image
-                        src={img}
+                        src={fixImagePath(img)}
                         alt={`${product.name} - ${index + 1}`}
                         fill
                         sizes="(max-width: 768px) 25vw, 100px"
@@ -820,9 +848,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     if (product.images && product.images.length > 0) {
                       const firstImage = product.images[0];
                       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
-                        productImage = firstImage;
+                        productImage = fixImagePath(firstImage);
                       } else if (typeof firstImage !== 'string' && firstImage.url) {
-                        productImage = firstImage.url;
+                        productImage = fixImagePath(firstImage.url);
                       }
                     }
                     // Thêm sản phẩm vào giỏ hàng

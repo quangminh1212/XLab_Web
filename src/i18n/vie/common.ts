@@ -218,6 +218,9 @@ const common = {
   'cart.enterCouponCode': 'Nhập mã khuyến mãi',
   'cart.removeCoupon': 'Xóa mã',
   
+  // Product details
+  'product.free': 'Miễn phí',
+  
   // Checkout page
   'checkout.title': 'Thanh toán',
   'checkout.subtitle': 'Hoàn tất đơn hàng của bạn với các phương thức thanh toán an toàn.',
