@@ -31,8 +31,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
   // Unwrap params Promise với React.use() theo chuẩn Next.js mới
   const { id } = React.use(params);
-  const productId = id;
-  const isNew = productId === 'new';
+  const initialProductId = id;
+  const isNew = initialProductId === 'new';
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const featuredImageInputRef = useRef<HTMLInputElement>(null);
@@ -41,6 +41,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [error, setError] = useState<string | null>(null);
   const [featuredImage, setFeaturedImage] = useState<string | null>(null);
   const [descriptionImages, setDescriptionImages] = useState<string[]>([]);
+  const [newProductId, setNewProductId] = useState<string>(isNew ? '' : initialProductId);
+  const [productId, setProductId] = useState<string>(initialProductId);
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
@@ -64,7 +66,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
   const [isEditingSpecs, setIsEditingSpecs] = useState(false);
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Thêm state cho quản lý tùy chọn sản phẩm
@@ -84,7 +85,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/admin/products/${productId}`);
+        const response = await fetch(`/api/admin/products/${initialProductId}`);
 
         if (!response.ok) {
           throw new Error('Không thể tải thông tin sản phẩm');
@@ -174,7 +175,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       // Skip fetch in creation mode
       setLoading(false);
     }
-  }, [productId, isNew]);
+  }, [initialProductId, isNew]);
 
   // Kiểm tra URL hình ảnh có hợp lệ không
   const isValidImageUrl = (url: string) => {
@@ -210,6 +211,19 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
   }
+
+  // Tự động cập nhật ID từ tên sản phẩm
+  const updateProductIdFromName = (name: string) => {
+    if (isNew || (productId === initialProductId)) {
+      const newId = generateSlug(name);
+      if (newId) {
+        setProductId(newId);
+        if (isNew) {
+          setNewProductId(newId);
+        }
+      }
+    }
+  };
 
   // Xử lý upload hình ảnh
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -400,16 +414,35 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value, type } = e.target;
+    
+    if (name === 'name') {
+      updateProductIdFromName(value);
+    }
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === 'checkbox'
-          ? (e.target as HTMLInputElement).checked
-          : name === 'price' || name === 'salePrice'
-            ? parseFloat(value)
-            : value,
-    }));
+    // Handle different input types
+    if (type === 'checkbox') {
+      const checkboxInput = e.target as HTMLInputElement;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checkboxInput.checked,
+      }));
+    } else if (name === 'categories' && e.target instanceof HTMLSelectElement) {
+      const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
+      setFormData((prev) => ({
+        ...prev,
+        categories: selectedOptions,
+      }));
+    } else if (type === 'number' || name === 'price' || name === 'salePrice') {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: parseFloat(value) || 0,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   // Xử lý thay đổi nội dung rich text
@@ -575,7 +608,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
       // Prepare product data to send to API
       const productData = {
-        id: productId,
+        id: isNew ? newProductId : productId,
         name: formData.name,
         shortDescription: formData.shortDescription,
         description: formData.description,
@@ -611,7 +644,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       console.log('Saving product data:', JSON.stringify(productData, null, 2));
 
       // Send the request for create or update
-      const url = isNew ? '/api/products/new' : `/api/admin/products/${productId}`;
+      const url = isNew ? '/api/products/new' : `/api/admin/products/${initialProductId}`;
       const method = isNew ? 'POST' : 'PUT';
       const response = await fetch(url, {
         method,
@@ -626,9 +659,17 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       }
 
       const result = await response.json();
+      
       // For update, set product state; for create, skip
       if (!isNew) {
         setProduct(result);
+        
+        // If product ID was changed, redirect to the new product page
+        if (productId !== initialProductId) {
+          toast.success('ID sản phẩm đã được thay đổi thành công!');
+          setTimeout(() => router.push(`/admin/products/${productId}`), 500);
+          return;
+        }
       }
       setSuccessMessage(
         isNew ? 'Sản phẩm đã được tạo thành công!' : 'Sản phẩm đã được cập nhật thành công!',
@@ -866,6 +907,32 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 className="text-2xl font-bold w-full p-2 border border-transparent hover:border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                 required
               />
+              
+              {/* Product ID field */}
+              <div className="mt-2 bg-gray-50 p-2 rounded-md">
+                <div className="flex items-center">
+                  <span className="text-sm font-medium text-gray-600 mr-2">ID sản phẩm:</span>
+                  <input 
+                    type="text" 
+                    value={isNew ? newProductId : productId}
+                    onChange={(e) => setProductId(e.target.value)}
+                    className="bg-transparent text-gray-700 text-sm flex-1 focus:outline-none focus:border-b focus:border-primary-500 p-1"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => updateProductIdFromName(formData.name)}
+                    className="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs py-1 px-2 rounded"
+                    title="Tạo lại ID từ tên sản phẩm"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  ID sản phẩm có thể được chỉnh sửa thủ công
+                </p>
+              </div>
             </div>
 
             {/* Công khai sản phẩm */}
@@ -1606,35 +1673,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Mô tả đầy đủ</h2>
-                <button
-                  type="button"
-                  onClick={() => setIsEditingDescription(!isEditingDescription)}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  {isEditingDescription ? 'Xong' : 'Chỉnh sửa'}
-                </button>
               </div>
 
-              {isEditingDescription && (
-                <RichTextEditor
-                  value={formData.description}
-                  onChange={handleRichTextChange}
-                  placeholder="Nhập mô tả chi tiết về sản phẩm..."
-                  className="mb-4"
-                />
-              )}
-
-              {/* Xem trước mô tả đầy đủ */}
-              <div className="mt-6">
-                <h3 className="text-lg font-medium mb-4">Xem trước mô tả đầy đủ</h3>
-
-                <div
-                  className="prose max-w-none border p-4 rounded min-h-[200px]"
-                  dangerouslySetInnerHTML={{
-                    __html: formData.description || '<p>Chưa có mô tả chi tiết</p>',
-                  }}
-                />
-              </div>
+              <RichTextEditor
+                value={formData.description}
+                onChange={handleRichTextChange}
+                placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                className="mb-4"
+              />
             </div>
 
             {/* Thông số kỹ thuật */}

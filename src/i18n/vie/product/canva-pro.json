@@ -1,8 +1,8 @@
 {
-  "id": "21wefwq",
-  "name": "21wefwq",
+  "id": "canva-pro",
+  "name": "Canva Pro",
   "slug": "21wefwq",
-  "description": "qừewefqwfqwfe",
+  "description": "<br>",
   "shortDescription": "qừdqwerqwerwe",
   "isPublished": false,
   "images": [],
@@ -21,19 +21,22 @@
     }
   ],
   "createdAt": "2025-06-27T05:53:56.009Z",
-  "updatedAt": "2025-06-27T05:53:56.009Z",
+  "updatedAt": "2025-06-27T06:24:35.953Z",
   "rating": 5,
   "weeklyPurchases": 12,
   "type": "software",
   "isAccount": false,
   "productOptions": [
-    "qrsadwer"
+    "Dùng riêng - 1 tháng - Tài khoản chính chủ"
   ],
-  "defaultProductOption": "qrsadwer",
+  "defaultProductOption": "Dùng riêng - 1 tháng - Tài khoản chính chủ",
   "optionPrices": {
-    "qrsadwer": {
+    "Dùng riêng - 1 tháng - Tài khoản chính chủ": {
       "price": 12000,
       "originalPrice": 420000
     }
-  }
+  },
+  "specs": "",
+  "totalPurchases": "120",
+  "optionDurations": {}
 }

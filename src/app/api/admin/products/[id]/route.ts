@@ -166,15 +166,26 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const mergedProduct: Product = {
       ...existingProduct,
       ...updatedProductData,
-      id, // Ensure ID doesn't change
       updatedAt: new Date().toISOString(),
     };
+
+    // Check if ID was changed in the updated data
+    const isIdChanged = updatedProductData.id !== id;
 
     // Update product using i18n product function
     const updateResult = await updateProduct(mergedProduct, language);
     
     if (!updateResult) {
       return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
+    }
+
+    // If ID was changed, we need to delete the old product after successful update
+    if (isIdChanged) {
+      // Log the ID change
+      console.log(`Product ID changed from ${id} to ${updatedProductData.id}`);
+      
+      // Delete the old product version with the old ID
+      await deleteProduct(id, language);
     }
 
     return NextResponse.json(mergedProduct);
