@@ -66,7 +66,7 @@ export function formatCurrency(amount: number, language?: Language): string {
   
   // Định dạng tiền tệ dựa trên ngôn ngữ
   if (currentLang === 'eng') {
-    // Tiếng Anh - USD
+    // English - USD
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -74,13 +74,11 @@ export function formatCurrency(amount: number, language?: Language): string {
       maximumFractionDigits: 2
     }).format(amount / getExchangeRate());
   } else {
-    // Tiếng Việt - VND
+    // Vietnamese - VND
     return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(amount);
+    }).format(amount) + ' đ';
   }
 }
 

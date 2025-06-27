@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency } from '@/lib/utils';
 
 interface ProductCardProps {
   id: string;
@@ -174,18 +175,6 @@ export default function ProductCard({
 
   // Lấy tên category để hiển thị
   const displayCategory = getCategoryName(category);
-
-  // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
-  const formatCurrency = (amount: number) => {
-    // Đảm bảo amount là số
-    const safeAmount = isNaN(amount) ? 0 : amount;
-    
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    }).format(safeAmount);
-  };
 
   const renderRatingStars = (rating: number) => {
     const fullStars = Math.floor(rating);
