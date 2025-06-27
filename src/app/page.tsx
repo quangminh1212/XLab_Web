@@ -29,6 +29,14 @@ interface Product {
   totalSold?: number;
   isAccount?: boolean;
   type?: string;
+  defaultProductOption?: string;
+  optionPrices?: { 
+    [key: string]: { 
+      price: number; 
+      originalPrice: number 
+    } 
+  };
+  productOptions?: string[];
 }
 
 // Components
@@ -87,6 +95,25 @@ const getValidImageUrl = (product: Product): string => {
   }
 
   return '/images/placeholder/product-placeholder.jpg';
+};
+
+// Helper function to get the correct price based on default option
+const getProductPrices = (product: Product): { price: number; originalPrice: number | undefined } => {
+  // Get price from default option if available
+  if (product.defaultProductOption && 
+      product.optionPrices && 
+      product.optionPrices[product.defaultProductOption]) {
+    return {
+      price: product.optionPrices[product.defaultProductOption].price,
+      originalPrice: product.optionPrices[product.defaultProductOption].originalPrice
+    };
+  }
+  
+  // Fallback to regular price
+  return {
+    price: product.price,
+    originalPrice: product.originalPrice
+  };
 };
 
 function HomePage() {
@@ -335,24 +362,29 @@ function HomePage() {
                     </Link>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                    {featuredProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.5]">
-                        <ProductCard 
-                          id={product.id}
-                          name={product.name}
-                          description={product.shortDescription || product.description || ''}
-                          price={product.price}
-                          originalPrice={product.originalPrice}
-                          image={getValidImageUrl(product)}
-                          rating={product.rating}
-                          reviewCount={product.reviewCount}
-                          weeklyPurchases={product.weeklyPurchases}
-                          totalSold={product.totalSold}
-                          slug={product.slug}
-                          isAccount={product.isAccount}
-                        />
-                      </div>
-                    ))}
+                    {featuredProducts.map((product) => {
+                      // Get prices based on default option
+                      const prices = getProductPrices(product);
+                        
+                      return (
+                        <div key={product.id} className="aspect-[1/1.5]">
+                          <ProductCard 
+                            id={product.id}
+                            name={product.name}
+                            description={product.shortDescription || product.description || ''}
+                            price={prices.price}
+                            originalPrice={prices.originalPrice}
+                            image={getValidImageUrl(product)}
+                            rating={product.rating}
+                            reviewCount={product.reviewCount}
+                            weeklyPurchases={product.weeklyPurchases}
+                            totalSold={product.totalSold}
+                            slug={product.slug}
+                            isAccount={product.isAccount}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 </section>
 
@@ -365,24 +397,29 @@ function HomePage() {
                     </Link>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                    {newProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.5]">
-                        <ProductCard 
-                          id={product.id}
-                          name={product.name}
-                          description={product.shortDescription || product.description || ''}
-                          price={product.price}
-                          originalPrice={product.originalPrice}
-                          image={getValidImageUrl(product)}
-                          rating={product.rating}
-                          reviewCount={product.reviewCount}
-                          weeklyPurchases={product.weeklyPurchases}
-                          totalSold={product.totalSold}
-                          slug={product.slug}
-                          isAccount={product.isAccount}
-                        />
-                      </div>
-                    ))}
+                    {newProducts.map((product) => {
+                      // Get prices based on default option
+                      const prices = getProductPrices(product);
+                      
+                      return (
+                        <div key={product.id} className="aspect-[1/1.5]">
+                          <ProductCard 
+                            id={product.id}
+                            name={product.name}
+                            description={product.shortDescription || product.description || ''}
+                            price={prices.price}
+                            originalPrice={prices.originalPrice}
+                            image={getValidImageUrl(product)}
+                            rating={product.rating}
+                            reviewCount={product.reviewCount}
+                            weeklyPurchases={product.weeklyPurchases}
+                            totalSold={product.totalSold}
+                            slug={product.slug}
+                            isAccount={product.isAccount}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                   
                   {/* Nút xem thêm sản phẩm mới */}

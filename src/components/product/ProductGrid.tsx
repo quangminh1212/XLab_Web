@@ -31,6 +31,8 @@ interface Product {
   versions?: ProductVersion[];
   optionPrices?: { [key: string]: OptionPrice };
   weeklyPurchases?: number;
+  defaultProductOption?: string;
+  productOptions?: string[];
 }
 
 interface ProductGridProps {
@@ -66,8 +68,15 @@ const ProductGrid = ({
     }
   };
 
-  // Tính giá thấp nhất từ các phiên bản và tùy chọn
+  // Tính giá từ các phiên bản và tùy chọn, ưu tiên lấy giá của tùy chọn mặc định
   const calculateMinPrice = (product: Product): number => {
+    // Ưu tiên lấy giá từ tùy chọn mặc định nếu có
+    if (product.defaultProductOption && 
+        product.optionPrices && 
+        product.optionPrices[product.defaultProductOption]) {
+      return product.optionPrices[product.defaultProductOption].price;
+    }
+
     let minPrice = Infinity;
 
     // Kiểm tra các phiên bản

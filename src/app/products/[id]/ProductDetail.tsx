@@ -211,14 +211,16 @@ const ProductOptions = ({
   productOptions, 
   selectedOption, 
   setSelectedOption,
-  optionPrices
+  optionPrices,
+  product
 }: { 
   options: string[], 
   productId: string,
   productOptions: string[],
   selectedOption: string,
   setSelectedOption: (option: string) => void,
-  optionPrices?: { [key: string]: any }
+  optionPrices?: { [key: string]: any },
+  product?: { defaultProductOption?: string }
 }) => {
   const { t, language } = useLanguage();
   const [translatedOptions, setTranslatedOptions] = useState<{ [key: string]: string }>(
@@ -265,11 +267,22 @@ const ProductOptions = ({
           <div
             key={index}
             onClick={() => setSelectedOption(option)}
-            className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
+            className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${
+              selectedOption === option ? 
+                'border-primary-500 bg-primary-50' : 
+                (!selectedOption && product?.defaultProductOption === option) ? 
+                  'border-primary-500 bg-primary-50' : 
+                  'border-gray-200 bg-white'
+            }`}
           >
             <span className="text-gray-900 font-medium text-sm mr-2">
               {translatedOptions[option] || option}
             </span>
+            {option === product?.defaultProductOption && (
+              <span className="bg-teal-100 text-teal-700 text-xs px-1.5 py-0.5 rounded-full font-medium mr-2">
+                Mặc định
+              </span>
+            )}
             {optionPrices && optionPrices[option] && (
               <span className="text-primary-600 font-medium text-sm">
                 {formatCurrency(optionPrices[option].price)}
@@ -354,9 +367,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // State danh sách tùy chọn
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
 
-  // State tùy chọn đang chọn
+  // State tùy chọn đang chọn - ưu tiên chọn tùy chọn mặc định nếu có
   const [selectedOption, setSelectedOption] = useState<string>(
-    product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : '',
+    product.defaultProductOption && product.productOptions?.includes(product.defaultProductOption)
+      ? product.defaultProductOption 
+      : product.productOptions && product.productOptions.length > 0 
+        ? product.productOptions[0] 
+        : '',
   );
 
   // State hiển thị tùy chọn hiện có
@@ -724,12 +741,26 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
               <div className="mt-4 flex items-center">
                 <div className="text-3xl font-bold text-primary-600">
-                  {calculateCheapestPrice() === 0
-                    ? t('product.free')
-                    : formatCurrency(calculateCheapestPrice())}
+                  {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
+                    ? formatCurrency(product.optionPrices[product.defaultProductOption].price)
+                    : calculateCheapestPrice() === 0
+                      ? t('product.free')
+                      : formatCurrency(calculateCheapestPrice())}
                 </div>
 
-                {calculateOriginalPriceOfCheapest() > calculateCheapestPrice() && (
+                {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption] &&
+                 product.optionPrices[product.defaultProductOption].originalPrice > product.optionPrices[product.defaultProductOption].price ? (
+                  <>
+                    <div className="ml-4 text-xl text-gray-500 line-through">
+                      {formatCurrency(product.optionPrices[product.defaultProductOption].originalPrice)}
+                    </div>
+                    <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
+                      -{Math.round(((product.optionPrices[product.defaultProductOption].originalPrice - 
+                         product.optionPrices[product.defaultProductOption].price) / 
+                         product.optionPrices[product.defaultProductOption].originalPrice) * 100)}%
+                    </div>
+                  </>
+                ) : calculateOriginalPriceOfCheapest() > calculateCheapestPrice() && (
                   <>
                     <div className="ml-4 text-xl text-gray-500 line-through">
                       {formatCurrency(calculateOriginalPriceOfCheapest())}
@@ -795,6 +826,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     selectedOption={selectedOption}
                     setSelectedOption={setSelectedOption}
                     optionPrices={product.optionPrices}
+                    product={product}
                   />
                 )}
               </div>
