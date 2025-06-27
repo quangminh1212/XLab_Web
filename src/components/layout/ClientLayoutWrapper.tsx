@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header, Footer } from '@/components/layout';
 import {
   Analytics,
@@ -14,6 +14,8 @@ import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
@@ -36,6 +38,17 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
               <StyleLoader />
               <CssErrorHandler />
               <GlobalStyles />
+              <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              />
             </CartProvider>
           </BalanceProvider>
         </NotificationProvider>

@@ -7,6 +7,7 @@ import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-toastify';
 
 // Danh sách các tùy chọn thời hạn
 const durationOptions = [
@@ -492,6 +493,47 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     setDefaultProductOption(option);
   };
 
+  // Xử lý chỉnh sửa tên tùy chọn
+  const handleEditOptionName = (oldOption: string, newOption: string) => {
+    if (newOption.trim() === '' || oldOption === newOption) {
+      return; // Không làm gì nếu tên mới rỗng hoặc không thay đổi
+    }
+
+    // Kiểm tra tên mới đã tồn tại chưa
+    if (productOptions.includes(newOption)) {
+      toast.error('Tùy chọn này đã tồn tại!');
+      return;
+    }
+
+    // Cập nhật mảng productOptions
+    const newOptions = productOptions.map((opt) => (opt === oldOption ? newOption : opt));
+    setProductOptions(newOptions);
+
+    // Cập nhật optionPrices
+    setOptionPrices((prev) => {
+      const newPrices = { ...prev };
+      newPrices[newOption] = newPrices[oldOption];
+      delete newPrices[oldOption];
+      return newPrices;
+    });
+
+    // Cập nhật optionDurations
+    setOptionDurations((prev) => {
+      const newDurations = { ...prev };
+      newDurations[newOption] = newDurations[oldOption];
+      delete newDurations[oldOption];
+      return newDurations;
+    });
+
+    // Cập nhật defaultProductOption nếu cần
+    if (oldOption === defaultProductOption) {
+      setDefaultProductOption(newOption);
+    }
+    
+    // Thông báo thành công
+    toast.success('Đã cập nhật tên tùy chọn');
+  };
+
   const handleSaveProduct = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -551,7 +593,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             description: 'Phiên bản mặc định',
             price: formData.price,
             originalPrice: formData.salePrice,
-            features: [],
+            features: [] as string[],
           },
         ],
         categories: formData.categories.map((id) => ({ id })),
@@ -1282,7 +1324,33 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                               {/* Header của tùy chọn */}
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center space-x-2">
-                                  <h5 className="font-semibold text-gray-900">{option}</h5>
+                                  <input
+                                    type="text"
+                                    defaultValue={option}
+                                    onBlur={(e) => {
+                                      const newOption = e.target.value.trim();
+                                      if (newOption !== option && newOption !== '') {
+                                        handleEditOptionName(option, newOption);
+                                      } else {
+                                        // Reset lại giá trị cũ nếu không hợp lệ
+                                        e.target.value = option;
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        const newOption = e.currentTarget.value.trim();
+                                        if (newOption !== option && newOption !== '') {
+                                          handleEditOptionName(option, newOption);
+                                        } else {
+                                          // Reset lại giá trị cũ nếu không hợp lệ
+                                          e.currentTarget.value = option;
+                                        }
+                                        e.currentTarget.blur();
+                                      }
+                                    }}
+                                    className="font-semibold text-gray-900 border-none bg-transparent focus:outline-none focus:ring-1 focus:ring-teal-500 focus:bg-white rounded px-1"
+                                  />
                                   {option === defaultProductOption && (
                                     <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full font-medium">
                                       Mặc định
