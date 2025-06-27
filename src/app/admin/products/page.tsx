@@ -344,9 +344,6 @@ function AdminProductsPage() {
                           return (
                             <div>
                               <div className="font-medium text-primary-600">{formattedPrice}</div>
-                              {minPriceOption && (
-                                <div className="text-xs text-gray-500 mt-1">{minPriceOption}</div>
-                              )}
                             </div>
                           );
                         })()}
