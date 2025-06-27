@@ -2,6 +2,7 @@ import { type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { products } from '@/data/mockData';
 import { Product } from '@/types';
+import { Language } from '@/i18n';
 
 // Safe imports to handle potential undefined modules
 let clsx: any;
@@ -32,13 +33,55 @@ export function containerClass(...additionalClasses: ClassValue[]) {
 }
 
 /**
- * Format a number as Vietnamese currency (VND)
+ * Lấy đơn vị tiền tệ dựa trên ngôn ngữ
  */
-export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(amount);
+export function getCurrencyByLanguage(language: Language = 'vie') {
+  return language === 'eng' ? 'USD' : 'VND';
+}
+
+/**
+ * Lấy tỉ giá quy đổi từ VND sang USD
+ */
+export function getExchangeRate() {
+  return 24000; // Tỉ giá ước tính VND/USD
+}
+
+/**
+ * Format a number as currency based on the current language
+ * @param amount Số tiền (trong VND)
+ * @param language Ngôn ngữ hiện tại ('vie' hoặc 'eng')
+ */
+export function formatCurrency(amount: number, language?: Language): string {
+  // Lấy ngôn ngữ hiện tại từ localStorage nếu không được truyền vào
+  let currentLang = language;
+  
+  if (!currentLang && typeof window !== 'undefined') {
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
+      currentLang = savedLanguage as Language;
+    } else {
+      currentLang = 'vie'; // Mặc định là tiếng Việt
+    }
+  }
+  
+  // Định dạng tiền tệ dựa trên ngôn ngữ
+  if (currentLang === 'eng') {
+    // Tiếng Anh - USD
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount / getExchangeRate());
+  } else {
+    // Tiếng Việt - VND
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  }
 }
 
 /**

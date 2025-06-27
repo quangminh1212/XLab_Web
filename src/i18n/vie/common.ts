@@ -217,6 +217,29 @@ const common = {
   'cart.youMightAlsoLike': 'Bạn có thể quan tâm',
   'cart.enterCouponCode': 'Nhập mã khuyến mãi',
   'cart.removeCoupon': 'Xóa mã',
+  
+  // Checkout page
+  'checkout.title': 'Thanh toán',
+  'checkout.subtitle': 'Hoàn tất đơn hàng của bạn với các phương thức thanh toán an toàn.',
+  'checkout.paymentMethods': 'Chọn phương thức thanh toán',
+  'checkout.accountBalance': 'Số dư tài khoản',
+  'checkout.currentBalance': 'Số dư hiện tại:',
+  'checkout.insufficientBalance': 'Số dư không đủ',
+  'checkout.needMore': 'Bạn cần thêm {amount} để hoàn tất đơn hàng này.',
+  'checkout.simpleSecure': 'Thanh toán đơn giản và an toàn',
+  'checkout.supportInfo': 'Hiện tại chúng tôi chỉ hỗ trợ thanh toán bằng số dư tài khoản để đảm bảo tính bảo mật và xử lý nhanh chóng. Bạn có thể nạp tiền vào tài khoản thông qua các phương thức chuyển khoản ngân hàng.',
+  'checkout.checkingBalance': 'Đang kiểm tra số dư...',
+  'checkout.pay': 'Thanh toán {amount}',
+  'checkout.topUp': 'Nạp tiền ({amount})',
+  'checkout.availableAfterTopUp': 'Thanh toán sẽ khả dụng sau khi nạp tiền',
+  'checkout.orderSummary': 'Tóm tắt đơn hàng',
+  'checkout.subtotal': 'Tạm tính:',
+  'checkout.total': 'Tổng cộng:',
+  'checkout.accountBalanceStatus': 'Số dư tài khoản:',
+  'checkout.needToTopUp': 'Cần nạp thêm:',
+  'checkout.termsAgreement': 'Bằng cách đặt hàng, bạn đồng ý với {terms} và {privacy} của chúng tôi.',
+  'checkout.terms': 'Điều khoản dịch vụ',
+  'checkout.privacy': 'Chính sách bảo mật',
 };
 
 export default common; 

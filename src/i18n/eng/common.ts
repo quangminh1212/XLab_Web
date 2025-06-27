@@ -217,6 +217,29 @@ const common = {
   'cart.youMightAlsoLike': 'You might also like',
   'cart.enterCouponCode': 'Enter coupon code',
   'cart.removeCoupon': 'Remove coupon',
+  
+  // Checkout page
+  'checkout.title': 'Checkout',
+  'checkout.subtitle': 'Complete your order with secure payment methods.',
+  'checkout.paymentMethods': 'Choose Payment Method',
+  'checkout.accountBalance': 'Account Balance',
+  'checkout.currentBalance': 'Current balance:',
+  'checkout.insufficientBalance': 'Insufficient Balance',
+  'checkout.needMore': 'You need additional {amount} to complete this order.',
+  'checkout.simpleSecure': 'Simple and Secure Payment',
+  'checkout.supportInfo': 'We currently only support payment through account balance to ensure security and fast processing. You can deposit funds into your account via bank transfer methods.',
+  'checkout.checkingBalance': 'Checking balance...',
+  'checkout.pay': 'Pay {amount}',
+  'checkout.topUp': 'Top Up ({amount})',
+  'checkout.availableAfterTopUp': 'Payment will be available after topping up',
+  'checkout.orderSummary': 'Order Summary',
+  'checkout.subtotal': 'Subtotal:',
+  'checkout.total': 'Total:',
+  'checkout.accountBalanceStatus': 'Account Balance:',
+  'checkout.needToTopUp': 'Need to top up:',
+  'checkout.termsAgreement': 'By placing an order, you agree to our {terms} and {privacy}.',
+  'checkout.terms': 'Terms of Service',
+  'checkout.privacy': 'Privacy Policy',
 };
 
 export default common; 
