@@ -154,7 +154,16 @@ function AdminDashboard() {
                     <div>
                       <h3 className="font-medium">{product.name}</h3>
                       <p className="text-sm text-gray-500">
-                        {formatCurrency(product.versions[0]?.price || 0, language)}
+                        {formatCurrency(
+                          product.defaultProductOption && 
+                          product.optionPrices && 
+                          product.optionPrices[product.defaultProductOption] 
+                            ? product.optionPrices[product.defaultProductOption].price 
+                            : product.versions && product.versions.length > 0 
+                              ? product.versions[0]?.price || 0 
+                              : product.price || 0, 
+                          language
+                        )}
                       </p>
                     </div>
                     <div>
