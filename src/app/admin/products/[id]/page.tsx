@@ -8,6 +8,7 @@ import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
+import './animations.css';
 
 // Danh sách các tùy chọn thời hạn
 const durationOptions = [
@@ -74,6 +75,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       quality: 80,
     },
     showOptions: false,
+    previewUrl: null as string | null,
   });
 
   // Thêm state cho mô tả kỹ thuật
@@ -255,6 +257,82 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         [property]: parsedValue,
       },
     }));
+  };
+
+  // Apply resize options and show a preview
+  const applyResizeOptions = async (type: 'featuredImage' | 'descriptionImage') => {
+    // Get current image to resize
+    const imageToResize = type === 'featuredImage' ? featuredImage : descriptionImages[descriptionImages.length - 1];
+    if (!imageToResize) {
+      setError('Chưa có hình ảnh để thay đổi kích thước');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    try {
+      // Create a FormData object to send to the server
+      const resizeFormData = new FormData();
+      resizeFormData.append('imageUrl', imageToResize);
+      
+      // Add resize options
+      const options = imageResizeOptions[type];
+      if (options.width) {
+        resizeFormData.append('width', options.width.toString());
+      }
+      if (options.height) {
+        resizeFormData.append('height', options.height ? options.height.toString() : '');
+      }
+      resizeFormData.append('quality', options.quality.toString());
+      resizeFormData.append('productId', isNew ? newProductId : productId);
+
+      // Call API to resize the image
+      const response = await fetch('/api/resize-image', {
+        method: 'POST',
+        body: resizeFormData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Không thể thay đổi kích thước hình ảnh');
+      }
+
+      const data = await response.json();
+      const resizedImageUrl = data.url || data.filepath || data.fileUrl;
+
+      // Update the image with the resized version
+      if (type === 'featuredImage') {
+        setFeaturedImage(resizedImageUrl);
+      } else {
+        const newImages = [...descriptionImages];
+        newImages[newImages.length - 1] = resizedImageUrl;
+        setDescriptionImages(newImages);
+      }
+
+      // Set preview URL to show the result
+      setImageResizeOptions(prev => ({
+        ...prev,
+        previewUrl: resizedImageUrl
+      }));
+
+      // Display success notification
+      toast.success(`Đã thay đổi kích thước hình ảnh thành công (${options.width}x${options.height || 'auto'}, chất lượng: ${options.quality}%)`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      // Clear preview after 3 seconds
+      setTimeout(() => {
+        setImageResizeOptions(prev => ({ ...prev, previewUrl: null }));
+      }, 3000);
+
+    } catch (err) {
+      console.error('Lỗi khi thay đổi kích thước hình ảnh:', err);
+      setError((err as Error).message || 'Không thể thay đổi kích thước hình ảnh');
+      setTimeout(() => setError(null), 3000);
+    }
   };
 
   // Thêm hàm toggle hiển thị tùy chọn resize
@@ -1353,7 +1431,25 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             {/* Phần hình ảnh sản phẩm */}
             <div className="xl:col-span-1">
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 h-full">
-                <h3 className="text-lg font-medium mb-4 text-gray-900">Hình ảnh sản phẩm</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-medium text-gray-900">Hình ảnh sản phẩm</h3>
+                  <button 
+                    type="button"
+                    onClick={toggleResizeOptions}
+                    className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-2 py-1 rounded-md transition-colors flex items-center"
+                  >
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-4 w-4 mr-1" 
+                      viewBox="0 0 20 20" 
+                      fill="currentColor"
+                    >
+                      <path fillRule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clipRule="evenodd" />
+                    </svg>
+                    {imageResizeOptions.showOptions ? "Ẩn tùy chọn" : "Tùy chọn kích thước"}
+                  </button>
+                </div>
+                
                 <div className="flex justify-center mb-4">
                   <div
                     className="border rounded-lg overflow-hidden bg-white aspect-square w-full max-w-xs flex items-center justify-center relative"
@@ -1361,10 +1457,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     tabIndex={0}
                     style={{ outline: 'none' }}
                   >
-                    {featuredImage ? (
+                    {(imageResizeOptions.previewUrl || featuredImage) ? (
                       <>
                         <img
-                          src={featuredImage}
+                          src={imageResizeOptions.previewUrl || featuredImage || ''}
                           alt={formData.name}
                           className="object-contain max-w-full max-h-full"
                         />
@@ -1385,6 +1481,71 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     )}
                   </div>
                 </div>
+
+                {/* Thêm phần tùy chỉnh kích thước */}
+                {imageResizeOptions.showOptions && (
+                  <div className="mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200 animate-fadeIn">
+                    <h4 className="font-medium text-gray-700 mb-2 text-sm flex items-center">
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-4 w-4 mr-1 text-blue-500" 
+                        viewBox="0 0 20 20" 
+                        fill="currentColor"
+                      >
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                      </svg>
+                      Tùy chỉnh kích thước ảnh nổi bật
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Chiều rộng (px)</label>
+                        <input
+                          type="number"
+                          value={imageResizeOptions.featuredImage.width || ''}
+                          onChange={(e) => handleResizeOptionChange('featuredImage', 'width', e.target.value)}
+                          className="w-full border border-gray-300 rounded p-1 text-sm"
+                          placeholder="Rộng (px)"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Chiều cao (px)</label>
+                        <input
+                          type="number"
+                          value={imageResizeOptions.featuredImage.height || ''}
+                          onChange={(e) => handleResizeOptionChange('featuredImage', 'height', e.target.value)}
+                          className="w-full border border-gray-300 rounded p-1 text-sm"
+                          placeholder="Cao (px)"
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label className="block text-xs text-gray-600 mb-1">Chất lượng ({imageResizeOptions.featuredImage.quality}%)</label>
+                      <input
+                        type="range"
+                        min="10"
+                        max="100"
+                        value={imageResizeOptions.featuredImage.quality}
+                        onChange={(e) => handleResizeOptionChange('featuredImage', 'quality', e.target.value)}
+                        className="w-full accent-blue-500"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => applyResizeOptions('featuredImage')}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded text-sm font-medium transition-colors flex items-center justify-center"
+                    >
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-4 w-4 mr-1" 
+                        viewBox="0 0 20 20" 
+                        fill="currentColor"
+                      >
+                        <path fillRule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clipRule="evenodd" />
+                      </svg>
+                      Áp dụng thay đổi
+                    </button>
+                  </div>
+                )}
 
                 <div>
                   <input
@@ -1984,6 +2145,40 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </div>
         </div>
       </form>
+
+      {/* Error display */}
+      {error && (
+        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fadeIn">
+          <div className="flex items-center">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-6 w-6 mr-2" 
+              viewBox="0 0 20 20" 
+              fill="currentColor"
+            >
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <span>{error}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Success message display */}
+      {successMessage && (
+        <div className="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fadeIn">
+          <div className="flex items-center">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-6 w-6 mr-2" 
+              viewBox="0 0 20 20" 
+              fill="currentColor"
+            >
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>{successMessage}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
