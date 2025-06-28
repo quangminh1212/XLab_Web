@@ -1,16 +1,14 @@
 import chatgpt from './chatgpt.json';
 import grok from './grok.json';
-import canva from './canva.json';
 
 // Collection of all products
 const products = {
   chatgpt,
-  grok,
-  canva
+  grok
 };
 
 // Export individual products
-export { chatgpt, grok, canva };
+export { chatgpt, grok };
 
 // Export all products as an array
 export const getAllProducts = () => {

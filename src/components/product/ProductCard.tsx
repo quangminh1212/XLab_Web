@@ -62,13 +62,6 @@ export default function ProductCard({
     if (language === 'eng') {
       const fetchTranslation = async () => {
         try {
-          // Skip translation request if id is undefined or starts with "product-"
-          if (!id || id === 'undefined' || id.startsWith('product-')) {
-            setTranslatedDescription(description);
-            setTranslatedName(name);
-            return;
-          }
-          
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
@@ -261,12 +254,10 @@ export default function ProductCard({
   // Tạo slug từ tên nếu không có slug được truyền vào
   const productSlug =
     slug ||
-    (name
-      ? name
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9-]/g, '')
-      : 'product');
+    name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
 
   // Color palette phù hợp với logo XLab (chuyên nghiệp, hiện đại)
   const colorPalette = [
@@ -368,7 +359,7 @@ export default function ProductCard({
 
         <Image
           src={displayImageUrl}
-          alt={translatedName || name || 'Product image'}
+          alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className={`object-contain transition-all duration-500 scale-100 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
