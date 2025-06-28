@@ -18,6 +18,16 @@
         "id": {
           "id": "ai-tools"
         }
+      },
+      "name": {
+        "id": {
+          "id": "ai-tools"
+        }
+      },
+      "slug": {
+        "id": {
+          "id": "ai-tools"
+        }
       }
     }
   ],
@@ -31,7 +41,7 @@
     }
   ],
   "createdAt": "2025-05-20T18:06:44.144Z",
-  "updatedAt": "2025-06-27T16:43:08.644Z",
+  "updatedAt": "2025-06-11T02:28:19.441Z",
   "rating": 4.7,
   "type": "account",
   "isAccount": true,
@@ -50,4 +60,4 @@
   "totalSold": 890,
   "totalPurchases": "200",
   "optionDurations": {}
-}
+} 
