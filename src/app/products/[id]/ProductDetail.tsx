@@ -58,7 +58,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.details')}</h2>
-      <div className="bg-white p-8 rounded-lg shadow-sm">
+      <div className="bg-white p-8 rounded-lg shadow-sm" style={{width: '100%', margin: '0 auto'}}>
         <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
           <RichTextContent content={translatedDescription} className="product-description" />
         </div>
@@ -158,7 +158,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
   }, [shortDescription, language, productId]);
 
   return (
-    <p className="mt-4 text-gray-600 text-lg">{translatedShortDescription || ''}</p>
+    <p className="mt-4 text-gray-600 text-lg" style={{width: '100%', margin: '0 auto'}}>{translatedShortDescription || ''}</p>
   );
 };
 
@@ -200,7 +200,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
   if (!translatedFeatures || translatedFeatures.length === 0) return null;
 
   return (
-    <div className="mt-8">
+    <div className="mt-8" style={{width: '100%', margin: '0 auto'}}>
       <h3 className="font-medium text-gray-900 mb-2">{t('product.features')}:</h3>
       <ul className="list-disc list-inside space-y-1">
         {translatedFeatures.map((feature, index) => (
@@ -269,7 +269,7 @@ const ProductOptions = ({
   if (!options || options.length === 0) return null;
 
   return (
-    <div className="mb-6">
+    <div className="mb-6" style={{width: '100%', margin: '0 auto'}}>
       <h4 className="font-medium text-gray-700 text-lg mb-4">{optionsTitle}</h4>
       <div className="flex flex-wrap gap-4">
         {options.map((option, index) => (
@@ -320,7 +320,7 @@ const ProductSpecifications = ({
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.specifications')}</h2>
       <div className="bg-white p-6 rounded-lg shadow-sm">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse" style={{width: '100%', margin: '0 auto'}}>
           <tbody>
             {specsArray.map((spec, index) => (
               <tr
@@ -739,10 +739,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               )}
             </div>
 
-            {/* Product info */}
-            <div>
+            {/* Product details - right column */}
+            <div style={{width: '100%', margin: '0 auto'}}>
               <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{product.name}</h1>
 
+              {/* Hiển thị giá */}
               <div className="mt-4 flex items-center">
                 <div className="text-3xl font-bold text-primary-600">
                   {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
@@ -841,7 +842,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               />
 
               {/* Quantity selector */}
-              <div className="mt-6">
+              <div className="mt-6" style={{width: '100%', margin: '0 auto'}}>
                 <h3 className="font-medium text-gray-900 mb-2">{t('product.quantity')}:</h3>
                 <div className="flex items-center">
                   <button
@@ -866,7 +867,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
 
               {/* Action buttons */}
-              <div className="mt-8 grid grid-cols-2 gap-4">
+              <div className="mt-8 grid grid-cols-2 gap-4" style={{width: '100%', margin: '0 auto'}}>
                 <button
                   onClick={handleAddToCart}
                   className="px-4 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-transform active:scale-95"
