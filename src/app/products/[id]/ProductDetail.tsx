@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RelatedProducts from '../../../components/product/RelatedProducts';
 import { useLanguage } from '@/contexts/LanguageContext';
+import ProductOptions from '@/components/product/ProductOptions';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -210,92 +211,6 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
           </li>
         ))}
       </ul>
-    </div>
-  );
-};
-
-// Component xử lý dịch tùy chọn sản phẩm
-const ProductOptions = ({ 
-  options, 
-  productId, 
-  productOptions, 
-  selectedOption, 
-  setSelectedOption,
-  optionPrices,
-  product
-}: { 
-  options: string[], 
-  productId: string,
-  productOptions: string[],
-  selectedOption: string,
-  setSelectedOption: (option: string) => void,
-  optionPrices?: { [key: string]: any },
-  product?: { defaultProductOption?: string }
-}) => {
-  const { t, language } = useLanguage();
-  const [translatedOptions, setTranslatedOptions] = useState<{ [key: string]: string }>(
-    productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {})
-  );
-  const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));
-
-  useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
-      const fetchTranslation = async () => {
-        try {
-          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
-          if (response.ok) {
-            const data = await response.json();
-            console.log("ProductOptions translation data:", data); // Ghi log để debug
-            if (data && data.productOptions) {
-              setTranslatedOptions(data.productOptions);
-            }
-            if (data && data.options) {
-              setOptionsTitle(data.options);
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching options translations:', error);
-        }
-      };
-
-      fetchTranslation();
-    } else {
-      // Nếu tiếng Việt, sử dụng tùy chọn gốc
-      setTranslatedOptions(productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {}));
-      setOptionsTitle(t('product.options'));
-    }
-  }, [language, productId, productOptions, t]);
-
-  if (!options || options.length === 0) return null;
-
-  return (
-    <div className="mb-6" style={{width: '100%', margin: '0 auto'}}>
-      <h4 className="font-medium text-gray-700 text-lg mb-4">{optionsTitle}</h4>
-      <div className="flex flex-wrap gap-4">
-        {options.map((option, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedOption(option)}
-            className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${
-              selectedOption === option ? 
-                'border-primary-500 bg-primary-50' : 
-                (!selectedOption && product?.defaultProductOption === option) ? 
-                  'border-primary-500 bg-primary-50' : 
-                  'border-gray-200 bg-white'
-            }`}
-          >
-            <span className="text-gray-900 font-medium text-sm mr-2">
-              {translatedOptions[option] || option}
-            </span>
-            {optionPrices && optionPrices[option] && (
-              <span className="text-primary-600 font-medium text-sm">
-                {formatCurrency(optionPrices[option].price)}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
@@ -779,16 +694,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
 
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
-              <div className="mt-6 p-4 rounded-lg">
+              <div className="mt-6">
                 {/* Product options/versions */}
                 {product.versions && product.versions.length > 1 && (
-                  <div className="mb-3">
-                    <div className="grid grid-cols-1 gap-1.5">
+                  <div className="mb-6">
+                    <div className="grid grid-cols-1 gap-2.5">
                       {product.versions.map((version) => (
                         <div
                           key={version.name}
                           className={`
-                            border rounded-md p-2 cursor-pointer transition flex items-center
+                            border rounded-md p-3 cursor-pointer transition flex items-center
                             ${
                               selectedVersion === version.name
                                 ? 'border-primary-500 bg-primary-50'
@@ -800,21 +715,21 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                           <div className="flex-1">
                             <div className="flex items-center">
                               <div
-                                className={`w-4 h-4 rounded-full border flex-shrink-0 mr-2 ${selectedVersion === version.name ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}
+                                className={`w-5 h-5 rounded-full border flex-shrink-0 mr-3 ${selectedVersion === version.name ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}
                               >
                                 {selectedVersion === version.name && (
-                                  <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
+                                  <div className="w-2.5 h-2.5 bg-white rounded-full m-auto"></div>
                                 )}
                               </div>
                               <span className="font-medium text-gray-900">{version.name}</span>
                             </div>
                             {version.description && (
-                              <p className="mt-0.5 text-xs text-gray-500 ml-6">
+                              <p className="mt-1 text-xs text-gray-500 ml-8">
                                 {version.description}
                               </p>
                             )}
                           </div>
-                          <span className="font-medium text-primary-600 ml-2 text-sm">
+                          <span className="font-medium text-primary-600 ml-3 text-sm">
                             {formatCurrency(version.price)}
                           </span>
                         </div>
@@ -843,12 +758,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               />
 
               {/* Quantity selector */}
-              <div className="mt-6" style={{width: '100%', margin: '0 auto'}}>
-                <h3 className="font-medium text-gray-900 mb-2">{t('product.quantity')}:</h3>
+              <div className="mt-8">
+                <h3 className="font-medium text-gray-900 mb-3">{t('product.quantity')}:</h3>
                 <div className="flex items-center">
                   <button
                     onClick={decreaseQuantity}
-                    className="w-10 h-10 rounded-l-lg bg-gray-100 flex items-center justify-center border border-gray-300"
+                    className="w-12 h-12 rounded-l-lg bg-gray-100 flex items-center justify-center border border-gray-300 hover:bg-gray-200 transition"
                   >
                     <span className="text-xl">-</span>
                   </button>
@@ -856,11 +771,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     type="number"
                     value={quantity}
                     readOnly
-                    className="w-14 h-10 text-center border-t border-b border-gray-300"
+                    className="w-16 h-12 text-center border-t border-b border-gray-300 text-lg"
                   />
                   <button
                     onClick={increaseQuantity}
-                    className="w-10 h-10 rounded-r-lg bg-gray-100 flex items-center justify-center border border-gray-300"
+                    className="w-12 h-12 rounded-r-lg bg-gray-100 flex items-center justify-center border border-gray-300 hover:bg-gray-200 transition"
                   >
                     <span className="text-xl">+</span>
                   </button>
@@ -868,10 +783,10 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
 
               {/* Action buttons */}
-              <div className="mt-8 grid grid-cols-2 gap-4" style={{width: '100%', margin: '0 auto'}}>
+              <div className="mt-10 grid grid-cols-2 gap-6">
                 <button
                   onClick={handleAddToCart}
-                  className="px-4 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-transform active:scale-95"
+                  className="px-6 py-4 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-transform active:scale-95 text-lg"
                 >
                   {t('product.addToCart')}
                 </button>
@@ -904,7 +819,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     // Chuyển hướng đến trang thanh toán
                     window.location.href = '/checkout?skipInfo=true';
                   }}
-                  className="px-4 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 text-center transition-transform active:scale-95"
+                  className="px-6 py-4 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 text-center transition-transform active:scale-95 text-lg"
                 >
                   {t('product.buyNow')}
                 </Link>
