@@ -1,39 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs';
+import { getProductById } from '@/lib/i18n/products';
 
+/**
+ * @deprecated Use /api/products/[id] with lang parameter instead
+ */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const id = searchParams.get('id') || '';
   const requestedLang = searchParams.get('lang') || 'en';
   
-  // Map "eng" to "en" for compatibility with translations file
-  const lang = requestedLang === 'eng' ? 'en' : requestedLang;
+  // Map "en" to "eng" and "vi" to "vie" for compatibility with i18n structure
+  const lang = requestedLang === 'en' ? 'eng' : (requestedLang === 'vi' ? 'vie' : requestedLang);
 
   if (!id) {
     return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
   }
 
   try {
-    // Đọc file dịch
-    const translationsPath = path.join(process.cwd(), 'src/data/product_translations.json');
+    console.log(`Translation request for id: ${id}, lang: ${lang}`);
     
-    if (!fs.existsSync(translationsPath)) {
-      return NextResponse.json({ error: 'Translations file not found' }, { status: 404 });
-    }
+    // Use the i18n product system instead of the old translations file
+    const product = await getProductById(id, lang);
     
-    const translationsData = fs.readFileSync(translationsPath, 'utf8');
-    const translations = JSON.parse(translationsData);
-
-    console.log(`Translation request for id: ${id}, lang: ${requestedLang}`);
-    console.log(`Available translations for ${lang}:`, Object.keys(translations[lang] || {}));
-
-    // Kiểm tra nếu có bản dịch cho sản phẩm này với ngôn ngữ được chỉ định
-    if (translations[lang] && translations[lang][id]) {
-      console.log(`Found translation for ${id}`);
-      return NextResponse.json(translations[lang][id]);
+    if (product) {
+      console.log(`Found translation for ${id} in language ${lang}`);
+      
+      // Extract only the translation-relevant fields
+      const translation = {
+        name: product.name,
+        description: product.description,
+        shortDescription: product.shortDescription,
+        features: product.features || [],
+        productOptions: product.optionPrices ? 
+          Object.keys(product.optionPrices).reduce((acc, key) => {
+            acc[key] = key; // Use the same key as value for now
+            return acc;
+          }, {} as Record<string, string>) : 
+          {},
+        options: "Options"
+      };
+      
+      return NextResponse.json(translation);
     } else {
-      console.log(`No translation found for ${id} in language ${requestedLang}`);
+      console.log(`No translation found for ${id} in language ${lang}`);
       return NextResponse.json({ message: 'No translation available' }, { status: 404 });
     }
   } catch (error) {
