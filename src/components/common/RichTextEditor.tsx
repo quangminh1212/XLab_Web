@@ -70,6 +70,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     const handleImageClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
+      // Đầu tiên ẩn tất cả các toolbar đang mở
+      if (editorRef.current) {
+        const allToolbars = editorRef.current.querySelectorAll('.image-toolbar');
+        allToolbars.forEach(toolbar => {
+          toolbar.classList.remove('visible');
+        });
+      }
+
       // Xử lý khi click vào ảnh bất kỳ trong editor
       if (target.tagName === 'IMG') {
         // Nếu ảnh đã có wrapper với toolbar, chỉ hiển thị toolbar
@@ -77,6 +85,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           const toolbar = target.parentElement?.querySelector('.image-toolbar');
           if (toolbar) {
             toolbar.classList.add('visible');
+            
+            // Đảm bảo toolbar hiển thị trong khung nhìn
+            const rect = toolbar.getBoundingClientRect();
+            if (rect.top < 0) {
+              window.scrollBy(0, rect.top - 10);
+            }
           }
         } 
         // Nếu ảnh chưa có wrapper và toolbar, tạo mới
@@ -1182,16 +1196,17 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           padding: 5px;
           border-radius: 3px;
           text-align: center;
-          z-index: 100;
+          z-index: 1000;
         }
 
         .image-toolbar.visible {
-          display: flex;
+          display: flex !important;
           gap: 5px;
           flex-wrap: wrap;
           max-width: 250px;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
           border: 1px solid rgba(255, 255, 255, 0.2);
+          z-index: 1000;
         }
 
         .image-tool-btn {

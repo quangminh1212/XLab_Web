@@ -1920,7 +1920,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 {/* Mô tả ngắn */}
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                   <h3 className="text-lg font-medium mb-4 text-gray-900">Mô tả ngắn</h3>
-                  <div onPaste={handlePasteDescriptionImage}>
+                  <div onPaste={handlePasteDescriptionImage} className="admin-rich-text-wrapper">
                     <RichTextEditor
                       value={formData.shortDescription}
                       onChange={handleShortDescRichTextChange}
@@ -1942,12 +1942,35 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 <h2 className="text-xl font-bold">Mô tả đầy đủ</h2>
               </div>
 
-              <RichTextEditor
-                value={formData.description}
-                onChange={handleRichTextChange}
-                placeholder="Nhập mô tả chi tiết về sản phẩm..."
-                className="mb-4"
-              />
+              <div className="admin-rich-text-wrapper">
+                <RichTextEditor
+                  value={formData.description}
+                  onChange={handleRichTextChange}
+                  placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                  className="mb-4"
+                />
+              </div>
+
+              <style jsx global>{`
+                .admin-rich-text-wrapper .image-toolbar {
+                  display: flex !important;
+                  visibility: visible !important;
+                  opacity: 1 !important;
+                  pointer-events: all !important;
+                  z-index: 1000;
+                }
+                
+                .admin-rich-text-wrapper .image-tool-btn {
+                  display: flex !important;
+                  visibility: visible !important;
+                  opacity: 1 !important;
+                  pointer-events: all !important;
+                }
+                
+                .admin-rich-text-wrapper .image-toolbar.visible {
+                  display: flex !important;
+                }
+              `}</style>
             </div>
 
             {/* Thông số kỹ thuật */}
@@ -1965,12 +1988,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
               {isEditingSpecs ? (
                 <div className="space-y-4">
-                  <RichTextEditor
-                    value={formData.specs}
-                    onChange={(content) => setFormData((prev) => ({ ...prev, specs: content }))}
-                    placeholder="Nhập thông số kỹ thuật chi tiết..."
-                    className="mb-4"
-                  />
+                  <div className="admin-rich-text-wrapper">
+                    <RichTextEditor
+                      value={formData.specs}
+                      onChange={(content) => setFormData((prev) => ({ ...prev, specs: content }))}
+                      placeholder="Nhập thông số kỹ thuật chi tiết..."
+                      className="mb-4"
+                    />
+                  </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
