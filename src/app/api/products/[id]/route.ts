@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
-import products, { getProductById as getVietnameseProductById } from '@/i8n/vie/product';
-import { getProductById as getEnglishProductById } from '@/i8n/eng/product';
+import { getProductById } from '@/lib/i18n/products';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -47,7 +46,7 @@ export async function GET(
     const lang = searchParams.get('lang') || 'vie';
 
     // Get product file path based on ID and language
-    const productFilePath = path.join(process.cwd(), `i8n/${lang}/product/${params.id}.json`);
+    const productFilePath = path.join(process.cwd(), `src/i18n/${lang}/product/${params.id}.json`);
     
     // Check if product file exists
     console.log(`Looking for product with ID: ${params.id}, language: ${lang}`);
@@ -60,7 +59,7 @@ export async function GET(
         product = JSON.parse(fileContent) as Product;
       } else {
         // Try finding by slug if not found by ID
-        const productsDir = path.join(process.cwd(), `i8n/${lang}/product`);
+        const productsDir = path.join(process.cwd(), `src/i18n/${lang}/product`);
         const files = fs.readdirSync(productsDir);
         const jsonFiles = files.filter(file => file.endsWith('.json'));
         

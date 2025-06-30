@@ -41,6 +41,29 @@
         "Full - Dùng riêng - 6 Tháng": "Full - Private Use - 6 Months"
       },
       "options": "Options"
+    },
+    "canva": {
+      "name": "Canva Pro",
+      "shortDescription": "Canva Pro is a comprehensive design platform that offers premium features for creating professional graphics, presentations, and visual content.",
+      "features": [
+        "Access to over 100 million premium stock photos, videos, audio, and graphics",
+        "60+ million premium templates",
+        "Background remover tool",
+        "Magic resize to quickly resize designs",
+        "Brand kit to store your colors, logos and fonts",
+        "100GB cloud storage",
+        "Schedule social media content",
+        "Create unlimited folders to organize your designs",
+        "Save designs as templates for your team to use",
+        "Priority support"
+      ],
+      "productOptions": {
+        "Full - Dùng riêng - 1 Tháng": "Full - Private Use - 1 Month",
+        "Full - Dùng riêng - 3 Tháng": "Full - Private Use - 3 Months",
+        "Full - Dùng riêng - 6 Tháng": "Full - Private Use - 6 Months",
+        "Full - Dùng riêng - 12 Tháng": "Full - Private Use - 12 Months"
+      },
+      "options": "Options"
     }
   }
-} 
+}

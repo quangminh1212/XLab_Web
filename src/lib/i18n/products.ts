@@ -12,6 +12,11 @@ export function normalizeLanguageCode(lang: string): string {
   if (!lang) return 'vie';
 
   try {
+    // Check if already using our internal format
+    if (lang === 'vie' || lang === 'eng') {
+      return lang;
+    }
+    
     // Extract the primary language code
     const primaryLang = lang.split(',')[0].split('-')[0].toLowerCase().trim();
     
