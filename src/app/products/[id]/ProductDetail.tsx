@@ -71,11 +71,12 @@ const ProductDescription = ({ description, productId }: { description: string, p
           }
 
           .product-description img {
-            max-width: 100%;
+            width: 100% !important;
+            max-width: 100% !important;
             height: auto;
             border-radius: 0.5rem;
-            margin: 2rem auto;
-            display: block;
+            margin: 2rem auto !important;
+            display: block !important;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
 

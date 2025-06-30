@@ -51,6 +51,12 @@ const RichTextContent: React.FC<RichTextContentProps> = ({ content, className = 
         const caption = wrapper.querySelector('.image-caption');
         
         if (img) {
+          // Đảm bảo hình ảnh luôn hiển thị với kích thước đầy đủ và căn giữa
+          img.style.width = '100%';
+          img.style.maxWidth = '100%';
+          img.style.display = 'block';
+          img.style.margin = '0 auto';
+
           const newWrapper = doc.createElement('div');
           newWrapper.className = 'image-wrapper';
           newWrapper.appendChild(img.cloneNode(true));
