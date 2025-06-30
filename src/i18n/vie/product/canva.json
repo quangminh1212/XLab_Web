@@ -26,6 +26,7 @@
   "updatedAt": "2025-06-30T12:35:45.908Z",
   "rating": 4.9,
   "weeklyPurchases": 12,
+  "totalSold": 950,
   "type": "account",
   "isAccount": true,
   "productOptions": [
