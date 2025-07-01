@@ -28,8 +28,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "check": "npm run lint && npm run type-check",
-    "prepare": "node scripts/fix-deployment-issues.js && node scripts/fix-next-errors.js",
-    "postinstall": "node scripts/fix-deployment-issues.js && node scripts/fix-next-errors.js"
+    "prepare": "node scripts/fix-deployment-issues.js && node scripts/fix-next-errors.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",

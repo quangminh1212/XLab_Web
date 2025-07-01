@@ -3,16 +3,9 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  },
+  swcMinify: true,
   experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
-    },
     optimizeCss: true,
-    optimisticClientCache: true,
   },
   images: {
     domains: [
@@ -32,8 +25,8 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-    formats: ['image/webp', 'image/avif'],
-    unoptimized: process.env.NODE_ENV === 'development',
+    formats: ['image/webp'],
+    unoptimized: false,
   },
   compiler: {
     styledComponents: true,
@@ -47,49 +40,31 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'styles')],
   },
   assetPrefix: process.env.ASSET_PREFIX || '',
-  logging: {
-    fetches: {
-      fullUrl: process.env.NODE_ENV !== 'production',
-    },
-  },
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config, { isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
     };
 
+    // Simplify webpack config for Vercel
     if (!isServer) {
-      const optimization = config.optimization;
-      if (optimization && optimization.splitChunks) {
-        const splitChunks = optimization.splitChunks;
-
-        optimization.splitChunks = {
-          ...splitChunks,
-          chunks: 'all',
-          cacheGroups: {
-            default: {
-              minChunks: 2,
-              priority: -20,
-              reuseExistingChunk: true,
-            },
-            commons: {
-              name: 'commons',
-              chunks: 'all',
-              minChunks: 2,
-              priority: -10,
-              reuseExistingChunk: true,
-            },
-            vendor: {
-              name: 'vendor',
-              chunks: 'all',
-              test: /[\\/]node_modules[\\/]/,
-              priority: -5,
-              reuseExistingChunk: true,
-            },
-            styles: false,
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          commons: {
+            name: 'commons',
+            chunks: 'all',
+            minChunks: 2,
           },
-        };
-      }
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            chunks: 'all',
+          },
+        },
+      };
     }
 
     return config;
@@ -115,21 +90,7 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-          {
-            key: 'Content-Security-Policy',
-            value: process.env.NODE_ENV === 'production' 
-              ? "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;" 
-              : "",
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
-          },
-        ].filter(header => header.value !== ""),
+        ],
       },
     ];
   },

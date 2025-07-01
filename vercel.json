@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "installCommand": "npm install",
+  "buildCommand": "node scripts/vercel-setup.js && next build",
+  "installCommand": "npm ci --no-audit --no-fund",
   "outputDirectory": ".next"
 } 
