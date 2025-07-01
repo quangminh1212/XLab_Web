@@ -6,8 +6,9 @@ import { Transaction } from '@/models/TransactionModel';
 
 // Cấu hình bảo mật
 const ENCRYPTION_KEY = process.env.DATA_ENCRYPTION_KEY || 'default-key-change-in-production';
-const ALGORITHM = 'aes-256-cbc';
+const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16;
+const AUTH_TAG_LENGTH = 16; // GCM authentication tag length
 
 // Đường dẫn lưu trữ
 const USER_DATA_DIR = path.join(process.cwd(), 'data', 'users');
@@ -49,43 +50,61 @@ function createDataChecksum(data: any): string {
   return crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
 }
 
-// Mã hóa dữ liệu đơn giản với Base64
-function encryptData(data: string): { encrypted: string; iv: string; tag: string } {
+// Mã hóa dữ liệu với AES-256-GCM
+function encryptData(data: string): { encrypted: string; iv: string; tag: string; salt: string } {
+  // Generate a random salt for key derivation
+  const salt = crypto.randomBytes(16);
+  
+  // Create a key derived from our main encryption key and the salt
+  const keyMaterial = crypto.scryptSync(ENCRYPTION_KEY, salt, 32);
+  
+  // Generate a random initialization vector
   const iv = crypto.randomBytes(IV_LENGTH);
-  const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest('hex').slice(0, 32);
-  const cipher = crypto.createCipher(ALGORITHM, key);
-
+  
+  // Create cipher with key, iv in GCM mode
+  const cipher = crypto.createCipheriv(ALGORITHM, keyMaterial, iv);
+  
+  // Encrypt the data
   let encrypted = cipher.update(data, 'utf8', 'hex');
   encrypted += cipher.final('hex');
-
+  
+  // Get the auth tag for integrity verification (GCM mode specific)
+  const authTag = cipher.getAuthTag();
+  
   return {
     encrypted,
     iv: iv.toString('hex'),
-    tag: crypto
-      .createHash('sha256')
-      .update(encrypted + iv.toString('hex'))
-      .digest('hex'),
+    tag: authTag.toString('hex'),
+    salt: salt.toString('hex')
   };
 }
 
 // Giải mã dữ liệu
-function decryptData(encryptedData: string, iv: string, tag: string): string {
-  // Kiểm tra tính toàn vẹn
-  const expectedTag = crypto
-    .createHash('sha256')
-    .update(encryptedData + iv)
-    .digest('hex');
-  if (expectedTag !== tag) {
-    throw new Error('Data integrity check failed');
+function decryptData(encryptedData: string, iv: string, tag: string, salt: string): string {
+  try {
+    // Convert hex strings back to buffers
+    const ivBuffer = Buffer.from(iv, 'hex');
+    const tagBuffer = Buffer.from(tag, 'hex');
+    const saltBuffer = Buffer.from(salt, 'hex');
+    
+    // Recreate the same key using the same salt
+    const keyMaterial = crypto.scryptSync(ENCRYPTION_KEY, saltBuffer, 32);
+    
+    // Create decipher
+    const decipher = crypto.createDecipheriv(ALGORITHM, keyMaterial, ivBuffer);
+    
+    // Set auth tag for integrity verification
+    decipher.setAuthTag(tagBuffer);
+    
+    // Decrypt
+    let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
+  } catch (error) {
+    console.error('Decryption error:', error);
+    throw new Error('Data integrity check failed or decryption error');
   }
-
-  const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest('hex').slice(0, 32);
-  const decipher = crypto.createDecipher(ALGORITHM, key);
-
-  let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-
-  return decrypted;
 }
 
 // Tạo tên file an toàn từ email
@@ -183,7 +202,7 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
     const backupPath = getBackupFilePath(email, timestamp);
 
     const dataString = JSON.stringify(userData, null, 2);
-    const { encrypted, iv, tag } = encryptData(dataString);
+    const { encrypted, iv, tag, salt } = encryptData(dataString);
 
     const backupData = {
       email: email,
@@ -191,6 +210,7 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
       data: encrypted,
       iv: iv,
       tag: tag,
+      salt: salt,
       checksum: createDataChecksum(userData),
     };
 
@@ -203,95 +223,38 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
 
 // Lưu dữ liệu user
 export async function saveUserData(email: string, userData: UserData): Promise<void> {
-  const filePath = getUserFilePath(email);
+  await ensureDirectoryExists(USER_DATA_DIR);
 
+  // Create backup before saving
+  await createBackup(email, userData);
+
+  const filePath = getUserFilePath(email);
+  
   return withFileLock(filePath, async () => {
     await retryOperation(async () => {
-      try {
-        // Đảm bảo thư mục tồn tại
-        const userDir = path.dirname(filePath);
-        await ensureDirectoryExists(userDir);
+      // Update metadata
+      userData.metadata = {
+        ...userData.metadata,
+        lastBackup: new Date().toISOString(),
+        dataVersion: '2.0',
+        checksum: createDataChecksum(userData),
+      };
 
-        // Tạo backup trước khi ghi file mới
-        const existingData = await getUserData(email);
-        if (existingData) {
-          await createBackup(email, existingData);
-        }
+      const dataString = JSON.stringify(userData, null, 2);
+      const { encrypted, iv, tag, salt } = encryptData(dataString);
 
-        // Update metadata trước khi mã hóa
-        userData.metadata.lastBackup = new Date().toISOString();
-        userData.metadata.checksum = createDataChecksum(userData);
+      const fileData = {
+        email: email, // Store hashed email reference
+        data: encrypted,
+        iv: iv,
+        tag: tag,
+        salt: salt,
+        timestamp: new Date().toISOString(),
+        version: '2.0', // Increment version for new encryption
+      };
 
-        // Mã hóa dữ liệu
-        const dataString = JSON.stringify(userData);
-        const { encrypted, iv, tag } = encryptData(dataString);
-
-        const encryptedData = {
-          data: encrypted,
-          iv: iv,
-          tag: tag,
-          timestamp: new Date().toISOString(),
-        };
-
-        // Tạo file name duy nhất cho temp file
-        const tempFilePath = `${filePath}.tmp.${Date.now()}.${Math.random().toString(36).substr(2, 9)}`;
-
-        try {
-          // Ghi vào file tạm thời trước
-          await fs.writeFile(tempFilePath, JSON.stringify(encryptedData, null, 2), 'utf8');
-
-          // Kiểm tra file tạm thời có đúng không
-          const tempContent = await fs.readFile(tempFilePath, 'utf8');
-          JSON.parse(tempContent); // Test parse để chắc chắn JSON hợp lệ
-
-          // Windows-safe file replace
-          const backupPath = `${filePath}.backup.${Date.now()}`;
-
-          // Nếu file cũ tồn tại, rename nó thành backup
-          try {
-            await fs.access(filePath);
-            await fs.rename(filePath, backupPath);
-          } catch (accessError) {
-            // File cũ không tồn tại, không cần backup
-          }
-
-          try {
-            // Rename file tạm thời thành file chính
-            await fs.rename(tempFilePath, filePath);
-
-            // Xóa backup file nếu thành công
-            try {
-              await fs.unlink(backupPath);
-            } catch (unlinkError) {
-              // Ignore cleanup errors
-            }
-
-            // Chỉ log trong development mode
-            if (process.env.NODE_ENV === 'development') {
-              console.log(`✅ User data saved securely for: ${email}`);
-            }
-          } catch (renameError) {
-            // Khôi phục file cũ nếu rename failed
-            try {
-              await fs.rename(backupPath, filePath);
-            } catch (restoreError) {
-              console.error('Failed to restore backup after rename failure:', restoreError);
-            }
-            throw renameError;
-          }
-        } catch (writeError) {
-          // Xóa file tạm thời nếu có lỗi
-          try {
-            await fs.unlink(tempFilePath);
-          } catch (unlinkError) {
-            // Ignore unlink errors
-          }
-          throw writeError;
-        }
-      } catch (error) {
-        console.error(`❌ Error saving user data for ${email}:`, error);
-        throw error;
-      }
+      await fs.writeFile(filePath, JSON.stringify(fileData, null, 2), 'utf8');
+      console.log(`✅ User data saved securely for: ${email}`);
     });
   });
 }
@@ -473,7 +436,7 @@ export async function restoreFromBackup(email: string, backupTimestamp: string):
     const backupContent = await fs.readFile(backupPath, 'utf8');
     const backupData = JSON.parse(backupContent);
 
-    const decryptedString = decryptData(backupData.data, backupData.iv, backupData.tag);
+    const decryptedString = decryptData(backupData.data, backupData.iv, backupData.tag, backupData.salt);
 
     const userData: UserData = JSON.parse(decryptedString);
 
@@ -498,77 +461,75 @@ export async function getUserData(email: string): Promise<UserData | null> {
   const filePath = getUserFilePath(email);
 
   return withFileLock(filePath, async () => {
-    return retryOperation(async () => {
-      try {
-        try {
-          await fs.access(filePath);
-        } catch {
-          return null; // File không tồn tại
-        }
+    try {
+      const fileData = await retryOperation(async () => {
+        const data = await fs.readFile(filePath, 'utf8');
+        return JSON.parse(data);
+      });
 
-        const fileContent = await fs.readFile(filePath, 'utf8');
-
-        // Kiểm tra nội dung file có hợp lệ không
-        if (!fileContent || fileContent.trim() === '') {
-          if (process.env.NODE_ENV === 'development') {
-            console.warn(`⚠️ Empty or invalid file content for user: ${email}, creating new data`);
-          }
-          return null;
-        }
-
-        // Kiểm tra xem có phải JSON hợp lệ không
-        let encryptedData;
-        try {
-          encryptedData = JSON.parse(fileContent);
-        } catch (parseError) {
-          console.error(`❌ Invalid JSON in user data file for ${email}:`, parseError);
-          // Thử tạo backup của file bị lỗi
-          try {
-            const corruptedBackupPath = `${filePath}.corrupted.${Date.now()}`;
-            await fs.copyFile(filePath, corruptedBackupPath);
-            console.log(`📁 Corrupted file backed up to: ${corruptedBackupPath}`);
-          } catch (backupError) {
-            console.error('Failed to backup corrupted file:', backupError);
-          }
-          return null;
-        }
-
-        // Kiểm tra cấu trúc dữ liệu
-        if (!encryptedData.data || !encryptedData.iv || !encryptedData.tag) {
-          console.error(`❌ Invalid encrypted data structure for user: ${email}`);
-          return null;
-        }
-
-        let decryptedString;
-        try {
-          decryptedString = decryptData(encryptedData.data, encryptedData.iv, encryptedData.tag);
-        } catch (decryptError) {
-          console.error(`❌ Decryption failed for user ${email}:`, decryptError);
-          return null;
-        }
-
-        let userData: UserData;
-        try {
-          userData = JSON.parse(decryptedString);
-        } catch (parseError) {
-          console.error(`❌ Invalid JSON in decrypted data for user ${email}:`, parseError);
-          return null;
-        }
-
-        // Kiểm tra checksum nếu có
-        if (userData.metadata && userData.metadata.checksum) {
-          const currentChecksum = createDataChecksum(userData);
-          if (currentChecksum !== userData.metadata.checksum) {
-            console.warn(`⚠️ Data integrity warning for user: ${email}`);
-          }
-        }
-
-        return userData;
-      } catch (error) {
-        console.error(`❌ Error loading user data for ${email}:`, error);
+      // Validate file structure
+      if (!fileData.data || !fileData.iv || !fileData.tag) {
+        console.error(`❌ Invalid file format for user: ${email}`);
         return null;
       }
-    });
+
+      // Handle the new encryption format (with salt)
+      if (fileData.version === '2.0' && fileData.salt) {
+        const decryptedData = decryptData(
+          fileData.data,
+          fileData.iv,
+          fileData.tag,
+          fileData.salt
+        );
+        
+        const userData = JSON.parse(decryptedData) as UserData;
+        
+        // Verify data integrity with checksum
+        const calculatedChecksum = createDataChecksum({
+          ...userData,
+          metadata: { ...userData.metadata, checksum: '' },
+        });
+        
+        if (calculatedChecksum !== userData.metadata.checksum) {
+          console.error(`❌ Data integrity check failed for user: ${email}`);
+          await addSystemAlert(email, 'security', 'Data integrity check failed, possible tampering detected');
+          return null;
+        }
+        
+        return userData;
+      } 
+      // Handle legacy format (without salt) for backward compatibility
+      else {
+        try {
+          // This is the old implementation, kept for backward compatibility
+          const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest('hex').slice(0, 32);
+          const decipher = crypto.createDecipher('aes-256-cbc', key);
+          
+          let decrypted = decipher.update(fileData.data, 'hex', 'utf8');
+          decrypted += decipher.final('utf8');
+          
+          const userData = JSON.parse(decrypted) as UserData;
+          
+          // Schedule migration to new format
+          setTimeout(() => {
+            saveUserData(email, userData).catch(console.error);
+          }, 1000);
+          
+          return userData;
+        } catch (error) {
+          console.error(`❌ Error decrypting legacy data for user: ${email}`, error);
+          return null;
+        }
+      }
+    } catch (error: any) {
+      if (error.code === 'ENOENT') {
+        // File doesn't exist - this is normal for new users
+        return null;
+      }
+      
+      console.error(`❌ Error loading user data for ${email}:`, error);
+      return null;
+    }
   });
 }
 
@@ -636,4 +597,25 @@ export async function cleanupOldFiles(): Promise<void> {
 if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
   // Run cleanup on startup, but don't wait for it
   cleanupOldFiles().catch(console.error);
+}
+
+// Add system security alert
+async function addSystemAlert(email: string, type: string, message: string): Promise<void> {
+  try {
+    const userData = await getUserData(email);
+    if (!userData) return;
+    
+    // Add security alert to user activities
+    userData.activities.push({
+      id: crypto.randomUUID(),
+      type: type,
+      description: message,
+      timestamp: new Date().toISOString(),
+      metadata: { severity: 'high', automated: true }
+    });
+    
+    await saveUserData(email, userData);
+  } catch (error) {
+    console.error(`❌ Error adding system alert for ${email}:`, error);
+  }
 }
