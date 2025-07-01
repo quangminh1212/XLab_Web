@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 /**
  * Script to prepare the application for Vercel deployment
- * With improved error handling
+ * With improved error handling and package installation fixes
  */
 
 console.log('🔧 Preparing environment for Vercel deployment...');
@@ -39,6 +40,30 @@ try {
     } catch (err) {
       console.log(`⚠️ Could not create .env file: ${err.message}`);
     }
+  }
+
+  // Verify key dependencies
+  try {
+    console.log('📦 Installing critical dependencies if missing...');
+    
+    // Check if next is installed
+    try {
+      execSync('npm list next --depth=0', { stdio: 'ignore' });
+    } catch (e) {
+      console.log('⚠️ Next.js not installed properly, installing specific version...');
+      execSync('npm install next@15.2.4 --no-save --no-package-lock', { stdio: 'inherit' });
+    }
+    
+    // Ensure json5 is installed
+    try {
+      execSync('npm list json5 --depth=0', { stdio: 'ignore' });
+    } catch (e) {
+      console.log('⚠️ json5 not installed properly, installing specific version...');
+      execSync('npm install json5@2.2.3 --no-save --no-package-lock', { stdio: 'inherit' });
+    }
+  } catch (error) {
+    console.log('⚠️ Error checking dependencies:', error.message);
+    // Continue with the build process
   }
 
   console.log('✅ Vercel environment preparation completed successfully');

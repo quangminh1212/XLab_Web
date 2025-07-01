@@ -8,7 +8,7 @@
     "dev:clean": "node scripts/fix-next-errors.js && npm run dev",
     "dev:safe": "node scripts/fix-next-errors.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
-    "vercel-build": "node scripts/fix-deployment-issues.js && node scripts/fix-next-errors.js && next build",
+    "vercel-build": "next build",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
     "start": "next start",
@@ -27,8 +27,7 @@
     "analyze": "cross-env ANALYZE=true next build",
     "test": "jest",
     "test:watch": "jest --watch",
-    "check": "npm run lint && npm run type-check",
-    "prepare": "node scripts/fix-deployment-issues.js && node scripts/fix-next-errors.js"
+    "check": "npm run lint && npm run type-check"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
