@@ -12,33 +12,33 @@ const originalConsoleDebug = console.debug;
 
 // Format timestamp dạng [YYYY-MM-DD HH:mm:ss.SSS]
 const getTimestamp = (): string => {
-  const now = new Date();
-  return `[${now.toISOString().replace('T', ' ').slice(0, -1)}]`;
+  // Return empty string to remove timestamps from logs
+  return '';
 };
 
 // Override console.log
 console.log = function (...args: any[]): void {
-  originalConsoleLog(getTimestamp(), ...args);
+  originalConsoleLog(...args);
 };
 
 // Override console.info
 console.info = function (...args: any[]): void {
-  originalConsoleInfo(getTimestamp(), ...args);
+  originalConsoleInfo(...args);
 };
 
 // Override console.warn
 console.warn = function (...args: any[]): void {
-  originalConsoleWarn(getTimestamp(), ...args);
+  originalConsoleWarn(...args);
 };
 
 // Override console.error
 console.error = function (...args: any[]): void {
-  originalConsoleError(getTimestamp(), ...args);
+  originalConsoleError(...args);
 };
 
 // Override console.debug
 console.debug = function (...args: any[]): void {
-  originalConsoleDebug(getTimestamp(), ...args);
+  originalConsoleDebug(...args);
 };
 
 // Export các hàm logger nếu cần sử dụng trực tiếp

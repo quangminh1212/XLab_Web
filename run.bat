@@ -37,11 +37,11 @@ if exist ".next" (
     rd /s /q ".next"
 )
 echo.
-echo Starting development server...
+echo Starting development server without timestamps...
 echo.
 
 cd %~dp0
-npm run dev
+npm run dev:log
 
 rem Keep the window open if there's an error
 if errorlevel 1 (
