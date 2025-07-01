@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
 import { default as dynamicImport } from 'next/dynamic';
+import { Metadata, ResolvingMetadata } from 'next';
+import { siteConfig } from '@/config/siteConfig';
 
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {
@@ -54,6 +56,105 @@ function getProducts(): Product[] {
   }
 }
 
+// Generate dynamic metadata for product pages
+export async function generateMetadata(
+  { params }: { params: { id: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // Lấy id sản phẩm từ params
+  const productId = params.id;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://xlab.vn';
+  
+  // Lấy dữ liệu sản phẩm
+  const products = getProducts();
+  
+  // Tìm sản phẩm theo slug trước (ưu tiên tìm theo slug để cải thiện SEO)
+  let product = products.find((p) => p.slug === productId);
+  
+  // Nếu không tìm thấy bằng slug, thử tìm bằng id
+  if (!product) {
+    product = products.find((p) => p.id === productId);
+  }
+  
+  // Nếu không tìm thấy sản phẩm, sử dụng metadata mặc định
+  if (!product) {
+    return {
+      title: 'Sản phẩm không tồn tại',
+      description: 'Không tìm thấy sản phẩm bạn đang tìm kiếm',
+    };
+  }
+
+  // Tạo các thẻ mô tả đặc biệt cho sản phẩm
+  const productCategories = product.categories?.map(cat => cat.name) || [];
+  const productKeywords = [
+    product.name,
+    ...productCategories,
+    'mua online',
+    'XLab',
+    product.id,
+  ];
+  
+  // Cấu trúc dữ liệu sản phẩm theo chuẩn Schema.org
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    image: product.image ? `${baseUrl}${product.image}` : undefined,
+    sku: product.id,
+    mpn: product.id,
+    brand: {
+      '@type': 'Brand',
+      name: 'XLab',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `${baseUrl}/products/${product.slug || product.id}`,
+      priceCurrency: 'VND',
+      price: product.price,
+      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: siteConfig.legal.companyName,
+      },
+    },
+  };
+
+  return {
+    title: `${product.name} - ${siteConfig.name}`,
+    description: product.description || siteConfig.seo.defaultDescription,
+    keywords: productKeywords,
+    alternates: {
+      canonical: `${baseUrl}/products/${product.slug || product.id}`,
+    },
+    openGraph: {
+      type: 'product',
+      title: product.name,
+      description: product.description || siteConfig.seo.defaultDescription,
+      url: `${baseUrl}/products/${product.slug || product.id}`,
+      images: [
+        {
+          url: product.image ? `${baseUrl}${product.image}` : `${baseUrl}${siteConfig.seo.ogImage}`,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description: product.description || siteConfig.seo.defaultDescription,
+      images: [product.image ? `${baseUrl}${product.image}` : `${baseUrl}${siteConfig.seo.ogImage}`],
+    },
+    other: {
+      'product:price:amount': product.price?.toString() || '',
+      'product:price:currency': 'VND',
+    },
+  };
+}
+
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   try {
@@ -89,9 +190,41 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       `Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`,
     );
 
+    // Cấu trúc dữ liệu sản phẩm theo chuẩn Schema.org
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://xlab.vn';
+    const productSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      description: product.description,
+      image: product.image ? `${baseUrl}${product.image}` : undefined,
+      sku: product.id,
+      mpn: product.id,
+      brand: {
+        '@type': 'Brand',
+        name: 'XLab',
+      },
+      offers: {
+        '@type': 'Offer',
+        url: `${baseUrl}/products/${product.slug || product.id}`,
+        priceCurrency: 'VND',
+        price: product.price,
+        priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+        availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        seller: {
+          '@type': 'Organization',
+          name: siteConfig.legal.companyName,
+        },
+      },
+    };
+
     // Truyền dữ liệu sản phẩm sang client component
     return (
       <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
         <DynamicProductDetail product={product} />
         
         {/* Phần chính sách bảo hành */}

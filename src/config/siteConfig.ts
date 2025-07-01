@@ -36,12 +36,67 @@ export const siteConfig = {
 
   // Cấu hình SEO
   seo: {
-    titleTemplate: '%s | XLab',
-    defaultTitle: 'XLab - Tối ưu hiệu quả, tối thiểu chi phí!',
+    titleTemplate: '%s | XLab - Giải pháp công nghệ tiên tiến',
+    defaultTitle: 'XLab - Tối ưu hiệu quả, tối thiểu chi phí | Công nghệ AI, Cloud & Software',
     defaultDescription:
-      'XLab cung cấp các ứng dụng, phần mềm chất lượng cao cho cá nhân và doanh nghiệp.',
+      'XLab cung cấp giải pháp phần mềm, ứng dụng AI và dịch vụ Cloud chất lượng cao cho cá nhân và doanh nghiệp. Tối ưu hiệu quả, tiết kiệm chi phí.',
     twitterHandle: '@xlabvn',
     ogImage: '/images/og-image.jpg',
+    keywords: [
+      'XLab',
+      'phần mềm',
+      'dịch vụ CNTT',
+      'giải pháp doanh nghiệp',
+      'phát triển phần mềm',
+      'cloud services',
+      'trí tuệ nhân tạo',
+      'AI',
+      'công nghệ Việt Nam',
+      'chatgpt',
+      'grok',
+      'canva',
+      'dịch vụ đám mây',
+      'cloud computing',
+      'phần mềm quản lý',
+      'giải pháp số',
+      'chuyển đổi số',
+      'digital transformation',
+      'vietnam tech',
+      'Vietnam software',
+    ],
+    localBusiness: {
+      type: 'Organization',
+      name: 'XLab Technologies',
+      description: 'Công ty cung cấp giải pháp công nghệ và phần mềm hiện đại',
+      url: 'https://xlab.vn',
+      telephone: '+84 866 528 014',
+      address: {
+        streetAddress: 'Long Biên',
+        addressLocality: 'Hà Nội',
+        addressRegion: 'Hà Nội',
+        postalCode: '100000',
+        addressCountry: 'VN',
+      },
+      geo: {
+        latitude: '21.0245', // Thay đổi thành tọa độ thật
+        longitude: '105.8412', // Thay đổi thành tọa độ thật
+      },
+      openingHours: 'Mo,Tu,We,Th,Fr,Sa,Su 00:00-24:00',
+    },
+    structuredData: {
+      organization: {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'XLab Technologies',
+        url: 'https://xlab.vn',
+        logo: 'https://xlab.vn/images/logo.png',
+        sameAs: [
+          'https://facebook.com/xlabvn',
+          'https://twitter.com/xlabvn',
+          'https://linkedin.com/company/xlabvn',
+        ],
+      },
+    },
   },
 
   // Cấu hình thanh toán
@@ -55,6 +110,8 @@ export const siteConfig = {
   analytics: {
     googleAnalyticsId: '', // Thêm Google Analytics ID
     facebookPixelId: '', // Thêm Facebook Pixel ID
+    googleTagManagerId: '', // Thêm Google Tag Manager ID
+    googleSearchConsoleId: '', // Thêm Google Search Console ID
   },
 };
 
