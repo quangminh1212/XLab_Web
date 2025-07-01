@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm ci && npm run build",
-  "installCommand": "npm ci --no-audit --prefer-offline",
+  "buildCommand": "npm run vercel-build",
+  "installCommand": "npm install",
   "outputDirectory": ".next"
 } 
