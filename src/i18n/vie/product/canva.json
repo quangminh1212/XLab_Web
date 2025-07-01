@@ -2,76 +2,10 @@
   "id": "canva",
   "name": "Canva Pro",
   "slug": "canva",
-  "description": "<p>Canva Pro là một nền tảng thiết kế toàn diện cung cấp các tính năng cao cấp để tạo đồ họa, bài thuyết trình và nội dung hình ảnh chuyên nghiệp.</p>",
-  "shortDescription": "Canva Pro là một nền tảng thiết kế toàn diện cung cấp các tính năng cao cấp để tạo đồ họa, bài thuyết trình và nội dung hình ảnh chuyên nghiệp.",
+  "description": "<p>Canva Pro là một nền tảng thiết kế toàn diện cung cấp các tính năng cao cấp.</p>",
+  "shortDescription": "Canva Pro là một nền tảng thiết kế toàn diện.",
   "isPublished": true,
-  "images": [
-    "/images/products/canva/canva_pro-3cf49730-e9f8-40ea-b68a-f2b9ce9dd92b.png"
-  ],
-  "descriptionImages": [],
-  "features": [
-    "Truy cập hơn 100 triệu hình ảnh, video, âm thanh, và đồ họa cao cấp",
-    "Hơn 60 triệu mẫu thiết kế cao cấp",
-    "Công cụ xóa phông nền",
-    "Chức năng điều chỉnh kích thước thiết kế nhanh chóng",
-    "Bộ công cụ thương hiệu để lưu trữ màu sắc, logo và font chữ",
-    "Dung lượng lưu trữ đám mây 100GB",
-    "Lên lịch cho nội dung mạng xã hội",
-    "Tạo không giới hạn thư mục để tổ chức thiết kế",
-    "Lưu thiết kế thành mẫu để nhóm của bạn sử dụng",
-    "Hỗ trợ ưu tiên"
-  ],
-  "requirements": [],
-  "specifications": [],
-  "categories": [
-    {
-      "id": {
-        "id": "design"
-      }
-    }
-  ],
-  "versions": [
-    {
-      "name": "Default",
-      "description": "Phiên bản mặc định",
-      "price": 149000,
-      "originalPrice": 500000,
-      "features": []
-    }
-  ],
-  "createdAt": "2025-05-20T18:06:44.144Z",
-  "updatedAt": "2025-06-27T16:43:08.644Z",
-  "rating": 4.8,
-  "type": "account",
   "isAccount": true,
-  "productOptions": [
-    "Full - Dùng riêng - 1 Tháng",
-    "Full - Dùng riêng - 3 Tháng",
-    "Full - Dùng riêng - 6 Tháng",
-    "Full - Dùng riêng - 12 Tháng"
-  ],
-  "defaultProductOption": "Full - Dùng riêng - 1 Tháng",
-  "optionPrices": {
-    "Full - Dùng riêng - 1 Tháng": {
-      "price": 149000,
-      "originalPrice": 500000
-    },
-    "Full - Dùng riêng - 3 Tháng": {
-      "price": 399000,
-      "originalPrice": 1500000
-    },
-    "Full - Dùng riêng - 6 Tháng": {
-      "price": 699000,
-      "originalPrice": 3000000
-    },
-    "Full - Dùng riêng - 12 Tháng": {
-      "price": 1299000,
-      "originalPrice": 6000000
-    }
-  },
-  "specs": "",
-  "weeklyPurchases": 18,
-  "totalSold": 950,
-  "totalPurchases": "200",
-  "optionDurations": {}
-}
+  "rating": 4.8,
+  "type": "account"
+} 
