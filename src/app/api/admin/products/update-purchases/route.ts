@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     const updatedProducts = products.map((product) => {
       // Random từ 1 đến 10 lượt mua mỗi ngày
       const randomPurchases = Math.floor(Math.random() * 10) + 1;
-      const currentPurchases = product.weeklyPurchases || 0;
+      const currentPurchases = product.weeklyPurchases ? Number(product.weeklyPurchases) : 0;
 
       // Cập nhật số lượt mua
       const updatedProduct = {

@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     // Kiểm tra có bao nhiêu sản phẩm có weeklyPurchases > 0
     const productsWithPurchases = products.filter(
-      (p) => p.weeklyPurchases && p.weeklyPurchases > 0,
+      (p) => p.weeklyPurchases && Number(p.weeklyPurchases) > 0,
     );
 
     // Tạo một mảng thông tin ngắn gọn về sản phẩm

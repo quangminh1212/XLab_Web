@@ -32,6 +32,11 @@ if exist "src\i18n\vie\product\index.ts" (
 echo Installing json5 specifically...
 call npm install json5
 echo.
+
+echo Fixing language comparison issues...
+call node scripts/fix-language-issues.js
+echo.
+
 echo Clearing Next.js cache...
 if exist ".next" (
     rd /s /q ".next"

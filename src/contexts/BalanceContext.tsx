@@ -176,7 +176,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
 
   // Auto refresh với tần suất thấp hơn và chỉ khi user active
   useEffect(() => {
-    if (!session?.user?.email || status !== 'authenticated') return;
+    if (!session?.user?.email || status !== 'authenticated') return () => {};
 
     const interval = setInterval(() => {
       // Chỉ refresh khi đã hết cache và user đang active
