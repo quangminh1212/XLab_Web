@@ -167,9 +167,6 @@ const ProductGrid = ({
 
       <div className={`grid ${getColumnsClass()} gap-6 auto-rows-fr`}>
         {products.map((product) => {
-          const minPrice = calculateMinPrice(product);
-          const originalPrice = calculateOriginalPrice(product, minPrice);
-          
           // Extract category as string only
           let categoryString;
           
@@ -179,12 +176,31 @@ const ProductGrid = ({
             categoryString = getCategoryString(product.categories[0]);
           }
 
-          // Validate và đảm bảo tất cả props đều là primitive values
-          // Always set an originalPrice to ensure discount badges are shown
-          // If originalPrice isn't available, use 5x the price for an 80% discount
-          let displayOriginalPrice = originalPrice;
-          if (!originalPrice || originalPrice <= minPrice) {
-            displayOriginalPrice = minPrice * 5; // Create a fictional original price that's 5x the current price
+          // Determine the price based on default option if available
+          let finalPrice = 0;
+          let displayOriginalPrice = 0;
+          
+          // If product has a default option with price info, use that first
+          if (product.defaultProductOption && 
+              product.optionPrices && 
+              product.optionPrices[product.defaultProductOption]) {
+            const defaultOption = product.optionPrices[product.defaultProductOption];
+            finalPrice = defaultOption.price;
+            displayOriginalPrice = defaultOption.originalPrice;
+            
+            // If originalPrice is still not valid, calculate 80% discount
+            if (!displayOriginalPrice || displayOriginalPrice <= finalPrice) {
+              displayOriginalPrice = finalPrice * 5; // Create a fictional original price that's 5x the current price
+            }
+          } else {
+            // Fall back to calculated minimum price
+            finalPrice = calculateMinPrice(product);
+            displayOriginalPrice = calculateOriginalPrice(product, finalPrice);
+            
+            // If originalPrice is not valid, calculate 80% discount
+            if (!displayOriginalPrice || displayOriginalPrice <= finalPrice) {
+              displayOriginalPrice = finalPrice * 5; // Create a fictional original price that's 5x the current price
+            }
           }
 
           const safeProps = {
@@ -192,8 +208,8 @@ const ProductGrid = ({
             id: String(product.id || ''),
             name: String(product.name || ''),
             description: String(product.shortDescription || product.description || ''),
-            price: Number(minPrice) || 0,
-            originalPrice: Number(displayOriginalPrice) || minPrice * 5, // Always provide an originalPrice
+            price: Number(finalPrice) || 0,
+            originalPrice: Number(displayOriginalPrice) || finalPrice * 5, // Always provide an originalPrice
             image: String(product.image || ''),
             category: categoryString,
             rating: product.rating ? Number(product.rating) : undefined,

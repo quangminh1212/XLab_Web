@@ -353,7 +353,7 @@ export default function ProductCard({
         <div
           className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
         >
-          -{originalPrice && originalPrice > price ? discountPercentage : (originalPrice ? discountPercentage : 80)}%
+          -{originalPrice && originalPrice > price ? discountPercentage : 80}%
         </div>
 
         <Image

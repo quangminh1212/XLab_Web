@@ -86,9 +86,21 @@ const ProductOptions = ({
               {translatedOptions[option] || option}
             </span>
             {optionPrices && optionPrices[option] && (
-              <span className="text-primary-600 font-medium text-sm">
-                {formatCurrency(optionPrices[option].price)}
-              </span>
+              <div className="flex items-center">
+                <span className="text-primary-600 font-medium text-sm">
+                  {formatCurrency(optionPrices[option].price)}
+                </span>
+                {optionPrices[option].originalPrice && optionPrices[option].originalPrice > optionPrices[option].price && (
+                  <>
+                    <span className="text-xs text-gray-400 line-through ml-2">
+                      {formatCurrency(optionPrices[option].originalPrice)}
+                    </span>
+                    <span className="ml-2 bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded">
+                      -{Math.round(((optionPrices[option].originalPrice - optionPrices[option].price) / optionPrices[option].originalPrice) * 100)}%
+                    </span>
+                  </>
+                )}
+              </div>
             )}
           </div>
         ))}

@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react';
 import ProductGrid from './ProductGrid';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+interface OptionPrice {
+  price: number;
+  originalPrice: number;
+}
+
 interface Product {
   id: string;
   name: string;
@@ -21,6 +26,8 @@ interface Product {
   type?: string;
   totalSold?: number;
   weeklyPurchases?: number;
+  defaultProductOption?: string;
+  optionPrices?: { [key: string]: OptionPrice };
 }
 
 interface RelatedProductsProps {
@@ -128,8 +135,27 @@ export default function RelatedProducts({
     const safeId = String(product.id || '');
     const safeName = String(product.name || '');
     const safeDescription = String(product.shortDescription || product.description || '');
-    const safePrice = Number(product.price) || 0;
-    const safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : undefined;
+    
+    // Get price from default option if available
+    let safePrice = 0;
+    let safeOriginalPrice = 0;
+    
+    if (product.defaultProductOption && 
+        product.optionPrices && 
+        product.optionPrices[product.defaultProductOption]) {
+      // Use the default option's price
+      safePrice = product.optionPrices[product.defaultProductOption].price;
+      safeOriginalPrice = product.optionPrices[product.defaultProductOption].originalPrice;
+    } else {
+      // Fallback to regular price
+      safePrice = Number(product.price) || 0;
+      safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : undefined;
+    }
+    
+    // If originalPrice is still not valid, calculate 80% discount
+    if (!safeOriginalPrice || safeOriginalPrice <= safePrice) {
+      safeOriginalPrice = safePrice * 5; // Create a fictional original price that's 5x the current price
+    }
     
     // Xử lý trường hợp image hoặc imageUrl có thể là object thay vì string
     let safeImage = '';
