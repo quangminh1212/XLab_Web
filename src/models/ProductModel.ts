@@ -76,7 +76,6 @@ export interface Product {
   totalSold?: number;
   specs?: string;
   totalPurchases?: string | number;
-  totalSale?: string | number;
   optionDurations?: any;
 }
 

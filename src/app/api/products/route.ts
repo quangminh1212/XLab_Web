@@ -131,10 +131,6 @@ export async function GET(req: NextRequest) {
       success: true,
       data: processedProducts,
       total: processedProducts.length,
-    }, {
-      headers: {
-        'Cache-Control': 'public, max-age=10, s-maxage=30, stale-while-revalidate=60',
-      }
     });
   } catch (error) {
     console.error('Error fetching products:', error);
