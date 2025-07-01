@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install tailwindcss postcss autoprefixer --no-save && npm install @next/swc-linux-x64-gnu@15.2.4 --no-save && npm run vercel-build",
+  "buildCommand": "npm install @next/swc-linux-x64-gnu@15.2.4 --no-save && npm run vercel-build",
   "installCommand": "npm install --platform=linux --no-audit --no-fund",
   "outputDirectory": ".next"
 } 
