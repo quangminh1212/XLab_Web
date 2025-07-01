@@ -4,21 +4,34 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      'via.placeholder.com',
-      'placehold.co',
-      'i.pravatar.cc',
-      'images.unsplash.com',
-      'lh3.googleusercontent.com',
-    ],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'via.placeholder.com',
       },
       {
-        protocol: 'http',
-        hostname: '**',
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       },
     ],
     formats: ['image/webp'],
