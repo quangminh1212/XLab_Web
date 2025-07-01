@@ -23,6 +23,7 @@ export const terms = {
   },
   section6: {
     title: '6. Chính sách bảo mật',
+    content: 'Quyền riêng tư của bạn rất quan trọng đối với chúng tôi. Vui lòng xem xét Chính sách Bảo mật của chúng tôi để hiểu cách chúng tôi thu thập và sử dụng thông tin của bạn.',
     privacyPolicy: 'Chính sách bảo mật của chúng tôi mô tả cách chúng tôi xử lý thông tin bạn cung cấp cho chúng tôi.',
     content2: 'Vui lòng xem lại Chính sách bảo mật của chúng tôi.',
   },

@@ -23,6 +23,7 @@ export const terms = {
   },
   section6: {
     title: '6. Privacy Policy',
+    content: 'Your privacy is important to us. Please review our Privacy Policy to understand how we collect and use your information.',
     privacyPolicy: 'Our Privacy Policy describes how we handle the information you provide to us.',
     content2: 'Please review our Privacy Policy.',
   },

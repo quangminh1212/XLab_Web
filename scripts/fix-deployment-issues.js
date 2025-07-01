@@ -17,6 +17,10 @@ const requiredDirs = [
   '.next/static/css',
   '.next/server/app',
   '.next/server/chunks',
+  'data/backups',
+  'public/uploads',
+  'public/uploads/products',
+  'public/images/placeholder',
 ];
 
 requiredDirs.forEach((dir) => {
@@ -26,6 +30,25 @@ requiredDirs.forEach((dir) => {
     console.log(`✅ Created directory: ${fullPath}`);
   }
 });
+
+// Create a placeholder product image if it doesn't exist
+const placeholderPath = path.join(process.cwd(), 'public/images/placeholder/product-placeholder.jpg');
+if (!fs.existsSync(placeholderPath)) {
+  // Create a simple placeholder file (1x1 transparent pixel)
+  try {
+    // Copy from public/placeholder-product.jpg if it exists
+    const sourcePlaceholder = path.join(process.cwd(), 'public/placeholder-product.jpg');
+    if (fs.existsSync(sourcePlaceholder)) {
+      fs.copyFileSync(sourcePlaceholder, placeholderPath);
+    } else {
+      // Create an empty file as fallback
+      fs.writeFileSync(placeholderPath, '');
+    }
+    console.log(`✅ Created placeholder image: ${placeholderPath}`);
+  } catch (error) {
+    console.error(`❌ Error creating placeholder image: ${error}`);
+  }
+}
 
 // Create a .gitkeep file in the src/pages/api directory
 const gitKeepPath = path.join(process.cwd(), 'src/pages/api/.gitkeep');

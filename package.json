@@ -9,7 +9,7 @@
     "dev:safe": "node scripts/fix-next-errors.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
     "vercel-prebuild": "npm install --platform=linux --arch=x64 sharp && npm install --no-save typescript@5.3.3 @types/react@18.2.45 @types/node@20.10.5 @types/react-dom@18.2.18",
-    "vercel-build": "npm run vercel-prebuild && chmod +x ./node_modules/.bin/next && SKIP_TYPE_CHECK=true DISABLE_ESLINT_PLUGIN=true NEXT_SKIP_TYPECHECKING=true next build --no-lint",
+    "vercel-build": "npm run vercel-prebuild && node scripts/fix-deployment-issues.js && chmod +x ./node_modules/.bin/next && SKIP_TYPE_CHECK=true DISABLE_ESLINT_PLUGIN=true NEXT_SKIP_TYPECHECKING=true next build --no-lint",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
     "start": "next start",
