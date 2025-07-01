@@ -2,7 +2,8 @@
 import admin from './admin';
 import common from './common';
 import home from './home';
-import testimonials from './testimonials';
+import { testimonials } from './testimonials';
+import { terms } from './terms';
 import account from './account';
 import about from './about';
 import contact from './contact';
@@ -11,6 +12,7 @@ import login from './login';
 
 // Hợp nhất tất cả các module lại thành một đối tượng
 const vie = {
+  terms,
   admin,
   common,
   home,

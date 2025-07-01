@@ -1,5 +1,11 @@
 // Dữ liệu ngôn ngữ tiếng Việt cho phần đánh giá khách hàng
-const testimonials = {
+export const testimonials = {
+  cta: {
+    title: 'Sẵn sàng để bắt đầu?',
+    description: 'Liên hệ với chúng tôi ngay hôm nay để thảo luận về dự án của bạn hoặc khám phá các dịch vụ của chúng tôi.',
+    contact: 'Liên hệ',
+    explore: 'Khám phá dịch vụ',
+  },
   'michael': '"Tôi đã sử dụng dịch vụ của XLab được 2 năm và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, có đầy đủ tính năng, và đội ngũ hỗ trợ rất tận tâm."',
   'david': '"Các giải pháp AI của XLab đã giúp doanh nghiệp của chúng tôi tiết kiệm được 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."',
   'emily': '"Các bản cập nhật liên tục của XLab đảm bảo sản phẩm luôn đáp ứng được những yêu cầu ngày càng cao của chúng tôi. Giao diện thân thiện và dễ sử dụng ngay cả với người mới."',
