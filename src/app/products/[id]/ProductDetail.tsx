@@ -669,28 +669,25 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                       : formatCurrency(calculateCheapestPrice())}
                 </div>
 
-                {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption] &&
-                 product.optionPrices[product.defaultProductOption].originalPrice > product.optionPrices[product.defaultProductOption].price ? (
-                  <>
-                    <div className="ml-4 text-xl text-gray-500 line-through">
-                      {formatCurrency(product.optionPrices[product.defaultProductOption].originalPrice)}
-                    </div>
-                    <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
-                      -{Math.round(((product.optionPrices[product.defaultProductOption].originalPrice - 
-                         product.optionPrices[product.defaultProductOption].price) / 
-                         product.optionPrices[product.defaultProductOption].originalPrice) * 100)}%
-                    </div>
-                  </>
-                ) : calculateOriginalPriceOfCheapest() > calculateCheapestPrice() && (
-                  <>
-                    <div className="ml-4 text-xl text-gray-500 line-through">
-                      {formatCurrency(calculateOriginalPriceOfCheapest())}
-                    </div>
-                    <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
-                      -{calculateCheapestDiscountPercentage()}%
-                    </div>
-                  </>
-                )}
+                {/* Always show discount % */}
+                <>
+                  <div className="ml-4 text-xl text-gray-500 line-through">
+                    {formatCurrency(product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
+                      ? product.optionPrices[product.defaultProductOption].originalPrice
+                      : calculateOriginalPriceOfCheapest())}
+                  </div>
+                  <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
+                    -{product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
+                      ? (product.optionPrices[product.defaultProductOption].originalPrice > product.optionPrices[product.defaultProductOption].price
+                          ? Math.round(((product.optionPrices[product.defaultProductOption].originalPrice - 
+                            product.optionPrices[product.defaultProductOption].price) / 
+                            product.optionPrices[product.defaultProductOption].originalPrice) * 100)
+                          : 80)
+                      : (calculateOriginalPriceOfCheapest() > calculateCheapestPrice()
+                          ? calculateCheapestDiscountPercentage()
+                          : 80)}%
+                  </div>
+                </>
               </div>
 
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}

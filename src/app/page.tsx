@@ -98,22 +98,29 @@ const getValidImageUrl = (product: Product): string => {
 };
 
 // Helper function to get the correct price based on default option
-const getProductPrices = (product: Product): { price: number; originalPrice: number | undefined } => {
+const getProductPrices = (product: Product): { price: number; originalPrice: number } => {
   // Get price from default option if available
+  let price = 0;
+  let originalPrice = 0;
+  
   if (product.defaultProductOption && 
       product.optionPrices && 
       product.optionPrices[product.defaultProductOption]) {
-    return {
-      price: product.optionPrices[product.defaultProductOption].price,
-      originalPrice: product.optionPrices[product.defaultProductOption].originalPrice
-    };
+    price = product.optionPrices[product.defaultProductOption].price;
+    originalPrice = product.optionPrices[product.defaultProductOption].originalPrice;
+  } else {
+    // Fallback to regular price
+    price = product.price || 0;
+    originalPrice = product.originalPrice || 0;
   }
   
-  // Fallback to regular price
-  return {
-    price: product.price,
-    originalPrice: product.originalPrice
-  };
+  // If originalPrice is not set or is less than or equal to the price, 
+  // set it to 5x the price to show an 80% discount
+  if (!originalPrice || originalPrice <= price) {
+    originalPrice = price * 5;
+  }
+  
+  return { price, originalPrice };
 };
 
 function HomePage() {

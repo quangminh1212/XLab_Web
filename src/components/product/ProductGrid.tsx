@@ -180,13 +180,20 @@ const ProductGrid = ({
           }
 
           // Validate và đảm bảo tất cả props đều là primitive values
+          // Always set an originalPrice to ensure discount badges are shown
+          // If originalPrice isn't available, use 5x the price for an 80% discount
+          let displayOriginalPrice = originalPrice;
+          if (!originalPrice || originalPrice <= minPrice) {
+            displayOriginalPrice = minPrice * 5; // Create a fictional original price that's 5x the current price
+          }
+
           const safeProps = {
             key: String(product.id || ''),
             id: String(product.id || ''),
             name: String(product.name || ''),
             description: String(product.shortDescription || product.description || ''),
             price: Number(minPrice) || 0,
-            originalPrice: originalPrice ? Number(originalPrice) : undefined,
+            originalPrice: Number(displayOriginalPrice) || minPrice * 5, // Always provide an originalPrice
             image: String(product.image || ''),
             category: categoryString,
             rating: product.rating ? Number(product.rating) : undefined,
