@@ -34,55 +34,112 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   // Xử lý các sự kiện khi thêm ảnh vào editor
   useEffect(() => {
-    const handlePaste = (e: ClipboardEvent) => {
-      if (!editorRef.current) return;
-
-      // Xử lý dán ảnh từ clipboard
-      if (e.clipboardData && e.clipboardData.items) {
-        const items = e.clipboardData.items;
-        let imageFound = false;
-
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].type.indexOf('image') !== -1) {
-            // Prevent default paste behavior to avoid duplicate insertions
-            e.preventDefault();
-
-            // Only process the first image found to prevent duplication
-            if (imageFound) continue;
-            imageFound = true;
-
-            const file = items[i].getAsFile();
-            if (!file) continue;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-              if (!event.target?.result) return;
-
-              insertImageToEditor(event.target.result as string);
-            };
-            reader.readAsDataURL(file);
-          }
-        }
-      }
-    };
-
-    // Chỉ đính kèm paste listener nếu chưa đính kèm
-    if (editorRef.current && !pasteListenerAttached.current) {
-      editorRef.current.addEventListener('paste', handlePaste);
-      pasteListenerAttached.current = true;
-    }
-
     // Đính kèm sự kiện click để xử lý ảnh
     document.addEventListener('click', handleImageClick);
 
     return () => {
-      if (editorRef.current) {
-        editorRef.current.removeEventListener('paste', handlePaste);
-        pasteListenerAttached.current = false;
-      }
       document.removeEventListener('click', handleImageClick);
     };
   }, []);
+  
+  // Xử lý dán ảnh từ clipboard
+  const handlePasteInEditor = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    // Xử lý dán ảnh từ clipboard
+    if (e.clipboardData && e.clipboardData.items) {
+      const items = e.clipboardData.items;
+      let imageFound = false;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          // Prevent default paste behavior to avoid duplicate insertions
+          e.preventDefault();
+
+          // Only process the first image found to prevent duplication
+          if (imageFound) continue;
+          imageFound = true;
+
+          const file = items[i].getAsFile();
+          if (!file) continue;
+
+          // Upload image to server if available
+          handleUploadPastedFile(file);
+          
+          // Exit early since we've handled the image
+          return;
+        }
+      }
+    }
+    
+    // If no image was found, call the external onPaste handler if provided
+    if (onPaste) {
+      onPaste(e);
+    }
+  };
+  
+  // Upload pasted file
+  const handleUploadPastedFile = async (file: File) => {
+    try {
+      if (!editorRef.current) return;
+      
+      // Kiểm tra kích thước file (giới hạn 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Kích thước file không được vượt quá 5MB');
+        return;
+      }
+
+      // Kiểm tra loại file
+      if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+        alert('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
+        return;
+      }
+
+      // Xử lý trực tiếp với DataURL ngay lập tức để có phản hồi nhanh
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          // Chèn ảnh vào editor với data URL
+          insertImageToEditor(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+      
+      try {
+        // Cố gắng upload lên server ở background
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', file);
+
+        // Upload hình ảnh lên server
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: uploadFormData,
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const imageUrl = data.url || data.filepath || data.fileUrl;
+          
+          if (imageUrl) {
+            // Thay thế ảnh data URL bằng URL server khi đã upload xong
+            // Tìm ảnh đã chèn trong editor và cập nhật src
+            const images = editorRef.current.querySelectorAll('.editor-image');
+            const lastImage = images[images.length - 1];
+            if (lastImage) {
+              lastImage.setAttribute('src', imageUrl);
+              // Update HTML
+              handleInput();
+            }
+          }
+        }
+      } catch (uploadErr) {
+        console.error('Lỗi khi upload hình ảnh lên server:', uploadErr);
+        // Không cần xử lý lỗi vì đã có ảnh local
+      }
+    } catch (err) {
+      console.error('Lỗi khi xử lý hình ảnh:', err);
+      alert('Có lỗi khi xử lý hình ảnh: ' + (err as Error).message);
+    }
+  };
 
   // Xử lý khi click vào ảnh để hiện toolbar
   const handleImageClick = (e: MouseEvent) => {
@@ -312,48 +369,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     if (!e.target.files || e.target.files.length === 0) return;
 
     const file = e.target.files[0];
-    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
-      alert('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
-      return;
-    }
-
+    // Reuse our upload handler for consistency
     try {
-      // Tạo form data để upload file qua API
-      const uploadFormData = new FormData();
-      uploadFormData.append('file', file);
-
-      // Upload hình ảnh lên server
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Không thể tải lên hình ảnh');
-      }
-
-      const data = await response.json();
-      // Lấy URL thực từ server
-      const imageUrl = data.url || data.filepath || data.fileUrl;
-
-      if (!imageUrl) {
-        throw new Error('URL hình ảnh không hợp lệ');
-      }
-
-      // Chèn ảnh vào editor
-      insertImageToEditor(imageUrl);
+      await handleUploadPastedFile(file);
     } catch (err) {
-      console.error('Lỗi khi upload hình ảnh:', err);
-      alert('Không thể tải lên hình ảnh: ' + (err as Error).message);
-
-      // Fallback đến cách cũ nếu API lỗi
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          insertImageToEditor(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      alert((err as Error).message || 'Không thể tải lên hình ảnh');
     }
 
     // Reset input file
@@ -526,7 +546,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             <s>S</s>
           </button>
         </div>
-
+        
         <div className="toolbar-group">
           <button
             type="button"
@@ -534,7 +554,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             className="toolbar-btn"
             onClick={() => execCommand('justifyLeft')}
           >
-            &#8592;
+            ⇦
           </button>
           <button
             type="button"
@@ -542,7 +562,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             className="toolbar-btn"
             onClick={() => execCommand('justifyCenter')}
           >
-            &#8596;
+            ≡
           </button>
           <button
             type="button"
@@ -550,7 +570,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             className="toolbar-btn"
             onClick={() => execCommand('justifyRight')}
           >
-            &#8594;
+            ⇨
+          </button>
+          <button
+            type="button"
+            title="Căn đều"
+            className="toolbar-btn"
+            onClick={() => execCommand('justifyFull')}
+          >
+            ⇧⇩
           </button>
         </div>
 
@@ -573,7 +601,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           </button>
           <button
             type="button"
-            title="Thụt lề"
+            title="Lùi vào"
             className="toolbar-btn"
             onClick={() => execCommand('indent')}
           >
@@ -581,69 +609,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           </button>
           <button
             type="button"
-            title="Giảm lề"
+            title="Lùi ra"
             className="toolbar-btn"
             onClick={() => execCommand('outdent')}
           >
             |←
           </button>
-        </div>
-
-        <div className="toolbar-group">
-          <select
-            className="font-size-select"
-            onChange={(e) => execCommand('fontSize', e.target.value)}
-            title="Kích cỡ chữ"
-          >
-            <option value="">Cỡ chữ</option>
-            <option value="1">Rất nhỏ</option>
-            <option value="2">Nhỏ</option>
-            <option value="3">Bình thường</option>
-            <option value="4">Lớn</option>
-            <option value="5">Rất lớn</option>
-            <option value="6">Cực lớn</option>
-            <option value="7">Siêu lớn</option>
-          </select>
-
-          <select
-            className="font-color-select"
-            onChange={(e) => {
-              if (e.target.value) execCommand('foreColor', e.target.value);
-              e.target.value = '';
-            }}
-            title="Màu chữ"
-          >
-            <option value="">Màu chữ</option>
-            <option value="#000000">Đen</option>
-            <option value="#FF0000">Đỏ</option>
-            <option value="#00FF00">Xanh lá</option>
-            <option value="#0000FF">Xanh dương</option>
-            <option value="#FF00FF">Hồng</option>
-            <option value="#FFFF00">Vàng</option>
-            <option value="#00FFFF">Xanh ngọc</option>
-            <option value="#A52A2A">Nâu</option>
-            <option value="#808080">Xám</option>
-          </select>
-
-          <select
-            className="bg-color-select"
-            onChange={(e) => {
-              if (e.target.value) execCommand('hiliteColor', e.target.value);
-              e.target.value = '';
-            }}
-            title="Màu nền"
-          >
-            <option value="">Màu nền</option>
-            <option value="#FFFFFF">Trắng</option>
-            <option value="#FFCDD2">Đỏ nhạt</option>
-            <option value="#C8E6C9">Xanh lá nhạt</option>
-            <option value="#BBDEFB">Xanh dương nhạt</option>
-            <option value="#F8BBD0">Hồng nhạt</option>
-            <option value="#FFF9C4">Vàng nhạt</option>
-            <option value="#B2EBF2">Xanh ngọc nhạt</option>
-            <option value="#D7CCC8">Nâu nhạt</option>
-            <option value="#F5F5F5">Xám nhạt</option>
-          </select>
         </div>
 
         <div className="toolbar-group">
@@ -680,22 +651,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         onInput={handleInput}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        onPaste={(e) => {
-          // Existing logic: prevent default for image items
-          const items = e.clipboardData?.items;
-          if (items) {
-            for (let i = 0; i < items.length; i++) {
-              if (items[i].type.indexOf('image') !== -1) {
-                e.preventDefault();
-                break;
-              }
-            }
-          }
-          // Call external onPaste handler if provided
-          if (onPaste) {
-            onPaste(e as React.ClipboardEvent<HTMLDivElement>);
-          }
-        }}
+        onPaste={handlePasteInEditor}
         className={`content-editable w-full min-h-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${value === '' ? 'empty' : ''}`}
         data-placeholder={placeholder}
       />
@@ -897,33 +853,26 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         .font-size-select,
         .font-color-select,
         .bg-color-select {
-          padding: 2px 5px;
+          background-color: white;
           border: 1px solid #d1d5db;
           border-radius: 3px;
-          font-size: 14px;
           height: 28px;
+          font-size: 14px;
+          cursor: pointer;
+          padding: 0 5px;
         }
 
-        /* Định dạng cho bảng trong editor */
+        /* Định dạng cho bảng */
         .editor-table {
-          border-collapse: collapse;
           width: 100%;
-          margin-bottom: 15px;
+          border-collapse: collapse;
+          margin-bottom: 1rem;
         }
 
-        .editor-table td,
-        .editor-table th {
+        .editor-table td {
           border: 1px solid #ddd;
           padding: 8px;
-          vertical-align: top;
-        }
-
-        .editor-table tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
-
-        .editor-table tr:hover {
-          background-color: #f5f5f5;
+          min-width: 50px;
         }
       `}</style>
     </div>

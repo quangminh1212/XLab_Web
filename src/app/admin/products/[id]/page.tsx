@@ -1942,7 +1942,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 <h2 className="text-xl font-bold">Mô tả đầy đủ</h2>
               </div>
 
-              <div className="admin-rich-text-wrapper">
+              <div className="admin-rich-text-wrapper" onPaste={handlePasteDescriptionImage}>
                 <RichTextEditor
                   value={formData.description}
                   onChange={handleRichTextChange}

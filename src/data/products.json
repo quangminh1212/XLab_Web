@@ -37,5 +37,46 @@
         "originalPrice": 420000
       }
     }
+  },
+  {
+    "id": "canva",
+    "name": "Canva",
+    "slug": "canva",
+    "description": "àaffdsdf",
+    "shortDescription": "<p dir=\"auto\" style=\"white-space-collapse: preserve;\">Canva là nền tảng thiết kế trực tuyến, giúp tạo hình ảnh, bài thuyết trình, infographic dễ dàng với giao diện kéo thả và thư viện mẫu đa dạng.</p>",
+    "isPublished": true,
+    "images": [
+      "/images/products\\canva/canva-cc4f5bc5-c767-4df2-a2c9-389d9c7e3f4f.png"
+    ],
+    "descriptionImages": [],
+    "features": [],
+    "requirements": [],
+    "specifications": [],
+    "categories": [],
+    "versions": [
+      {
+        "name": "Default",
+        "description": "Phiên bản mặc định",
+        "price": 0,
+        "originalPrice": 0,
+        "features": []
+      }
+    ],
+    "createdAt": "2025-07-01T01:46:27.863Z",
+    "updatedAt": "2025-07-01T01:46:27.863Z",
+    "rating": 5,
+    "weeklyPurchases": 120,
+    "type": "account",
+    "isAccount": true,
+    "productOptions": [
+      "Dùng riêng - 1 Tháng"
+    ],
+    "defaultProductOption": "Dùng riêng - 1 Tháng",
+    "optionPrices": {
+      "Dùng riêng - 1 Tháng": {
+        "price": 25000,
+        "originalPrice": 150000
+      }
+    }
   }
 ]
