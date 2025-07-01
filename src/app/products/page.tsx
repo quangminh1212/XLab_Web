@@ -29,7 +29,7 @@ export default function ProductsPage() {
 
   // Fetch products from API
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProducts = async (retryCount = 0) => {
       try {
         setLoading(true);
         const response = await fetch('/api/products');
@@ -43,11 +43,25 @@ export default function ProductsPage() {
         if (result.success && Array.isArray(result.data)) {
           setProducts(result.data);
         } else {
+          // If no data received but API call was successful, retry
+          if (result.success && (!result.data || result.data.length === 0) && retryCount < 3) {
+            console.log(`No products found, retrying (${retryCount + 1}/3)...`);
+            setTimeout(() => fetchProducts(retryCount + 1), 1000);
+            return;
+          }
+          
           setProducts([]);
           setError(t('products.invalidData'));
         }
         setLoading(false);
       } catch (err: any) {
+        // Add retry mechanism for network errors
+        if (retryCount < 3) {
+          console.log(`Error fetching products, retrying (${retryCount + 1}/3)...`);
+          setTimeout(() => fetchProducts(retryCount + 1), 1000);
+          return;
+        }
+        
         setError(err.message || t('products.error'));
         setLoading(false);
       }
