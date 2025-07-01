@@ -101,6 +101,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="preload" href="/api/products" as="fetch" crossOrigin="anonymous" />
         {siteConfig.analytics.googleTagManagerId && (
           <Script
             id="gtm-script"
