@@ -23,7 +23,7 @@
     }
   ],
   "createdAt": "2025-07-01T01:46:27.863Z",
-  "updatedAt": "2025-07-01T02:04:11.386Z",
+  "updatedAt": "2025-07-01T03:26:44.650Z",
   "rating": 5,
   "weeklyPurchases": 120,
   "totalSold": 2350,
@@ -40,6 +40,6 @@
     }
   },
   "specs": "",
-  "totalPurchases": 0,
+  "totalSale": 2350,
   "optionDurations": {}
 }

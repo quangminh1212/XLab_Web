@@ -56,6 +56,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     rating: 5,
     weeklyPurchases: 0,
     totalPurchases: 0,
+    totalSale: 0,
     type: 'software' as 'software' | 'account',
     isAccount: false,
   });
@@ -128,6 +129,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           rating: productData.rating !== undefined ? productData.rating : 5,
           weeklyPurchases: productData.weeklyPurchases || 0,
           totalPurchases: productData.totalPurchases || 0,
+          totalSale: productData.totalSale || productData.totalPurchases || 0,
           type: productData.type || 'software',
           isAccount: productData.isAccount || productData.type === 'account' || false,
         });
@@ -770,6 +772,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         rating: formData.rating,
         weeklyPurchases: formData.weeklyPurchases,
         totalPurchases: formData.totalPurchases,
+        totalSale: formData.totalSale,
         type: formData.type,
         isAccount: formData.isAccount,
         versions: [
@@ -1286,7 +1289,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             {/* Tổng số hàng đã mua */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                Tổng số hàng đã mua
+                Tổng số hàng đã bán
               </label>
               <div className="flex items-center space-x-3 mb-3">
                 <div className="flex-1 relative">
@@ -1308,8 +1311,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   </div>
                   <input
                     type="number"
-                    name="totalPurchases"
-                    value={formData.totalPurchases}
+                    name="totalSale"
+                    value={formData.totalSale || formData.totalPurchases || 0}
                     onChange={handleInputChange}
                     min="0"
                     className="pl-10 block w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:ring-teal-500 focus:border-teal-500"
@@ -1319,10 +1322,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   <button
                     type="button"
                     onClick={() => {
-                      if (formData.totalPurchases > 0) {
+                      const currentValue = formData.totalSale || formData.totalPurchases || 0;
+                      if (currentValue > 0) {
                         setFormData((prev) => ({
                           ...prev,
-                          totalPurchases: prev.totalPurchases - 1,
+                          totalSale: Number(currentValue) - 1,
                         }));
                       }
                     }}
@@ -1346,7 +1350,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   <button
                     type="button"
                     onClick={() => {
-                      setFormData((prev) => ({ ...prev, totalPurchases: prev.totalPurchases + 1 }));
+                      const currentValue = formData.totalSale || formData.totalPurchases || 0;
+                      setFormData((prev) => ({ ...prev, totalSale: Number(currentValue) + 1 }));
                     }}
                     className="bg-teal-100 px-3 py-2 text-teal-600 hover:bg-teal-200 focus:outline-none"
                   >
@@ -1370,7 +1375,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div
                   className="bg-teal-600 h-2.5 rounded-full transition-all duration-300"
-                  style={{ width: `${Math.min(100, (formData.totalPurchases / 1000) * 100)}%` }}
+                  style={{ width: `${Math.min(100, ((formData.totalSale || formData.totalPurchases || 0) / 1000) * 100)}%` }}
                 ></div>
               </div>
               <div className="flex justify-between mt-2 text-xs text-gray-500">
@@ -1379,9 +1384,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </div>
               <div className="mt-2 text-center">
                 <span className="text-2xl font-bold text-teal-600">
-                  {formData.totalPurchases.toLocaleString()}
+                  {(formData.totalSale || formData.totalPurchases || 0).toLocaleString()}
                 </span>
-                <div className="text-xs text-gray-500 mt-1">đơn hàng</div>
+                <div className="text-xs text-gray-500 mt-1">đã bán</div>
               </div>
             </div>
 
