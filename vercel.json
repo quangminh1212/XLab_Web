@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "buildCommand": "npm ci && npm run build",
+  "nodeVersion": "18.x",
+  "installCommand": "npm ci --no-audit --prefer-offline",
+  "outputDirectory": ".next"
+} 
