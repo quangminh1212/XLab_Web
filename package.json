@@ -8,6 +8,7 @@
     "dev:clean": "node scripts/fix-next-errors.js && npm run dev",
     "dev:safe": "node scripts/fix-next-errors.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
+    "vercel-build": "node scripts/fix-next-errors.js && next build",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
     "start": "next start",
@@ -93,10 +94,7 @@
     "webpack": "5.92.0",
     "@babel/core": "7.23.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "glob": "9.3.5",
-    "inflight": "2.0.0",
-    "@humanwhocodes/config-array": "@eslint/config-array"
+    "react-dom": "18.2.0"
   },
   "keywords": [],
   "author": "",
