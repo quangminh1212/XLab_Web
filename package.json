@@ -8,7 +8,7 @@
     "dev:clean": "node scripts/fix-next-errors.js && npm run dev",
     "dev:safe": "node scripts/fix-next-errors.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
-    "vercel-build": "npm install --save-dev typescript @types/react && chmod +x ./node_modules/.bin/next && next build",
+    "vercel-build": "npm install typescript@5.3.3 @types/react@18.2.45 @types/node@20.10.5 @types/react-dom@18.2.18 --no-save && chmod +x ./node_modules/.bin/next && next build",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
     "start": "next start",
