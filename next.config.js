@@ -35,6 +35,10 @@ const nextConfig = {
       },
     ],
     formats: ['image/webp'],
+    domains: ['vercel.app', 'xlab-web.vercel.app'],
+    minimumCacheTTL: 31536000,
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   poweredByHeader: false,
   compress: true,
@@ -55,6 +59,19 @@ const nextConfig = {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
+  },
+  experimental: {
+    // Suppress warnings for experimental features
+    serverActions: {
+      allowedForwardedHosts: ['localhost', 'vercel.app'],
+      allowedOrigins: ['localhost', 'vercel.app'],
+    },
+    serverComponentsExternalPackages: [],
+  },
+  // Improved error handling
+  onDemandEntries: {
+    maxInactiveAge: 60 * 60 * 1000,
+    pagesBufferLength: 5,
   },
 };
 

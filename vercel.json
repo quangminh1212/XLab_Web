@@ -40,5 +40,31 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    { 
+      "source": "/images/:path*", 
+      "destination": "/images/:path*" 
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "/uploads/:path*"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/images/placeholder/product-placeholder.jpg",
+      "dest": "/placeholder-product.jpg"
+    },
+    {
+      "src": "/images/(.*)",
+      "status": 404,
+      "dest": "/placeholder-product.jpg"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "status": 404,
+      "dest": "/placeholder-product.jpg"
+    }
   ]
 } 
