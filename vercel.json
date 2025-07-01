@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install next@15.2.4 json5@2.2.3 --no-save && next build",
-  "installCommand": "npm install --production=false",
+  "buildCommand": "npm install @next/swc-linux-x64-gnu@15.2.4 --no-save && next build",
+  "installCommand": "npm install --no-optional --platform=linux --no-audit --no-fund",
   "outputDirectory": ".next"
 } 

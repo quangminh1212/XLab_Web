@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
+    "@next/swc-linux-x64-gnu": "15.2.4",
     "@radix-ui/react-slot": "1.1.2",
     "@tinymce/tinymce-react": "6.1.0",
     "@types/qrcode": "1.5.5",
@@ -58,7 +59,6 @@
     "vietnam-qr-pay": "1.5.0"
   },
   "devDependencies": {
-    "@next/swc-win32-x64-msvc": "15.2.4",
     "@tailwindcss/forms": "0.5.7",
     "@tailwindcss/typography": "0.5.10",
     "@types/draft-js": "0.11.18",
