@@ -8,8 +8,28 @@ interface TranslationResult {
   i18n: {
     language: Language;
     changeLanguage: (lang: Language) => void;
+    getLocalCode: () => string;
   };
 }
+
+/**
+ * Chuyển đổi từ mã ngôn ngữ nội bộ (vie/eng) sang mã ngôn ngữ tiêu chuẩn (vi/en)
+ */
+export const mapLanguageCode = (lang: Language): string => {
+  const langMap: Record<Language, string> = {
+    'vie': 'vi',
+    'eng': 'en'
+  };
+  return langMap[lang] || 'vi';
+};
+
+/**
+ * Chuyển đổi từ mã ngôn ngữ tiêu chuẩn (vi/en) sang mã ngôn ngữ nội bộ (vie/eng)
+ */
+export const mapToInternalCode = (code: string): Language => {
+  if (code === 'en') return 'eng';
+  return 'vie'; // mặc định là tiếng Việt
+};
 
 export function useTranslation(): TranslationResult {
   const [language, setLanguage] = useState<Language>('vie');
@@ -52,12 +72,17 @@ export function useTranslation(): TranslationResult {
     }
     setLanguage(newLanguage);
   };
+
+  const getLocalCode = (): string => {
+    return mapLanguageCode(language);
+  };
   
   return {
     t,
     i18n: {
       language,
-      changeLanguage
+      changeLanguage,
+      getLocalCode
     }
   };
 } 

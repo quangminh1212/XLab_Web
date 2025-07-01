@@ -2,11 +2,13 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import translations, { Language } from '@/i18n';
+import { mapLanguageCode, mapToInternalCode } from '@/i18n/client';
 
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string, params?: Record<string, any>) => string;
+  localCode: string; // Thêm localCode để sử dụng cho toLocaleString, v.v.
 };
 
 interface LanguageProviderProps {
@@ -19,18 +21,22 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Mặc định là tiếng Việt
   const [language, setLanguageState] = useState<Language>('vie');
+  // Mã ngôn ngữ theo chuẩn locale (vi/en)
+  const [localCode, setLocalCode] = useState<string>('vi');
 
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage && (savedLanguage === 'vie' || savedLanguage === 'eng')) {
       setLanguageState(savedLanguage as Language);
+      setLocalCode(mapLanguageCode(savedLanguage as Language));
     }
   }, []);
 
   // Cập nhật localStorage khi ngôn ngữ thay đổi
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
+    setLocalCode(mapLanguageCode(lang));
     localStorage.setItem('language', lang);
   };
 
@@ -114,7 +120,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, localCode }}>
       {children}
     </LanguageContext.Provider>
   );

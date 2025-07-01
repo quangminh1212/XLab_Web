@@ -2,7 +2,6 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { JWT } from 'next-auth/jwt';
 import { Session } from 'next-auth';
-import { SessionStrategy } from 'next-auth/core/types';
 
 // Extend the Session interface
 declare module 'next-auth' {
@@ -104,7 +103,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: AUTH_SECRET || 'fallback-secret-for-build',
   session: {
-    strategy: 'jwt' as SessionStrategy,
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   debug: false, // Force debug always off to prevent warnings
