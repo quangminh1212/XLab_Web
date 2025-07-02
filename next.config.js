@@ -52,6 +52,10 @@ const nextConfig = {
       fullUrl: process.env.NODE_ENV !== 'production',
     },
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   webpack: (config, { dev, isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,

@@ -106,24 +106,24 @@ function extractIdFromUrl(url: string): string {
 export const dynamic = 'force-dynamic';
 
 // GET product handler
+// GET product handler
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
   try {
+    const { id } = params;
     // Check admin authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.isAdmin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
 
     // Get language from header or default to 'vie'
     const language = request.headers.get('accept-language') || 'vie';
-    console.log(`Fetching product ${id} with language: ${language}`);
 
-    // Find product using i18n product function
+    // Get product using i18n product function
     const product = await getProductById(id, language);
 
     if (!product) {
@@ -143,13 +143,13 @@ export async function PUT(
   { params }: { params: { id: string } },
 ) {
   try {
+    const { id } = params;
     // Check admin authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.isAdmin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
 
     // Get language from header or default to 'vie'
     const language = request.headers.get('accept-language') || 'vie';
@@ -257,13 +257,13 @@ export async function DELETE(
   { params }: { params: { id: string } },
 ) {
   try {
+    const { id } = params;
     // Check admin authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.isAdmin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
 
     // Get language from header or default to both languages
     const language = request.headers.get('accept-language');

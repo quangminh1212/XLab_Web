@@ -34,5 +34,6 @@ interface Coupon {
 //   // Logic for cashback
 //   // For cashback, the discount amount is still calculated but will be marked as cashback
 //   // to be processed in the post-payment step
+export {};
 // }
-// ... existing code ... 
+// ... existing code ...
