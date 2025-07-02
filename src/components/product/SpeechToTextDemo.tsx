@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-const SpeechToTextDemo = () => {
+const SpeechToTextDemo = (): JSX.Element => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(true);
@@ -20,42 +20,42 @@ const SpeechToTextDemo = () => {
     // Kiểm tra xem trình duyệt có hỗ trợ Web Speech API không
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       setIsSupported(false);
-      return;
-    }
+      // Không khởi tạo recognition nếu không được hỗ trợ
+    } else {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'vi-VN'; // Mặc định là tiếng Việt
 
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.lang = 'vi-VN'; // Mặc định là tiếng Việt
+      recognitionRef.current.onresult = (event: any) => {
+        let interimTranscript = '';
+        let finalTranscript = '';
 
-    recognitionRef.current.onresult = (event: any) => {
-      let interimTranscript = '';
-      let finalTranscript = '';
-
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-        } else {
-          interimTranscript += event.results[i][0].transcript;
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
         }
-      }
 
-      setTranscript(finalTranscript || interimTranscript);
-    };
+        setTranscript(finalTranscript || interimTranscript);
+      };
 
-    recognitionRef.current.onerror = (event: any) => {
-      console.error('Speech recognition error', event.error);
-      setIsListening(false);
-    };
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error', event.error);
+        setIsListening(false);
+      };
 
-    recognitionRef.current.onend = () => {
-      // Nếu người dùng vẫn đang muốn lắng nghe, khởi động lại recognition
-      if (isListening) {
-        recognitionRef.current.start();
-      }
-    };
+      recognitionRef.current.onend = () => {
+        // Nếu người dùng vẫn đang muốn lắng nghe, khởi động lại recognition
+        if (isListening) {
+          recognitionRef.current.start();
+        }
+      };
+    }
 
     // Cleanup
     return () => {

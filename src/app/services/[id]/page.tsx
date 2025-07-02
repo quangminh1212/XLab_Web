@@ -3,7 +3,8 @@ import ProductDetail from '@/app/products/[id]/ProductDetail';
 import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
-import { Product } from '@/models/ProductModel';
+import { Product as ProductModel } from '@/models/ProductModel';
+import type { Product as ProductType } from '@/types';
 import { getAllProducts, normalizeLanguageCode } from '@/lib/i18n/products';
 
 // Đảm bảo trang được render động với mỗi request
@@ -11,9 +12,9 @@ export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
 // Hàm chuyển đổi dữ liệu sản phẩm từ bất kỳ nguồn nào sang kiểu Product
-function normalizeProduct(product: any): Product {
+function normalizeProduct(product: any): ProductModel {
   // Đảm bảo các trường bắt buộc
-  const normalizedProduct: Product = {
+  const normalizedProduct: ProductModel = {
     id: product.id || '',
     name: product.name || '',
     slug: product.slug || '',
@@ -37,7 +38,7 @@ function normalizeProduct(product: any): Product {
 }
 
 // Đọc dữ liệu sản phẩm từ file JSON và thư mục i18n
-async function getProducts(lang = 'vie'): Promise<Product[]> {
+async function getProducts(lang = 'vie'): Promise<ProductModel[]> {
   try {
     // Lấy sản phẩm từ file products.json
     const dataFilePath = path.join(process.cwd(), 'products.json');
@@ -62,7 +63,7 @@ async function getProducts(lang = 'vie'): Promise<Product[]> {
     const i18nProducts = await getAllProducts(lang);
     
     // Kết hợp sản phẩm từ cả hai nguồn, ưu tiên sản phẩm từ i18n
-    const combinedProducts: Product[] = [];
+    const combinedProducts: ProductModel[] = [];
     const productIds = new Set<string>();
     
     // Thêm sản phẩm từ i18n trước và chuẩn hóa
@@ -114,15 +115,22 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   // Nếu không tìm thấy, tìm trong mockData
   if (!selectedProduct) {
     // Tìm theo slug trước
-    selectedProduct = mockProducts.find(
+    const mockProduct = mockProducts.find(
       (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
     );
-
-    // Sau đó tìm theo id nếu không tìm thấy theo slug
-    if (!selectedProduct) {
-      selectedProduct = mockProducts.find(
+    
+    if (mockProduct) {
+      // Chuyển đổi từ ProductType sang ProductModel
+      selectedProduct = normalizeProduct(mockProduct);
+    } else {
+      // Sau đó tìm theo id nếu không tìm thấy theo slug
+      const mockProductById = mockProducts.find(
         (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
       );
+      
+      if (mockProductById) {
+        selectedProduct = normalizeProduct(mockProductById);
+      }
     }
   }
 
