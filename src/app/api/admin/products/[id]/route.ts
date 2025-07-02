@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 import { Product, ProductCategory } from '@/models/ProductModel';
@@ -106,7 +106,10 @@ function extractIdFromUrl(url: string): string {
 export const dynamic = 'force-dynamic';
 
 // GET product handler
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -114,9 +117,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const { id } = params;
 
     // Get language from header or default to 'vie'
     const language = request.headers.get('accept-language') || 'vie';
@@ -137,7 +138,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PUT product handler
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -145,9 +149,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const { id } = params;
 
     // Get language from header or default to 'vie'
     const language = request.headers.get('accept-language') || 'vie';
@@ -250,7 +252,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE product handler
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -258,9 +263,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const { id } = params;
 
     // Get language from header or default to both languages
     const language = request.headers.get('accept-language');

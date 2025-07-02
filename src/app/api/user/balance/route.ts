@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { syncUserBalance } from '@/lib/userService';
 
 // Balance cache với timeout 2 phút để giảm spam requests

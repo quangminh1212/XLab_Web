@@ -106,9 +106,7 @@ export async function GET(
 // PUT: Cập nhật sản phẩm
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const id = params.id;
 
     const body = await request.json();
 
@@ -148,9 +146,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 // DELETE: Xóa sản phẩm
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const id = params.id;
 
     if (!id) {
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });

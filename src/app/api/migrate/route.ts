@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { migrateToIndividualFiles, getAllUserEmails, getUserStats } from '@/lib/userService';
 
 // Migrate data to individual user files
