@@ -1,6 +1,5 @@
 'use client';
 
-import { SpeechToTextDemo } from '@/components/product';
 import Image from 'next/image';
 
 const VoiceTypingDemo = () => {
@@ -111,7 +110,10 @@ const VoiceTypingDemo = () => {
         </div>
 
         <div className="col-span-1 lg:col-span-2">
-          <SpeechToTextDemo />
+          <div className="bg-white shadow-md rounded-lg p-6 text-center">
+            <h3 className="text-xl font-semibold mb-4">Chức năng demo tạm thời không khả dụng</h3>
+            <p className="text-gray-600 mb-4">Chúng tôi đang nâng cấp tính năng này. Vui lòng quay lại sau.</p>
+          </div>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
