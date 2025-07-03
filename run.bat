@@ -43,6 +43,10 @@ IF "%MODE%"=="dev" (
     echo Font manifest file created successfully.
     
     echo Preparing direct production server...
+    echo Applying fixes for warnings...
+    if exist scripts\fix-image-domains-warning.js (
+        call node scripts\fix-image-domains-warning.js
+    )
     call npm run start:prod
 ) ELSE IF "%MODE%"=="build" (
     echo ===========================================

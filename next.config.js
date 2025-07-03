@@ -16,13 +16,6 @@ const nextConfig = {
     optimisticClientCache: true,
   },
   images: {
-    domains: [
-      'via.placeholder.com',
-      'placehold.co',
-      'i.pravatar.cc',
-      'images.unsplash.com',
-      'lh3.googleusercontent.com',
-    ],
     remotePatterns: [
       {
         protocol: 'https',

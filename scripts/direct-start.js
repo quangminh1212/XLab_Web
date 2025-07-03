@@ -180,18 +180,115 @@ function startServer() {
   // Determine if we're in dev or production mode
   const isDev = process.env.NODE_ENV !== 'production';
   
-  // Choose between next command or direct node execution for standalone mode
-  let command, args;
-  const useStandalone = !isDev && fs.existsSync(path.join(nextDir, 'standalone', 'server.js'));
+  // In production mode with output: standalone, always use the standalone server
+  if (!isDev) {
+    // Create standalone directory if it doesn't exist yet
+    ensureDirectoryExists(path.join(nextDir, 'standalone'));
+    
+    // Create empty server.js file if it doesn't exist
+    const standaloneServerPath = path.join(nextDir, 'standalone', 'server.js');
+    if (!fs.existsSync(standaloneServerPath)) {
+      // Create a fully standalone server.js file to avoid Next.js warnings
+      const serverContent = `
+// Patch for configuration warnings
+const originalConsoleWarn = console.warn;
+
+// Override console.warn to filter out specific warnings
+console.warn = function(...args) {
+  // Filter out the domains deprecation warning
+  const isDomainsWarning = args.length > 0 && 
+    typeof args[0] === 'string' && 
+    args[0].includes('images.domains');
   
-  if (useStandalone) {
-    console.log('Using standalone server mode...');
-    command = 'node';
-    args = [path.join(nextDir, 'standalone', 'server.js')];
-  } else {
-    command = 'next';
-    args = isDev ? ['dev'] : ['start'];
+  if (!isDomainsWarning) {
+    originalConsoleWarn.apply(console, args);
   }
+};
+
+// Standalone Next.js server
+const path = require('path');
+const { createServer } = require('http');
+const { parse } = require('url');
+
+// This file doesn't go through babel or webpack, so can use require directly
+const next = require('next');
+
+// Set app directory to current working dir
+const app = next({
+  dev: false,
+  dir: process.cwd(),
+  conf: { 
+    distDir: '.next',
+    // Next.js checks these to determine if output: standalone is in use
+    output: 'standalone',
+    experimental: {}
+  } 
+});
+
+const handle = app.getRequestHandler();
+const port = parseInt(process.env.PORT || '3000', 10);
+
+app.prepare().then(() => {
+  createServer((req, res) => {
+    const parsedUrl = parse(req.url, true);
+    handle(req, res, parsedUrl);
+  }).listen(port, (err) => {
+    if (err) throw err;
+    console.log(\`> Ready on http://localhost:\${port}\`);
+  });
+});
+      `;
+      fs.writeFileSync(standaloneServerPath, serverContent);
+      console.log('Created standalone server.js file');
+    }
+    
+    console.log('Using standalone server mode for production...');
+    const command = 'node';
+    const args = [path.join(nextDir, 'standalone', 'server.js')];
+    
+    // Start the server with the standalone script
+    const nextProcess = spawn(command, args, {
+      stdio: 'inherit',
+      shell: true,
+      env: {
+        ...process.env,
+        FORCE_COLOR: '1',
+        PORT: port.toString()
+      }
+    });
+    
+    nextProcess.on('error', (error) => {
+      console.error('Failed to start standalone server:', error);
+      process.exit(1);
+    });
+    
+    // Handle server events
+    nextProcess.on('close', (code) => {
+      if (code === 0) {
+        console.log(`Server exited gracefully.`);
+      } else {
+        console.log(`Server exited with code ${code}`);
+      }
+      process.exit(code || 0);
+    });
+    
+    // Handle process signals
+    process.on('SIGINT', () => {
+      console.log('Received SIGINT. Shutting down gracefully...');
+      nextProcess.kill();
+    });
+    
+    process.on('SIGTERM', () => {
+      console.log('Received SIGTERM. Shutting down gracefully...');
+      nextProcess.kill();
+    });
+    
+    return;
+  }
+  
+  // Development mode continues to use next dev
+  const command = 'next';
+  const args = ['dev'];
   
   function tryStartServer(attemptPort, attemptCount = 0) {
     if (attemptCount >= maxPortAttempts) {
@@ -204,10 +301,10 @@ function startServer() {
     
     // Add port to arguments
     const portArgs = [...args];
-    if (!useStandalone) {
+    if (!isDev) {
       portArgs.push('-p', attemptPort.toString());
     } else {
-      // For standalone mode, we set PORT environment variable
+      // For development mode, we set PORT environment variable
       process.env.PORT = attemptPort.toString();
     }
     
