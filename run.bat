@@ -23,7 +23,7 @@ echo Cleaning .next directory...
 if exist .next rmdir /s /q .next
 
 echo Running comprehensive fixes and build...
-call node scripts/fix-all-issues.js
+call node scripts/optimize.js
 
 echo Creating required directories and files...
 if not exist .next mkdir .next
@@ -48,20 +48,23 @@ if not exist .certificates mkdir .certificates
 if not exist .certificates\localhost.crt (
   echo Generating self-signed certificates for HTTPS using PowerShell...
   
-  REM Create PowerShell script for certificate generation
-  echo $cert = New-SelfSignedCertificate -DnsName "localhost" -CertStoreLocation "cert:\CurrentUser\My" -NotAfter (Get-Date).AddYears(5) > .certificates\gen-cert.ps1
-  echo $certPassword = ConvertTo-SecureString -String "password" -Force -AsPlainText >> .certificates\gen-cert.ps1
-  echo $certPath = "Cert:\CurrentUser\My\$($cert.Thumbprint)" >> .certificates\gen-cert.ps1
-  echo $pfxPath = "$PSScriptRoot\localhost.pfx" >> .certificates\gen-cert.ps1
-  echo $crtPath = "$PSScriptRoot\localhost.crt" >> .certificates\gen-cert.ps1
-  echo $keyPath = "$PSScriptRoot\localhost.key" >> .certificates\gen-cert.ps1
-  echo Export-PfxCertificate -Cert $certPath -FilePath $pfxPath -Password $certPassword >> .certificates\gen-cert.ps1
-  echo Export-Certificate -Cert $certPath -FilePath $crtPath -Type CERT >> .certificates\gen-cert.ps1
-  echo $p12cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 >> .certificates\gen-cert.ps1
-  echo $p12cert.Import($pfxPath, "password", [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable) >> .certificates\gen-cert.ps1
-  echo $keyData = [System.Convert]::ToBase64String($p12cert.PrivateKey.ExportCspBlob($true)) >> .certificates\gen-cert.ps1
-  echo Set-Content -Path $keyPath -Value "-----BEGIN PRIVATE KEY-----`n$keyData`n-----END PRIVATE KEY-----" >> .certificates\gen-cert.ps1
-  echo Write-Host "Certificate files generated successfully!" >> .certificates\gen-cert.ps1
+  REM Create PowerShell script for certificate generation (sửa lỗi cú pháp PowerShell)
+  (
+    echo $expiryDate = (Get-Date).AddYears(5)
+    echo $cert = New-SelfSignedCertificate -DnsName "localhost" -CertStoreLocation "cert:\CurrentUser\My" -NotAfter $expiryDate
+    echo $certPassword = ConvertTo-SecureString -String "password" -Force -AsPlainText
+    echo $certPath = "Cert:\CurrentUser\My\$($cert.Thumbprint)"
+    echo $pfxPath = "$PSScriptRoot\localhost.pfx"
+    echo $crtPath = "$PSScriptRoot\localhost.crt"
+    echo $keyPath = "$PSScriptRoot\localhost.key"
+    echo Export-PfxCertificate -Cert $certPath -FilePath $pfxPath -Password $certPassword
+    echo Export-Certificate -Cert $certPath -FilePath $crtPath -Type CERT
+    echo $p12cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+    echo $p12cert.Import($pfxPath, "password", [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable^)
+    echo $keyData = [System.Convert]::ToBase64String($p12cert.PrivateKey.ExportCspBlob($true^)^)
+    echo Set-Content -Path $keyPath -Value "-----BEGIN PRIVATE KEY-----`n$keyData`n-----END PRIVATE KEY-----"
+    echo Write-Host "Certificate files generated successfully!"
+  ) > .certificates\gen-cert.ps1
   
   REM Run the PowerShell script
   powershell -ExecutionPolicy Bypass -File .certificates\gen-cert.ps1
