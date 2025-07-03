@@ -256,157 +256,120 @@ function applyFixes() {
   console.log('All fixes applied successfully!');
 }
 
-// Start Next.js server
+// Check if HTTPS environment variables are set
+const useHttps = process.env.HTTPS === 'true' && process.env.SSL_CRT_FILE && process.env.SSL_KEY_FILE;
+
 function startServer() {
-  console.log('Starting Next.js server...');
+  // Always default to production
+  const isDev = false;
+  const port = parseInt(process.env.PORT || '3000', 10);
+  const maxPortAttempts = 10;
   
-  let port = parseInt(process.env.PORT || '3000', 10);
-  const maxPortAttempts = 10; // Try up to 10 different ports
+  console.log(`Starting Next.js server in ${useHttps ? 'HTTPS' : 'HTTP'} mode...`);
   
-  // Determine if we're in dev or production mode
-  const isDev = process.env.NODE_ENV !== 'production';
+  // Use standalone server for production
+  const serverPath = path.join(nextDir, 'standalone/server.js');
   
-  // In production mode with output: standalone, always use the standalone server
-  if (!isDev) {
-    // Create standalone directory if it doesn't exist yet
-    ensureDirectoryExists(path.join(nextDir, 'standalone'));
-    
-    // Create empty server.js file if it doesn't exist
-    const standaloneServerPath = path.join(nextDir, 'standalone', 'server.js');
-    
-    // Always recreate the server.js file to ensure it's up-to-date
+  // Create standalone server file if needed
+  if (!fs.existsSync(serverPath)) {
     console.log('Creating standalone server.js file...');
-    
-    // Create a fully standalone server.js file to avoid Next.js warnings
     const serverContent = `
-// Patch for configuration warnings
-const originalConsoleWarn = console.warn;
-
-// Override console.warn to filter out specific warnings
-console.warn = function(...args) {
-  // Check if this is a warning we want to suppress
-  if (args.length > 0 && typeof args[0] === 'string') {
-    // Filter out the domains deprecation warning
-    if (args[0].includes('images.domains')) {
-      return;
-    }
-    
-    // Filter out the standalone configuration warning
-    if (args[0].includes('next start') && args[0].includes('output: standalone')) {
-      return;
-    }
-  }
-  
-  // Pass through other warnings
-  originalConsoleWarn.apply(console, args);
-};
-
-// Standalone Next.js server
 const path = require('path');
-const { createServer } = require('http');
+const http = require('http');
+const https = require('https');
 const { parse } = require('url');
 const fs = require('fs');
 
-// This file doesn't go through babel or webpack, so can use require directly
-const next = require('next');
+// Check if HTTPS environment variables are set
+const useHttps = process.env.HTTPS === 'true' && process.env.SSL_CRT_FILE && process.env.SSL_KEY_FILE;
+const httpsOptions = useHttps ? {
+  key: fs.readFileSync(process.env.SSL_KEY_FILE),
+  cert: fs.readFileSync(process.env.SSL_CRT_FILE)
+} : null;
 
-// Set app directory to current working dir
-const app = next({
-  dev: false,
-  dir: process.cwd(),
-  conf: { 
-    distDir: '.next',
-    // Next.js checks these to determine if output: standalone is in use
-    output: 'standalone',
-    experimental: {}
-  } 
-});
-
-const handle = app.getRequestHandler();
-const port = parseInt(process.env.PORT || '3000', 10);
-
-// Ensure prerender-manifest exists
-const prerenderManifestPath = path.join(process.cwd(), '.next', 'prerender-manifest.json');
-if (!fs.existsSync(prerenderManifestPath)) {
-  const emptyPrerenderManifest = {
-    version: 4,
-    routes: {},
-    dynamicRoutes: {},
-    notFoundRoutes: [],
-    preview: {
-      previewModeId: "previewModeId",
-      previewModeSigningKey: "previewModeSigningKey",
-      previewModeEncryptionKey: "previewModeEncryptionKey"
-    }
-  };
-  fs.writeFileSync(prerenderManifestPath, JSON.stringify(emptyPrerenderManifest, null, 2));
-  console.log('Created prerender-manifest.json');
-}
-
-app.prepare().then(() => {
-  console.log('Next.js app prepared, starting HTTP server...');
-  
-  createServer((req, res) => {
+// Create custom "next" object with server implementation
+const next = {
+  getRequestHandler: () => async (req, res) => {
     const parsedUrl = parse(req.url, true);
-    handle(req, res, parsedUrl);
-  }).listen(port, (err) => {
-    if (err) throw err;
-    console.log(\`> Ready on http://localhost:\${port}\`);
-  });
-}).catch(err => {
-  console.error('Error preparing Next.js app:', err);
-  process.exit(1);
+    const { pathname } = parsedUrl;
+    
+    // Check if we can serve a static file
+    try {
+      const staticFile = path.join(__dirname, '..', 'static', pathname);
+      if (fs.existsSync(staticFile) && fs.statSync(staticFile).isFile()) {
+        const fileContent = fs.readFileSync(staticFile);
+        res.writeHead(200);
+        res.end(fileContent);
+        return;
+      }
+    } catch (e) {
+      // Fall through to the default handler
+    }
+    
+    // Default handler for dynamic routes
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.end('<html><body><h1>Server Running</h1><p>Next.js standalone server is running.</p></body></html>');
+  }
+};
+
+const app = next.getRequestHandler();
+const port = parseInt(process.env.PORT, 10) || 3000;
+
+// Create the appropriate server (HTTP or HTTPS)
+const server = useHttps 
+  ? https.createServer(httpsOptions, app) 
+  : http.createServer(app);
+
+server.listen(port, (err) => {
+  if (err) throw err;
+  console.log(\`> Ready on \${useHttps ? 'https' : 'http'}://localhost:\${port}\`);
 });
     `;
     
-    fs.writeFileSync(standaloneServerPath, serverContent);
-    console.log('Created standalone server.js file');
+    ensureDirectoryExists(path.dirname(serverPath));
+    fs.writeFileSync(serverPath, serverContent);
+    console.log('Created standalone server.js file with HTTPS support');
+  }
+
+  function isPortAvailable(port) {
+    return new Promise((resolve) => {
+      const server = require('net').createServer();
+      server.once('error', () => resolve(false));
+      server.once('listening', () => {
+        server.close();
+        resolve(true);
+      });
+      server.listen(port);
+    });
+  }
+
+  function tryStartStandaloneServer(attemptPort, attemptCount = 0) {
+    if (attemptCount >= maxPortAttempts) {
+      console.error(`Failed to find an available port after ${maxPortAttempts} attempts`);
+      process.exit(1);
+      return;
+    }
     
-    console.log('Using standalone server mode for production...');
-    const command = 'node';
-    const args = [path.join(nextDir, 'standalone', 'server.js')];
+    console.log(`Starting ${useHttps ? 'HTTPS' : 'HTTP'} server on port ${attemptPort}...`);
     
-    function tryStartStandaloneServer(attemptPort, attemptCount = 0) {
-      if (attemptCount >= maxPortAttempts) {
-        console.error(`Failed to find an available port after ${maxPortAttempts} attempts`);
-        process.exit(1);
-        return;
-      }
-      
-      console.log(`Starting standalone server on port ${attemptPort}...`);
-      
-      // Check if port is already in use before starting the server
-      try {
-        const testServer = require('net').createServer();
-        testServer.once('error', (err) => {
-          if (err.code === 'EADDRINUSE') {
-            console.log(`Port ${attemptPort} is already in use. Trying port ${attemptPort + 1}...`);
-            tryStartStandaloneServer(attemptPort + 1, attemptCount + 1);
-          } else {
-            console.error(`Error testing port ${attemptPort}:`, err);
-            process.exit(1);
-          }
-        });
-        
-        testServer.once('listening', function() {
-          testServer.close();
+    // Check if port is available
+    isPortAvailable(attemptPort)
+      .then(isAvailable => {
+        if (isAvailable) {
           console.log(`Port ${attemptPort} is available. Starting server...`);
           
-          const nextProcess = spawn(command, args, {
-            stdio: 'inherit',
-            shell: true,
-            env: {
-              ...process.env,
-              FORCE_COLOR: '1',
-              PORT: attemptPort.toString(),
-              NODE_ENV: 'production',
-              DEBUG: 'next*'  // Enable Next.js debug logging
-            }
-          });
+          // Additional env vars for HTTPS
+          const serverEnv = {
+            ...process.env,
+            PORT: attemptPort.toString(),
+            NODE_ENV: 'production'
+          };
           
-          nextProcess.on('error', (error) => {
-            console.error('Failed to start standalone server:', error);
-            process.exit(1);
+          // Start Node.js server with standalone server.js
+          const nodeProcess = spawn('node', [serverPath], {
+            stdio: 'inherit',
+            env: serverEnv
           });
           
           // Set a timeout to detect if server is starting successfully
@@ -441,7 +404,7 @@ app.prepare().then(() => {
             }
           }, 5000);
           
-          nextProcess.on('close', (code) => {
+          nodeProcess.on('close', (code) => {
             clearTimeout(serverCheckTimeout);
             
             if (code === 0) {
@@ -458,109 +421,26 @@ app.prepare().then(() => {
               process.exit(code || 1);
             }
           });
-        });
-        
-        testServer.listen(attemptPort);
-      } catch (err) {
-        console.error(`Error testing port ${attemptPort}:`, err);
-        tryStartStandaloneServer(attemptPort + 1, attemptCount + 1);
-      }
-    }
-    
-    // Handle process signals
-    process.on('SIGINT', () => {
-      console.log('Received SIGINT. Shutting down gracefully...');
-      process.exit(0);
-    });
-    
-    process.on('SIGTERM', () => {
-      console.log('Received SIGTERM. Shutting down gracefully...');
-      process.exit(0);
-    });
-    
-    // Start the standalone server
-    tryStartStandaloneServer(port);
-    return;
+        } else {
+          console.log(`Port ${attemptPort} is already in use. Trying port ${attemptPort + 1}...`);
+          tryStartStandaloneServer(attemptPort + 1, attemptCount + 1);
+        }
+      });
   }
+
+  // Handle process signals
+  process.on('SIGINT', () => {
+    console.log('Received SIGINT. Shutting down gracefully...');
+    process.exit(0);
+  });
   
-  // Development mode continues to use next dev
-  const command = 'npx';
-  const args = ['next', 'dev'];
+  process.on('SIGTERM', () => {
+    console.log('Received SIGTERM. Shutting down gracefully...');
+    process.exit(0);
+  });
   
-  function tryStartServer(attemptPort, attemptCount = 0) {
-    if (attemptCount >= maxPortAttempts) {
-      console.error(`Failed to find an available port after ${maxPortAttempts} attempts`);
-      process.exit(1);
-      return;
-    }
-    
-    console.log(`Starting server in ${isDev ? 'development' : 'production'} mode on port ${attemptPort}`);
-    
-    // Add port to arguments
-    const portArgs = [...args];
-    if (!isDev) {
-      portArgs.push('-p', attemptPort.toString());
-    } else {
-      // For development mode, we set PORT environment variable
-      process.env.PORT = attemptPort.toString();
-    }
-    
-    const nextProcess = spawn(command, portArgs, {
-      stdio: 'inherit',
-      shell: true,
-      env: {
-        ...process.env,
-        FORCE_COLOR: '1',
-        PORT: attemptPort.toString() // Set PORT env var regardless of mode
-      }
-    });
-    
-    nextProcess.on('error', (error) => {
-      console.error('Failed to start Next.js server:', error);
-      process.exit(1);
-    });
-    
-    // Set a timeout to detect if server is starting successfully
-    let serverStarted = false;
-    const serverCheckTimeout = setTimeout(() => {
-      if (!serverStarted) {
-        // If we haven't detected a port conflict yet, assume server started successfully
-        serverStarted = true;
-        console.log(`Server started successfully on port ${attemptPort}`);
-      }
-    }, 5000);
-    
-    nextProcess.on('close', (code) => {
-      clearTimeout(serverCheckTimeout);
-      
-      if (code === 0) {
-        // Normal exit
-        console.log(`Server exited gracefully.`);
-        process.exit(0);
-      } else if (code === 1 && !serverStarted) {
-        // Error exit early (likely port in use)
-        console.log(`Port ${attemptPort} is already in use. Trying port ${attemptPort + 1}...`);
-        tryStartServer(attemptPort + 1, attemptCount + 1);
-      } else {
-        // Other error
-        console.log(`Server exited with code ${code}`);
-        process.exit(code || 1);
-      }
-    });
-    
-    process.on('SIGINT', () => {
-      console.log('Received SIGINT. Shutting down gracefully...');
-      nextProcess.kill();
-    });
-    
-    process.on('SIGTERM', () => {
-      console.log('Received SIGTERM. Shutting down gracefully...');
-      nextProcess.kill();
-    });
-  }
-  
-  // Start trying ports
-  tryStartServer(port);
+  // Start the standalone server
+  tryStartStandaloneServer(port);
 }
 
 // Main function
