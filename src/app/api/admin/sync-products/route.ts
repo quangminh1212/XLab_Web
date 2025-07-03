@@ -5,6 +5,10 @@ import { synchronizeProducts } from '@/lib/i18n/products';
 import path from 'path';
 import fs from 'fs';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     // Check admin authentication

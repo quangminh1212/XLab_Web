@@ -5,6 +5,10 @@ import { Product } from '@/models/ProductModel';
 import { getProductById } from '@/lib/i18n/products';
 
 // Data file path
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
 // Read product data

@@ -3,6 +3,10 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { getUserByEmail, updateUserBalance, createTransaction } from '@/lib/userService';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

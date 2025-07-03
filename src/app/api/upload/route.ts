@@ -7,6 +7,10 @@ import path from 'path';
 import { promises as fsPromises } from 'fs';
 import sharp from 'sharp';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication

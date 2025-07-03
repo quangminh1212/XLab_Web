@@ -19,6 +19,14 @@ const testimonials = {
   'results': 'Results achieved:',
   'verified': 'Verified',
   'title': 'Customer Reviews',
+
+  // Call to action section
+  'cta': {
+    'title': 'Ready to Experience XLab?',
+    'description': 'Join our satisfied customers and discover how our solutions can help your business grow.',
+    'contact': 'Contact Us',
+    'explore': 'Explore Products'
+  }
 };
 
 export default testimonials; 

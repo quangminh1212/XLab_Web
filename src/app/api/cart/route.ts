@@ -10,6 +10,10 @@ import {
   clearUserCart,
 } from '@/lib/userService';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export interface CartItem {
   id: string;
   name: string;

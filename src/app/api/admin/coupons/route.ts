@@ -5,6 +5,10 @@ import fs from 'fs';
 import path from 'path';
 
 // Tạo đường dẫn đến file lưu dữ liệu
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 const dataDir = path.join(process.cwd(), 'data');
 const couponsFilePath = path.join(dataDir, 'coupons.json');
 

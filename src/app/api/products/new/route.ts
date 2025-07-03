@@ -6,6 +6,10 @@ import path from 'path';
 import { saveProduct } from '@/lib/i18n/products';
 
 // Hàm tạo ID từ tên sản phẩm
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 function generateIdFromName(name: string): string {
   return name
     .toLowerCase()

@@ -7,6 +7,10 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { getAllProducts, saveProduct, deleteProduct, updateProduct } from '@/lib/i18n/products';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 /**
  * Normalize language code from Accept-Language header
  * @param lang The Accept-Language header value

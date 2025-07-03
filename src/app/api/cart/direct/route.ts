@@ -5,6 +5,10 @@ import fs from 'fs';
 import path from 'path';
 
 // Simple in-memory cache to prevent excessive file reads
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 type CacheEntry = {
   timestamp: number;
   data: any;

@@ -3,6 +3,10 @@
 // In the POST or GET function, update the validation and application of discount codes
 
 // Example: Update Coupon interface
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 interface Coupon {
   id: string;
   code: string;

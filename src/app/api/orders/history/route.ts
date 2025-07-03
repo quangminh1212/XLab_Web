@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth/next';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 interface OrderItem {
   productId: string;
   productName: string;

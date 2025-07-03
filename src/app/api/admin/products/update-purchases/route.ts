@@ -5,6 +5,9 @@ import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
 
+// Set this route to be dynamically rendered at request time
+export const dynamic = 'force-dynamic';
+
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 

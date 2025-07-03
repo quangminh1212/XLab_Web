@@ -9,6 +9,10 @@ import {
 import fs from 'fs';
 import path from 'path';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 const settingsFilePath = path.join(process.cwd(), 'data', 'settings.json');
 
 // Hàm đọc cài đặt từ file

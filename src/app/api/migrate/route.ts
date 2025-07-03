@@ -4,6 +4,10 @@ import { authOptions } from '@/lib/auth';
 import { migrateToIndividualFiles, getAllUserEmails, getUserStats } from '@/lib/userService';
 
 // Migrate data to individual user files
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);

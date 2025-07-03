@@ -6,6 +6,10 @@ import fs from 'fs/promises';
 import path from 'path';
 
 // Real bank transaction verification using Google Sheets
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 interface BankTransaction {
   transactionId: string;
   amount: number;

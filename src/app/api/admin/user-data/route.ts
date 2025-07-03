@@ -4,6 +4,10 @@ import { authOptions } from '@/lib/auth';
 import { getUserData, verifyDataIntegrity } from '@/lib/userDataManager';
 import { getUserStats } from '@/lib/sessionTracker';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
