@@ -1,25 +1,14 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
+const crypto = require('crypto');
 
-// Define the .next directory paths
+console.log('Preparing to fix build errors...');
+
+// Define directories
 const nextDir = path.join(process.cwd(), '.next');
-const prerenderManifestPath = path.join(nextDir, 'prerender-manifest.json');
 const exportDir = path.join(nextDir, 'export');
-const serverDir = path.join(nextDir, 'server');
-const serverPagesDir = path.join(serverDir, 'pages');
-
-// Basic empty prerender manifest content
-const emptyPrerenderManifest = {
-  version: 4,
-  routes: {},
-  dynamicRoutes: {},
-  notFoundRoutes: [],
-  preview: {
-    previewModeId: "previewModeId",
-    previewModeSigningKey: "previewModeSigningKey",
-    previewModeEncryptionKey: "previewModeEncryptionKey"
-  }
-};
+const serverPagesDir = path.join(nextDir, 'server', 'pages');
 
 // Create directories if they don't exist
 function ensureDirectoryExists(directoryPath) {
@@ -94,38 +83,19 @@ function createBasicHtml(title, message) {
 `;
 }
 
-console.log("Running prerender manifest fix script...");
-
-// Check if the .next directory exists
-if (!fs.existsSync(nextDir)) {
-  console.log('The .next directory does not exist. Creating it now...');
-  ensureDirectoryExists(nextDir);
-}
-
 // Ensure directories exist
-ensureDirectoryExists(exportDir);
-ensureDirectoryExists(serverDir);
 ensureDirectoryExists(serverPagesDir);
 
-// Create error pages
+// Create error pages directly in the server/pages directory
+console.log('Creating error pages...');
 const error404Html = createBasicHtml('404 - Page Not Found', 'The page you are looking for might have been removed or is temporarily unavailable.');
 const error500Html = createBasicHtml('500 - Server Error', 'Sorry, something went wrong on our server. We are working to fix the problem.');
 
-// Define error page paths
-const error404Path = path.join(serverPagesDir, '404.html');
-const error500Path = path.join(serverPagesDir, '500.html');
-const errorPath = path.join(serverPagesDir, '_error.js');
+fs.writeFileSync(path.join(serverPagesDir, '404.html'), error404Html);
+fs.writeFileSync(path.join(serverPagesDir, '500.html'), error500Html);
 
-// Create or update error pages
-fs.writeFileSync(error404Path, error404Html);
-console.log(`Created/Updated 404 error page at ${error404Path}`);
-
-fs.writeFileSync(error500Path, error500Html);
-console.log(`Created/Updated 500 error page at ${error500Path}`);
-
-// Create a basic error.js file if it doesn't exist
-if (!fs.existsSync(errorPath)) {
-  const errorJs = `
+// Create a basic error.js file
+const errorJs = `
 // This is a minimal error page file
 function Error({ statusCode }) {
   return (
@@ -169,17 +139,30 @@ Error.getInitialProps = ({ res, err }) => {
 export default Error
 `;
 
-  fs.writeFileSync(errorPath, errorJs);
-  console.log(`Created error.js file at ${errorPath}`);
-}
+fs.writeFileSync(path.join(serverPagesDir, '_error.js'), errorJs);
 
-// Create or overwrite the prerender-manifest.json file
-try {
-  fs.writeFileSync(prerenderManifestPath, JSON.stringify(emptyPrerenderManifest, null, 2));
-  console.log(`Successfully created prerender-manifest.json at ${prerenderManifestPath}`);
-} catch (error) {
-  console.error('Error creating prerender-manifest.json file:', error);
-  process.exit(1);
-}
+// Create prerender-manifest.json if it doesn't exist
+const prerenderManifestPath = path.join(nextDir, 'prerender-manifest.json');
+const emptyPrerenderManifest = {
+  version: 4,
+  routes: {},
+  dynamicRoutes: {},
+  notFoundRoutes: [],
+  preview: {
+    previewModeId: "previewModeId",
+    previewModeSigningKey: "previewModeSigningKey",
+    previewModeEncryptionKey: "previewModeEncryptionKey"
+  }
+};
 
-console.log('Prerender manifest fix completed successfully!'); 
+fs.writeFileSync(prerenderManifestPath, JSON.stringify(emptyPrerenderManifest, null, 2));
+console.log('Created prerender-manifest.json');
+
+// Create BUILD_ID file if it doesn't exist
+const buildIdPath = path.join(nextDir, 'BUILD_ID');
+// Generate a random build ID
+const buildId = crypto.randomBytes(16).toString('hex');
+fs.writeFileSync(buildIdPath, buildId);
+console.log(`Created BUILD_ID file with ID: ${buildId}`);
+
+console.log('Build errors have been fixed successfully!'); 

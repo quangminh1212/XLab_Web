@@ -1,61 +1,58 @@
 @echo off
-setlocal
+SETLOCAL EnableDelayedExpansion
 
 echo ===========================================
 echo    XLab Web - Quick Start
 echo ===========================================
 
-if "%1"=="" (
-    goto dev
-) else if "%1"=="dev" (
-    goto dev
-) else if "%1"=="prod" (
-    goto prod
-) else if "%1"=="start" (
-    goto start
-) else if "%1"=="build" (
-    goto build
-) else if "%1"=="fix" (
-    goto fix
-) else (
-    echo Invalid parameter. Use one of: dev, prod, start, build, fix
-    exit /b 1
+SET MODE=%1
+IF "%MODE%"=="" SET MODE=dev
+
+IF "%MODE%"=="dev" (
+    echo ===========================================
+    echo    XLab Web - Development Mode
+    echo ===========================================
+    echo Installing dependencies...
+    call npm install
+    echo Fixing issues before development...
+    call node scripts/fix-all-issues.js
+    echo Starting development server...
+    call npm run dev
+) ELSE IF "%MODE%"=="prod" (
+    echo ===========================================
+    echo    XLab Web - Production Mode
+    echo ===========================================
+    echo Installing dependencies...
+    call npm install
+    echo Preparing direct production server...
+    call npm run start:prod
+) ELSE IF "%MODE%"=="build" (
+    echo ===========================================
+    echo    XLab Web - Build Mode
+    echo ===========================================
+    echo Installing dependencies...
+    call npm install
+    echo Running comprehensive fixes...
+    call node scripts/fix-all-issues.js
+    echo Build complete! You can start the server with 'npm run start:direct'
+) ELSE IF "%MODE%"=="fix" (
+    echo ===========================================
+    echo    XLab Web - Fix Mode
+    echo ===========================================
+    echo Installing dependencies...
+    call npm install
+    echo Running comprehensive fixes...
+    call node scripts/fix-all-issues.js
+    echo All fixes applied successfully!
+) ELSE (
+    echo ===========================================
+    echo    XLab Web - Unknown Mode: %MODE%
+    echo ===========================================
+    echo Available modes:
+    echo   dev   - Development mode
+    echo   prod  - Production mode ^(using direct start method^)
+    echo   build - Build mode
+    echo   fix   - Fix issues only
 )
 
-:dev
-echo ===========================================
-echo    XLab Web - Development Mode
-echo ===========================================
-call npm run dev
-goto :EOF
-
-:prod
-echo ===========================================
-echo    XLab Web - Production Mode
-echo ===========================================
-echo Installing dependencies...
-call npm run fix:all
-call npm run start
-goto :EOF
-
-:start
-echo ===========================================
-echo    XLab Web - Starting Server
-echo ===========================================
-call node scripts/fix-prerender-manifest.js
-call npm run start
-goto :EOF
-
-:build
-echo ===========================================
-echo    XLab Web - Building
-echo ===========================================
-call npm run build:clean
-goto :EOF
-
-:fix
-echo ===========================================
-echo    XLab Web - Fixing Issues
-echo ===========================================
-call npm run fix:all
-goto :EOF 
+ENDLOCAL 

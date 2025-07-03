@@ -23,12 +23,24 @@ try {
     console.log('Security fix script not found, skipping');
   }
 
+  console.log('\n5. Creating build directories and error pages');
+  execSync('node scripts/fix-build-errors.js', { stdio: 'inherit' });
+
+  console.log('\n6. Fix export errors');
+  execSync('node scripts/fix-export-error.js', { stdio: 'inherit' });
+  
+  console.log('\n7. Patch Next.js build process');
+  execSync('node scripts/patch-next-build.js', { stdio: 'inherit' });
+
   // Build the application
-  console.log('\n5. Building the application');
+  console.log('\n8. Building the application');
   execSync('next build', { stdio: 'inherit' });
 
   // Fix prerender manifest
-  console.log('\n6. Fix prerender manifest');
+  console.log('\n9. Running post-build fixes');
+  execSync('node scripts/post-build.js', { stdio: 'inherit' });
+
+  console.log('\n10. Fix prerender manifest');
   execSync('node scripts/fix-prerender-manifest.js', { stdio: 'inherit' });
 
   console.log('\n='.repeat(50));

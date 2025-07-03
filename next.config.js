@@ -4,7 +4,6 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  skipErrorHashParsing: true,
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
@@ -138,20 +137,6 @@ const nextConfig = {
         ].filter(header => header.value !== ""),
       },
     ];
-  },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/404',
-          destination: '/404',
-        },
-        {
-          source: '/500',
-          destination: '/500',
-        },
-      ]
-    }
   },
 };
 
