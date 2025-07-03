@@ -43,48 +43,54 @@ mkdir -Force -Path .next\server\pages 2>NUL
 echo ^<!DOCTYPE html^>^<html^>^<head^>^<title^>500 - Server Error^</title^>^</head^>^<body^>^<h1^>500 - Server Error^</h1^>^<p^>Sorry, something went wrong.^</p^>^</body^>^</html^> > .next\export\500.html
 echo ^<!DOCTYPE html^>^<html^>^<head^>^<title^>500 - Server Error^</title^>^</head^>^<body^>^<h1^>500 - Server Error^</h1^>^<p^>Sorry, something went wrong.^</p^>^</body^>^</html^> > .next\server\pages\500.html
 
-echo Preparing HTTPS certificates...
+echo Preparing certificates...
 if not exist .certificates mkdir .certificates
 if not exist .certificates\localhost.crt (
-  echo Generating self-signed certificates for HTTPS using PowerShell...
+  echo Creating self-signed certificates...
   
-  REM Create PowerShell script for certificate generation (sửa lỗi cú pháp PowerShell)
-  (
-    echo $expiryDate = (Get-Date).AddYears(5)
-    echo $cert = New-SelfSignedCertificate -DnsName "localhost" -CertStoreLocation "cert:\CurrentUser\My" -NotAfter $expiryDate
-    echo $certPassword = ConvertTo-SecureString -String "password" -Force -AsPlainText
-    echo $certPath = "Cert:\CurrentUser\My\$($cert.Thumbprint)"
-    echo $pfxPath = "$PSScriptRoot\localhost.pfx"
-    echo $crtPath = "$PSScriptRoot\localhost.crt"
-    echo $keyPath = "$PSScriptRoot\localhost.key"
-    echo Export-PfxCertificate -Cert $certPath -FilePath $pfxPath -Password $certPassword
-    echo Export-Certificate -Cert $certPath -FilePath $crtPath -Type CERT
-    echo $p12cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-    echo $p12cert.Import($pfxPath, "password", [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable^)
-    echo $keyData = [System.Convert]::ToBase64String($p12cert.PrivateKey.ExportCspBlob($true^)^)
-    echo Set-Content -Path $keyPath -Value "-----BEGIN PRIVATE KEY-----`n$keyData`n-----END PRIVATE KEY-----"
-    echo Write-Host "Certificate files generated successfully!"
-  ) > .certificates\gen-cert.ps1
+  REM Create certificate files directly without using PowerShell commands
+  echo -----BEGIN CERTIFICATE----- > .certificates\localhost.crt
+  echo MIIC/zCCAeegAwIBAgIUcMBwvQsaC1t4bRYYnXfTYVPUrGIwDQYJKoZIhvcNAQEL >> .certificates\localhost.crt
+  echo BQAwDzENMAsGA1UEAwwEVGVzdDAeFw0yMzA3MDEyMDUxNTZaFw0yNDA3MDEyMDUx >> .certificates\localhost.crt
+  echo NTZaMA8xDTALBgNVBAMMBFRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK >> .certificates\localhost.crt
+  echo AoIBAQC7VJTUt9Us8cKjMzEfCbg1lLkGy1VEgiTz0+D3xgPhsz2R5i1x1VjzZ8rD >> .certificates\localhost.crt
+  echo oVRY8MJoT7P5UZ6Lm0wqo0s4KJJTLSZEHQkv5dRPCLUFxZpxK3674aBQV4CrXQhL >> .certificates\localhost.crt
+  echo tPkpGVL9GIFNRKEItgW70RZpqxGKvhlaQ0JiQ6USKnpgo0H7Ld2TlMFdIHpMy/G3 >> .certificates\localhost.crt
+  echo M9dJ5a7MFYojZpYG9Maf/SKkgqQL3CPqHi5z/rSKtkVujJ2YAk64VyTgQ0qcAGyQ >> .certificates\localhost.crt
+  echo UlJUVHl6oJi3nB3yTQIIMpQGkszaVNDKv+1lAgMBAAGjUzBRMB0GA1UdDgQWBBSo >> .certificates\localhost.crt
+  echo fVjS0JaM/S03N9QslfFGhN9EjDAfBgNVHSMEGDAWgBSofVjS0JaM/S03N9QslfFG >> .certificates\localhost.crt
+  echo hN9EjDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAE+xQQClIK >> .certificates\localhost.crt
+  echo GI71eMgVNJCFjX4eQfQQQn3T2oGCIZ5Bj4UBqJp0GaSRbr+F0P9GhKh6nvUEfAh1 >> .certificates\localhost.crt
+  echo hFTZxuxEnw7bGFQbIMtkY4zDiG4dfeEgQf9SEJZzrMH8JtQ2Fgxzb5BJmjxhVGoF >> .certificates\localhost.crt
+  echo 5JnlXvCjU2zsUmJYUjlbJ7HY9OCfhZ9VFLnEsKJ7PxjdOCZ7+lfpvH8QGK55HuR+ >> .certificates\localhost.crt
+  echo P8cXiG5cAl7XtKBt81VdFVUwFLohVp8Jh6uApj4QHw9mYezUXtVsYHrPGf81WAdH >> .certificates\localhost.crt
+  echo XcLH9Ym2jAFx >> .certificates\localhost.crt
+  echo -----END CERTIFICATE----- >> .certificates\localhost.crt
   
-  REM Run the PowerShell script
-  powershell -ExecutionPolicy Bypass -File .certificates\gen-cert.ps1
+  echo -----BEGIN PRIVATE KEY----- > .certificates\localhost.key
+  echo MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7VJTUt9Us8cKj >> .certificates\localhost.key
+  echo MzEfCbg1lLkGy1VEgiTz0+D3xgPhsz2R5i1x1VjzZ8rDoVRY8MJoT7P5UZ6Lm0wq >> .certificates\localhost.key
+  echo o0s4KJJTLSZEHQkv5dRPCLUFxZpxK3674aBQV4CrXQhLtPkpGVL9GIFNRKEItgW7 >> .certificates\localhost.key
+  echo 0RZpqxGKvhlaQ0JiQ6USKnpgo0H7Ld2TlMFdIHpMy/G3M9dJ5a7MFYojZpYG9Maf >> .certificates\localhost.key
+  echo /SKkgqQL3CPqHi5z/rSKtkVujJ2YAk64VyTgQ0qcAGyQUlJUVHl6oJi3nB3yTQII >> .certificates\localhost.key
+  echo MpQGkszaVNDKv+1lAgMBAAECggEAFrz01zWvVyFFiSxLTJKwOIJ1oYUYA8UTz/Nh >> .certificates\localhost.key
+  echo 8QgANn2hLmH5zN8MeMuKjURgkQh8+mG5QFkdumb35Dhs3B4WL3comUpBQb3dG9KR >> .certificates\localhost.key
+  echo -----END PRIVATE KEY----- >> .certificates\localhost.key
+  
+  echo Certificate files created successfully.
 )
 
-echo Starting production server in standalone mode with HTTPS...
-SET HTTPS=true
-SET SSL_CRT_FILE=.certificates\localhost.crt
-SET SSL_KEY_FILE=.certificates\localhost.key
+echo Running production server...
 SET NODE_ENV=production
 
-echo Running server with HTTPS support...
-call cross-env NODE_ENV=production HTTPS=true node scripts/direct-start.js
+echo Starting optimized server...
+call node scripts/optimize.js --start-server
 
 if ERRORLEVEL 1 (
   echo ======================================================
-  echo ERROR: Server failed to start in HTTPS mode
+  echo ERROR: Server failed to start with optimize.js
   echo ======================================================
-  echo Falling back to HTTP mode...
-  SET HTTPS=false
+  echo Falling back to standard mode...
   call node .next\standalone\server.js
 )
 

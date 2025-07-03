@@ -112,6 +112,7 @@ function updatePackageScripts() {
 // Process command line arguments
 const args = process.argv.slice(2);
 const isPreBuild = args.includes('--pre-build');
+const startServer = args.includes('--start-server');
 
 if (isPreBuild) {
   // Pre-build mode: just run the necessary fixes for building
@@ -119,6 +120,47 @@ if (isPreBuild) {
   utils.nextBuildFixes.fixNextErrors();
   utils.nextBuildFixes.fixFontManifest();
   logger.success('Pre-build optimizations completed');
+} else if (startServer) {
+  // Start server mode
+  logger.info('Starting optimized server...');
+  
+  // Basic server setup
+  utils.nextBuildFixes.fixNextErrors();
+  utils.nextBuildFixes.fixFontManifest();
+  utils.nextBuildFixes.createBuildManifest();
+  utils.nextBuildFixes.fixStandalone();
+  
+  logger.success('Server optimization completed');
+  
+  // Start the server
+  const { exec } = require('child_process');
+  logger.info('Starting server...');
+  
+  const serverProcess = exec('node .next/standalone/server.js', (error, stdout, stderr) => {
+    if (error) {
+      logger.error(`Server execution error: ${error}`);
+      return;
+    }
+    if (stderr) {
+      logger.error(`Server stderr: ${stderr}`);
+      return;
+    }
+    logger.info(`Server stdout: ${stdout}`);
+  });
+  
+  serverProcess.stdout.on('data', (data) => {
+    console.log(data);
+  });
+  
+  serverProcess.stderr.on('data', (data) => {
+    console.error(data);
+  });
+  
+  // Handle process termination
+  process.on('SIGINT', () => {
+    serverProcess.kill();
+    process.exit();
+  });
 } else {
   // Full optimization mode
   optimizeProjectStructure();
