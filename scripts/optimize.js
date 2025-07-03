@@ -133,34 +133,50 @@ if (isPreBuild) {
   logger.success('Server optimization completed');
   
   // Start the server
-  const { exec } = require('child_process');
+  const { spawn } = require('child_process');
   logger.info('Starting server...');
   
-  const serverProcess = exec('node .next/standalone/server.js', (error, stdout, stderr) => {
-    if (error) {
-      logger.error(`Server execution error: ${error}`);
-      return;
-    }
-    if (stderr) {
-      logger.error(`Server stderr: ${stderr}`);
-      return;
-    }
-    logger.info(`Server stdout: ${stdout}`);
-  });
+  // Kiểm tra tệp server.js trong thư mục standalone
+  const fs = require('fs');
+  const serverPath = '.next/standalone/server.js';
+  const fallbackServerPath = '.next/server.js';
   
-  serverProcess.stdout.on('data', (data) => {
-    console.log(data);
-  });
+  const startNodeServer = (path) => {
+    const serverProcess = spawn('node', [path], { 
+      stdio: 'inherit',
+      env: { ...process.env, PORT: 3000, NODE_ENV: 'production' } 
+    });
+    
+    // Handle process termination
+    process.on('SIGINT', () => {
+      serverProcess.kill();
+      process.exit();
+    });
+  };
   
-  serverProcess.stderr.on('data', (data) => {
-    console.error(data);
-  });
+  const startNextServer = () => {
+    const nextProcess = spawn('npx', ['next', 'start'], { 
+      stdio: 'inherit',
+      env: { ...process.env, PORT: 3000 } 
+    });
+    
+    // Handle process termination
+    process.on('SIGINT', () => {
+      nextProcess.kill();
+      process.exit();
+    });
+  };
   
-  // Handle process termination
-  process.on('SIGINT', () => {
-    serverProcess.kill();
-    process.exit();
-  });
+  if (fs.existsSync(serverPath)) {
+    logger.info('Using standalone server.js');
+    startNodeServer(serverPath);
+  } else if (fs.existsSync(fallbackServerPath)) {
+    logger.info('Using fallback server.js');
+    startNodeServer(fallbackServerPath);
+  } else {
+    logger.error('Server.js not found. Falling back to direct Next.js start');
+    startNextServer();
+  }
 } else {
   // Full optimization mode
   optimizeProjectStructure();

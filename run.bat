@@ -22,8 +22,11 @@ call node scripts/kill-port.js 443 --with-all
 echo Cleaning .next directory...
 if exist .next rmdir /s /q .next
 
-echo Running comprehensive fixes and build...
+echo Running comprehensive fixes...
 call node scripts/optimize.js
+
+echo Building Next.js application...
+call npx next build
 
 echo Creating required directories and files...
 if not exist .next mkdir .next
@@ -83,6 +86,13 @@ if not exist .certificates\localhost.crt (
 echo Running production server...
 SET NODE_ENV=production
 
+echo Copying necessary assets to standalone directory...
+if exist .next\standalone (
+  xcopy .next\static .next\standalone\.next\static\ /E /I /Y
+  xcopy public .next\standalone\public\ /E /I /Y
+  echo Asset copying completed
+)
+
 echo Starting optimized server...
 call node scripts/optimize.js --start-server
 
@@ -90,8 +100,8 @@ if ERRORLEVEL 1 (
   echo ======================================================
   echo ERROR: Server failed to start with optimize.js
   echo ======================================================
-  echo Falling back to standard mode...
-  call node .next\standalone\server.js
+  echo Falling back to standard Next.js start...
+  call npx next start
 )
 
 ENDLOCAL 

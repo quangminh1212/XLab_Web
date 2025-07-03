@@ -92,7 +92,7 @@ export default function CheckoutPage() {
   });
 
   // Calculate cart totals
-  const { subtotal, tax } = calculateCartTotals(cart);
+  const { subtotal } = calculateCartTotals(cart);
   const total = subtotal;
 
   // Lấy số dư người dùng
