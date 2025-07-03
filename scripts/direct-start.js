@@ -150,6 +150,15 @@ function applyFixes() {
   // Create routes manifest
   createRoutesManifest();
   
+  // Create font-manifest.json
+  const fontManifestPath = path.join(nextDir, 'server', 'font-manifest.json');
+  const emptyFontManifest = {
+    pages: {},
+    app: {}
+  };
+  fs.writeFileSync(fontManifestPath, JSON.stringify(emptyFontManifest, null, 2));
+  console.log('Created font-manifest.json');
+  
   // Create error pages
   const error404Html = createBasicHtml('404 - Page Not Found', 'The page you are looking for might have been removed or is temporarily unavailable.');
   const error500Html = createBasicHtml('500 - Server Error', 'Sorry, something went wrong on our server. We are working to fix the problem.');
@@ -170,7 +179,19 @@ function startServer() {
   
   // Determine if we're in dev or production mode
   const isDev = process.env.NODE_ENV !== 'production';
-  const command = 'next';
+  
+  // Choose between next command or direct node execution for standalone mode
+  let command, args;
+  const useStandalone = !isDev && fs.existsSync(path.join(nextDir, 'standalone', 'server.js'));
+  
+  if (useStandalone) {
+    console.log('Using standalone server mode...');
+    command = 'node';
+    args = [path.join(nextDir, 'standalone', 'server.js')];
+  } else {
+    command = 'next';
+    args = isDev ? ['dev'] : ['start'];
+  }
   
   function tryStartServer(attemptPort, attemptCount = 0) {
     if (attemptCount >= maxPortAttempts) {
@@ -181,14 +202,22 @@ function startServer() {
     
     console.log(`Starting server in ${isDev ? 'development' : 'production'} mode on port ${attemptPort}`);
     
-    const args = isDev ? ['dev', `-p`, attemptPort.toString()] : ['start', `-p`, attemptPort.toString()];
+    // Add port to arguments
+    const portArgs = [...args];
+    if (!useStandalone) {
+      portArgs.push('-p', attemptPort.toString());
+    } else {
+      // For standalone mode, we set PORT environment variable
+      process.env.PORT = attemptPort.toString();
+    }
     
-    const nextProcess = spawn(command, args, {
+    const nextProcess = spawn(command, portArgs, {
       stdio: 'inherit',
       shell: true,
       env: {
         ...process.env,
-        FORCE_COLOR: '1'
+        FORCE_COLOR: '1',
+        PORT: attemptPort.toString() // Set PORT env var regardless of mode
       }
     });
     
@@ -197,17 +226,31 @@ function startServer() {
       process.exit(1);
     });
     
+    // Set a timeout to detect if server is starting successfully
+    let serverStarted = false;
+    const serverCheckTimeout = setTimeout(() => {
+      if (!serverStarted) {
+        // If we haven't detected a port conflict yet, assume server started successfully
+        serverStarted = true;
+        console.log(`Server started successfully on port ${attemptPort}`);
+      }
+    }, 5000);
+    
     nextProcess.on('close', (code) => {
-      // If the server exited with code 1 and we got an EADDRINUSE error (checked via stderr)
-      // we should try the next port. Since we're using stdio: 'inherit', we can't directly 
-      // capture stderr here, but we can infer this issue happened when code === 1
-      if (code === 1) {
-        // Try next port
+      clearTimeout(serverCheckTimeout);
+      
+      if (code === 0) {
+        // Normal exit
+        console.log(`Server exited gracefully.`);
+        process.exit(0);
+      } else if (code === 1 && !serverStarted) {
+        // Error exit early (likely port in use)
         console.log(`Port ${attemptPort} is already in use. Trying port ${attemptPort + 1}...`);
         tryStartServer(attemptPort + 1, attemptCount + 1);
       } else {
-        console.log(`Next.js server exited with code ${code}`);
-        process.exit(code);
+        // Other error
+        console.log(`Server exited with code ${code}`);
+        process.exit(code || 1);
       }
     });
     

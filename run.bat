@@ -24,8 +24,24 @@ IF "%MODE%"=="dev" (
     echo ===========================================
     echo Installing dependencies...
     call npm install
+    
+    echo Cleaning up any existing processes...
+    powershell -Command "Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue"
+    powershell -Command "Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }"
+    timeout /t 2 > NUL
+    
     echo Killing any processes using port 3000...
     call node scripts/kill-port.js 3000
+    
+    echo Creating required directories and files...
+    if not exist .next mkdir .next
+    if not exist .next\server mkdir .next\server
+    if not exist .next\server\pages mkdir .next\server\pages
+    
+    echo Creating font-manifest.json file...
+    echo {"pages":{},"app":{}} > .next\server\font-manifest.json
+    echo Font manifest file created successfully.
+    
     echo Preparing direct production server...
     call npm run start:prod
 ) ELSE IF "%MODE%"=="build" (

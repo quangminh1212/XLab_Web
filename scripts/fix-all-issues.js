@@ -1,9 +1,27 @@
 const { execSync } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
 console.log('='.repeat(50));
 console.log('XLab Web - Fix All Issues');
 console.log('='.repeat(50));
+
+// Kiểm tra và tạo file font-manifest.json
+const nextDir = path.join(process.cwd(), '.next');
+const serverDir = path.join(nextDir, 'server');
+const fontManifestPath = path.join(serverDir, 'font-manifest.json');
+
+if (!fs.existsSync(serverDir)) {
+  fs.mkdirSync(serverDir, { recursive: true });
+}
+
+const emptyFontManifest = {
+  pages: {},
+  app: {}
+};
+
+fs.writeFileSync(fontManifestPath, JSON.stringify(emptyFontManifest, null, 2));
+console.log('Created font-manifest.json');
 
 // Run fixes in order
 try {
