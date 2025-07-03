@@ -13,7 +13,7 @@
     "postbuild": "node scripts/fix-prerender-manifest.js",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build && node scripts/post-build.js",
     "build:clean": "npx rimraf .next node_modules/.cache && npm run build",
-    "start": "node scripts/fix-prerender-manifest.js && next start",
+    "start": "cross-env NODE_ENV=production node .next/standalone/server.js",
     "start:direct": "node scripts/direct-start.js",
     "start:log": "node scripts/start-with-logger.js start",
     "start:export": "serve out -p 3000",

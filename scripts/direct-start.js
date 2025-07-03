@@ -140,6 +140,7 @@ function applyFixes() {
   // Create necessary directories
   ensureDirectoryExists(nextDir);
   ensureDirectoryExists(serverPagesDir);
+  ensureDirectoryExists(path.join(nextDir, 'standalone'));
   
   // Create prerender manifest
   createPrerenderManifest();
@@ -187,28 +188,39 @@ function startServer() {
     
     // Create empty server.js file if it doesn't exist
     const standaloneServerPath = path.join(nextDir, 'standalone', 'server.js');
-    if (!fs.existsSync(standaloneServerPath)) {
-      // Create a fully standalone server.js file to avoid Next.js warnings
-      const serverContent = `
+    
+    // Always recreate the server.js file to ensure it's up-to-date
+    console.log('Creating standalone server.js file...');
+    
+    // Create a fully standalone server.js file to avoid Next.js warnings
+    const serverContent = `
 // Patch for configuration warnings
 const originalConsoleWarn = console.warn;
 
 // Override console.warn to filter out specific warnings
 console.warn = function(...args) {
-  // Filter out the domains deprecation warning
-  const isDomainsWarning = args.length > 0 && 
-    typeof args[0] === 'string' && 
-    args[0].includes('images.domains');
-  
-  if (!isDomainsWarning) {
-    originalConsoleWarn.apply(console, args);
+  // Check if this is a warning we want to suppress
+  if (args.length > 0 && typeof args[0] === 'string') {
+    // Filter out the domains deprecation warning
+    if (args[0].includes('images.domains')) {
+      return;
+    }
+    
+    // Filter out the standalone configuration warning
+    if (args[0].includes('next start') && args[0].includes('output: standalone')) {
+      return;
+    }
   }
+  
+  // Pass through other warnings
+  originalConsoleWarn.apply(console, args);
 };
 
 // Standalone Next.js server
 const path = require('path');
 const { createServer } = require('http');
 const { parse } = require('url');
+const fs = require('fs');
 
 // This file doesn't go through babel or webpack, so can use require directly
 const next = require('next');
@@ -228,7 +240,27 @@ const app = next({
 const handle = app.getRequestHandler();
 const port = parseInt(process.env.PORT || '3000', 10);
 
+// Ensure prerender-manifest exists
+const prerenderManifestPath = path.join(process.cwd(), '.next', 'prerender-manifest.json');
+if (!fs.existsSync(prerenderManifestPath)) {
+  const emptyPrerenderManifest = {
+    version: 4,
+    routes: {},
+    dynamicRoutes: {},
+    notFoundRoutes: [],
+    preview: {
+      previewModeId: "previewModeId",
+      previewModeSigningKey: "previewModeSigningKey",
+      previewModeEncryptionKey: "previewModeEncryptionKey"
+    }
+  };
+  fs.writeFileSync(prerenderManifestPath, JSON.stringify(emptyPrerenderManifest, null, 2));
+  console.log('Created prerender-manifest.json');
+}
+
 app.prepare().then(() => {
+  console.log('Next.js app prepared, starting HTTP server...');
+  
   createServer((req, res) => {
     const parsedUrl = parse(req.url, true);
     handle(req, res, parsedUrl);
@@ -236,53 +268,133 @@ app.prepare().then(() => {
     if (err) throw err;
     console.log(\`> Ready on http://localhost:\${port}\`);
   });
+}).catch(err => {
+  console.error('Error preparing Next.js app:', err);
+  process.exit(1);
 });
-      `;
-      fs.writeFileSync(standaloneServerPath, serverContent);
-      console.log('Created standalone server.js file');
-    }
+    `;
+    
+    fs.writeFileSync(standaloneServerPath, serverContent);
+    console.log('Created standalone server.js file');
     
     console.log('Using standalone server mode for production...');
     const command = 'node';
     const args = [path.join(nextDir, 'standalone', 'server.js')];
     
-    // Start the server with the standalone script
-    const nextProcess = spawn(command, args, {
-      stdio: 'inherit',
-      shell: true,
-      env: {
-        ...process.env,
-        FORCE_COLOR: '1',
-        PORT: port.toString()
+    function tryStartStandaloneServer(attemptPort, attemptCount = 0) {
+      if (attemptCount >= maxPortAttempts) {
+        console.error(`Failed to find an available port after ${maxPortAttempts} attempts`);
+        process.exit(1);
+        return;
       }
-    });
-    
-    nextProcess.on('error', (error) => {
-      console.error('Failed to start standalone server:', error);
-      process.exit(1);
-    });
-    
-    // Handle server events
-    nextProcess.on('close', (code) => {
-      if (code === 0) {
-        console.log(`Server exited gracefully.`);
-      } else {
-        console.log(`Server exited with code ${code}`);
+      
+      console.log(`Starting standalone server on port ${attemptPort}...`);
+      
+      // Check if port is already in use before starting the server
+      try {
+        const testServer = require('net').createServer();
+        testServer.once('error', (err) => {
+          if (err.code === 'EADDRINUSE') {
+            console.log(`Port ${attemptPort} is already in use. Trying port ${attemptPort + 1}...`);
+            tryStartStandaloneServer(attemptPort + 1, attemptCount + 1);
+          } else {
+            console.error(`Error testing port ${attemptPort}:`, err);
+            process.exit(1);
+          }
+        });
+        
+        testServer.once('listening', function() {
+          testServer.close();
+          console.log(`Port ${attemptPort} is available. Starting server...`);
+          
+          const nextProcess = spawn(command, args, {
+            stdio: 'inherit',
+            shell: true,
+            env: {
+              ...process.env,
+              FORCE_COLOR: '1',
+              PORT: attemptPort.toString(),
+              NODE_ENV: 'production',
+              DEBUG: 'next*'  // Enable Next.js debug logging
+            }
+          });
+          
+          nextProcess.on('error', (error) => {
+            console.error('Failed to start standalone server:', error);
+            process.exit(1);
+          });
+          
+          // Set a timeout to detect if server is starting successfully
+          let serverStarted = false;
+          const serverCheckTimeout = setTimeout(() => {
+            if (!serverStarted) {
+              // If we haven't detected a port conflict yet, assume server started successfully
+              serverStarted = true;
+              console.log(`Server started successfully on port ${attemptPort}`);
+              
+              // Check if server is responding
+              setTimeout(() => {
+                const http = require('http');
+                const req = http.get(`http://localhost:${attemptPort}`, (res) => {
+                  console.log(`Server responded with status code: ${res.statusCode}`);
+                  let data = '';
+                  res.on('data', (chunk) => {
+                    data += chunk;
+                  });
+                  res.on('end', () => {
+                    console.log(`Response length: ${data.length} bytes`);
+                    console.log(`Server is ready and responding!`);
+                  });
+                });
+                
+                req.on('error', (err) => {
+                  console.error(`Failed to connect to server: ${err.message}`);
+                });
+                
+                req.end();
+              }, 1000);
+            }
+          }, 5000);
+          
+          nextProcess.on('close', (code) => {
+            clearTimeout(serverCheckTimeout);
+            
+            if (code === 0) {
+              // Normal exit
+              console.log(`Server exited gracefully.`);
+              process.exit(0);
+            } else if (code === 1 && !serverStarted) {
+              // Error exit early (likely port in use)
+              console.log(`Process exited with code ${code} before server could start. Port might be in use.`);
+              tryStartStandaloneServer(attemptPort + 1, attemptCount + 1);
+            } else {
+              // Other error
+              console.log(`Server exited with code ${code}`);
+              process.exit(code || 1);
+            }
+          });
+        });
+        
+        testServer.listen(attemptPort);
+      } catch (err) {
+        console.error(`Error testing port ${attemptPort}:`, err);
+        tryStartStandaloneServer(attemptPort + 1, attemptCount + 1);
       }
-      process.exit(code || 0);
-    });
+    }
     
     // Handle process signals
     process.on('SIGINT', () => {
       console.log('Received SIGINT. Shutting down gracefully...');
-      nextProcess.kill();
+      process.exit(0);
     });
     
     process.on('SIGTERM', () => {
       console.log('Received SIGTERM. Shutting down gracefully...');
-      nextProcess.kill();
+      process.exit(0);
     });
     
+    // Start the standalone server
+    tryStartStandaloneServer(port);
     return;
   }
   
