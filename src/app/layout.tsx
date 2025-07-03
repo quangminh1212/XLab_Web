@@ -1,5 +1,5 @@
 import '@/styles/globals.css';
-import '../styles/app-layout.css';
+import '../styles/index.css';
 import '@/lib/init';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
@@ -15,11 +15,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: {
-    template: siteConfig.seo.titleTemplate,
-    default: siteConfig.seo.defaultTitle,
-  },
-  description: siteConfig.seo.defaultDescription,
+  title: 'XLab Web',
+  description: 'XLab Web Application',
   applicationName: siteConfig.name,
   authors: [{ name: siteConfig.legal.companyName, url: siteConfig.url }],
   keywords: [
