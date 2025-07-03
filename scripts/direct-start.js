@@ -45,6 +45,29 @@ function createBuildId() {
   console.log(`Created BUILD_ID file with ID: ${buildId}`);
 }
 
+// Create routes-manifest.json
+function createRoutesManifest() {
+  const routesManifestPath = path.join(nextDir, 'routes-manifest.json');
+  const emptyRoutesManifest = {
+    version: 3,
+    pages404: true,
+    basePath: "",
+    redirects: [],
+    headers: [],
+    dynamicRoutes: [],
+    staticRoutes: [],
+    dataRoutes: [],
+    rewrites: {
+      beforeFiles: [],
+      afterFiles: [],
+      fallback: []
+    }
+  };
+
+  fs.writeFileSync(routesManifestPath, JSON.stringify(emptyRoutesManifest, null, 2));
+  console.log('Created routes-manifest.json');
+}
+
 // Create a basic HTML file
 function createBasicHtml(title, message) {
   return `
@@ -124,6 +147,9 @@ function applyFixes() {
   // Create BUILD_ID
   createBuildId();
   
+  // Create routes manifest
+  createRoutesManifest();
+  
   // Create error pages
   const error404Html = createBasicHtml('404 - Page Not Found', 'The page you are looking for might have been removed or is temporarily unavailable.');
   const error500Html = createBasicHtml('500 - Server Error', 'Sorry, something went wrong on our server. We are working to fix the problem.');
@@ -139,43 +165,65 @@ function applyFixes() {
 function startServer() {
   console.log('Starting Next.js server...');
   
-  const port = process.env.PORT || 3000;
+  let port = parseInt(process.env.PORT || '3000', 10);
+  const maxPortAttempts = 10; // Try up to 10 different ports
   
   // Determine if we're in dev or production mode
   const isDev = process.env.NODE_ENV !== 'production';
   const command = 'next';
-  const args = isDev ? ['dev', `-p`, port.toString()] : ['start', `-p`, port.toString()];
   
-  console.log(`Starting server in ${isDev ? 'development' : 'production'} mode on port ${port}`);
-  
-  const nextProcess = spawn(command, args, {
-    stdio: 'inherit',
-    shell: true,
-    env: {
-      ...process.env,
-      FORCE_COLOR: '1'
+  function tryStartServer(attemptPort, attemptCount = 0) {
+    if (attemptCount >= maxPortAttempts) {
+      console.error(`Failed to find an available port after ${maxPortAttempts} attempts`);
+      process.exit(1);
+      return;
     }
-  });
+    
+    console.log(`Starting server in ${isDev ? 'development' : 'production'} mode on port ${attemptPort}`);
+    
+    const args = isDev ? ['dev', `-p`, attemptPort.toString()] : ['start', `-p`, attemptPort.toString()];
+    
+    const nextProcess = spawn(command, args, {
+      stdio: 'inherit',
+      shell: true,
+      env: {
+        ...process.env,
+        FORCE_COLOR: '1'
+      }
+    });
+    
+    nextProcess.on('error', (error) => {
+      console.error('Failed to start Next.js server:', error);
+      process.exit(1);
+    });
+    
+    nextProcess.on('close', (code) => {
+      // If the server exited with code 1 and we got an EADDRINUSE error (checked via stderr)
+      // we should try the next port. Since we're using stdio: 'inherit', we can't directly 
+      // capture stderr here, but we can infer this issue happened when code === 1
+      if (code === 1) {
+        // Try next port
+        console.log(`Port ${attemptPort} is already in use. Trying port ${attemptPort + 1}...`);
+        tryStartServer(attemptPort + 1, attemptCount + 1);
+      } else {
+        console.log(`Next.js server exited with code ${code}`);
+        process.exit(code);
+      }
+    });
+    
+    process.on('SIGINT', () => {
+      console.log('Received SIGINT. Shutting down gracefully...');
+      nextProcess.kill();
+    });
+    
+    process.on('SIGTERM', () => {
+      console.log('Received SIGTERM. Shutting down gracefully...');
+      nextProcess.kill();
+    });
+  }
   
-  nextProcess.on('error', (error) => {
-    console.error('Failed to start Next.js server:', error);
-    process.exit(1);
-  });
-  
-  nextProcess.on('close', (code) => {
-    console.log(`Next.js server exited with code ${code}`);
-    process.exit(code);
-  });
-  
-  process.on('SIGINT', () => {
-    console.log('Received SIGINT. Shutting down gracefully...');
-    nextProcess.kill();
-  });
-  
-  process.on('SIGTERM', () => {
-    console.log('Received SIGTERM. Shutting down gracefully...');
-    nextProcess.kill();
-  });
+  // Start trying ports
+  tryStartServer(port);
 }
 
 // Main function
