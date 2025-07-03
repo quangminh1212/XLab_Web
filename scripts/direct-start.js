@@ -5,7 +5,8 @@ const crypto = require('crypto');
 
 // Define directories
 const nextDir = path.join(process.cwd(), '.next');
-const serverPagesDir = path.join(nextDir, 'server', 'pages');
+const serverDir = path.join(nextDir, 'server');
+const serverPagesDir = path.join(serverDir, 'pages');
 
 console.log('Starting server directly with bypass fixes...');
 
@@ -66,6 +67,16 @@ function createRoutesManifest() {
 
   fs.writeFileSync(routesManifestPath, JSON.stringify(emptyRoutesManifest, null, 2));
   console.log('Created routes-manifest.json');
+}
+
+// Create pages-manifest.json
+function createPagesManifest() {
+  const pagesManifestPath = path.join(serverDir, 'pages-manifest.json');
+  // Basic empty pages manifest
+  const emptyPagesManifest = {};
+  
+  fs.writeFileSync(pagesManifestPath, JSON.stringify(emptyPagesManifest, null, 2));
+  console.log('Created pages-manifest.json');
 }
 
 // Create a basic HTML file
@@ -139,6 +150,7 @@ function applyFixes() {
   
   // Create necessary directories
   ensureDirectoryExists(nextDir);
+  ensureDirectoryExists(serverDir);
   ensureDirectoryExists(serverPagesDir);
   ensureDirectoryExists(path.join(nextDir, 'standalone'));
   
@@ -151,14 +163,44 @@ function applyFixes() {
   // Create routes manifest
   createRoutesManifest();
   
+  // Create pages manifest - critical for server to start
+  createPagesManifest();
+  
   // Create font-manifest.json
-  const fontManifestPath = path.join(nextDir, 'server', 'font-manifest.json');
+  const fontManifestPath = path.join(serverDir, 'font-manifest.json');
   const emptyFontManifest = {
     pages: {},
     app: {}
   };
   fs.writeFileSync(fontManifestPath, JSON.stringify(emptyFontManifest, null, 2));
   console.log('Created font-manifest.json');
+  
+  // Create next-font-manifest.json - also required for server to start
+  const nextFontManifestPath = path.join(serverDir, 'next-font-manifest.json');
+  fs.writeFileSync(nextFontManifestPath, JSON.stringify(emptyFontManifest, null, 2));
+  console.log('Created next-font-manifest.json');
+  
+  // Create app-paths-manifest.json - also required for server to start
+  const appPathsManifestPath = path.join(serverDir, 'app-paths-manifest.json');
+  fs.writeFileSync(appPathsManifestPath, JSON.stringify({}, null, 2));
+  console.log('Created app-paths-manifest.json');
+  
+  // Create middleware-manifest.json - required for error handling
+  const middlewareManifestPath = path.join(serverDir, 'middleware-manifest.json');
+  const middlewareManifest = {
+    version: 1,
+    sortedMiddleware: [],
+    middleware: {},
+    functions: {},
+    staticAssets: [],
+    rsc: {
+      module: "",
+      css: [],
+      function: {}
+    }
+  };
+  fs.writeFileSync(middlewareManifestPath, JSON.stringify(middlewareManifest, null, 2));
+  console.log('Created middleware-manifest.json');
   
   // Create error pages
   const error404Html = createBasicHtml('404 - Page Not Found', 'The page you are looking for might have been removed or is temporarily unavailable.');

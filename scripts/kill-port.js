@@ -81,8 +81,8 @@ function killPort(port) {
     }
   }
   
-  // Kill all Node.js processes as a fallback
-  killAllNodeProcesses();
+  // Don't automatically kill all Node.js processes after each port kill
+  // This will be done explicitly when requested
 }
 
 function killAllNodeProcesses() {
@@ -90,13 +90,56 @@ function killAllNodeProcesses() {
   
   if (process.platform === 'win32') {
     try {
+      // First try with PowerShell for more reliable results
+      console.log('> Using PowerShell to kill all node processes...');
+      const powershellCommand = `
+        $nodeProcesses = Get-Process -Name "node" -ErrorAction SilentlyContinue;
+        if ($nodeProcesses) {
+          foreach ($process in $nodeProcesses) { 
+            Write-Host "Killing Node process: $($process.Id)";
+            Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue;
+          }
+          Write-Host "All Node.js processes terminated";
+        } else {
+          Write-Host "No Node.js processes found";
+        }
+      `;
+      
+      execSync(`powershell -Command "${powershellCommand}"`, { stdio: 'inherit' });
+      
+      // Fallback to taskkill
       execSync('taskkill /F /IM node.exe', { stdio: 'inherit' });
     } catch (error) {
       console.log('No Node.js processes to kill or they are protected');
     }
+    
+    // Additional cleanup - kill any processes related to Next.js
+    try {
+      // Look for any Next.js related processes
+      const powershellNextCommand = `
+        $nextProcesses = Get-Process | Where-Object { $_.CommandLine -like "*next*" -or $_.CommandLine -like "*.next*" } -ErrorAction SilentlyContinue;
+        if ($nextProcesses) {
+          foreach ($process in $nextProcesses) { 
+            Write-Host "Killing Next.js related process: $($process.Id)";
+            Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue;
+          }
+        }
+      `;
+      
+      execSync(`powershell -Command "${powershellNextCommand}"`, { stdio: 'inherit' });
+    } catch (error) {
+      // Ignore errors here as it's just an additional cleanup
+    }
+    
+    // Add a small delay to ensure processes are fully terminated
+    execSync('timeout /t 2 > NUL', { stdio: 'inherit' });
   } else {
     try {
-      execSync('pkill -f node', { stdio: 'inherit' });
+      // Kill all node processes on Unix-based systems
+      execSync('pkill -9 -f node || true', { stdio: 'inherit' });
+      execSync('pkill -9 -f next || true', { stdio: 'inherit' });
+      // Add a small delay
+      execSync('sleep 2', { stdio: 'inherit' });
     } catch (error) {
       console.log('No Node.js processes to kill or they are protected');
     }
@@ -105,7 +148,18 @@ function killAllNodeProcesses() {
 
 // Get port from command line arguments
 const port = process.argv[2] || 3000;
-killPort(port);
+
+// If a specific kill-all flag is passed
+if (process.argv.includes('--kill-all')) {
+  killAllNodeProcesses();
+} else {
+  killPort(port);
+  
+  // Optionally kill all Node.js processes if a second argument is passed
+  if (process.argv[3] === '--with-all') {
+    killAllNodeProcesses();
+  }
+}
 
 // Export the functions for use in other scripts
 module.exports = {

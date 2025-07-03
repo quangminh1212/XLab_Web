@@ -15,8 +15,10 @@ IF "%MODE%"=="dev" (
     echo Installing dependencies...
     call npm install
     
-    echo Killing processes on all potential ports...
-    call node scripts/kill-port.js 3000
+    echo Killing all Node.js processes and freeing ports...
+    call node scripts/kill-port.js --kill-all
+    timeout /t 2 > NUL
+    call node scripts/kill-port.js 3000 --with-all
     call node scripts/kill-port.js 3001
     call node scripts/kill-port.js 3002
     call node scripts/kill-port.js 3003
@@ -26,6 +28,9 @@ IF "%MODE%"=="dev" (
     call node scripts/kill-port.js 3007
     call node scripts/kill-port.js 3008
     call node scripts/kill-port.js 3009
+    
+    echo Cleaning .next directory...
+    if exist .next rmdir /s /q .next
     
     echo Fixing issues before development...
     call node scripts/fix-all-issues.js
@@ -43,8 +48,10 @@ IF "%MODE%"=="dev" (
     powershell -Command "Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }"
     timeout /t 2 > NUL
     
-    echo Killing processes on all potential ports...
-    call node scripts/kill-port.js 3000
+    echo Killing all Node.js processes and freeing ports...
+    call node scripts/kill-port.js --kill-all
+    timeout /t 2 > NUL
+    call node scripts/kill-port.js 3000 --with-all
     call node scripts/kill-port.js 3001
     call node scripts/kill-port.js 3002
     call node scripts/kill-port.js 3003
@@ -55,21 +62,34 @@ IF "%MODE%"=="dev" (
     call node scripts/kill-port.js 3008
     call node scripts/kill-port.js 3009
     
+    echo Cleaning .next directory...
+    if exist .next rmdir /s /q .next
+    
+    echo Running comprehensive fixes and build...
+    call node scripts/fix-all-issues.js
+    
     echo Creating required directories and files...
     if not exist .next mkdir .next
     if not exist .next\server mkdir .next\server
     if not exist .next\server\pages mkdir .next\server\pages
     if not exist .next\standalone mkdir .next\standalone
     
-    echo Creating font-manifest.json file...
+    echo Creating manifest files...
     echo {"pages":{},"app":{}} > .next\server\font-manifest.json
-    echo Font manifest file created successfully.
+    echo {"pages":{},"app":{}} > .next\server\next-font-manifest.json
+    echo {} > .next\server\app-paths-manifest.json
+    echo {"version":1,"sortedMiddleware":[],"middleware":{},"functions":{},"staticAssets":[],"rsc":{"module":"","css":[],"function":{}}} > .next\server\middleware-manifest.json
+    echo Font manifest files created successfully.
     
     echo Preparing standalone server...
     echo Applying fixes for warnings...
     if exist scripts\fix-image-domains-warning.js (
         call node scripts\fix-image-domains-warning.js
     )
+    
+    echo Creating pages-manifest.json file...
+    echo {} > .next\server\pages-manifest.json
+    echo Created pages-manifest.json file.
     
     echo Starting production server in standalone mode...
     echo This uses node .next/standalone/server.js under the hood
@@ -84,6 +104,10 @@ IF "%MODE%"=="dev" (
         echo Checking port 3000 availability...
         netstat -ano | findstr :3000
         echo.
+        echo Killing all processes one more time before direct start...
+        call node scripts/kill-port.js --kill-all
+        timeout /t 2 > NUL
+        
         echo Attempting direct start with node...
         if exist .next\standalone\server.js (
             echo Trying: node .next\standalone\server.js
@@ -99,8 +123,10 @@ IF "%MODE%"=="dev" (
     echo Installing dependencies...
     call npm install
     
-    echo Killing processes on all potential ports...
-    call node scripts/kill-port.js 3000
+    echo Killing all Node.js processes and freeing ports...
+    call node scripts/kill-port.js --kill-all
+    timeout /t 2 > NUL
+    call node scripts/kill-port.js 3000 --with-all
     call node scripts/kill-port.js 3001
     call node scripts/kill-port.js 3002
     call node scripts/kill-port.js 3003
@@ -110,6 +136,9 @@ IF "%MODE%"=="dev" (
     call node scripts/kill-port.js 3007
     call node scripts/kill-port.js 3008
     call node scripts/kill-port.js 3009
+    
+    echo Cleaning .next directory...
+    if exist .next rmdir /s /q .next
     
     echo Running comprehensive fixes...
     call node scripts/fix-all-issues.js
