@@ -15,12 +15,6 @@ import RelatedProducts from '../../../components/product/RelatedProducts';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ProductOptions from '@/components/product/ProductOptions';
 
-// Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
-const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
-  loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
-  ssr: false, // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
-});
-
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
   const { t, language } = useLanguage();
