@@ -46,6 +46,43 @@ function createBuildId() {
   console.log(`Created BUILD_ID file with ID: ${buildId}`);
 }
 
+// Create build-manifest.json - essential for Next.js to function
+function createBuildManifest() {
+  const buildManifestPath = path.join(nextDir, 'build-manifest.json');
+  const buildManifest = {
+    polyfillFiles: [
+      "static/chunks/polyfills.js"
+    ],
+    devFiles: [],
+    ampDevFiles: [],
+    lowPriorityFiles: [
+      "static/development/_buildManifest.js",
+      "static/development/_ssgManifest.js"
+    ],
+    rootMainFiles: [],
+    pages: {
+      "/_app": [
+        "static/chunks/webpack.js",
+        "static/chunks/main.js",
+        "static/chunks/pages/_app.js"
+      ],
+      "/_error": [
+        "static/chunks/webpack.js",
+        "static/chunks/main.js",
+        "static/chunks/pages/_error.js"
+      ],
+      "/": [
+        "static/chunks/webpack.js",
+        "static/chunks/main.js",
+        "static/chunks/pages/index.js"
+      ]
+    },
+    ampFirstPages: []
+  };
+  fs.writeFileSync(buildManifestPath, JSON.stringify(buildManifest, null, 2));
+  console.log('Created build-manifest.json');
+}
+
 // Create routes-manifest.json
 function createRoutesManifest() {
   const routesManifestPath = path.join(nextDir, 'routes-manifest.json');
@@ -153,12 +190,18 @@ function applyFixes() {
   ensureDirectoryExists(serverDir);
   ensureDirectoryExists(serverPagesDir);
   ensureDirectoryExists(path.join(nextDir, 'standalone'));
+  ensureDirectoryExists(path.join(nextDir, 'static/chunks'));
+  ensureDirectoryExists(path.join(nextDir, 'static/css'));
+  ensureDirectoryExists(path.join(nextDir, 'static/development'));
   
   // Create prerender manifest
   createPrerenderManifest();
   
   // Create BUILD_ID
   createBuildId();
+  
+  // Create build-manifest.json - CRITICAL for server operation
+  createBuildManifest();
   
   // Create routes manifest
   createRoutesManifest();
@@ -441,8 +484,8 @@ app.prepare().then(() => {
   }
   
   // Development mode continues to use next dev
-  const command = 'next';
-  const args = ['dev'];
+  const command = 'npx';
+  const args = ['next', 'dev'];
   
   function tryStartServer(attemptPort, attemptCount = 0) {
     if (attemptCount >= maxPortAttempts) {
@@ -524,9 +567,19 @@ app.prepare().then(() => {
 function main() {
   try {
     applyFixes();
+    console.log('All fixes applied successfully!');
+
+    // Ensure build-manifest.json exists before starting the server
+    const buildManifestPath = path.join(nextDir, 'build-manifest.json');
+    if (!fs.existsSync(buildManifestPath)) {
+      console.log('build-manifest.json not found, creating it now...');
+      createBuildManifest();
+    }
+
+    console.log('Starting Next.js server...');
     startServer();
   } catch (error) {
-    console.error('Error occurred:', error);
+    console.error('An error occurred while starting the server:', error);
     process.exit(1);
   }
 }

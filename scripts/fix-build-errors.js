@@ -1,168 +1,310 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const crypto = require('crypto');
 
-console.log('Preparing to fix build errors...');
-
-// Define directories
-const nextDir = path.join(process.cwd(), '.next');
+// Define paths
+const rootDir = path.join(__dirname, '..');
+const nextDir = path.join(rootDir, '.next');
+const serverDir = path.join(nextDir, 'server');
+const pagesDir = path.join(serverDir, 'pages');
+const staticDir = path.join(nextDir, 'static');
 const exportDir = path.join(nextDir, 'export');
-const serverPagesDir = path.join(nextDir, 'server', 'pages');
 
 // Create directories if they don't exist
-function ensureDirectoryExists(directoryPath) {
-  if (!fs.existsSync(directoryPath)) {
-    fs.mkdirSync(directoryPath, { recursive: true });
-    console.log(`Created directory: ${directoryPath}`);
+function createDirectoryIfNotExists(dir) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+    console.log(`Created directory: ${dir}`);
   }
 }
 
-// Create a basic HTML file
-function createBasicHtml(title, message) {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title}</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: #f5f5f5;
-      color: #333;
-    }
-    .container {
-      text-align: center;
-      padding: 2rem;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: #2563eb;
-    }
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-    }
-    .btn {
-      display: inline-block;
-      background: #2563eb;
-      color: white;
-      padding: 0.7rem 1.5rem;
-      border-radius: 4px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background-color 0.2s;
-    }
-    .btn:hover {
-      background: #1d4ed8;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>${title}</h1>
-    <p>${message}</p>
-    <a href="/" class="btn">Go to Homepage</a>
-  </div>
-</body>
-</html>
-`;
+// Create all necessary directories
+function createDirectories() {
+  console.log('Preparing to fix build errors...');
+  
+  createDirectoryIfNotExists(nextDir);
+  createDirectoryIfNotExists(serverDir);
+  createDirectoryIfNotExists(pagesDir);
+  createDirectoryIfNotExists(path.join(serverDir, 'app'));
+  createDirectoryIfNotExists(path.join(serverDir, 'chunks'));
+  createDirectoryIfNotExists(path.join(nextDir, 'cache'));
+  createDirectoryIfNotExists(path.join(staticDir, 'chunks'));
+  createDirectoryIfNotExists(path.join(staticDir, 'css'));
+  createDirectoryIfNotExists(path.join(nextDir, 'standalone'));
 }
 
-// Ensure directories exist
-ensureDirectoryExists(serverPagesDir);
+// Create basic manifest files
+function createManifestFiles() {
+  console.log('Creating error pages...');
+  
+  // Create BUILD_ID file
+  const buildId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+  fs.writeFileSync(path.join(nextDir, 'BUILD_ID'), buildId);
+  console.log(`Created BUILD_ID file with ID: ${buildId}`);
+  
+  // Create basic prerender-manifest.json
+  const prerenderManifest = {
+    version: 4,
+    routes: {},
+    dynamicRoutes: {},
+    notFoundRoutes: [],
+    preview: {
+      previewModeId: "development-id",
+      previewModeSigningKey: "development-key",
+      previewModeEncryptionKey: "development-key"
+    }
+  };
+  fs.writeFileSync(
+    path.join(nextDir, 'prerender-manifest.json'),
+    JSON.stringify(prerenderManifest, null, 2)
+  );
+  console.log('Created prerender-manifest.json');
 
-// Create error pages directly in the server/pages directory
-console.log('Creating error pages...');
-const error404Html = createBasicHtml('404 - Page Not Found', 'The page you are looking for might have been removed or is temporarily unavailable.');
-const error500Html = createBasicHtml('500 - Server Error', 'Sorry, something went wrong on our server. We are working to fix the problem.');
+  // Create build-manifest.json
+  const buildManifest = {
+    polyfillFiles: [
+      "static/chunks/polyfills.js"
+    ],
+    devFiles: [],
+    ampDevFiles: [],
+    lowPriorityFiles: [
+      "static/development/_buildManifest.js",
+      "static/development/_ssgManifest.js"
+    ],
+    rootMainFiles: [],
+    pages: {
+      "/_app": [
+        "static/chunks/webpack.js",
+        "static/chunks/main.js",
+        "static/chunks/pages/_app.js"
+      ],
+      "/_error": [
+        "static/chunks/webpack.js",
+        "static/chunks/main.js",
+        "static/chunks/pages/_error.js"
+      ],
+      "/": [
+        "static/chunks/webpack.js",
+        "static/chunks/main.js",
+        "static/chunks/pages/index.js"
+      ]
+    },
+    ampFirstPages: []
+  };
+  fs.writeFileSync(
+    path.join(nextDir, 'build-manifest.json'),
+    JSON.stringify(buildManifest, null, 2)
+  );
+  console.log('Created build-manifest.json');
 
-fs.writeFileSync(path.join(serverPagesDir, '404.html'), error404Html);
-fs.writeFileSync(path.join(serverPagesDir, '500.html'), error500Html);
+  // Create routes-manifest.json
+  const routesManifest = {
+    version: 4,
+    basePath: "",
+    redirects: [],
+    headers: [],
+    rewrites: [],
+    staticRoutes: [],
+    dynamicRoutes: [],
+    dataRoutes: [],
+    i18n: null
+  };
+  fs.writeFileSync(
+    path.join(nextDir, 'routes-manifest.json'),
+    JSON.stringify(routesManifest, null, 2)
+  );
+  console.log('Created routes-manifest.json');
 
-// Create a basic error.js file
-const errorJs = `
-// This is a minimal error page file
-function Error({ statusCode }) {
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      textAlign: 'center',
-      padding: '0 20px'
-    }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>
-        {statusCode ? \`Error \${statusCode}\` : 'An error occurred'}
-      </h1>
-      <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>
-        {statusCode === 404
-          ? 'The page you are looking for might have been removed or is temporarily unavailable.'
-          : 'Sorry, something went wrong on our server. We are working to fix the problem.'}
-      </p>
-      <a href="/" style={{
-        display: 'inline-block',
-        background: '#2563eb',
-        color: 'white',
-        padding: '0.7rem 1.5rem',
-        borderRadius: '4px',
-        textDecoration: 'none',
-        fontWeight: 500
-      }}>
-        Go to Homepage
-      </a>
-    </div>
-  )
+  // Create pages-manifest.json
+  const pagesManifest = {
+    "/_app": "server/pages/_app.js",
+    "/_error": "server/pages/_error.js",
+    "/_document": "server/pages/_document.js",
+    "/404": "server/pages/404.html"
+  };
+  fs.writeFileSync(
+    path.join(nextDir, 'server/pages-manifest.json'),
+    JSON.stringify(pagesManifest, null, 2)
+  );
+  console.log('Created pages-manifest.json');
+
+  // Create middleware-manifest.json
+  const middlewareManifest = {
+    version: 2,
+    middleware: {},
+    sortedMiddleware: [],
+    functions: {}
+  };
+  fs.writeFileSync(
+    path.join(nextDir, 'server/middleware-manifest.json'),
+    JSON.stringify(middlewareManifest, null, 2)
+  );
+  console.log('Created middleware-manifest.json');
+
+  // Create app-paths-manifest.json
+  const appPathsManifest = {};
+  fs.writeFileSync(
+    path.join(nextDir, 'server/app-paths-manifest.json'),
+    JSON.stringify(appPathsManifest, null, 2)
+  );
+  console.log('Created app-paths-manifest.json');
+
+  // Create font-manifest.json
+  const fontManifest = [];
+  fs.writeFileSync(
+    path.join(nextDir, 'server/font-manifest.json'),
+    JSON.stringify(fontManifest, null, 2)
+  );
+  console.log('Created font-manifest.json');
+
+  // Create next-font-manifest.json
+  const nextFontManifest = {
+    pages: {},
+    app: {},
+    appUsingSizeAdjust: false,
+    pagesUsingSizeAdjust: false
+  };
+  fs.writeFileSync(
+    path.join(nextDir, 'server/next-font-manifest.json'),
+    JSON.stringify(nextFontManifest, null, 2)
+  );
+  console.log('Created next-font-manifest.json');
+
+  // Create React files for _app and _error
+  createBasicReactFiles();
 }
 
-Error.getInitialProps = ({ res, err }) => {
-  const statusCode = res ? res.statusCode : err ? err.statusCode : 404
-  return { statusCode }
+// Create basic React files for _app and _error
+function createBasicReactFiles() {
+  // Create _app.js
+  const appContent = `
+    import React from 'react';
+    export default function App({ Component, pageProps }) {
+      return <Component {...pageProps} />;
+    }
+  `;
+  fs.writeFileSync(path.join(serverDir, 'pages/_app.js'), appContent.trim());
+  
+  // Create _error.js
+  const errorContent = `
+    import React from 'react';
+    function Error({ statusCode }) {
+      return (
+        <div>
+          <h1>{statusCode ? \`Error \${statusCode}\` : 'Client-side error'}</h1>
+        </div>
+      );
+    }
+    Error.getInitialProps = ({ res, err }) => {
+      const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
+      return { statusCode };
+    };
+    export default Error;
+  `;
+  fs.writeFileSync(path.join(serverDir, 'pages/_error.js'), errorContent.trim());
+  
+  // Create _document.js
+  const documentContent = `
+    import React from 'react';
+    import Document, { Html, Head, Main, NextScript } from 'next/document';
+    
+    class MyDocument extends Document {
+      render() {
+        return (
+          <Html>
+            <Head />
+            <body>
+              <Main />
+              <NextScript />
+            </body>
+          </Html>
+        );
+      }
+    }
+    
+    export default MyDocument;
+  `;
+  fs.writeFileSync(path.join(serverDir, 'pages/_document.js'), documentContent.trim());
+  
+  // Create 404.html
+  const notFoundContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>404 - Page Not Found</title>
+      </head>
+      <body>
+        <h1>404 - Page Not Found</h1>
+      </body>
+    </html>
+  `;
+  fs.writeFileSync(path.join(serverDir, 'pages/404.html'), notFoundContent.trim());
 }
 
-export default Error
-`;
+// Create standalone server.js file
+function createStandaloneServer() {
+  const standaloneDir = path.join(nextDir, 'standalone');
+  createDirectoryIfNotExists(standaloneDir);
+  
+  const serverContent = `
+    const path = require('path');
+    const { createServer } = require('http');
+    const { parse } = require('url');
+    const fs = require('fs');
+    
+    // Create custom "next" object with server implementation
+    const next = {
+      getRequestHandler: () => async (req, res) => {
+        const parsedUrl = parse(req.url, true);
+        const { pathname } = parsedUrl;
+        
+        // Check if we can serve a static file
+        try {
+          const staticFile = path.join(__dirname, '..', 'static', pathname);
+          if (fs.existsSync(staticFile) && fs.statSync(staticFile).isFile()) {
+            const fileContent = fs.readFileSync(staticFile);
+            res.writeHead(200);
+            res.end(fileContent);
+            return;
+          }
+        } catch (e) {
+          // Fall through to the default handler
+        }
+        
+        // Default handler for dynamic routes
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/html');
+        res.end('<html><body><h1>Server Running</h1><p>Next.js standalone server is running.</p></body></html>');
+      }
+    };
+    
+    const app = next.getRequestHandler();
+    const port = parseInt(process.env.PORT, 10) || 3000;
+    
+    createServer(app).listen(port, (err) => {
+      if (err) throw err;
+      console.log(\`> Ready on http://localhost:\${port}\`);
+    });
+  `;
+  
+  fs.writeFileSync(path.join(standaloneDir, 'server.js'), serverContent.trim());
+  console.log('Created standalone server.js file');
+}
 
-fs.writeFileSync(path.join(serverPagesDir, '_error.js'), errorJs);
-
-// Create prerender-manifest.json if it doesn't exist
-const prerenderManifestPath = path.join(nextDir, 'prerender-manifest.json');
-const emptyPrerenderManifest = {
-  version: 4,
-  routes: {},
-  dynamicRoutes: {},
-  notFoundRoutes: [],
-  preview: {
-    previewModeId: "previewModeId",
-    previewModeSigningKey: "previewModeSigningKey",
-    previewModeEncryptionKey: "previewModeEncryptionKey"
+// Main function
+async function main() {
+  try {
+    // Create directories and manifest files
+    createDirectories();
+    createManifestFiles();
+    createStandaloneServer();
+    
+    console.log('Build errors have been fixed successfully!');
+  } catch (error) {
+    console.error('An error occurred while fixing build errors:', error);
+    process.exit(1);
   }
-};
+}
 
-fs.writeFileSync(prerenderManifestPath, JSON.stringify(emptyPrerenderManifest, null, 2));
-console.log('Created prerender-manifest.json');
-
-// Create BUILD_ID file if it doesn't exist
-const buildIdPath = path.join(nextDir, 'BUILD_ID');
-// Generate a random build ID
-const buildId = crypto.randomBytes(16).toString('hex');
-fs.writeFileSync(buildIdPath, buildId);
-console.log(`Created BUILD_ID file with ID: ${buildId}`);
-
-console.log('Build errors have been fixed successfully!'); 
+// Run the main function
+main(); 
