@@ -1,14 +1,11 @@
-import { NextResponse } from 'next/server';
-import { authOptions } from '@/lib/auth';
-import { getServerSession } from 'next-auth/next';
 import fs from 'fs';
 import path from 'path';
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 // Tạo đường dẫn đến file lưu dữ liệu
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 const dataDir = path.join(process.cwd(), 'data');
 const couponsFilePath = path.join(dataDir, 'coupons.json');
 const usersDir = path.join(dataDir, 'users');

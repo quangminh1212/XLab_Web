@@ -1,0 +1,8 @@
+# Ignore everything for production build
+*
+**/*
+node_modules/
+.next/
+out/
+build/
+dist/

@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/data/mockData';
+
 import { getProductBySlug } from '@/lib/utils';
+import { products } from '@/data/mockData';
 
 // In a real application, this would interact with a database or session store
 // For now, we'll use a mock implementation
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 export async function GET(request: Request) {
   try {
     // Get the product ID from the URL

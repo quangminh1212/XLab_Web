@@ -1,14 +1,11 @@
+import fs from 'fs';
+import path from 'path';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
-import path from 'path';
-import fs from 'fs';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 // Debug API to directly read user data file
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);

@@ -1,14 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import path from 'path';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { Product } from '@/models/ProductModel';
 import { getProductById } from '@/lib/i18n/products';
 
 // Data file path
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
 // Read product data
@@ -110,7 +107,9 @@ export async function GET(
 // PUT: Cập nhật sản phẩm
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const id = params.id;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
 
     const body = await request.json();
 
@@ -150,7 +149,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 // DELETE: Xóa sản phẩm
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const id = params.id;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
 
     if (!id) {
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });

@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/data/mockData';
+
 import { getProductBySlug, incrementDownloadCount } from '@/lib/utils';
-
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
+import { products } from '@/data/mockData';
 
 export async function GET(request: Request) {
   try {

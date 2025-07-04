@@ -8,7 +8,6 @@ import about from './about';
 import contact from './contact';
 import warranty from './warranty';
 import login from './login';
-import { terms } from './terms';
 
 // Merge all modules into one object
 const eng = {
@@ -21,7 +20,6 @@ const eng = {
   contact,
   warranty,
   login,
-  terms,
 };
 
 export default eng; 

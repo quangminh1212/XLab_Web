@@ -1,13 +1,10 @@
+import fs from 'fs';
+import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { synchronizeProducts } from '@/lib/i18n/products';
-import path from 'path';
-import fs from 'fs';
-
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {

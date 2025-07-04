@@ -1,7 +1,8 @@
-'use client';
-
 import { useState, useEffect } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
 
 interface FAQ {
   question: string;

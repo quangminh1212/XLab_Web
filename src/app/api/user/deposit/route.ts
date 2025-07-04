@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
-import {
+import { import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '../../auth/[...nextauth]/route';
+
   getUserByEmail,
   updateUserBalance,
   createTransaction,
   syncUserBalance,
   syncAllUserData,
 } from '@/lib/userService';
-
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {

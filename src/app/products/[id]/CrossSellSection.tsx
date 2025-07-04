@@ -1,8 +1,9 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
+
 import ProductGrid from '@/components/product/ProductGrid';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
 
 interface Product {
   id: string;

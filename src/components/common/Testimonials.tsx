@@ -251,10 +251,10 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
                       <div className="font-medium text-gray-900">{testimonial.name}</div>
                       {(testimonial.position || testimonial.company) && (
                         <div className="text-sm text-gray-600">
-                          {language === 'eng' && testimonial.position === 'CTO - Tech Solutions' ? 'Chief Technology Officer - Tech Solutions' :
-                           language === 'eng' && testimonial.position === 'Quản lý Marketing' ? 'Marketing Manager' : 
-                           language === 'eng' && testimonial.position === 'Nhà phát triển' ? 'Developer' :
-                           language === 'vie' && testimonial.position === 'CTO - Tech Solutions' ? 'Giám đốc Công nghệ - Tech Solutions' :
+                          {language === 'en' && testimonial.position === 'CTO - Tech Solutions' ? 'Chief Technology Officer - Tech Solutions' :
+                           language === 'en' && testimonial.position === 'Quản lý Marketing' ? 'Marketing Manager' : 
+                           language === 'en' && testimonial.position === 'Nhà phát triển' ? 'Developer' :
+                           language === 'vi' && testimonial.position === 'CTO - Tech Solutions' ? 'Giám đốc Công nghệ - Tech Solutions' :
                            testimonial.position}
                           {testimonial.position && testimonial.company && ' - '}
                           {testimonial.company}

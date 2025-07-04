@@ -1,10 +1,12 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
+import { calculateCartTotals, formatCurrency } from '@/lib/utils';
+import { useCart } from '@/components/cart/CartContext';
+
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { useCart } from '@/components/cart/CartContext';
-import { calculateCartTotals, formatCurrency } from '@/lib/utils';
-import { useState, useEffect } from 'react';
 // import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 import {
   AiOutlineShoppingCart,
@@ -226,10 +228,7 @@ export default function CartPage() {
   });
 
   // Tính tổng giá trị giỏ hàng
-  const { subtotal } = calculateCartTotals(cart);
-  
-  // Không tính thuế
-  const tax = 0;
+  const { subtotal, tax } = calculateCartTotals(cart);
 
   // Tính giảm giá từ mã coupon
   const calculateCouponDiscount = () => {
@@ -242,7 +241,7 @@ export default function CartPage() {
   const couponDiscount = calculateCouponDiscount();
 
   // Tính tổng cộng (đã trừ giảm giá)
-  const total = subtotal - couponDiscount;
+  const total = subtotal + tax - couponDiscount;
 
   // Lấy sản phẩm được đề xuất (đánh dấu là featured)
   const featuredProducts = products.filter((product: any) => product.isFeatured).slice(0, 3);

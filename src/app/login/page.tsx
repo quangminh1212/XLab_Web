@@ -1,11 +1,14 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
+import { useLanguage } from '@/contexts/LanguageContext';
+
 'use client';
 
-import { useState, useEffect } from 'react';
-import { signIn, useSession } from 'next-auth/react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useLanguage } from '@/contexts/LanguageContext';
+
 
 export default function LoginPage() {
   const { data: session, status } = useSession();

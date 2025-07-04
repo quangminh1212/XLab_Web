@@ -1,8 +1,9 @@
-'use client';
-
 import React, { useState } from 'react';
-import { useNotifications } from '@/contexts/NotificationContext';
+
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useNotifications } from '@/contexts/NotificationContext';
+
+'use client';
 
 const NotificationDemo = () => {
   const { addNotification } = useNotifications();

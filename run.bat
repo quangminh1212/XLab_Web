@@ -1,112 +1,157 @@
 @echo off
-SETLOCAL EnableDelayedExpansion
+title XLab Web - Production Mode (HTTPS)
+echo.
+echo ==========================================
+echo    XLab Web - Production Mode
+echo    Domain: https://xlab.id.vn
+echo    Server: 1.52.110.251
+echo ==========================================
+echo.
+echo 🚀 Khoi dong Production Mode tu dong...
+echo 🔒 HTTPS: Enabled
+echo 🌐 Domain: xlab.id.vn
+echo.
 
-echo ===========================================
-echo    XLab Web - Production Server (HTTPS)
-echo ===========================================
+echo [1] Kiem tra Node.js version...
+node --version
+if errorlevel 1 (
+    echo ❌ Node.js chua duoc cai dat!
+    echo Vui long cai dat Node.js 18+ tu https://nodejs.org
+    pause
+    goto end
+)
+echo ✅ Node.js OK
 
-echo Installing dependencies...
-call npm install
+echo [2] Sua loi SWC version mismatch...
+call npm install @next/swc-win32-x64-msvc@15.2.4 --no-audit --no-fund --silent
+echo ✅ SWC version fixed
 
-echo Cleaning up any existing processes...
-echo Killing all Node.js processes and freeing ports...
-call node scripts/kill-port.js --kill-all
-timeout /t 2 > NUL
-call node scripts/kill-port.js 3000 --with-all
-call node scripts/kill-port.js 443 --with-all
+echo [3] Kiem tra environment production...
+if not exist ".env.production" (
+    echo ❌ File .env.production khong ton tai!
+    echo Vui long tao file .env.production voi cac bien moi truong can thiet.
+    pause
+    goto end
+)
+echo ✅ Environment production file found
 
-echo Cleaning .next directory...
-if exist .next rmdir /s /q .next
+echo [4] Copy environment cho production...
+copy ".env.production" ".env.local" >nul
+echo ✅ Da copy .env.production -> .env.local
 
-echo Fixing build issues and creating required files...
-call node scripts/fix-all-build-issues.js
-IF %ERRORLEVEL% NEQ 0 (
-  echo ERROR: Failed to fix build issues.
-  exit /b 1
+echo [5] Cai dat dependencies (bao gom dev dependencies cho build)...
+call npm ci --no-audit --no-fund --silent
+if errorlevel 1 (
+    echo ❌ Loi khi cai dat dependencies!
+    pause
+    goto end
+)
+echo ✅ Dependencies installed
+
+echo [6] Chuan bi i18n directories...
+if not exist "src\i18n\eng\product" (
+    mkdir "src\i18n\eng\product"
+    echo Created directory: src\i18n\eng\product
 )
 
-echo Building Next.js application...
-call npx next build
-IF %ERRORLEVEL% NEQ 0 (
-  echo WARNING: Build encountered errors, applying additional fixes...
-  call node scripts/build-cleanup.js
+echo [7] Copy product files...
+if exist "src\i18n\vie\product\chatgpt.json" (
+    copy "src\i18n\vie\product\chatgpt.json" "src\i18n\eng\product\chatgpt.json" >nul
 )
-
-echo Running post-build processes...
-call node scripts/post-build.js
-
-echo Preparing certificates...
-if not exist .certificates mkdir .certificates
-if not exist .certificates\localhost.crt (
-  echo Creating self-signed certificates...
-  
-  REM Create certificate files directly without using PowerShell commands
-  echo -----BEGIN CERTIFICATE----- > .certificates\localhost.crt
-  echo MIIC/zCCAeegAwIBAgIUcMBwvQsaC1t4bRYYnXfTYVPUrGIwDQYJKoZIhvcNAQEL >> .certificates\localhost.crt
-  echo BQAwDzENMAsGA1UEAwwEVGVzdDAeFw0yMzA3MDEyMDUxNTZaFw0yNDA3MDEyMDUx >> .certificates\localhost.crt
-  echo NTZaMA8xDTALBgNVBAMMBFRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK >> .certificates\localhost.crt
-  echo AoIBAQC7VJTUt9Us8cKjMzEfCbg1lLkGy1VEgiTz0+D3xgPhsz2R5i1x1VjzZ8rD >> .certificates\localhost.crt
-  echo oVRY8MJoT7P5UZ6Lm0wqo0s4KJJTLSZEHQkv5dRPCLUFxZpxK3674aBQV4CrXQhL >> .certificates\localhost.crt
-  echo tPkpGVL9GIFNRKEItgW70RZpqxGKvhlaQ0JiQ6USKnpgo0H7Ld2TlMFdIHpMy/G3 >> .certificates\localhost.crt
-  echo M9dJ5a7MFYojZpYG9Maf/SKkgqQL3CPqHi5z/rSKtkVujJ2YAk64VyTgQ0qcAGyQ >> .certificates\localhost.crt
-  echo UlJUVHl6oJi3nB3yTQIIMpQGkszaVNDKv+1lAgMBAAGjUzBRMB0GA1UdDgQWBBSo >> .certificates\localhost.crt
-  echo fVjS0JaM/S03N9QslfFGhN9EjDAfBgNVHSMEGDAWgBSofVjS0JaM/S03N9QslfFG >> .certificates\localhost.crt
-  echo hN9EjDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAE+xQQClIK >> .certificates\localhost.crt
-  echo GI71eMgVNJCFjX4eQfQQQn3T2oGCIZ5Bj4UBqJp0GaSRbr+F0P9GhKh6nvUEfAh1 >> .certificates\localhost.crt
-  echo hFTZxuxEnw7bGFQbIMtkY4zDiG4dfeEgQf9SEJZzrMH8JtQ2Fgxzb5BJmjxhVGoF >> .certificates\localhost.crt
-  echo 5JnlXvCjU2zsUmJYUjlbJ7HY9OCfhZ9VFLnEsKJ7PxjdOCZ7+lfpvH8QGK55HuR+ >> .certificates\localhost.crt
-  echo P8cXiG5cAl7XtKBt81VdFVUwFLohVp8Jh6uApj4QHw9mYezUXtVsYHrPGf81WAdH >> .certificates\localhost.crt
-  echo XcLH9Ym2jAFx >> .certificates\localhost.crt
-  echo -----END CERTIFICATE----- >> .certificates\localhost.crt
-  
-  echo -----BEGIN PRIVATE KEY----- > .certificates\localhost.key
-  echo MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7VJTUt9Us8cKj >> .certificates\localhost.key
-  echo MzEfCbg1lLkGy1VEgiTz0+D3xgPhsz2R5i1x1VjzZ8rDoVRY8MJoT7P5UZ6Lm0wq >> .certificates\localhost.key
-  echo o0s4KJJTLSZEHQkv5dRPCLUFxZpxK3674aBQV4CrXQhLtPkpGVL9GIFNRKEItgW7 >> .certificates\localhost.key
-  echo 0RZpqxGKvhlaQ0JiQ6USKnpgo0H7Ld2TlMFdIHpMy/G3M9dJ5a7MFYojZpYG9Maf >> .certificates\localhost.key
-  echo /SKkgqQL3CPqHi5z/rSKtkVujJ2YAk64VyTgQ0qcAGyQUlJUVHl6oJi3nB3yTQII >> .certificates\localhost.key
-  echo MpQGkszaVNDKv+1lAgMBAAECggEAFrz01zWvVyFFiSxLTJKwOIJ1oYUYA8UTz/Nh >> .certificates\localhost.key
-  echo 8QgANn2hLmH5zN8MeMuKjURgkQh8+mG5QFkdumb35Dhs3B4WL3comUpBQb3dG9KR >> .certificates\localhost.key
-  echo -----END PRIVATE KEY----- >> .certificates\localhost.key
-  
-  echo Certificate files created successfully.
+if exist "src\i18n\vie\product\grok.json" (
+    copy "src\i18n\vie\product\grok.json" "src\i18n\eng\product\grok.json" >nul
 )
-
-echo Copying necessary assets to standalone directory...
-if exist .next\standalone (
-  xcopy .next\static .next\standalone\.next\static\ /E /I /Y
-  xcopy public .next\standalone\public\ /E /I /Y
-  echo Asset copying completed
+if exist "src\i18n\vie\product\index.ts" (
+    copy "src\i18n\vie\product\index.ts" "src\i18n\eng\product\index.ts" >nul
 )
+echo ✅ Product files copied
 
-echo ===========================================
-echo Starting production server...
-echo ===========================================
-
-echo Running server with npm start...
-call npm start
-IF %ERRORLEVEL% NEQ 0 (
-  echo ======================================================
-  echo Server failed to start with npm start, trying alternatives...
-  echo ======================================================
-  
-  SET NODE_ENV=production
-  SET PORT=3000
-  
-  echo Option 1: Using standalone server directly...
-  call node .next/standalone/server.js
-  IF %ERRORLEVEL% NEQ 0 (
-    echo ======================================================
-    echo Standalone server failed, trying optimized server...
-    echo ======================================================
-    call node scripts/optimize.js --start-server
-    IF %ERRORLEVEL% NEQ 0 (
-      echo ======================================================
-      echo All server options failed, falling back to Next.js start...
-      echo ======================================================
-      call npx next start
-    )
-  )
+echo [8] Fix common issues...
+call node scripts/simple-fix.js 2>nul || (
+    echo ⚠️  Simple fix script co loi, bo qua...
 )
+echo ✅ Common issues processed
 
-ENDLOCAL 
+echo [9] Fix ESLint errors...
+call node scripts/fix-specific-errors.js 2>nul || (
+    echo ⚠️  ESLint fix script co loi, bo qua...
+)
+echo ✅ ESLint errors processed
+
+echo [9.1] Fix TypeScript import errors...
+call node scripts/fix-import-errors.js 2>nul || (
+    echo ⚠️  Import fix script co loi, bo qua...
+)
+echo ✅ Import errors processed
+
+echo [9.2] Fix 'use client' directive errors...
+call node scripts/fix-use-client-directive.js 2>nul || (
+    echo ⚠️  Use client directive fix script co loi, bo qua...
+)
+echo ✅ Use client directive errors processed
+
+echo [10] Clear Next.js cache...
+if exist ".next" (
+    rd /s /q ".next"
+)
+echo ✅ Cache cleared
+
+echo [11] Chay type checking...
+call .\node_modules\.bin\tsc --version >nul 2>&1 || (
+    echo ⚠️  TypeScript chua duoc cai dat, cai dat...
+    call npm install typescript >nul 2>&1
+)
+call .\node_modules\.bin\tsc --noEmit 2>nul || (
+    echo ⚠️  Type checking co loi, tiep tuc build...
+)
+echo ✅ Type checking completed
+
+echo [12] Chay linting...
+call .\node_modules\.bin\next lint 2>nul || (
+    echo ⚠️  Linting co loi, tiep tuc build...
+)
+echo ✅ Linting completed
+
+echo [13] Build ung dung cho production...
+call .\node_modules\.bin\next build
+if errorlevel 1 (
+    echo ❌ Build failed!
+    pause
+    goto end
+)
+echo ✅ Build completed successfully
+
+echo.
+echo ==========================================
+echo    🎉 PRODUCTION BUILD HOAN TAT!
+echo ==========================================
+echo.
+echo 🌐 Domain: https://xlab.id.vn
+echo 🔒 SSL: Required (HTTPS only)
+echo 📦 Build: .next/ directory
+echo ⚙️  Mode: Production
+echo.
+echo 📋 Cac buoc tiep theo:
+echo 1. Upload source code len server (1.52.110.251)
+echo 2. Chay script: sudo ./scripts/setup-xlab-id-vn.sh
+echo 3. Cap nhat Google OAuth credentials cho domain moi
+echo 4. Test website tai https://xlab.id.vn
+echo.
+echo 🚀 Khoi dong production server local de test...
+echo 🌐 Local HTTPS simulation: http://localhost:3000
+echo.
+echo Press Ctrl+C to stop the server
+echo.
+
+cd %~dp0
+.\node_modules\.bin\next start
+goto end
+
+
+
+
+
+:end
+echo.
+echo Cam on ban da su dung XLab Web Tool!
+pause

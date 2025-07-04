@@ -1,12 +1,9 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import fs from 'fs/promises';
 import path from 'path';
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
 
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const NOTIFICATIONS_FILE = path.join(process.cwd(), 'data', 'notifications.json');
 

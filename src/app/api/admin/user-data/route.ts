@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+
+import { authOptions } from '../../auth/[...nextauth]/route';
 import { getUserData, verifyDataIntegrity } from '@/lib/userDataManager';
 import { getUserStats } from '@/lib/sessionTracker';
-
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {

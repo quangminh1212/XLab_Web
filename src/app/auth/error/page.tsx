@@ -1,8 +1,8 @@
-'use client';
-
+import Link from 'next/link';
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+
+'use client';
 
 export default function AuthErrorPage() {
   const searchParams = useSearchParams();

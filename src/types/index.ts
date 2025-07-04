@@ -1,12 +1,3 @@
-/**
- * Core application types
- * 
- * This file centralizes all shared types used across the application
- */
-
-/**
- * Product related types
- */
 export interface Product {
   id: string;
   name: string;
@@ -18,7 +9,6 @@ export interface Product {
   images?: string[] | { url: string; alt: string }[];
   descriptionImages?: string[];
   price: number;
-  originalPrice?: number;
   salePrice?: number;
   categoryId: string;
   storeId?: string;
@@ -53,19 +43,8 @@ export interface Product {
     originalPrice: number;
     features: string[];
   }[];
-  defaultProductOption?: string;
-  optionPrices?: { 
-    [key: string]: { 
-      price: number; 
-      originalPrice: number 
-    } 
-  };
-  productOptions?: string[];
 }
 
-/**
- * Category related types
- */
 export interface Category {
   id: string;
   name: string;
@@ -75,9 +54,6 @@ export interface Category {
   productCount: number;
 }
 
-/**
- * Store related types
- */
 export interface Store {
   id: string;
   name: string;
@@ -90,57 +66,15 @@ export interface Store {
   createdAt: string;
 }
 
-/**
- * User related types
- */
 export interface User {
   id: string;
   name: string;
   email: string;
   image?: string;
-  role: 'USER' | 'ADMIN' | 'STORE_OWNER';
-  stores?: Store[];
+  role: 'USER' | 'ADMIN';
 }
 
 export interface Session {
   user?: User;
   expires: string;
-}
-
-/**
- * Cart related types
- */
-export interface CartItem {
-  id: string;
-  name: string;
-  version?: string;
-  price: number;
-  quantity: number;
-  image: string;
-  options?: {
-    name: string;
-    value: string;
-  }[];
-}
-
-export interface Cart {
-  items: CartItem[];
-  subtotal: number;
-  tax: number;
-  total: number;
-}
-
-/**
- * Order related types
- */
-export interface Order {
-  id: string;
-  userId: string;
-  items: CartItem[];
-  status: 'processing' | 'confirmed' | 'completed' | 'cancelled';
-  subtotal: number;
-  tax: number;
-  total: number;
-  createdAt: string;
-  paymentMethod: string;
 }

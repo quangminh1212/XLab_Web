@@ -1,0 +1,48 @@
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#F3F4F6" />
+  
+  <!-- Step 1: Speak -->
+  <circle cx="120" cy="200" r="70" fill="white" stroke="#3B82F6" stroke-width="3" />
+  <rect x="95" y="160" width="50" height="70" rx="25" fill="#3B82F6" />
+  <rect x="110" y="230" width="20" height="20" fill="#3B82F6" />
+  <path d="M80 190C80 170 80 150 120 150C160 150 160 170 160 190" stroke="#3B82F6" stroke-width="3" stroke-linecap="round" fill="none" />
+  <text x="120" y="300" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1F2937" text-anchor="middle">Speak</text>
+  
+  <!-- Arrow 1 -->
+  <path d="M190 200L270 200" stroke="#9CA3AF" stroke-width="3" />
+  <path d="M270 200L250 190L250 210L270 200Z" fill="#9CA3AF" />
+  
+  <!-- Step 2: Process -->
+  <circle cx="400" cy="200" r="70" fill="white" stroke="#3B82F6" stroke-width="3" />
+  <rect x="360" y="170" width="80" height="60" rx="5" fill="#3B82F6" />
+  <line x1="375" y1="185" x2="425" y2="185" stroke="white" stroke-width="2" />
+  <line x1="375" y1="200" x2="425" y2="200" stroke="white" stroke-width="2" />
+  <line x1="375" y1="215" x2="425" y2="215" stroke="white" stroke-width="2" />
+  <text x="400" y="300" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1F2937" text-anchor="middle">Process</text>
+  
+  <!-- Arrow 2 -->
+  <path d="M470 200L550 200" stroke="#9CA3AF" stroke-width="3" />
+  <path d="M550 200L530 190L530 210L550 200Z" fill="#9CA3AF" />
+  
+  <!-- Step 3: Complete -->
+  <circle cx="680" cy="200" r="70" fill="white" stroke="#3B82F6" stroke-width="3" />
+  <path d="M650 200L670 220L710 180" stroke="#10B981" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="680" y="300" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1F2937" text-anchor="middle">Complete</text>
+  
+  <!-- Title -->
+  <text x="400" y="60" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E40AF" text-anchor="middle">Speech-to-Text Workflow</text>
+  <text x="400" y="95" font-family="Arial, sans-serif" font-size="18" fill="#6B7280" text-anchor="middle">Fast, accurate voice transcription in three simple steps</text>
+  
+  <!-- Status indicator -->
+  <rect x="300" y="350" width="200" height="10" rx="5" fill="#E5E7EB" />
+  <rect x="300" y="350" width="200" height="10" rx="5" fill="url(#progress)" />
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="progress" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+  </defs>
+</svg> 

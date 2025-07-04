@@ -15,13 +15,8 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
-<<<<<<< HEAD
-  output: 'standalone',
-  outputFileTracing: true,
-=======
   output: 'standalone', // For Docker deployment
   trailingSlash: false,
->>>>>>> dev_21
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
@@ -36,10 +31,17 @@ const nextConfig = {
         'www.xlab.id.vn'
       ],
     },
-    optimizeCss: false,
+    optimizeCss: true,
     optimisticClientCache: true,
   },
   images: {
+    domains: [
+      'via.placeholder.com',
+      'placehold.co',
+      'i.pravatar.cc',
+      'images.unsplash.com',
+      'lh3.googleusercontent.com',
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -70,10 +72,6 @@ const nextConfig = {
       fullUrl: process.env.NODE_ENV !== 'production',
     },
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-
   webpack: (config, { dev, isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,

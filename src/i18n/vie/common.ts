@@ -243,14 +243,6 @@ const common = {
   'checkout.termsAgreement': 'Bằng cách đặt hàng, bạn đồng ý với {terms} và {privacy} của chúng tôi.',
   'checkout.terms': 'Điều khoản dịch vụ',
   'checkout.privacy': 'Chính sách bảo mật',
-  
-  // Error pages
-  'pageNotFound': 'Không tìm thấy trang',
-  'pageNotFoundMessage': 'Trang bạn đang tìm kiếm có thể đã bị xóa hoặc tạm thời không khả dụng.',
-  'serverError': 'Lỗi máy chủ',
-  'serverErrorMessage': 'Xin lỗi, đã xảy ra sự cố với máy chủ của chúng tôi. Chúng tôi đang khắc phục sự cố.',
-  'redirectingHome': 'Chuyển hướng về trang chủ trong',
-  'backToHome': 'Về trang chủ',
 };
 
 export default common; 

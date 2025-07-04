@@ -1,13 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { Product } from '@/models/ProductModel';
 
 // Data file path
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
 // Read product data
@@ -25,7 +22,7 @@ function getProducts(): Product[] {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const products = getProducts();
 
@@ -47,7 +44,7 @@ export async function GET(request: NextRequest) {
       productsWithPurchases: productsWithPurchases.length,
       products: simplifiedProducts,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error checking product data:', error);
     return NextResponse.json(
       {

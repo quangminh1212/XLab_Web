@@ -1,9 +1,8 @@
-'use client';
-
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 
+'use client';
 interface UserVoucher {
   code: string;
   name: string;

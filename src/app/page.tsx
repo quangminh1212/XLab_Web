@@ -1,16 +1,19 @@
-'use client';
-
-// Thêm comment này để kiểm tra hot-reload
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { CartItem } from '@/components/cart/CartContext';
+import { useSession } from 'next-auth/react';
+
 import ProductCard from '@/components/product/ProductCard';
+import { CartItem } from '@/components/cart/CartContext';
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+'use client';
+
+
+
+// Thêm comment này để kiểm tra hot-reload
 // Types
 interface Product {
   id: string;

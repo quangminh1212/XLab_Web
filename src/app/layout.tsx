@@ -1,10 +1,11 @@
-import '@/styles/globals.css';
-import '../styles/index.css';
-import '@/lib/init';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import { siteConfig } from '@/config/siteConfig';
+
+import '../styles/app-layout.css';
+import '@/lib/init';
+import '@/styles/globals.css';
 import { ClientLayoutWrapper } from '@/components/layout';
+import { siteConfig } from '@/config/siteConfig';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -15,8 +16,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'XLab Web',
-  description: 'XLab Web Application',
+  title: {
+    template: siteConfig.seo.titleTemplate,
+    default: siteConfig.seo.defaultTitle,
+  },
+  description: siteConfig.seo.defaultDescription,
   applicationName: siteConfig.name,
   authors: [{ name: siteConfig.legal.companyName, url: siteConfig.url }],
   keywords: [

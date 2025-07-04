@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { removeFromUserCart, getUserCart } from '@/lib/userService';
 
 // Remove item from cart
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);

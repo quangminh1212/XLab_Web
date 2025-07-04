@@ -1,9 +1,9 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-
-export default function ServicesPage(): JSX.Element | null {
+export default function ServicesPage() {
   const router = useRouter();
 
   useEffect(() => {

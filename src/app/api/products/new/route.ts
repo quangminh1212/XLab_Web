@@ -1,15 +1,12 @@
-import { NextResponse } from 'next/server';
-import { products } from '@/data/mockData';
-import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
+import { NextResponse } from 'next/server';
+
+import { Product } from '@/models/ProductModel';
+import { products } from '@/data/mockData';
 import { saveProduct } from '@/lib/i18n/products';
 
 // Hàm tạo ID từ tên sản phẩm
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 function generateIdFromName(name: string): string {
   return name
     .toLowerCase()

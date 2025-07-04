@@ -1,9 +1,10 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+
 import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
 
 interface Notification {
   id: string;
@@ -273,16 +274,13 @@ function NotificationsPage() {
 
   // Clear messages after 5 seconds
   useEffect(() => {
-    const timer = (successMessage || errorMessage)
-      ? setTimeout(() => {
-          setSuccessMessage('');
-          setErrorMessage('');
-        }, 5000)
-      : undefined;
-
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
   }, [successMessage, errorMessage]);
 
   // Save settings

@@ -14,7 +14,10 @@ try {
 }
 
 /**
- * CSS & UI Utilities
+ * Kết hợp các class CSS với clsx và tailwind-merge
+ * Cho phép kết hợp nhiều className động và loại bỏ các class trùng lặp
+ * @param inputs Danh sách các class cần kết hợp
+ * @returns Chuỗi class đã được kết hợp
  */
 export function cn(...inputs: ClassValue[]) {
   try {
@@ -30,17 +33,26 @@ export function containerClass(...additionalClasses: ClassValue[]) {
 }
 
 /**
- * Currency & Formatting Utilities
+ * Lấy đơn vị tiền tệ dựa trên ngôn ngữ
  */
 export function getCurrencyByLanguage(language: Language = 'vie') {
   return language === 'eng' ? 'USD' : 'VND';
 }
 
+/**
+ * Lấy tỉ giá quy đổi từ VND sang USD
+ */
 export function getExchangeRate() {
   return 24000; // Tỉ giá ước tính VND/USD
 }
 
+/**
+ * Format a number as currency based on the current language
+ * @param amount Số tiền (trong VND)
+ * @param language Ngôn ngữ hiện tại ('vie' hoặc 'eng')
+ */
 export function formatCurrency(amount: number, language?: Language): string {
+  // Lấy ngôn ngữ hiện tại từ localStorage nếu không được truyền vào
   let currentLang = language;
   
   if (!currentLang && typeof window !== 'undefined') {
@@ -52,7 +64,9 @@ export function formatCurrency(amount: number, language?: Language): string {
     }
   }
   
+  // Định dạng tiền tệ dựa trên ngôn ngữ
   if (currentLang === 'eng') {
+    // English - USD
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -60,6 +74,7 @@ export function formatCurrency(amount: number, language?: Language): string {
       maximumFractionDigits: 2
     }).format(amount / getExchangeRate());
   } else {
+    // Vietnamese - VND
     return new Intl.NumberFormat('vi-VN', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
@@ -67,6 +82,9 @@ export function formatCurrency(amount: number, language?: Language): string {
   }
 }
 
+/**
+ * Format a date to a readable string
+ */
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('vi-VN', {
     day: '2-digit',
@@ -75,24 +93,33 @@ export function formatDate(date: Date): string {
   }).format(new Date(date));
 }
 
-export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
-
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
 /**
- * String manipulation utilities
+ * Truncate a string to a specified length
  */
 export function truncateString(str: string, length: number): string {
   if (str.length <= length) return str;
   return str.slice(0, length) + '...';
 }
 
+/**
+ * Get the category name from its ID
+ */
+export function getCategoryName(categoryId: string, categories: any[]): string {
+  const category = categories.find((cat) => cat.id === categoryId);
+  return category ? category.name : 'Unknown';
+}
+
+/**
+ * Get store name from its ID
+ */
+export function getStoreName(storeId: string, stores: any[]): string {
+  const store = stores.find((store) => store.id === storeId);
+  return store ? store.name : 'Unknown';
+}
+
+/**
+ * Derive a URL-friendly slug from a string
+ */
 export function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -102,21 +129,23 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-export function getFileExtension(filename: string): string {
-  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
-}
-
 /**
- * User & Permission Utilities
+ * Check if a user has admin role
  */
 export function isAdmin(user: any): boolean {
   return user?.role === 'ADMIN';
 }
 
+/**
+ * Check if a user is a store owner
+ */
 export function isStoreOwner(user: any): boolean {
   return user?.role === 'STORE_OWNER';
 }
 
+/**
+ * Check if a user owns a specific store
+ */
 export function ownsStore(user: any, storeId: string): boolean {
   if (!user || !storeId) return false;
   if (isAdmin(user)) return true;
@@ -124,24 +153,25 @@ export function ownsStore(user: any, storeId: string): boolean {
 }
 
 /**
- * Data Utilities
+ * Calculates the discount percentage
  */
-export function getCategoryName(categoryId: string, categories: any[]): string {
-  const category = categories.find((cat) => cat.id === categoryId);
-  return category ? category.name : 'Unknown';
-}
-
-export function getStoreName(storeId: string, stores: any[]): string {
-  const store = stores.find((store) => store.id === storeId);
-  return store ? store.name : 'Unknown';
-}
-
 export function calculateDiscountPercentage(originalPrice: number, salePrice: number): number {
   if (!salePrice || originalPrice <= 0) return 0;
   const discount = ((originalPrice - salePrice) / originalPrice) * 100;
   return Math.round(discount);
 }
 
+/**
+ * Truncates text to a specific length
+ */
+export function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + '...';
+}
+
+/**
+ * Generates a random color based on a string
+ */
 export function stringToColor(str: string): string {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -158,7 +188,27 @@ export function stringToColor(str: string): string {
 }
 
 /**
- * Performance Utilities
+ * Gets file extension from filename
+ */
+export function getFileExtension(filename: string): string {
+  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
+}
+
+/**
+ * Formats file size to human readable format
+ */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * Creates a debounced function
  */
 export function debounce<T extends (...args: any[]) => any>(
   fn: T,
@@ -172,8 +222,9 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 /**
- * Product Related Utilities
+ * Gets a product by slug from mockData
  */
+// Caching mechanism for storing view counts
 const viewCountCache: Record<string, number> = {};
 const downloadCountCache: Record<string, number> = {};
 
@@ -183,61 +234,81 @@ products.forEach((product) => {
   downloadCountCache[product.slug] = product.downloadCount || 0;
 });
 
+/**
+ * Get product by slug
+ */
 export function getProductBySlug(slug: string): Product | undefined {
   if (!slug) return undefined;
   return products.find((product) => product.slug === slug);
 }
 
+/**
+ * Increment and get product view count
+ */
 export function incrementViewCount(slug: string): number {
   if (!slug) return 0;
-  
-  const count = (viewCountCache[slug] || 0) + 1;
-  viewCountCache[slug] = count;
-  
-  // Lưu vào localStorage để giữ dữ liệu giữa các phiên
+
+  const product = getProductBySlug(slug);
+  if (!product) return 0;
+
   try {
-    if (typeof window !== 'undefined') {
-      const storedCounts = JSON.parse(localStorage.getItem('productViewCounts') || '{}');
-      storedCounts[slug] = count;
-      localStorage.setItem('productViewCounts', JSON.stringify(storedCounts));
+    if (typeof product.viewCount !== 'number') {
+      product.viewCount = 0;
     }
+    product.viewCount += 1;
+
+    // Cập nhật cache
+    viewCountCache[slug] = product.viewCount;
+
+    return product.viewCount;
   } catch (error) {
-    console.error('Failed to save view count to localStorage', error);
+    console.error(`Lỗi khi tăng lượt xem cho ${slug}:`, error);
+    return viewCountCache[slug] || 0;
   }
-  
-  return count;
-}
-
-export function incrementDownloadCount(slug: string): number {
-  if (!slug) return 0;
-  
-  const count = (downloadCountCache[slug] || 0) + 1;
-  downloadCountCache[slug] = count;
-  
-  try {
-    if (typeof window !== 'undefined') {
-      const storedCounts = JSON.parse(localStorage.getItem('productDownloadCounts') || '{}');
-      storedCounts[slug] = count;
-      localStorage.setItem('productDownloadCounts', JSON.stringify(storedCounts));
-    }
-  } catch (error) {
-    console.error('Failed to save download count to localStorage', error);
-  }
-  
-  return count;
-}
-
-export function getViewCount(slug: string): number {
-  return viewCountCache[slug] || 0;
-}
-
-export function getDownloadCount(slug: string): number {
-  return downloadCountCache[slug] || 0;
 }
 
 /**
- * Shopping Cart Utilities
+ * Increment and get product download count
  */
+export function incrementDownloadCount(slug: string): number {
+  if (!slug) return 0;
+
+  const product = getProductBySlug(slug);
+  if (!product) return 0;
+
+  try {
+    if (typeof product.downloadCount !== 'number') {
+      product.downloadCount = 0;
+    }
+    product.downloadCount += 1;
+
+    // Cập nhật cache
+    downloadCountCache[slug] = product.downloadCount;
+
+    return product.downloadCount;
+  } catch (error) {
+    console.error(`Lỗi khi tăng lượt tải cho ${slug}:`, error);
+    return downloadCountCache[slug] || 0;
+  }
+}
+
+/**
+ * Get current view count
+ */
+export function getViewCount(slug: string): number {
+  if (!slug) return 0;
+  return viewCountCache[slug] || 0;
+}
+
+/**
+ * Get current download count
+ */
+export function getDownloadCount(slug: string): number {
+  if (!slug) return 0;
+  return downloadCountCache[slug] || 0;
+}
+
+// Cart type definitions
 export interface CartItem {
   id: string;
   name: string;
@@ -247,42 +318,45 @@ export interface CartItem {
   image: string;
 }
 
+// Cart utility functions
 export const getCartFromLocalStorage = (): CartItem[] => {
   if (typeof window === 'undefined') return [];
+
   try {
-    const cart = localStorage.getItem('cart');
-    return cart ? JSON.parse(cart) : [];
+    const cartData = localStorage.getItem('cart');
+    return cartData ? JSON.parse(cartData) : [];
   } catch (error) {
-    console.error('Failed to get cart from localStorage', error);
+    console.error('Error getting cart from localStorage:', error);
     return [];
   }
 };
 
 export const saveCartToLocalStorage = (cart: CartItem[]): void => {
   if (typeof window === 'undefined') return;
+
   try {
     localStorage.setItem('cart', JSON.stringify(cart));
   } catch (error) {
-    console.error('Failed to save cart to localStorage', error);
+    console.error('Error saving cart to localStorage:', error);
   }
 };
 
 export const addItemToCart = (cart: CartItem[], item: CartItem): CartItem[] => {
   const existingItemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
-  
+
   if (existingItemIndex >= 0) {
-    return cart.map((cartItem, index) =>
-      index === existingItemIndex
-        ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
-        : cartItem
-    );
+    // Item already exists, update quantity
+    const newCart = [...cart];
+    newCart[existingItemIndex].quantity += item.quantity;
+    return newCart;
+  } else {
+    // Add new item
+    return [...cart, item];
   }
-  
-  return [...cart, item];
 };
 
 export const removeItemFromCart = (cart: CartItem[], itemId: string): CartItem[] => {
-  return cart.filter((cartItem) => cartItem.id !== itemId);
+  return cart.filter((item) => item.id !== itemId);
 };
 
 export const updateItemQuantity = (
@@ -290,9 +364,12 @@ export const updateItemQuantity = (
   itemId: string,
   quantity: number,
 ): CartItem[] => {
-  return cart.map((cartItem) =>
-    cartItem.id === itemId ? { ...cartItem, quantity: Math.max(1, quantity) } : cartItem
-  );
+  return cart.map((item) => {
+    if (item.id === itemId) {
+      return { ...item, quantity: Math.max(1, quantity) };
+    }
+    return item;
+  });
 };
 
 export const clearCart = (): CartItem[] => {
@@ -303,8 +380,9 @@ export const clearCart = (): CartItem[] => {
 };
 
 export const calculateCartTotals = (cart: CartItem[]) => {
-  const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
-  const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  
-  return { itemCount, subtotal };
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const tax = 0; // Không tính thuế
+  const total = subtotal; // Tổng cộng bằng tạm tính
+
+  return { subtotal, tax, total };
 };

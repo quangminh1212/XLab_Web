@@ -1,13 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { Product } from '@/models/ProductModel';
 
 // Data file path
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
 // Read product data
@@ -34,7 +31,7 @@ function saveProducts(products: Product[]): void {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const products = getProducts();
     let updatedCount = 0;
@@ -62,7 +59,7 @@ export async function GET(request: NextRequest) {
       success: true,
       message: `Đã thêm số lượt mua cho ${updatedCount} sản phẩm`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error adding purchase counts:', error);
     return NextResponse.json(
       {

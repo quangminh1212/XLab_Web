@@ -3,10 +3,6 @@
 // In the POST or GET function, update the validation and application of discount codes
 
 // Example: Update Coupon interface
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
-
 interface Coupon {
   id: string;
   code: string;
@@ -38,6 +34,5 @@ interface Coupon {
 //   // Logic for cashback
 //   // For cashback, the discount amount is still calculated but will be marked as cashback
 //   // to be processed in the post-payment step
-export {};
 // }
-// ... existing code ...
+// ... existing code ... 

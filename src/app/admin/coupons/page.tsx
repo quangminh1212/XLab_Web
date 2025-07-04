@@ -1,10 +1,11 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import withAdminAuth from '@/components/withAdminAuth';
+import { useState, useEffect } from 'react';
+
 import VoucherUsageList from '@/components/admin/VoucherUsageList';
+import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
 
 interface Coupon {
   id: string;
@@ -330,7 +331,7 @@ function CouponsPage() {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString(language === 'vie' ? 'vi-VN' : 'en-US');
+    ).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
   };
 
   // Check if coupon is expired
@@ -462,19 +463,13 @@ function CouponsPage() {
 
   // Clear messages
   useEffect(() => {
-    const timer = (successMessage || errorMessage)
-      ? setTimeout(() => {
-          setSuccessMessage('');
-          setErrorMessage('');
-        }, 5000)
-      : undefined;
-
-    // Always return a cleanup function to satisfy the type checker
-    return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
   }, [successMessage, errorMessage]);
 
   // Phân chia mã giảm giá thành nhóm còn hạn và hết hạn

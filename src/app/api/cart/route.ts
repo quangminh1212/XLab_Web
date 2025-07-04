@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
-import {
+import { import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+
   getUserCart,
   updateUserCart,
   updateUserCartSync,
@@ -9,10 +10,6 @@ import {
   removeFromUserCart,
   clearUserCart,
 } from '@/lib/userService';
-
-
-// Set this route to be dynamically rendered at request time
-export const dynamic = "force-dynamic";
 
 export interface CartItem {
   id: string;

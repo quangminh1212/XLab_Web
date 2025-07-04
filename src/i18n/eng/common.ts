@@ -241,14 +241,6 @@ const common = {
   'checkout.termsAgreement': 'By placing an order, you agree to our {terms} and {privacy}.',
   'checkout.terms': 'Terms of Service',
   'checkout.privacy': 'Privacy Policy',
-  
-  // Error pages
-  'pageNotFound': 'Page Not Found',
-  'pageNotFoundMessage': 'The page you are looking for might have been removed or is temporarily unavailable.',
-  'serverError': 'Server Error',
-  'serverErrorMessage': 'Sorry, something went wrong on our server. We are working to fix the problem.',
-  'redirectingHome': 'Redirecting to home page in',
-  'backToHome': 'Back to Home',
 };
 
 export default common; 

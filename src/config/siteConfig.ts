@@ -7,7 +7,7 @@ export const siteConfig = {
   // Thông tin cơ bản
   name: 'XLab',
   description: 'Tối ưu hiệu quả, tối thiểu chi phí!',
-  url: 'https://xlab.vn',
+  url: 'https://xlab.id.vn',
 
   // Thông tin liên hệ
   contact: {
@@ -19,10 +19,10 @@ export const siteConfig = {
 
   // Mạng xã hội
   social: {
-    facebook: 'https://facebook.com/xlabvn',
-    twitter: 'https://twitter.com/xlabvn',
-    github: 'https://github.com/xlabvn',
-    linkedin: 'https://linkedin.com/company/xlabvn',
+    facebook: 'https://facebook.com/xlabidvn',
+    twitter: 'https://twitter.com/xlabidvn',
+    github: 'https://github.com/xlabidvn',
+    linkedin: 'https://linkedin.com/company/xlabidvn',
   },
 
   // Cấu hình pháp lý
@@ -40,7 +40,7 @@ export const siteConfig = {
     defaultTitle: 'XLab - Tối ưu hiệu quả, tối thiểu chi phí!',
     defaultDescription:
       'XLab cung cấp các ứng dụng, phần mềm chất lượng cao cho cá nhân và doanh nghiệp.',
-    twitterHandle: '@xlabvn',
+    twitterHandle: '@xlabidvn',
     ogImage: '/images/og-image.jpg',
   },
 

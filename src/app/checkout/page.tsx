@@ -1,15 +1,18 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
-import { useCart } from '@/components/cart/CartContext';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+
+import products from '../../../products.json';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
-import { useSession } from 'next-auth/react';
-import products from '../../../products.json';
+import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
+
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
@@ -92,7 +95,7 @@ export default function CheckoutPage() {
   });
 
   // Calculate cart totals
-  const { subtotal } = calculateCartTotals(cart);
+  const { subtotal, tax } = calculateCartTotals(cart);
   const total = subtotal;
 
   // Lấy số dư người dùng
