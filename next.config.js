@@ -9,7 +9,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
+      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002', 'xlab.id.vn', 'www.xlab.id.vn'],
     },
     optimizeCss: true,
     optimisticClientCache: true,
@@ -21,6 +21,8 @@ const nextConfig = {
       'i.pravatar.cc',
       'images.unsplash.com',
       'lh3.googleusercontent.com',
+      'xlab.id.vn',
+      'www.xlab.id.vn',
     ],
     remotePatterns: [
       {
