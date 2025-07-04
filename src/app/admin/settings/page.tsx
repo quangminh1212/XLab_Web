@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+
 import withAdminAuth from '@/components/withAdminAuth';
 import { SystemSettings, defaultSystemSettings } from '@/models/SystemSettingsModel';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 function SettingsPage() {
   const { data: session } = useSession();
   const [settings, setSettings] = useState<SystemSettings>(defaultSystemSettings);

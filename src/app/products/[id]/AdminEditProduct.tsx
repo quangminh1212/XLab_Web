@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Product } from '@/types';
+import { useState, useRef } from 'react';
 
+import { Product } from '@/types';
 interface AdminEditProductProps {
   product: Product;
   onSave: (updatedProduct: Product) => void;

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { siteConfig } from '@/config/siteConfig';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
-import RichTextContent from '@/components/common/RichTextContent';
+import { useState } from 'react';
 
+import RichTextContent from '@/components/common/RichTextContent';
+import { siteConfig } from '@/config/siteConfig';
+import { useLanguage } from '@/contexts/LanguageContext';
 export default function WarrantyPage() {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({

@@ -1,20 +1,20 @@
 'use client';
 
-import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
-import { Product as ProductType } from '@/models/ProductModel';
-import { useCart } from '@/components/cart/CartContext';
+import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import RichTextContent from '@/components/common/RichTextContent';
-import { Product as UIProduct } from '@/types';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import RelatedProducts from '../../../components/product/RelatedProducts';
-import { useLanguage } from '@/contexts/LanguageContext';
-import ProductOptions from '@/components/product/ProductOptions';
 
+import ProductOptions from '@/components/product/ProductOptions';
+import RelatedProducts from '../../../components/product/RelatedProducts';
+import RichTextContent from '@/components/common/RichTextContent';
+import { Product as ProductType } from '@/models/ProductModel';
+import { Product as UIProduct } from '@/types';
+import { formatCurrency } from '@/lib/utils';
+import { useCart } from '@/components/cart/CartContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
   loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,

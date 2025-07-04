@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useNotifications, type Notification } from '@/contexts/NotificationContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useNotifications, type Notification } from '@/contexts/NotificationContext';
 const NotificationsPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();

@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+
 import { siteConfig } from '@/config/siteConfig';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 export default function TermsPage() {
   const { t } = useLanguage();
   

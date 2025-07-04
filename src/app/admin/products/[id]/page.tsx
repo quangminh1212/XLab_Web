@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useRef, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import { Product } from '@/models/ProductModel';
-import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
-import RichTextEditor from '@/components/common/RichTextEditor';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { toast } from 'react-toastify';
-import './animations.css';
+import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
+import './animations.css';
+import RichTextEditor from '@/components/common/RichTextEditor';
+import withAdminAuth from '@/components/withAdminAuth';
+import { Product } from '@/models/ProductModel';
 // Danh sách các tùy chọn thời hạn
 const durationOptions = [
   { value: '1week', label: '1 Tuần' },

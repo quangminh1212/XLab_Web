@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import withAdminAuth from '@/components/withAdminAuth';
 
+import withAdminAuth from '@/components/withAdminAuth';
 function AdminProductRedirectPage() {
   const router = useRouter();
 
