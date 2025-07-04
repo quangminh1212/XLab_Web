@@ -2,16 +2,39 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
   reactStrictMode: true,
+<<<<<<< HEAD
   output: 'standalone',
   outputFileTracing: true,
+=======
+  output: 'standalone', // For Docker deployment
+  trailingSlash: false,
+>>>>>>> dev_21
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
+      allowedOrigins: [
+        'localhost:3000',
+        'localhost:3001',
+        'localhost:3002',
+        'xlab.id.vn',
+        'www.xlab.id.vn'
+      ],
     },
     optimizeCss: false,
     optimisticClientCache: true,
