@@ -47,10 +47,6 @@ lerna-debug.log*
 next.config.log
 next-fix-all.log
 
-# local env files
-.env*.local
-!.env.example
-
 # vercel
 .vercel
 
