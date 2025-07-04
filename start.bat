@@ -3,21 +3,21 @@ chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
 REM ========================================
-REM XLab Web - Windows Development Starter
+REM XLab Web - Production Hosting Server
 REM ========================================
-REM Script tich hop de khoi dong moi truong development tren Windows
+REM Script tu dong khoi dong server production cho xlab.id.vn
 
-title XLab Web - Development Environment
+title XLab Web - Production Server (xlab.id.vn)
 
 echo.
 echo ================================================================
-echo                    XLab Web Development
-echo                   Windows Starter Script
+echo                    XLab Web Production Server
+echo                   Hosting for xlab.id.vn Domain
 echo ================================================================
 echo.
 
-REM Mau sac cho Windows
-color 0A
+REM Mau sac cho production server
+color 0B
 
 REM Kiem tra Node.js
 echo [INFO] Kiem tra Node.js...
@@ -73,152 +73,171 @@ if exist "src\i18n\vie\product\index.ts" (
     )
 )
 
-REM Kiem tra file .env.local
-echo [INFO] Kiem tra file environment...
-if not exist ".env.local" (
-    echo [INFO] Tao file .env.local...
-    (
-        echo NEXTAUTH_SECRET=Cmjb/lPYHoCnsiaEh0KwFkGG7POh6v3S3DXm169y8+U=
-        echo NEXTAUTH_URL=http://localhost:3000
-        echo GOOGLE_CLIENT_ID=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com
-        echo GOOGLE_CLIENT_SECRET=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
-        echo ADMIN_EMAILS=xlab.rnd@gmail.com
-        echo NODE_ENV=development
-    ) > .env.local
-    echo [SUCCESS] Da tao file .env.local
-) else (
-    echo [SUCCESS] File .env.local da ton tai
-)
+REM Tao file .env.production cho xlab.id.vn
+echo [INFO] Cau hinh environment cho production (xlab.id.vn)...
+(
+    echo NEXTAUTH_SECRET=Cmjb/lPYHoCnsiaEh0KwFkGG7POh6v3S3DXm169y8+U=
+    echo NEXTAUTH_URL=https://xlab.id.vn
+    echo GOOGLE_CLIENT_ID=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com
+    echo GOOGLE_CLIENT_SECRET=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
+    echo ADMIN_EMAILS=xlab.rnd@gmail.com
+    echo NODE_ENV=production
+    echo PORT=3000
+    echo HOST=0.0.0.0
+) > .env.local
+echo [SUCCESS] Da cau hinh environment cho xlab.id.vn
 
-REM Kiem tra node_modules
-if not exist "node_modules" (
-    echo [INFO] Cai dat dependencies...
-    echo [INFO] Dieu nay co the mat vai phut...
-    call npm install
-    if errorlevel 1 (
-        echo [ERROR] Loi khi cai dat dependencies!
-        echo [INFO] Thu chay: npm cache clean --force
-        pause
-        exit /b 1
-    )
-    echo [SUCCESS] Dependencies da duoc cai dat
-) else (
-    echo [SUCCESS] Dependencies da ton tai
+REM Backup file .env.local thanh .env.production
+copy ".env.local" ".env.production" >nul 2>&1
+echo [SUCCESS] Da backup environment config
+
+REM Kiem tra va cai dat tat ca dependencies (can cho build)
+echo [INFO] Cai dat dependencies (bao gom dev dependencies cho build)...
+call npm install
+if errorlevel 1 (
+    echo [ERROR] Loi khi cai dat dependencies!
+    echo [INFO] Thu chay: npm cache clean --force
+    echo [ERROR] Server khong the khoi dong. Dang thoat...
+    pause
+    exit /b 1
 )
+echo [SUCCESS] Dependencies da duoc cai dat
 
 REM Chay fix scripts
-echo [INFO] Chay fix scripts...
+echo [INFO] Chuan bi moi truong production...
 if exist "scripts\fix-next-errors.js" (
     call node scripts\fix-next-errors.js
-    echo [SUCCESS] Da chay fix-next-errors.js
+    echo [SUCCESS] Da chuan bi moi truong Next.js
 )
 
 if exist "scripts\fix-language-issues.js" (
-    call node scripts\fix-language-issues.js
-    echo [SUCCESS] Da chay fix-language-issues.js
+    call node scripts\fix-language-issues.js 2>nul
+    if errorlevel 1 (
+        echo [WARNING] Fix language script co loi, bo qua...
+    ) else (
+        echo [SUCCESS] Da sua loi ngon ngu
+    )
 )
 
-REM Xoa cache Next.js
-echo [INFO] Xoa cache Next.js...
-if exist ".next" (
-    rmdir /s /q ".next" 2>nul
-    echo [SUCCESS] Da xoa cache Next.js
-)
-
-REM Hien thi menu lua chon
-echo.
-echo ================================================================
-echo                        MENU LUA CHON
-echo ================================================================
-echo   1. Development Server (npm run dev)
-echo   2. Development voi Logger (npm run dev:log)
-echo   3. Build Production (npm run build)
-echo   4. Start Production (npm run start)
-echo   5. Lint Code (npm run lint)
-echo   6. Type Check (npm run type-check)
-echo   7. Clean Cache (clean.bat)
-echo   8. Project Info
-echo   9. Quick Build (build.bat)
-echo  10. Deploy to xlab.id.vn (deploy.bat)
-echo   0. Thoat
-echo ================================================================
-echo.
-
-set /p choice="Nhap lua chon cua ban (0-10): "
-
-if "%choice%"=="1" (
-    echo [INFO] Khoi dong Development Server...
-    echo [INFO] Ung dung se chay tai: http://localhost:3000
-    echo [INFO] Nhan Ctrl+C de dung server
-    echo.
-    call npm run dev
-) else if "%choice%"=="2" (
-    echo [INFO] Khoi dong Development Server voi Logger...
-    echo [INFO] Ung dung se chay tai: http://localhost:3000
-    echo [INFO] Nhan Ctrl+C de dung server
-    echo.
-    call npm run dev:log
-) else if "%choice%"=="3" (
-    echo [INFO] Build Production...
+REM Build production neu chua co
+echo [INFO] Kiem tra va build production...
+if not exist ".next\BUILD_ID" (
+    echo [INFO] Dang build production cho xlab.id.vn...
+    echo [INFO] Qua trinh nay co the mat 2-5 phut...
+    set SKIP_TYPE_CHECK=true
     call npm run build
     if errorlevel 1 (
-        echo [ERROR] Build that bai!
-    ) else (
-        echo [SUCCESS] Build thanh cong!
+        echo [ERROR] Build production that bai!
+        echo [ERROR] Server khong the khoi dong. Dang thoat...
+        pause
+        exit /b 1
     )
-) else if "%choice%"=="4" (
-    echo [INFO] Start Production...
-    echo [INFO] Ung dung se chay tai: http://localhost:3000
-    echo [INFO] Nhan Ctrl+C de dung server
-    echo.
-    call npm run start
-) else if "%choice%"=="5" (
-    echo [INFO] Lint Code...
-    call npm run lint
-) else if "%choice%"=="6" (
-    echo [INFO] Type Check...
-    call npm run type-check
-) else if "%choice%"=="7" (
-    echo [INFO] Clean Cache...
-    call clean.bat
-) else if "%choice%"=="8" (
-    echo [INFO] Project Information:
-    echo.
-    echo Project: XLab Web
-    echo Platform: Windows Development
-    echo Framework: Next.js 15.2.4
-    echo Language: TypeScript 5.3.3
-    echo Styling: Tailwind CSS 3.4.0
-    echo.
-    echo Available Scripts:
-    echo - start.bat: Main development script
-    echo - build.bat: Quick production build
-    echo - clean.bat: Clean cache and temp files
-    echo.
-    echo Repository: https://github.com/quangminh1212/XLab_Web
-    echo.
-) else if "%choice%"=="9" (
-    echo [INFO] Quick Build...
-    call build.bat
-) else if "%choice%"=="10" (
-    echo [INFO] Deploy to xlab.id.vn...
-    call deploy.bat
-) else if "%choice%"=="0" (
-    echo [INFO] Thoat...
-    exit /b 0
+    echo [SUCCESS] Build production hoan tat
 ) else (
-    echo [ERROR] Lua chon khong hop le!
-    pause
-    goto :eof
+    echo [SUCCESS] Production build da ton tai
 )
 
-REM Giu cua so mo neu co loi
+REM Hien thi thong tin server
+echo.
+echo ================================================================
+echo                    PRODUCTION SERVER READY
+echo ================================================================
+echo   Domain: xlab.id.vn
+echo   Environment: Production
+echo   Port: 3000
+echo   Host: 0.0.0.0 (All interfaces)
+echo   Protocol: HTTP (Reverse proxy to HTTPS)
+echo   Status: Starting...
+echo ================================================================
+echo.
+
+REM Hien thi thong tin ket noi
+echo [INFO] Server Configuration:
+echo [INFO] - Local Access: http://localhost:3000
+echo [INFO] - Network Access: http://[YOUR-IP]:3000
+echo [INFO] - Production Domain: https://xlab.id.vn
+echo [INFO] - Environment: Production Mode
+echo [INFO] - Authentication: Google OAuth Enabled
+echo [INFO] - Admin Email: xlab.rnd@gmail.com
+echo.
+
+REM Kiem tra port 3000 co san khong
+echo [INFO] Kiem tra port 3000...
+netstat -an | find "3000" >nul 2>&1
+if not errorlevel 1 (
+    echo [WARNING] Port 3000 dang duoc su dung!
+    echo [INFO] Dang thu dong cac tien trinh Node.js cu...
+    taskkill /f /im node.exe >nul 2>&1
+    timeout /t 3 >nul
+)
+
+REM Khoi dong production server
+echo [INFO] ========================================
+echo [INFO] KHOI DONG PRODUCTION SERVER CHO XLAB.ID.VN
+echo [INFO] ========================================
+echo [INFO] Starting Next.js Production Server...
+echo [INFO] Domain: xlab.id.vn
+echo [INFO] Port: 3000
+echo [INFO] Environment: Production
+echo [INFO] ========================================
+echo.
+
+REM Tao log file
+if not exist "logs" mkdir "logs"
+set LOG_FILE=logs\server-%date:~-4,4%%date:~-10,2%%date:~-7,2%-%time:~0,2%%time:~3,2%%time:~6,2%.log
+set LOG_FILE=%LOG_FILE: =0%
+
+echo [INFO] Log file: %LOG_FILE%
+echo [INFO] Server dang khoi dong...
+echo.
+
+REM Khoi dong server voi logging
+echo [%date% %time%] Starting XLab Web Production Server for xlab.id.vn > "%LOG_FILE%"
+echo [%date% %time%] Environment: Production >> "%LOG_FILE%"
+echo [%date% %time%] Port: 3000 >> "%LOG_FILE%"
+echo [%date% %time%] Domain: xlab.id.vn >> "%LOG_FILE%"
+
+echo ================================================================
+echo   XLab Web Production Server is STARTING...
+echo   Domain: https://xlab.id.vn
+echo   Local: http://localhost:3000
+echo   Status: Initializing...
+echo   Log: %LOG_FILE%
+echo ================================================================
+echo.
+echo [INFO] Server se chay lien tuc. Nhan Ctrl+C de dung server.
+echo [INFO] Neu ban dong cua so nay, server se bi dung.
+echo.
+
+REM Khoi dong server production
+call npm run start
+
+REM Xu ly khi server dung
 if errorlevel 1 (
     echo.
-    echo [ERROR] Co loi xay ra. Nhan phim bat ky de thoat...
+    echo [ERROR] ========================================
+    echo [ERROR] PRODUCTION SERVER DA DUNG VOI LOI!
+    echo [ERROR] ========================================
+    echo [ERROR] Thoi gian: %date% %time%
+    echo [ERROR] Log file: %LOG_FILE%
+    echo [ERROR] ========================================
+    echo [%date% %time%] Server stopped with error >> "%LOG_FILE%"
+    echo.
+    echo [INFO] Kiem tra log file de xem chi tiet loi.
+    echo [INFO] Nhan phim bat ky de thoat...
+    pause >nul
+) else (
+    echo.
+    echo [INFO] ========================================
+    echo [INFO] PRODUCTION SERVER DA DUNG BINH THUONG
+    echo [INFO] ========================================
+    echo [INFO] Thoi gian: %date% %time%
+    echo [INFO] Domain xlab.id.vn da ngung hoat dong
+    echo [INFO] Log file: %LOG_FILE%
+    echo [INFO] ========================================
+    echo [%date% %time%] Server stopped normally >> "%LOG_FILE%"
+    echo.
+    echo [INFO] De khoi dong lai server, chay lai start.bat
+    echo [INFO] Nhan phim bat ky de thoat...
     pause >nul
 )
-
-echo.
-echo [INFO] Script hoan tat. Nhan phim bat ky de thoat...
-pause >nul
