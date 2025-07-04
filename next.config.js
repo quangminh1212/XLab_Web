@@ -3,13 +3,21 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'standalone', // For Docker deployment
+  trailingSlash: false,
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
+      allowedOrigins: [
+        'localhost:3000',
+        'localhost:3001',
+        'localhost:3002',
+        'xlab.vn',
+        'www.xlab.vn'
+      ],
     },
     optimizeCss: true,
     optimisticClientCache: true,

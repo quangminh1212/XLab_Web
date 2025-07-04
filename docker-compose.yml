@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  xlab-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXTAUTH_URL=https://xlab.vn
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - ADMIN_EMAILS=${ADMIN_EMAILS}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    networks:
+      - xlab-network
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - xlab-web
+    restart: unless-stopped
+    networks:
+      - xlab-network
+
+networks:
+  xlab-network:
+    driver: bridge
+
+volumes:
+  xlab-data:
+    driver: local
