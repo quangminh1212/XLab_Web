@@ -11,11 +11,12 @@
 ## 📋 Table of Contents
 
 - [Features](#-features)
+- [Quick Start](#-quick-start)
 - [Project Structure](#-project-structure)
 - [Technologies](#-technologies)
-- [Getting Started](#-getting-started)
 - [Development](#-development)
-- [Deployment](#-deployment)
+- [Production Deployment](#-production-deployment)
+- [Scripts](#-scripts)
 - [Authentication](#-authentication)
 - [Performance Optimizations](#-performance-optimizations)
 - [License](#-license)
@@ -93,60 +94,172 @@ import { formatCurrency } from '@/shared/utils';
   - [ESLint 9](https://eslint.org/) - Code linting
   - [Prettier](https://prettier.io/) - Code formatting
 
-## 🏁 Getting Started
+## 🚀 Quick Start
+
+### For Windows Users
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/quangminh1212/XLab_Web.git
+cd XLab_Web
+```
+
+2. **Run the Windows starter script:**
+```bash
+start.bat
+```
+
+The script will automatically:
+- ✅ Check Node.js and npm
+- ✅ Install dependencies
+- ✅ Set up environment files
+- ✅ Fix common issues
+- ✅ Provide a menu to start development
+
+### For Linux/macOS Users
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/quangminh1212/XLab_Web.git
+cd XLab_Web
+```
+
+2. **Install dependencies:**
+```bash
+npm install
+```
+
+3. **Start development:**
+```bash
+npm run dev
+```
+
+4. **Open [http://localhost:3000](http://localhost:3000)**
+
+## 🏁 Getting Started (Manual Setup)
 
 ### Prerequisites
 
 - Node.js 18.17.0 or higher
 - npm, yarn, or pnpm
 
-### Installation
+### Manual Installation
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd XLab_Web
-```
-
-2. Install dependencies:
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
+2. Set up environment variables:
 ```bash
-cp .env.example .env.local
-```
-
-4. Edit `.env.local` with your configuration:
-```
+# File .env.local will be created automatically
+# Or manually create with:
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret-key
-
-# Google OAuth
 GOOGLE_CLIENT_ID=your-client-id
 GOOGLE_CLIENT_SECRET=your-client-secret
-
-# Other configs
 ```
 
-5. Run the development server:
+3. Run development server:
 ```bash
 npm run dev
 ```
-
-6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## 💻 Development
 
 ### Available Scripts
 
 - `npm run dev` - Start development server
-- `npm run dev:clean` - Start development server after cleaning cache
+- `npm run dev:log` - Start development server with detailed logging
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues
+- `npm run type-check` - Run TypeScript type checking
+- `npm run format` - Format code with Prettier
+- `npm run clean` - Clean build cache
+- `npm run check` - Run lint + type-check
+
+## 🚀 Production Deployment
+
+### Automated Deployment (Linux/Ubuntu)
+
+For production deployment with HTTPS, SSL, and Nginx:
+
+```bash
+# Make script executable
+chmod +x deploy.sh
+
+# Run deployment (requires sudo)
+sudo ./deploy.sh
+```
+
+The deployment script will automatically:
+- ✅ Install Nginx, Certbot, PM2
+- ✅ Build the Next.js application
+- ✅ Configure Nginx with SSL
+- ✅ Set up Let's Encrypt SSL certificate
+- ✅ Configure PM2 process manager
+- ✅ Set up auto-renewal for SSL
+- ✅ Configure security headers
+
+### Manual Deployment
+
+1. **Build the application:**
+```bash
+npm run build
+```
+
+2. **Start with PM2:**
+```bash
+pm2 start npm --name "xlab-web" -- start
+pm2 save
+pm2 startup
+```
+
+3. **Configure Nginx** (see deploy.sh for full config)
+
+4. **Set up SSL with Let's Encrypt:**
+```bash
+sudo certbot --nginx -d yourdomain.com
+```
+
+## 📜 Scripts
+
+### Windows Scripts
+
+- **`start.bat`** - Complete Windows development environment setup
+  - Checks Node.js/npm installation
+  - Installs dependencies
+  - Sets up environment files
+  - Provides interactive menu for development tasks
+
+### Linux/macOS Scripts
+
+- **`deploy.sh`** - Complete production deployment script
+  - System dependencies installation
+  - Nginx configuration with SSL
+  - PM2 process management
+  - Let's Encrypt SSL certificate
+  - Security headers and optimization
+
+### npm Scripts
+
+| Script | Description |
+|--------|-------------|
+| `dev` | Start development server on port 3000 |
+| `dev:log` | Start development with detailed logging |
+| `build` | Build optimized production bundle |
+| `start` | Start production server |
+| `lint` | Check code with ESLint |
+| `lint:fix` | Auto-fix ESLint issues |
+| `type-check` | Run TypeScript type checking |
+| `format` | Format code with Prettier |
+| `clean` | Clean build cache and node_modules cache |
+| `check` | Run both lint and type-check |
+| `deploy` | Run production deployment script |
+| `update-purchases` | Update product purchase counts |
+| `verify-products` | Verify product data integrity |
 - `npm run format` - Format with Prettier
 - `npm run type-check` - Run TypeScript checks
 - `npm run analyze` - Analyze bundle size
