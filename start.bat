@@ -139,11 +139,12 @@ echo   6. Type Check (npm run type-check)
 echo   7. Clean Cache (clean.bat)
 echo   8. Project Info
 echo   9. Quick Build (build.bat)
+echo  10. Deploy to xlab.id.vn (deploy.bat)
 echo   0. Thoat
 echo ================================================================
 echo.
 
-set /p choice="Nhap lua chon cua ban (0-9): "
+set /p choice="Nhap lua chon cua ban (0-10): "
 
 if "%choice%"=="1" (
     echo [INFO] Khoi dong Development Server...
@@ -199,6 +200,9 @@ if "%choice%"=="1" (
 ) else if "%choice%"=="9" (
     echo [INFO] Quick Build...
     call build.bat
+) else if "%choice%"=="10" (
+    echo [INFO] Deploy to xlab.id.vn...
+    call deploy.bat
 ) else if "%choice%"=="0" (
     echo [INFO] Thoat...
     exit /b 0
