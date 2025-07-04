@@ -2,8 +2,7 @@
 import admin from './admin';
 import common from './common';
 import home from './home';
-import { testimonials } from './testimonials';
-import { terms } from './terms';
+import testimonials from './testimonials';
 import account from './account';
 import about from './about';
 import contact from './contact';
@@ -13,7 +12,6 @@ import { terms } from './terms';
 
 // Merge all modules into one object
 const eng = {
-  terms,
   admin,
   common,
   home,
