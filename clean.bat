@@ -1,79 +1,79 @@
 @echo off
-chcp 65001 >nul
+chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
 REM ========================================
 REM XLab Web - Windows Clean Script
 REM ========================================
-REM Script để dọn dẹp cache và files tạm
+REM Script de don dep cache va files tam
 
 title XLab Web - Clean Cache
 
 echo.
-echo ╔══════════════════════════════════════════════════════════════╗
-echo ║                    XLab Web - Clean                         ║
-echo ║                   Cache Cleaner                             ║
-echo ╚══════════════════════════════════════════════════════════════╝
+echo ================================================================
+echo                    XLab Web - Clean
+echo                   Cache Cleaner
+echo ================================================================
 echo.
 
 color 0E
 
-echo [INFO] Bắt đầu dọn dẹp cache...
+echo [INFO] Bat dau don dep cache...
 echo.
 
-REM Xóa .next directory
+REM Xoa .next directory
 if exist ".next" (
-    echo [INFO] Xóa .next directory...
+    echo [INFO] Xoa .next directory...
     rmdir /s /q ".next" 2>nul
-    echo [SUCCESS] ✅ Đã xóa .next
+    echo [SUCCESS] Da xoa .next
 ) else (
-    echo [INFO] .next directory không tồn tại
+    echo [INFO] .next directory khong ton tai
 )
 
-REM Xóa node_modules cache
+REM Xoa node_modules cache
 if exist "node_modules\.cache" (
-    echo [INFO] Xóa node_modules cache...
+    echo [INFO] Xoa node_modules cache...
     rmdir /s /q "node_modules\.cache" 2>nul
-    echo [SUCCESS] ✅ Đã xóa node_modules cache
+    echo [SUCCESS] Da xoa node_modules cache
 )
 
-REM Xóa npm cache
-echo [INFO] Xóa npm cache...
+REM Xoa npm cache
+echo [INFO] Xoa npm cache...
 call npm cache clean --force >nul 2>&1
-echo [SUCCESS] ✅ Đã xóa npm cache
+echo [SUCCESS] Da xoa npm cache
 
-REM Xóa TypeScript cache
+REM Xoa TypeScript cache
 if exist "*.tsbuildinfo" (
-    echo [INFO] Xóa TypeScript cache...
+    echo [INFO] Xoa TypeScript cache...
     del "*.tsbuildinfo" /q 2>nul
-    echo [SUCCESS] ✅ Đã xóa TypeScript cache
+    echo [SUCCESS] Da xoa TypeScript cache
 )
 
-REM Xóa ESLint cache
+REM Xoa ESLint cache
 if exist ".eslintcache" (
-    echo [INFO] Xóa ESLint cache...
+    echo [INFO] Xoa ESLint cache...
     del ".eslintcache" /q 2>nul
-    echo [SUCCESS] ✅ Đã xóa ESLint cache
+    echo [SUCCESS] Da xoa ESLint cache
 )
 
-REM Xóa logs
+REM Xoa logs
 if exist "*.log" (
-    echo [INFO] Xóa log files...
+    echo [INFO] Xoa log files...
     del "*.log" /q 2>nul
-    echo [SUCCESS] ✅ Đã xóa log files
+    echo [SUCCESS] Da xoa log files
 )
 
-REM Xóa temp files
+REM Xoa temp files
 if exist "*.tmp" (
-    echo [INFO] Xóa temp files...
+    echo [INFO] Xoa temp files...
     del "*.tmp" /q 2>nul
-    echo [SUCCESS] ✅ Đã xóa temp files
+    echo [SUCCESS] Da xoa temp files
 )
 
 echo.
-echo [SUCCESS] 🎉 Dọn dẹp hoàn tất!
+echo [SUCCESS] Don dep hoan tat!
 echo.
-echo [INFO] Các thư mục/files đã được dọn dẹp:
+echo [INFO] Cac thu muc/files da duoc don dep:
 echo [INFO] - .next directory
 echo [INFO] - node_modules cache
 echo [INFO] - npm cache
@@ -82,9 +82,9 @@ echo [INFO] - ESLint cache
 echo [INFO] - Log files
 echo [INFO] - Temp files
 echo.
-echo [INFO] Để cài đặt lại dependencies: npm install
-echo [INFO] Để build lại: npm run build
+echo [INFO] De cai dat lai dependencies: npm install
+echo [INFO] De build lai: npm run build
 
 echo.
-echo [INFO] Nhấn phím bất kỳ để thoát...
+echo [INFO] Nhan phim bat ky de thoat...
 pause >nul

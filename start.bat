@@ -1,79 +1,79 @@
 @echo off
-chcp 65001 >nul
+chcp 65001 >nul 2>&1
 setlocal enabledelayedexpansion
 
 REM ========================================
 REM XLab Web - Windows Development Starter
 REM ========================================
-REM Script tích hợp để khởi động môi trường development trên Windows
+REM Script tich hop de khoi dong moi truong development tren Windows
 
 title XLab Web - Development Environment
 
 echo.
-echo ╔══════════════════════════════════════════════════════════════╗
-echo ║                    XLab Web Development                     ║
-echo ║                   Windows Starter Script                    ║
-echo ╚══════════════════════════════════════════════════════════════╝
+echo ================================================================
+echo                    XLab Web Development
+echo                   Windows Starter Script
+echo ================================================================
 echo.
 
-REM Màu sắc cho Windows
+REM Mau sac cho Windows
 color 0A
 
-REM Kiểm tra Node.js
-echo [INFO] Kiểm tra Node.js...
+REM Kiem tra Node.js
+echo [INFO] Kiem tra Node.js...
 node --version >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] Node.js chưa được cài đặt!
-    echo [INFO] Vui lòng tải và cài đặt Node.js từ: https://nodejs.org/
+    echo [ERROR] Node.js chua duoc cai dat!
+    echo [INFO] Vui long tai va cai dat Node.js tu: https://nodejs.org/
     pause
     exit /b 1
 )
 
-REM Kiểm tra npm
-echo [INFO] Kiểm tra npm...
+REM Kiem tra npm
+echo [INFO] Kiem tra npm...
 npm --version >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] npm chưa được cài đặt!
+    echo [ERROR] npm chua duoc cai dat!
     pause
     exit /b 1
 )
 
-REM Hiển thị thông tin hệ thống
-echo [INFO] Thông tin hệ thống:
+REM Hien thi thong tin he thong
+echo [INFO] Thong tin he thong:
 for /f "tokens=*" %%i in ('node --version') do echo - Node.js: %%i
 for /f "tokens=*" %%i in ('npm --version') do echo - npm: %%i
 echo - OS: Windows
 echo - Mode: Development
 echo.
 
-REM Kiểm tra thư mục dự án
+REM Kiem tra thu muc du an
 if not exist "package.json" (
-    echo [ERROR] Không tìm thấy package.json!
-    echo [INFO] Vui lòng chạy script này trong thư mục gốc của dự án.
+    echo [ERROR] Khong tim thay package.json!
+    echo [INFO] Vui long chay script nay trong thu muc goc cua du an.
     pause
     exit /b 1
 )
 
-REM Tạo thư mục cần thiết
-echo [INFO] Tạo thư mục cần thiết...
+REM Tao thu muc can thiet
+echo [INFO] Tao thu muc can thiet...
 if not exist "src\i18n\eng\product" mkdir "src\i18n\eng\product"
 if not exist "src\i18n\vie\product" mkdir "src\i18n\vie\product"
 if not exist ".next\cache" mkdir ".next\cache"
-echo [SUCCESS] Đã tạo thư mục cần thiết
+echo [SUCCESS] Da tao thu muc can thiet
 
-REM Sao chép file i18n nếu cần
-echo [INFO] Kiểm tra file i18n...
+REM Sao chep file i18n neu can
+echo [INFO] Kiem tra file i18n...
 if exist "src\i18n\vie\product\index.ts" (
     if not exist "src\i18n\eng\product\index.ts" (
         copy "src\i18n\vie\product\index.ts" "src\i18n\eng\product\index.ts" >nul
-        echo [SUCCESS] Đã sao chép file i18n
+        echo [SUCCESS] Da sao chep file i18n
     )
 )
 
-REM Kiểm tra file .env.local
-echo [INFO] Kiểm tra file environment...
+REM Kiem tra file .env.local
+echo [INFO] Kiem tra file environment...
 if not exist ".env.local" (
-    echo [INFO] Tạo file .env.local...
+    echo [INFO] Tao file .env.local...
     (
         echo NEXTAUTH_SECRET=Cmjb/lPYHoCnsiaEh0KwFkGG7POh6v3S3DXm169y8+U=
         echo NEXTAUTH_URL=http://localhost:3000
@@ -82,97 +82,97 @@ if not exist ".env.local" (
         echo ADMIN_EMAILS=xlab.rnd@gmail.com
         echo NODE_ENV=development
     ) > .env.local
-    echo [SUCCESS] Đã tạo file .env.local
+    echo [SUCCESS] Da tao file .env.local
 )
 
-REM Cài đặt dependencies
-echo [INFO] Cài đặt dependencies...
-echo [INFO] Điều này có thể mất vài phút...
+REM Cai dat dependencies
+echo [INFO] Cai dat dependencies...
+echo [INFO] Dieu nay co the mat vai phut...
 call npm install
 if errorlevel 1 (
-    echo [ERROR] Lỗi khi cài đặt dependencies!
-    echo [INFO] Thử chạy: npm cache clean --force
+    echo [ERROR] Loi khi cai dat dependencies!
+    echo [INFO] Thu chay: npm cache clean --force
     pause
     exit /b 1
 )
-echo [SUCCESS] Dependencies đã được cài đặt
+echo [SUCCESS] Dependencies da duoc cai dat
 
-REM Chạy fix scripts
-echo [INFO] Chạy fix scripts...
+REM Chay fix scripts
+echo [INFO] Chay fix scripts...
 if exist "scripts\fix-next-errors.js" (
     call node scripts\fix-next-errors.js
-    echo [SUCCESS] Đã chạy fix-next-errors.js
+    echo [SUCCESS] Da chay fix-next-errors.js
 )
 
 if exist "scripts\fix-language-issues.js" (
     call node scripts\fix-language-issues.js
-    echo [SUCCESS] Đã chạy fix-language-issues.js
+    echo [SUCCESS] Da chay fix-language-issues.js
 )
 
-REM Xóa cache Next.js
-echo [INFO] Xóa cache Next.js...
+REM Xoa cache Next.js
+echo [INFO] Xoa cache Next.js...
 if exist ".next" (
     rmdir /s /q ".next" 2>nul
-    echo [SUCCESS] Đã xóa cache Next.js
+    echo [SUCCESS] Da xoa cache Next.js
 )
 
-REM Hiển thị menu lựa chọn
+REM Hien thi menu lua chon
 echo.
-echo ╔══════════════════════════════════════════════════════════════╗
-echo ║                        MENU LỰA CHỌN                        ║
-echo ╠══════════════════════════════════════════════════════════════╣
-echo ║  1. 🚀 Development Server (npm run dev)                     ║
-echo ║  2. 📝 Development với Logger (npm run dev:log)             ║
-echo ║  3. 🔨 Build Production (npm run build)                     ║
-echo ║  4. ⚡ Start Production (npm run start)                     ║
-echo ║  5. 🔍 Lint Code (npm run lint)                             ║
-echo ║  6. 📋 Type Check (npm run type-check)                      ║
-echo ║  7. 🧹 Clean Cache (clean.bat)                              ║
-echo ║  8. 📊 Project Info                                         ║
-echo ║  9. 🔧 Quick Build (build.bat)                              ║
-echo ║  0. ❌ Thoát                                                 ║
-echo ╚══════════════════════════════════════════════════════════════╝
+echo ================================================================
+echo                        MENU LUA CHON
+echo ================================================================
+echo   1. Development Server (npm run dev)
+echo   2. Development voi Logger (npm run dev:log)
+echo   3. Build Production (npm run build)
+echo   4. Start Production (npm run start)
+echo   5. Lint Code (npm run lint)
+echo   6. Type Check (npm run type-check)
+echo   7. Clean Cache (clean.bat)
+echo   8. Project Info
+echo   9. Quick Build (build.bat)
+echo   0. Thoat
+echo ================================================================
 echo.
 
-set /p choice="Nhập lựa chọn của bạn (0-9): "
+set /p choice="Nhap lua chon cua ban (0-9): "
 
 if "%choice%"=="1" (
-    echo [INFO] 🚀 Khởi động Development Server...
-    echo [INFO] Ứng dụng sẽ chạy tại: http://localhost:3000
-    echo [INFO] Nhấn Ctrl+C để dừng server
+    echo [INFO] Khoi dong Development Server...
+    echo [INFO] Ung dung se chay tai: http://localhost:3000
+    echo [INFO] Nhan Ctrl+C de dung server
     echo.
     call npm run dev
 ) else if "%choice%"=="2" (
-    echo [INFO] 📝 Khởi động Development Server với Logger...
-    echo [INFO] Ứng dụng sẽ chạy tại: http://localhost:3000
-    echo [INFO] Nhấn Ctrl+C để dừng server
+    echo [INFO] Khoi dong Development Server voi Logger...
+    echo [INFO] Ung dung se chay tai: http://localhost:3000
+    echo [INFO] Nhan Ctrl+C de dung server
     echo.
     call npm run dev:log
 ) else if "%choice%"=="3" (
-    echo [INFO] 🔨 Build Production...
+    echo [INFO] Build Production...
     call npm run build
     if errorlevel 1 (
-        echo [ERROR] Build thất bại!
+        echo [ERROR] Build that bai!
     ) else (
-        echo [SUCCESS] Build thành công!
+        echo [SUCCESS] Build thanh cong!
     )
 ) else if "%choice%"=="4" (
-    echo [INFO] ⚡ Start Production...
-    echo [INFO] Ứng dụng sẽ chạy tại: http://localhost:3000
-    echo [INFO] Nhấn Ctrl+C để dừng server
+    echo [INFO] Start Production...
+    echo [INFO] Ung dung se chay tai: http://localhost:3000
+    echo [INFO] Nhan Ctrl+C de dung server
     echo.
     call npm run start
 ) else if "%choice%"=="5" (
-    echo [INFO] 🔍 Lint Code...
+    echo [INFO] Lint Code...
     call npm run lint
 ) else if "%choice%"=="6" (
-    echo [INFO] 📋 Type Check...
+    echo [INFO] Type Check...
     call npm run type-check
 ) else if "%choice%"=="7" (
-    echo [INFO] 🧹 Clean Cache...
+    echo [INFO] Clean Cache...
     call clean.bat
 ) else if "%choice%"=="8" (
-    echo [INFO] 📊 Project Information:
+    echo [INFO] Project Information:
     echo.
     echo Project: XLab Web
     echo Platform: Windows Development
@@ -188,24 +188,24 @@ if "%choice%"=="1" (
     echo Repository: https://github.com/quangminh1212/XLab_Web
     echo.
 ) else if "%choice%"=="9" (
-    echo [INFO] 🔧 Quick Build...
+    echo [INFO] Quick Build...
     call build.bat
 ) else if "%choice%"=="0" (
-    echo [INFO] ❌ Thoát...
+    echo [INFO] Thoat...
     exit /b 0
 ) else (
-    echo [ERROR] Lựa chọn không hợp lệ!
+    echo [ERROR] Lua chon khong hop le!
     pause
     goto :eof
 )
 
-REM Giữ cửa sổ mở nếu có lỗi
+REM Giu cua so mo neu co loi
 if errorlevel 1 (
     echo.
-    echo [ERROR] Có lỗi xảy ra. Nhấn phím bất kỳ để thoát...
+    echo [ERROR] Co loi xay ra. Nhan phim bat ky de thoat...
     pause >nul
 )
 
 echo.
-echo [INFO] Script hoàn tất. Nhấn phím bất kỳ để thoát...
+echo [INFO] Script hoan tat. Nhan phim bat ky de thoat...
 pause >nul
