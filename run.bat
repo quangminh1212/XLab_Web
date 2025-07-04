@@ -9,10 +9,6 @@ echo Installing dependencies...
 call npm install
 
 echo Cleaning up any existing processes...
-powershell -Command "Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue"
-powershell -Command "Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }"
-timeout /t 2 > NUL
-
 echo Killing all Node.js processes and freeing ports...
 call node scripts/kill-port.js --kill-all
 timeout /t 2 > NUL
@@ -22,29 +18,22 @@ call node scripts/kill-port.js 443 --with-all
 echo Cleaning .next directory...
 if exist .next rmdir /s /q .next
 
-echo Running comprehensive fixes...
-call node scripts/optimize.js
+echo Fixing build issues and creating required files...
+call node scripts/fix-all-build-issues.js
+IF %ERRORLEVEL% NEQ 0 (
+  echo ERROR: Failed to fix build issues.
+  exit /b 1
+)
 
 echo Building Next.js application...
 call npx next build
+IF %ERRORLEVEL% NEQ 0 (
+  echo WARNING: Build encountered errors, applying additional fixes...
+  call node scripts/build-cleanup.js
+)
 
-echo Creating required directories and files...
-if not exist .next mkdir .next
-if not exist .next\server mkdir .next\server
-if not exist .next\server\pages mkdir .next\server\pages
-if not exist .next\standalone mkdir .next\standalone
-
-echo Creating manifest files...
-echo {"pages":{},"app":{}} > .next\server\font-manifest.json
-echo {"pages":{},"app":{}} > .next\server\next-font-manifest.json
-echo {} > .next\server\app-paths-manifest.json
-echo {"version":1,"sortedMiddleware":[],"middleware":{},"functions":{},"staticAssets":[],"rsc":{"module":"","css":[],"function":{}}} > .next\server\middleware-manifest.json
-
-echo Creating critical error pages...
-mkdir -Force -Path .next\export 2>NUL
-mkdir -Force -Path .next\server\pages 2>NUL
-echo ^<!DOCTYPE html^>^<html^>^<head^>^<title^>500 - Server Error^</title^>^</head^>^<body^>^<h1^>500 - Server Error^</h1^>^<p^>Sorry, something went wrong.^</p^>^</body^>^</html^> > .next\export\500.html
-echo ^<!DOCTYPE html^>^<html^>^<head^>^<title^>500 - Server Error^</title^>^</head^>^<body^>^<h1^>500 - Server Error^</h1^>^<p^>Sorry, something went wrong.^</p^>^</body^>^</html^> > .next\server\pages\500.html
+echo Running post-build processes...
+call node scripts/post-build.js
 
 echo Preparing certificates...
 if not exist .certificates mkdir .certificates
@@ -83,9 +72,6 @@ if not exist .certificates\localhost.crt (
   echo Certificate files created successfully.
 )
 
-echo Running production server...
-SET NODE_ENV=production
-
 echo Copying necessary assets to standalone directory...
 if exist .next\standalone (
   xcopy .next\static .next\standalone\.next\static\ /E /I /Y
@@ -93,15 +79,25 @@ if exist .next\standalone (
   echo Asset copying completed
 )
 
-echo Starting optimized server...
-call node scripts/optimize.js --start-server
+echo ===========================================
+echo Starting production server...
+echo ===========================================
+SET NODE_ENV=production
+SET PORT=3000
 
-if ERRORLEVEL 1 (
+echo Option 1: Using standalone server
+call node .next/standalone/server.js
+IF %ERRORLEVEL% NEQ 0 (
   echo ======================================================
-  echo ERROR: Server failed to start with optimize.js
+  echo Standalone server failed, trying optimized server...
   echo ======================================================
-  echo Falling back to standard Next.js start...
-  call npx next start
+  call node scripts/optimize.js --start-server
+  IF %ERRORLEVEL% NEQ 0 (
+    echo ======================================================
+    echo Optimized server failed, falling back to Next.js start...
+    echo ======================================================
+    call npx next start
+  )
 )
 
 ENDLOCAL 

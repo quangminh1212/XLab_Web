@@ -30,7 +30,12 @@ This will:
 
 If you prefer to fix the issue manually:
 
-1. Create the necessary directories:
+1. Create the necessary directories (Windows):
+   ```bash
+   mkdir .next\export .next\server\pages .next\standalone
+   ```
+   
+   Hoặc trong Linux/Mac:
    ```bash
    mkdir -p .next/export .next/server/pages .next/standalone
    ```

@@ -6,6 +6,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const isWindows = process.platform === 'win32';
 
 console.log('==================================================');
 console.log('XLab Web - Fixing Build Issues');
@@ -22,10 +23,33 @@ const standaloneDir = path.join(nextDir, 'standalone');
 // Create directories
 function createDirectories() {
   console.log('Creating required directories...');
+  
+  // Clean existing directories first on Windows to prevent permission issues
+  if (isWindows) {
+    try {
+      if (fs.existsSync(exportDir)) {
+        fs.rmSync(exportDir, { recursive: true, force: true });
+      }
+      if (fs.existsSync(serverPagesDir)) {
+        fs.rmSync(serverPagesDir, { recursive: true, force: true });
+      }
+    } catch (err) {
+      console.warn(`Warning: Could not clean directories: ${err.message}`);
+    }
+  }
+  
+  // Create directories
   [nextDir, exportDir, serverDir, serverPagesDir, standaloneDir].forEach(dir => {
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-      console.log(`Created directory: ${dir}`);
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log(`Created directory: ${dir}`);
+      } catch (err) {
+        console.error(`Failed to create directory ${dir}: ${err.message}`);
+        if (isWindows) {
+          console.error('On Windows, try running with administrator privileges or manually create the directories.');
+        }
+      }
     }
   });
 }
@@ -77,9 +101,33 @@ function createErrorPages() {
     const exportPath = path.join(exportDir, `${code}.html`);
     const serverPath = path.join(serverPagesDir, `${code}.html`);
     
-    fs.writeFileSync(exportPath, html);
-    fs.writeFileSync(serverPath, html);
-    console.log(`Created ${code}.html`);
+    try {
+      // Write files to both locations
+      fs.writeFileSync(exportPath, html);
+      console.log(`Created ${code}.html in export directory`);
+    } catch (err) {
+      console.error(`Error creating ${code}.html in export directory: ${err.message}`);
+    }
+    
+    try {
+      fs.writeFileSync(serverPath, html);
+      console.log(`Created ${code}.html in server/pages directory`);
+    } catch (err) {
+      console.error(`Error creating ${code}.html in server/pages directory: ${err.message}`);
+    }
+    
+    // Make an extra copy for Windows to work around file locking issues
+    if (isWindows) {
+      try {
+        const backupDir = path.join(nextDir, 'backup');
+        if (!fs.existsSync(backupDir)) {
+          fs.mkdirSync(backupDir, { recursive: true });
+        }
+        fs.writeFileSync(path.join(backupDir, `${code}.html`), html);
+      } catch (err) {
+        // Ignore backup errors
+      }
+    }
   });
 }
 
@@ -87,58 +135,85 @@ function createErrorPages() {
 function createManifests() {
   console.log('Creating manifest files...');
   
-  // Create prerender-manifest.json
-  const prerenderManifestPath = path.join(nextDir, 'prerender-manifest.json');
-  const prerenderManifest = {
-    version: 4,
-    routes: {},
-    dynamicRoutes: {},
-    notFoundRoutes: [],
-    preview: {
-      previewModeId: "previewModeId",
-      previewModeSigningKey: "previewModeSigningKey",
-      previewModeEncryptionKey: "previewModeEncryptionKey"
-    }
-  };
-  fs.writeFileSync(prerenderManifestPath, JSON.stringify(prerenderManifest, null, 2));
-  console.log('Created prerender-manifest.json');
-  
-  // Create build-manifest.json
-  const buildManifestPath = path.join(nextDir, 'build-manifest.json');
-  const buildManifest = {
-    polyfillFiles: ["static/chunks/polyfills.js"],
-    devFiles: [],
-    ampDevFiles: [],
-    lowPriorityFiles: [],
-    rootMainFiles: [],
-    pages: {
-      "/_app": ["static/chunks/pages/_app.js"],
-      "/_error": ["static/chunks/pages/_error.js"],
-      "/": ["static/chunks/pages/index.js"]
+  const manifests = [
+    {
+      path: path.join(nextDir, 'prerender-manifest.json'),
+      content: {
+        version: 4,
+        routes: {},
+        dynamicRoutes: {},
+        notFoundRoutes: [],
+        preview: {
+          previewModeId: "previewModeId",
+          previewModeSigningKey: "previewModeSigningKey",
+          previewModeEncryptionKey: "previewModeEncryptionKey"
+        }
+      },
+      name: 'prerender-manifest.json'
     },
-    ampFirstPages: []
-  };
-  fs.writeFileSync(buildManifestPath, JSON.stringify(buildManifest, null, 2));
-  console.log('Created build-manifest.json');
+    {
+      path: path.join(nextDir, 'build-manifest.json'),
+      content: {
+        polyfillFiles: ["static/chunks/polyfills.js"],
+        devFiles: [],
+        ampDevFiles: [],
+        lowPriorityFiles: [],
+        rootMainFiles: [],
+        pages: {
+          "/_app": ["static/chunks/pages/_app.js"],
+          "/_error": ["static/chunks/pages/_error.js"],
+          "/": ["static/chunks/pages/index.js"]
+        },
+        ampFirstPages: []
+      },
+      name: 'build-manifest.json'
+    },
+    {
+      path: path.join(serverDir, 'font-manifest.json'),
+      content: [],
+      name: 'font-manifest.json'
+    },
+    {
+      path: path.join(serverDir, 'next-font-manifest.json'),
+      content: {
+        pages: {},
+        app: {},
+        appUsingSizeAdjust: false,
+        pagesUsingSizeAdjust: false
+      },
+      name: 'next-font-manifest.json'
+    },
+    {
+      path: path.join(serverDir, 'pages-manifest.json'),
+      content: {},
+      name: 'pages-manifest.json'
+    },
+    {
+      path: path.join(serverDir, 'middleware-manifest.json'),
+      content: {
+        version: 1,
+        sortedMiddleware: [],
+        middleware: {},
+        functions: {},
+        staticAssets: [],
+        rsc: {
+          module: "",
+          css: [],
+          function: {}
+        }
+      },
+      name: 'middleware-manifest.json'
+    }
+  ];
   
-  // Create font manifest files
-  const fontManifestPath = path.join(serverDir, 'font-manifest.json');
-  fs.writeFileSync(fontManifestPath, JSON.stringify([], null, 2));
-  console.log('Created font-manifest.json');
-  
-  const nextFontManifestPath = path.join(serverDir, 'next-font-manifest.json');
-  fs.writeFileSync(nextFontManifestPath, JSON.stringify({
-    pages: {},
-    app: {},
-    appUsingSizeAdjust: false,
-    pagesUsingSizeAdjust: false
-  }, null, 2));
-  console.log('Created next-font-manifest.json');
-  
-  // Create pages-manifest.json
-  const pagesManifestPath = path.join(serverDir, 'pages-manifest.json');
-  fs.writeFileSync(pagesManifestPath, JSON.stringify({}, null, 2));
-  console.log('Created pages-manifest.json');
+  manifests.forEach(({ path, content, name }) => {
+    try {
+      fs.writeFileSync(path, JSON.stringify(content, null, 2));
+      console.log(`Created ${name}`);
+    } catch (err) {
+      console.error(`Error creating ${name}: ${err.message}`);
+    }
+  });
 }
 
 // Create standalone server
@@ -149,12 +224,31 @@ function createStandaloneServer() {
   const serverContent = `
 const { createServer } = require('http');
 const { parse } = require('url');
+const path = require('path');
+const fs = require('fs');
 
 // Environment variables
 const port = process.env.PORT || 3000;
+const dev = process.env.NODE_ENV !== 'production';
 
 // Simple request handler
 function requestHandler(req, res) {
+  const parsedUrl = parse(req.url, true);
+  const { pathname } = parsedUrl;
+  
+  // Basic static file handling
+  try {
+    const staticPath = path.join(__dirname, 'public', pathname);
+    if (fs.existsSync(staticPath) && fs.statSync(staticPath).isFile()) {
+      const content = fs.readFileSync(staticPath);
+      res.writeHead(200);
+      return res.end(content);
+    }
+  } catch (e) {
+    // Fall through to default handler
+  }
+  
+  // Default response
   res.setHeader('Content-Type', 'text/html');
   res.writeHead(200);
   res.end('<html><body><h1>Server Running</h1><p>Next.js standalone server is running.</p></body></html>');
@@ -167,8 +261,12 @@ createServer(requestHandler).listen(port, (err) => {
   console.log(\`> Mode: production\`);
 });`;
 
-  fs.writeFileSync(standaloneServerPath, serverContent);
-  console.log('Created standalone server.js');
+  try {
+    fs.writeFileSync(standaloneServerPath, serverContent);
+    console.log('Created standalone server.js');
+  } catch (err) {
+    console.error(`Error creating standalone server.js: ${err.message}`);
+  }
 }
 
 // Run all fixes
@@ -181,10 +279,12 @@ function main() {
     console.log('\nAll build issues fixed successfully! You can now run:');
     console.log('  npm run start');
     console.log('==================================================');
+    return 0; // Success exit code
   } catch (error) {
     console.error(`Error fixing build issues: ${error.message}`);
-    process.exit(1);
+    return 1; // Error exit code
   }
 }
 
-main(); 
+// Execute and return exit code
+process.exit(main()); 

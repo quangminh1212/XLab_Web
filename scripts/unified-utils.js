@@ -73,30 +73,32 @@ const nextBuildFixes = {
     
     // Clean .next directory
     if (fs.existsSync(NEXT_DIR)) {
-      try {
-        // Rather than deleting everything, selectively clean problematic files
-        const problematicFiles = [
-          'server/pages-manifest.json',
-          'build-manifest.json',
-          'prerender-manifest.json',
-          'server/middleware-manifest.json',
-          'cache'
-        ];
+      // Rather than deleting everything, selectively clean problematic files
+      const problematicFiles = [
+        'server/pages-manifest.json',
+        'build-manifest.json',
+        'prerender-manifest.json',
+        'server/middleware-manifest.json',
+        'cache'
+      ];
+      
+      problematicFiles.forEach(file => {
+        const fullPath = path.join(NEXT_DIR, file);
         
-        problematicFiles.forEach(file => {
-          const fullPath = path.join(NEXT_DIR, file);
-          if (fs.lstatSync(fullPath).isDirectory()) {
-            fs.rmSync(fullPath, { recursive: true, force: true });
-          } else {
-            fs.unlinkSync(fullPath);
+        try {
+          if (fs.existsSync(fullPath)) {
+            if (fs.statSync(fullPath).isDirectory()) {
+              fs.rmSync(fullPath, { recursive: true, force: true });
+            } else {
+              fs.unlinkSync(fullPath);
+            }
+            logger.info(`Removed: ${fullPath}`);
           }
-          logger.info(`Removed: ${fullPath}`);
-        });
-        
-        logger.success('Cleaned problematic Next.js cache files');
-      } catch (error) {
-        logger.error(`Error cleaning .next directory: ${error.message}`);
-      }
+        } catch (error) {
+          // Suppress error, just log a warning
+          logger.warn(`Could not remove ${fullPath}: ${error.message}`);
+        }
+      });
     }
     
     // Create essential directories
@@ -106,7 +108,8 @@ const nextBuildFixes = {
       path.join(NEXT_DIR, 'static/chunks'),
       path.join(NEXT_DIR, 'static/css'),
       path.join(NEXT_DIR, 'cache'),
-      path.join(NEXT_DIR, 'standalone')
+      path.join(NEXT_DIR, 'standalone'),
+      path.join(NEXT_DIR, 'export')
     ];
     
     essentialDirs.forEach(dir => fileUtils.ensureDir(dir));
