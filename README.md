@@ -94,47 +94,52 @@ import { formatCurrency } from '@/shared/utils';
   - [ESLint 9](https://eslint.org/) - Code linting
   - [Prettier](https://prettier.io/) - Code formatting
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Windows)
 
-### For Windows Users
+### Cách 1: Sử dụng Script Tự Động (Khuyến nghị)
 
-1. **Clone the repository:**
+1. **Clone repository:**
 ```bash
 git clone https://github.com/quangminh1212/XLab_Web.git
 cd XLab_Web
 ```
 
-2. **Run the Windows starter script:**
+2. **Chạy script chính:**
 ```bash
 start.bat
 ```
 
-The script will automatically:
-- ✅ Check Node.js and npm
-- ✅ Install dependencies
-- ✅ Set up environment files
-- ✅ Fix common issues
-- ✅ Provide a menu to start development
+Script sẽ tự động:
+- ✅ Kiểm tra Node.js và npm
+- ✅ Cài đặt dependencies
+- ✅ Tạo environment files
+- ✅ Sửa lỗi thường gặp
+- ✅ Hiển thị menu interactive
 
-### For Linux/macOS Users
+### Cách 2: Scripts Chuyên Biệt
 
-1. **Clone the repository:**
 ```bash
-git clone https://github.com/quangminh1212/XLab_Web.git
-cd XLab_Web
+# Build production nhanh
+build.bat
+
+# Dọn dẹp cache
+clean.bat
+
+# Development với menu
+start.bat
 ```
 
-2. **Install dependencies:**
+### Cách 3: Manual Setup
+
 ```bash
+# Cài đặt dependencies
 npm install
-```
 
-3. **Start development:**
-```bash
+# Khởi động development
 npm run dev
-```
 
-4. **Open [http://localhost:3000](http://localhost:3000)**
+# Mở http://localhost:3000
+```
 
 ## 🏁 Getting Started (Manual Setup)
 
@@ -180,86 +185,100 @@ npm run dev
 - `npm run clean` - Clean build cache
 - `npm run check` - Run lint + type-check
 
-## 🚀 Production Deployment
+## 🔨 Windows Scripts
 
-### Automated Deployment (Linux/Ubuntu)
+### 📁 Available Scripts
 
-For production deployment with HTTPS, SSL, and Nginx:
+| Script | Mô tả | Sử dụng |
+|--------|-------|---------|
+| **`start.bat`** | Script chính với menu interactive | Double-click hoặc `start.bat` |
+| **`build.bat`** | Build production nhanh | Double-click hoặc `build.bat` |
+| **`clean.bat`** | Dọn dẹp cache và temp files | Double-click hoặc `clean.bat` |
 
-```bash
-# Make script executable
-chmod +x deploy.sh
+### 🎯 start.bat - Menu Chính
 
-# Run deployment (requires sudo)
-sudo ./deploy.sh
+```
+╔══════════════════════════════════════════════════════════════╗
+║                        MENU LỰA CHỌN                        ║
+╠══════════════════════════════════════════════════════════════╣
+║  1. 🚀 Development Server (npm run dev)                     ║
+║  2. 📝 Development với Logger (npm run dev:log)             ║
+║  3. 🔨 Build Production (npm run build)                     ║
+║  4. ⚡ Start Production (npm run start)                     ║
+║  5. 🔍 Lint Code (npm run lint)                             ║
+║  6. 📋 Type Check (npm run type-check)                      ║
+║  7. 🧹 Clean Cache (clean.bat)                              ║
+║  8. 📊 Project Info                                         ║
+║  9. 🔧 Quick Build (build.bat)                              ║
+║  0. ❌ Thoát                                                 ║
+╚══════════════════════════════════════════════════════════════╝
 ```
 
-The deployment script will automatically:
-- ✅ Install Nginx, Certbot, PM2
-- ✅ Build the Next.js application
-- ✅ Configure Nginx with SSL
-- ✅ Set up Let's Encrypt SSL certificate
-- ✅ Configure PM2 process manager
-- ✅ Set up auto-renewal for SSL
-- ✅ Configure security headers
+### 🚀 Workflow Khuyến Nghị
 
-### Manual Deployment
+1. **Lần đầu setup:** `start.bat` → Option 1 (Development)
+2. **Build production:** `build.bat` hoặc `start.bat` → Option 9
+3. **Dọn dẹp khi có lỗi:** `clean.bat` hoặc `start.bat` → Option 7
+4. **Check code quality:** `start.bat` → Option 5 (Lint) + Option 6 (Type Check)
 
-1. **Build the application:**
+## 📜 npm Scripts
+
+| Script | Mô tả | Sử dụng |
+|--------|-------|---------|
+| `dev` | Development server | `npm run dev` |
+| `dev:log` | Development với logging | `npm run dev:log` |
+| `build` | Build production | `npm run build` |
+| `start` | Start production server | `npm run start` |
+| `lint` | Check code với ESLint | `npm run lint` |
+| `lint:fix` | Auto-fix ESLint issues | `npm run lint:fix` |
+| `type-check` | TypeScript type checking | `npm run type-check` |
+| `format` | Format code với Prettier | `npm run format` |
+| `clean` | Clean cache | `npm run clean` |
+| `check` | Lint + Type check | `npm run check` |
+| `update-purchases` | Update purchase counts | `npm run update-purchases` |
+| `verify-products` | Verify product data | `npm run verify-products` |
+
+## 🛠️ Troubleshooting
+
+### Lỗi thường gặp
+
+**1. Node.js chưa cài đặt:**
 ```bash
-npm run build
+# Download từ: https://nodejs.org/
+# Chọn LTS version
 ```
 
-2. **Start with PM2:**
+**2. Port 3000 đã được sử dụng:**
 ```bash
-pm2 start npm --name "xlab-web" -- start
-pm2 save
-pm2 startup
+# Tìm process đang dùng port
+netstat -ano | findstr :3000
+
+# Kill process (thay PID)
+taskkill /PID <PID> /F
 ```
 
-3. **Configure Nginx** (see deploy.sh for full config)
-
-4. **Set up SSL with Let's Encrypt:**
+**3. Dependencies lỗi:**
 ```bash
-sudo certbot --nginx -d yourdomain.com
+# Chạy clean script
+clean.bat
+
+# Hoặc manual
+npm cache clean --force
+rmdir /s node_modules
+npm install
 ```
 
-## 📜 Scripts
+**4. Build lỗi:**
+```bash
+# Check TypeScript errors
+npm run type-check
 
-### Windows Scripts
+# Check ESLint errors
+npm run lint
 
-- **`start.bat`** - Complete Windows development environment setup
-  - Checks Node.js/npm installation
-  - Installs dependencies
-  - Sets up environment files
-  - Provides interactive menu for development tasks
-
-### Linux/macOS Scripts
-
-- **`deploy.sh`** - Complete production deployment script
-  - System dependencies installation
-  - Nginx configuration with SSL
-  - PM2 process management
-  - Let's Encrypt SSL certificate
-  - Security headers and optimization
-
-### npm Scripts
-
-| Script | Description |
-|--------|-------------|
-| `dev` | Start development server on port 3000 |
-| `dev:log` | Start development with detailed logging |
-| `build` | Build optimized production bundle |
-| `start` | Start production server |
-| `lint` | Check code with ESLint |
-| `lint:fix` | Auto-fix ESLint issues |
-| `type-check` | Run TypeScript type checking |
-| `format` | Format code with Prettier |
-| `clean` | Clean build cache and node_modules cache |
-| `check` | Run both lint and type-check |
-| `deploy` | Run production deployment script |
-| `update-purchases` | Update product purchase counts |
-| `verify-products` | Verify product data integrity |
+# Fix auto-fixable issues
+npm run lint:fix
+```
 - `npm run format` - Format with Prettier
 - `npm run type-check` - Run TypeScript checks
 - `npm run analyze` - Analyze bundle size

@@ -13,7 +13,6 @@
     "type-check": "tsc --noEmit",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "check": "npm run lint && npm run type-check",
-    "deploy": "sudo bash deploy.sh",
     "update-purchases": "node src/scripts/update-purchases.js",
     "verify-products": "node src/scripts/verify-products.js",
     "fix": "node scripts/fix-next-errors.js",

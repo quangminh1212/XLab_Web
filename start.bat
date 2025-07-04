@@ -121,32 +121,35 @@ echo.
 echo ╔══════════════════════════════════════════════════════════════╗
 echo ║                        MENU LỰA CHỌN                        ║
 echo ╠══════════════════════════════════════════════════════════════╣
-echo ║  1. Khởi động Development Server (npm run dev)              ║
-echo ║  2. Khởi động với Logger (npm run dev:log)                  ║
-echo ║  3. Build Production (npm run build)                        ║
-echo ║  4. Start Production (npm run start)                        ║
-echo ║  5. Lint Code (npm run lint)                                ║
-echo ║  6. Type Check (npm run type-check)                         ║
-echo ║  7. Thoát                                                    ║
+echo ║  1. 🚀 Development Server (npm run dev)                     ║
+echo ║  2. 📝 Development với Logger (npm run dev:log)             ║
+echo ║  3. 🔨 Build Production (npm run build)                     ║
+echo ║  4. ⚡ Start Production (npm run start)                     ║
+echo ║  5. 🔍 Lint Code (npm run lint)                             ║
+echo ║  6. 📋 Type Check (npm run type-check)                      ║
+echo ║  7. 🧹 Clean Cache (clean.bat)                              ║
+echo ║  8. 📊 Project Info                                         ║
+echo ║  9. 🔧 Quick Build (build.bat)                              ║
+echo ║  0. ❌ Thoát                                                 ║
 echo ╚══════════════════════════════════════════════════════════════╝
 echo.
 
-set /p choice="Nhập lựa chọn của bạn (1-7): "
+set /p choice="Nhập lựa chọn của bạn (0-9): "
 
 if "%choice%"=="1" (
-    echo [INFO] Khởi động Development Server...
+    echo [INFO] 🚀 Khởi động Development Server...
     echo [INFO] Ứng dụng sẽ chạy tại: http://localhost:3000
     echo [INFO] Nhấn Ctrl+C để dừng server
     echo.
     call npm run dev
 ) else if "%choice%"=="2" (
-    echo [INFO] Khởi động Development Server với Logger...
+    echo [INFO] 📝 Khởi động Development Server với Logger...
     echo [INFO] Ứng dụng sẽ chạy tại: http://localhost:3000
     echo [INFO] Nhấn Ctrl+C để dừng server
     echo.
     call npm run dev:log
 ) else if "%choice%"=="3" (
-    echo [INFO] Build Production...
+    echo [INFO] 🔨 Build Production...
     call npm run build
     if errorlevel 1 (
         echo [ERROR] Build thất bại!
@@ -154,19 +157,41 @@ if "%choice%"=="1" (
         echo [SUCCESS] Build thành công!
     )
 ) else if "%choice%"=="4" (
-    echo [INFO] Start Production...
+    echo [INFO] ⚡ Start Production...
     echo [INFO] Ứng dụng sẽ chạy tại: http://localhost:3000
     echo [INFO] Nhấn Ctrl+C để dừng server
     echo.
     call npm run start
 ) else if "%choice%"=="5" (
-    echo [INFO] Lint Code...
+    echo [INFO] 🔍 Lint Code...
     call npm run lint
 ) else if "%choice%"=="6" (
-    echo [INFO] Type Check...
+    echo [INFO] 📋 Type Check...
     call npm run type-check
 ) else if "%choice%"=="7" (
-    echo [INFO] Thoát...
+    echo [INFO] 🧹 Clean Cache...
+    call clean.bat
+) else if "%choice%"=="8" (
+    echo [INFO] 📊 Project Information:
+    echo.
+    echo Project: XLab Web
+    echo Platform: Windows Development
+    echo Framework: Next.js 15.2.4
+    echo Language: TypeScript 5.3.3
+    echo Styling: Tailwind CSS 3.4.0
+    echo.
+    echo Available Scripts:
+    echo - start.bat: Main development script
+    echo - build.bat: Quick production build
+    echo - clean.bat: Clean cache and temp files
+    echo.
+    echo Repository: https://github.com/quangminh1212/XLab_Web
+    echo.
+) else if "%choice%"=="9" (
+    echo [INFO] 🔧 Quick Build...
+    call build.bat
+) else if "%choice%"=="0" (
+    echo [INFO] ❌ Thoát...
     exit /b 0
 ) else (
     echo [ERROR] Lựa chọn không hợp lệ!
