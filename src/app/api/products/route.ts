@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllProducts } from '@/lib/i18n/products';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     // Get query parameters

@@ -3,6 +3,10 @@ import path from 'path';
 import fs from 'fs';
 import { getProductById } from '@/lib/i18n/products';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 /**
  * @deprecated Use /api/products/[id] with lang parameter instead
  */

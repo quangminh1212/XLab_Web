@@ -226,7 +226,7 @@ export default function AccountPage() {
           try {
             // Lấy dữ liệu sản phẩm để có thông tin originalPrice chính xác
             const productsRes = await fetch('/api/products', { cache: 'no-store' });
-            let productsData = [];
+            let productsData: any[] = [];
             if (productsRes.ok) {
               const data = await productsRes.json();
               productsData = data.products || [];
@@ -301,7 +301,7 @@ export default function AccountPage() {
             try {
               // Vẫn cần lấy dữ liệu sản phẩm cho fallback
               const productsRes = await fetch('/api/products', { cache: 'no-store' });
-              let productsData = [];
+              let productsData: any[] = [];
               if (productsRes.ok) {
                 const data = await productsRes.json();
                 productsData = data.products || [];

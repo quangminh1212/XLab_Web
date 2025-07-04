@@ -5,6 +5,10 @@ import { getAllProducts } from '@/lib/i18n/products';
 import { Product } from '@/models/ProductModel';
 
 // Đọc dữ liệu sản phẩm từ JSON file
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 const productsPath = path.join(process.cwd(), 'src/data/products.json');
 
 export async function GET(request: NextRequest) {

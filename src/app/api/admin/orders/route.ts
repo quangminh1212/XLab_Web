@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth/next';
 import { Order, OrderStats } from '@/models/OrderModel';
 import fs from 'fs';
 import path from 'path';
 
 // Function to load user data from JSON files
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 function loadUserData() {
   const dataDir = path.join(process.cwd(), 'data/users');
   if (!fs.existsSync(dataDir)) {

@@ -55,7 +55,7 @@ export default function TestimonialsPage() {
       name: 'Lê Minh Cường',
       company: 'FastRetail',
       position: 'Quản lý dự án',
-      image: '/images/products/voice-typing.jpg',
+      image: '/images/products/system-erp.png',
       quote:
         'Chúng tôi đã sử dụng giải pháp của XLab trong hơn 2 năm và thực sự ấn tượng với khả năng đáp ứng nhu cầu ngày càng tăng của doanh nghiệp. Đội ngũ phát triển luôn lắng nghe phản hồi và cải tiến sản phẩm liên tục.',
       rating: 4,

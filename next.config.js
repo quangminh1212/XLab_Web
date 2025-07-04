@@ -3,6 +3,22 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+<<<<<<< HEAD
+=======
+  output: 'standalone',
+  outputFileTracing: true,
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
+    },
+    optimizeCss: false,
+    optimisticClientCache: true,
+  },
+>>>>>>> 59c6803d8e18bd2c535981c39b0dabbcb890f92f
   images: {
     remotePatterns: [
       {
@@ -42,7 +58,24 @@ const nextConfig = {
   },
   poweredByHeader: false,
   compress: true,
+<<<<<<< HEAD
   webpack: (config) => {
+=======
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
+  },
+  assetPrefix: process.env.ASSET_PREFIX || '',
+  logging: {
+    fetches: {
+      fullUrl: process.env.NODE_ENV !== 'production',
+    },
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  webpack: (config, { dev, isServer }) => {
+>>>>>>> 59c6803d8e18bd2c535981c39b0dabbcb890f92f
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),

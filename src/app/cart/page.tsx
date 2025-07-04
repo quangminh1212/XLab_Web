@@ -226,7 +226,10 @@ export default function CartPage() {
   });
 
   // Tính tổng giá trị giỏ hàng
-  const { subtotal, tax } = calculateCartTotals(cart);
+  const { subtotal } = calculateCartTotals(cart);
+  
+  // Không tính thuế
+  const tax = 0;
 
   // Tính giảm giá từ mã coupon
   const calculateCouponDiscount = () => {
@@ -239,7 +242,7 @@ export default function CartPage() {
   const couponDiscount = calculateCouponDiscount();
 
   // Tính tổng cộng (đã trừ giảm giá)
-  const total = subtotal + tax - couponDiscount;
+  const total = subtotal - couponDiscount;
 
   // Lấy sản phẩm được đề xuất (đánh dấu là featured)
   const featuredProducts = products.filter((product: any) => product.isFeatured).slice(0, 3);

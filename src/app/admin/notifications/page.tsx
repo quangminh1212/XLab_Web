@@ -273,13 +273,16 @@ function NotificationsPage() {
 
   // Clear messages after 5 seconds
   useEffect(() => {
-    if (successMessage || errorMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage('');
-        setErrorMessage('');
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
+    const timer = (successMessage || errorMessage)
+      ? setTimeout(() => {
+          setSuccessMessage('');
+          setErrorMessage('');
+        }, 5000)
+      : undefined;
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [successMessage, errorMessage]);
 
   // Save settings

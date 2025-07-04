@@ -7,6 +7,10 @@ import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { createDirectory } from '@/lib/fileSystem';
 
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     // Check authentication

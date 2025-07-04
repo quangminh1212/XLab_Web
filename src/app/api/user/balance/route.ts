@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { syncUserBalance } from '@/lib/userService';
 
 // Balance cache với timeout 2 phút để giảm spam requests
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 const balanceCache = new Map<string, { balance: number; timestamp: number }>();
 const CACHE_TIMEOUT = 120 * 1000; // 120 seconds (2 minutes)
 

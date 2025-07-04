@@ -23,14 +23,14 @@ function AdminProductsPage() {
         const response = await fetch('/api/admin/products');
 
         if (!response.ok) {
-          throw new Error(language === 'vi' ? 'Không thể tải danh sách sản phẩm' : 'Could not load products list');
+          throw new Error(language === 'vie' ? 'Không thể tải danh sách sản phẩm' : 'Could not load products list');
         }
 
         const data = await response.json();
         setProductList(data);
       } catch (err) {
         setError((err as Error).message);
-        console.error(language === 'vi' ? 'Lỗi khi tải danh sách sản phẩm:' : 'Error loading products list:', err);
+        console.error(language === 'vie' ? 'Lỗi khi tải danh sách sản phẩm:' : 'Error loading products list:', err);
       } finally {
         setLoading(false);
       }
@@ -44,7 +44,7 @@ function AdminProductsPage() {
   };
 
   const handleDelete = async (productId: string) => {
-    if (confirm(language === 'vi' ? 'Bạn có chắc chắn muốn xóa sản phẩm này?' : 'Are you sure you want to delete this product?')) {
+    if (confirm(language === 'vie' ? 'Bạn có chắc chắn muốn xóa sản phẩm này?' : 'Are you sure you want to delete this product?')) {
       try {
         setLoading(true);
         const response = await fetch(`/api/admin/products/${productId}`, {
@@ -52,15 +52,15 @@ function AdminProductsPage() {
         });
 
         if (!response.ok) {
-          throw new Error(language === 'vi' ? 'Không thể xóa sản phẩm' : 'Could not delete product');
+          throw new Error(language === 'vie' ? 'Không thể xóa sản phẩm' : 'Could not delete product');
         }
 
         // Remove the product from the list
         setProductList(productList.filter((product) => product.id !== productId));
-        alert(language === 'vi' ? 'Đã xóa sản phẩm thành công!' : 'Product deleted successfully!');
+        alert(language === 'vie' ? 'Đã xóa sản phẩm thành công!' : 'Product deleted successfully!');
       } catch (err) {
         setError((err as Error).message);
-        console.error(language === 'vi' ? 'Lỗi khi xóa sản phẩm:' : 'Error deleting product:', err);
+        console.error(language === 'vie' ? 'Lỗi khi xóa sản phẩm:' : 'Error deleting product:', err);
       } finally {
         setLoading(false);
       }
@@ -79,10 +79,10 @@ function AdminProductsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">
-            {language === 'vi' ? 'Quản lý sản phẩm' : 'Product Management'}
+            {language === 'vie' ? 'Quản lý sản phẩm' : 'Product Management'}
           </h1>
           <p className="text-gray-500 text-base mt-1">
-            {language === 'vi' ? 'Quản lý danh sách sản phẩm của cửa hàng' : 'Manage your store products list'}
+            {language === 'vie' ? 'Quản lý danh sách sản phẩm của cửa hàng' : 'Manage your store products list'}
           </p>
         </div>
         <Link
@@ -103,7 +103,7 @@ function AdminProductsPage() {
               d="M10 19l-7-7m0 0l7-7m-7 7h18"
             />
           </svg>
-          {language === 'vi' ? 'Quay lại Dashboard' : 'Back to Dashboard'}
+          {language === 'vie' ? 'Quay lại Dashboard' : 'Back to Dashboard'}
         </Link>
       </div>
 
@@ -113,7 +113,7 @@ function AdminProductsPage() {
             <div className="relative w-full md:w-96">
               <input
                 type="text"
-                placeholder={language === 'vi' ? "Tìm kiếm sản phẩm..." : "Search products..."}
+                placeholder={language === 'vie' ? "Tìm kiếm sản phẩm..." : "Search products..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base"
@@ -153,7 +153,7 @@ function AdminProductsPage() {
                   d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                 />
               </svg>
-              {language === 'vi' ? 'Thêm sản phẩm mới' : 'Add new product'}
+              {language === 'vie' ? 'Thêm sản phẩm mới' : 'Add new product'}
             </Link>
           </div>
         </div>
@@ -195,10 +195,10 @@ function AdminProductsPage() {
               />
             </svg>
             <p className="text-gray-500 text-xl">
-              {language === 'vi' ? 'Không tìm thấy sản phẩm nào' : 'No products found'}
+              {language === 'vie' ? 'Không tìm thấy sản phẩm nào' : 'No products found'}
             </p>
             <p className="text-gray-400 mt-1 text-base">
-              {language === 'vi' 
+              {language === 'vie' 
                 ? 'Hãy thêm sản phẩm mới hoặc thay đổi từ khóa tìm kiếm' 
                 : 'Add new products or change your search query'}
             </p>
@@ -212,13 +212,13 @@ function AdminProductsPage() {
                     scope="col"
                     className="w-16 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Hình ảnh' : 'Image'}
+                    {language === 'vie' ? 'Hình ảnh' : 'Image'}
                   </th>
                   <th
                     scope="col"
                     className="w-1/3 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Tên sản phẩm' : 'Product name'}
+                    {language === 'vie' ? 'Tên sản phẩm' : 'Product name'}
                   </th>
                   <th
                     scope="col"
@@ -230,19 +230,19 @@ function AdminProductsPage() {
                     scope="col"
                     className="w-1/6 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Giá' : 'Price'}
+                    {language === 'vie' ? 'Giá' : 'Price'}
                   </th>
                   <th
                     scope="col"
                     className="w-1/6 px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Trạng thái' : 'Status'}
+                    {language === 'vie' ? 'Trạng thái' : 'Status'}
                   </th>
                   <th
                     scope="col"
                     className="w-20 px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    {language === 'vi' ? 'Tùy chọn' : 'Actions'}
+                    {language === 'vie' ? 'Tùy chọn' : 'Actions'}
                   </th>
                 </tr>
               </thead>
@@ -293,7 +293,7 @@ function AdminProductsPage() {
                               // Bỏ qua giá 0
                               if (version.price > 0 && version.price < minPrice) {
                                 minPrice = version.price;
-                                minPriceOption = version.name || (language === 'vi' ? 'Phiên bản mặc định' : 'Default version');
+                                minPriceOption = version.name || (language === 'vie' ? 'Phiên bản mặc định' : 'Default version');
                               }
                             });
                           }
@@ -319,18 +319,18 @@ function AdminProductsPage() {
                             product.salePrice < minPrice
                           ) {
                             minPrice = product.salePrice;
-                            minPriceOption = language === 'vi' ? 'Giá khuyến mãi' : 'Sale price';
+                            minPriceOption = language === 'vie' ? 'Giá khuyến mãi' : 'Sale price';
                           }
 
                           // Kiểm tra giá gốc của sản phẩm (nếu có)
                           if (product.price && product.price > 0 && product.price < minPrice) {
                             minPrice = product.price;
-                            minPriceOption = language === 'vi' ? 'Giá gốc' : 'Original price';
+                            minPriceOption = language === 'vie' ? 'Giá gốc' : 'Original price';
                           }
 
                           // Nếu không có giá nào hợp lệ (khác 0) hoặc giá vẫn là Infinity
                           if (minPrice === Infinity) {
-                            return language === 'vi' ? 'Chưa có giá' : 'No price set';
+                            return language === 'vie' ? 'Chưa có giá' : 'No price set';
                           }
 
                           // Format giá tiền
@@ -353,12 +353,12 @@ function AdminProductsPage() {
                       {product.isPublished ? (
                         <span className="px-3 py-1.5 text-sm font-medium rounded-full bg-green-100 text-green-800 inline-flex items-center">
                           <span className="w-2 h-2 bg-green-600 rounded-full mr-1.5"></span>
-                          {language === 'vi' ? 'Công khai' : 'Public'}
+                          {language === 'vie' ? 'Công khai' : 'Public'}
                         </span>
                       ) : (
                         <span className="px-3 py-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-800 inline-flex items-center">
                           <span className="w-2 h-2 bg-gray-500 rounded-full mr-1.5"></span>
-                          {language === 'vi' ? 'Nháp' : 'Draft'}
+                          {language === 'vie' ? 'Nháp' : 'Draft'}
                         </span>
                       )}
                     </td>
@@ -367,7 +367,7 @@ function AdminProductsPage() {
                         <button
                           className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors focus:outline-none p-1.5"
                           onClick={() => handleEdit(product.id)}
-                          title={language === 'vi' ? "Sửa sản phẩm" : "Edit product"}
+                          title={language === 'vie' ? "Sửa sản phẩm" : "Edit product"}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -387,7 +387,7 @@ function AdminProductsPage() {
                         <button
                           className="inline-flex items-center text-red-600 hover:text-red-800 transition-colors focus:outline-none p-1.5"
                           onClick={() => handleDelete(product.id)}
-                          title={language === 'vi' ? "Xóa sản phẩm" : "Delete product"}
+                          title={language === 'vie' ? "Xóa sản phẩm" : "Delete product"}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

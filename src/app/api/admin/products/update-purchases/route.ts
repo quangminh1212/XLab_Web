@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = 'force-dynamic';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');

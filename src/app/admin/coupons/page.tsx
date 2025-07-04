@@ -330,7 +330,7 @@ function CouponsPage() {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
+    ).toLocaleDateString(language === 'vie' ? 'vi-VN' : 'en-US');
   };
 
   // Check if coupon is expired
@@ -462,13 +462,19 @@ function CouponsPage() {
 
   // Clear messages
   useEffect(() => {
-    if (successMessage || errorMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage('');
-        setErrorMessage('');
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
+    const timer = (successMessage || errorMessage)
+      ? setTimeout(() => {
+          setSuccessMessage('');
+          setErrorMessage('');
+        }, 5000)
+      : undefined;
+
+    // Always return a cleanup function to satisfy the type checker
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [successMessage, errorMessage]);
 
   // Phân chia mã giảm giá thành nhóm còn hạn và hết hạn

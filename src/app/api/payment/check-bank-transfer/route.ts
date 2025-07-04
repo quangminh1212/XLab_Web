@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { findTransactionByCode, getSheetDataFromCSV } from '@/lib/googleSheets';
 import fs from 'fs/promises';
 import path from 'path';
 
 // Real bank transaction verification using Google Sheets
+
+// Set this route to be dynamically rendered at request time
+export const dynamic = "force-dynamic";
+
 interface BankTransaction {
   transactionId: string;
   amount: number;

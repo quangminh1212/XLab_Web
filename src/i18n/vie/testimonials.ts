@@ -25,6 +25,14 @@ export const testimonials = {
   'results': 'Kết quả đạt được:',
   'verified': 'Đã xác minh',
   'title': 'Đánh giá của khách hàng',
+
+  // Call to action section
+  'cta': {
+    'title': 'Sẵn sàng trải nghiệm XLab?',
+    'description': 'Tham gia cùng những khách hàng hài lòng và khám phá cách giải pháp của chúng tôi có thể giúp doanh nghiệp của bạn phát triển.',
+    'contact': 'Liên hệ chúng tôi',
+    'explore': 'Khám phá sản phẩm'
+  }
 };
 
 export default testimonials; 
