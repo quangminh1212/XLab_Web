@@ -12,6 +12,7 @@
 
 - [Features](#-features)
 - [Quick Start](#-quick-start)
+- [🚀 Production Hosting](#-production-hosting)
 - [Project Structure](#-project-structure)
 - [Technologies](#-technologies)
 - [Development](#-development)
@@ -59,6 +60,109 @@ src/
 ├── styles/            # Global styles
 └── types/             # TypeScript type definitions
 ```
+
+## 🚀 Production Hosting
+
+XLab Web is configured for automated production hosting on the **xlab.id.vn** domain.
+
+### Automated Hosting Script
+
+The `start.bat` script has been transformed into an automated production hosting solution:
+
+```bash
+# Start production server for xlab.id.vn
+start.bat
+```
+
+**Features:**
+- ✅ **Fully Automated** - No user input required
+- ✅ **Production Environment** - Configured for xlab.id.vn domain
+- ✅ **Auto Build** - Builds production if needed
+- ✅ **Continuous Hosting** - Runs as a persistent service
+- ✅ **Error Recovery** - Automatic restart on failures
+- ✅ **Logging** - Timestamped logs in `logs/` directory
+
+### Server Management Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `start.bat` | **Main hosting script** - Starts production server |
+| `status.bat` | Check server status and health |
+| `restart.bat` | Restart server with clean cache |
+| `monitor.bat` | Continuous monitoring with auto-restart |
+| `setup-service.bat` | Install as Windows Service (requires admin) |
+| `start-dev.bat` | Development mode (backup of old start.bat) |
+
+### Production Configuration
+
+**Domain:** https://xlab.id.vn
+**Local Access:** http://localhost:3000
+**Environment:** Production
+**Port:** 3000
+**Host:** 0.0.0.0 (All interfaces)
+
+**Environment Variables:**
+```env
+NEXTAUTH_URL=https://xlab.id.vn
+NODE_ENV=production
+PORT=3000
+HOST=0.0.0.0
+```
+
+### Quick Start Hosting
+
+1. **Start Production Server:**
+   ```bash
+   start.bat
+   ```
+
+2. **Monitor Server:**
+   ```bash
+   monitor.bat
+   ```
+
+3. **Check Status:**
+   ```bash
+   status.bat
+   ```
+
+4. **Install as Windows Service:**
+   ```bash
+   # Run as Administrator
+   setup-service.bat
+   ```
+
+### Server Output Example
+
+```
+================================================================
+                   XLab Web Production Server
+                  Hosting for xlab.id.vn Domain
+================================================================
+
+[SUCCESS] Node.js v22.14.0 installed
+[SUCCESS] npm 10.9.2 installed
+[SUCCESS] Production environment configured for xlab.id.vn
+[SUCCESS] Dependencies installed
+[SUCCESS] Production build ready
+
+================================================================
+                    PRODUCTION SERVER READY
+================================================================
+   Domain: xlab.id.vn
+   Environment: Production
+   Port: 3000
+   Status: Starting...
+================================================================
+
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3000
+   - Network:      http://[YOUR-IP]:3000
+
+ ✓ Ready in 2.1s
+```
+
+For detailed hosting documentation, see [HOSTING_GUIDE.md](HOSTING_GUIDE.md).
 
 ### Component Imports
 
