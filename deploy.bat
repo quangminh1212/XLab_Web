@@ -130,34 +130,34 @@ if "%deploy_choice%"=="1" (
     echo [INFO] Ban co the nen thanh file zip va upload len server
     
 ) else if "%deploy_choice%"=="5" (
-    echo [INFO] Huong dan upload len server:
+    echo [INFO] Huong dan upload len server
     echo.
     echo ================================================================
-    echo                    HUONG DAN DEPLOYMENT                        
+    echo                    HUONG DAN DEPLOYMENT
     echo ================================================================
     echo.
-    echo 1. Build production:
+    echo 1. Build production
     echo    - Chay option 1 de build
     echo.
-    echo 2. Tao file environment:
+    echo 2. Tao file environment
     echo    - Chay option 2 de tao .env.production
     echo.
-    echo 3. Upload len server:
+    echo 3. Upload len server
     echo    - Upload thu muc .next/
     echo    - Upload thu muc public/
     echo    - Upload package.json
     echo    - Upload next.config.js
     echo    - Upload .env.production thanh .env.local
     echo.
-    echo 4. Tren server chay:
+    echo 4. Tren server chay
     echo    - npm install --production
     echo    - npm run start
     echo.
-    echo 5. Cau hinh web server (Nginx/Apache):
+    echo 5. Cau hinh web server (Nginx/Apache)
     echo    - Proxy den http://localhost:3000
     echo    - Cau hinh SSL cho https://xlab.id.vn
     echo.
-    echo 6. Domain xlab.id.vn:
+    echo 6. Domain xlab.id.vn
     echo    - Da duoc cau hinh trong next.config.js
     echo    - NEXTAUTH_URL da duoc set thanh https://xlab.id.vn
     echo.
