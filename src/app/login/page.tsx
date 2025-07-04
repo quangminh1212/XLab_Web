@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
@@ -7,6 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
+
+
 export default function LoginPage() {
   const { data: session, status } = useSession();
   const router = useRouter();

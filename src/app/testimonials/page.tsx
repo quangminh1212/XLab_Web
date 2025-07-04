@@ -1,9 +1,10 @@
-'use client';
-
 import Image from 'next/image';
 import { useState } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
 interface Testimonial {
   id: string;
   name: string;

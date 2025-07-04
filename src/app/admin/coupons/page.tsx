@@ -1,11 +1,12 @@
-'use client';
-
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
 import VoucherUsageList from '@/components/admin/VoucherUsageList';
 import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
 interface Coupon {
   id: string;
   code: string;

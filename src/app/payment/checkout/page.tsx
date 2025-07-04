@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -7,6 +5,10 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
 import { formatCurrency } from '@/lib/utils';
+
+'use client';
+
+
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const router = useRouter();

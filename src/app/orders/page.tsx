@@ -1,10 +1,12 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+
+'use client';
+
+
 // Khai báo kiểu dữ liệu
 interface OrderItem {
   id: string;

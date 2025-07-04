@@ -1,9 +1,10 @@
-'use client';
-
 import React, { useState } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNotifications } from '@/contexts/NotificationContext';
+
+'use client';
+
 const NotificationDemo = () => {
   const { addNotification } = useNotifications();
   const [demoType, setDemoType] = useState<'promotion' | 'update' | 'order' | 'system'>('system');

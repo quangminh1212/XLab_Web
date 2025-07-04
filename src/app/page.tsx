@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
@@ -10,6 +8,11 @@ import ProductCard from '@/components/product/ProductCard';
 import { CartItem } from '@/components/cart/CartContext';
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
+
+
 // Thêm comment này để kiểm tra hot-reload
 // Types
 interface Product {

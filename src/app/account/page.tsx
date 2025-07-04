@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -8,6 +6,9 @@ import { useState, useEffect } from 'react';
 
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
   id: string;

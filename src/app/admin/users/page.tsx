@@ -1,11 +1,12 @@
-'use client';
-
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 import withAdminAuth from '@/components/withAdminAuth';
 import { User, UserStats } from '@/models/UserModel';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
 interface UserWithOrderStats extends User {
   purchasedProducts?: number;
   totalSpent?: number;

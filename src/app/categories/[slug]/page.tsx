@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -8,6 +6,9 @@ import { notFound } from 'next/navigation';
 import ProductCard from '@/components/product/ProductCard';
 import ProductImage from '@/components/product/ProductImage';
 import { categories, products } from '@/data/mockData';
+
+'use client';
+
 interface CategoryPageProps {
   params: Promise<{
     slug: string;

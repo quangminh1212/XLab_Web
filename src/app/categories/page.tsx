@@ -1,10 +1,11 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
 import { categories } from '@/data/mockData';
+
+'use client';
+
 export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">

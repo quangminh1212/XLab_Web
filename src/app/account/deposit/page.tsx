@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
@@ -9,6 +7,9 @@ import { useState, useEffect, useRef } from 'react';
 
 import { useBalance } from '@/contexts/BalanceContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();

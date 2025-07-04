@@ -1,11 +1,12 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { useCart } from '@/components/cart/CartContext';
+
+'use client';
+
 // import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 import {
   AiOutlineShoppingCart,

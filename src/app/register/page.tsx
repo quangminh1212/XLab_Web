@@ -1,10 +1,11 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
+
+'use client';
+
 export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();

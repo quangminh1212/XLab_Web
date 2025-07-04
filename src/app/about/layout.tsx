@@ -1,8 +1,9 @@
-'use client';
-
 import { useEffect } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
 const AboutLayout = ({ children }: { children: React.ReactNode }) => {
   const { t } = useLanguage();
   

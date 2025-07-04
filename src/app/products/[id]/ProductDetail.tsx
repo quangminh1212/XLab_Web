@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } from 'react';
@@ -15,6 +13,9 @@ import { Product as UIProduct } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
   loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,

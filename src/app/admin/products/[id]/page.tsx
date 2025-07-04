@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { toast } from 'react-toastify';
@@ -10,6 +8,9 @@ import './animations.css';
 import RichTextEditor from '@/components/common/RichTextEditor';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
+
+'use client';
+
 // Danh sách các tùy chọn thời hạn
 const durationOptions = [
   { value: '1week', label: '1 Tuần' },

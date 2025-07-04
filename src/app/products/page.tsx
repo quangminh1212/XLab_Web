@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -9,6 +7,11 @@ import ProductImage from '@/components/product/ProductImage';
 import { Button } from '@/components/common/button';
 import { categories } from '@/data/mockData';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+'use client';
+
+
+
 export default function ProductsPage() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();

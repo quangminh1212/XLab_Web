@@ -18,11 +18,11 @@ if errorlevel 1 (
 echo ✅ Node.js OK
 
 echo [2] Sua loi SWC version mismatch...
-call npm install @next/swc-win32-x64-msvc@15.2.4
+call npm install @next/swc-win32-x64-msvc@15.2.4 --no-audit --no-fund --silent
 echo ✅ SWC version fixed
 
 echo [3] Cai dat dependencies...
-call npm install
+call npm install --no-audit --no-fund --silent
 if errorlevel 1 (
     echo ❌ Loi khi cai dat dependencies!
     pause
@@ -83,7 +83,7 @@ echo Press Ctrl+C to stop the server
 echo.
 
 cd %~dp0
-npm run dev
+.\node_modules\.bin\next dev -p 3000
 
 :end
 echo.

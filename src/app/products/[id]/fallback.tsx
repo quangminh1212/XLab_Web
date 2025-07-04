@@ -1,8 +1,9 @@
-'use client';
-
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+'use client';
+
 // Component hiển thị khi JavaScript không tải được
 export default function ProductFallback() {
   const router = useRouter();

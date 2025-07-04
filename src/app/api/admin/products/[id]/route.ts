@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
 import { Product, ProductCategory } from '@/models/ProductModel';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getProductById, updateProduct, deleteProduct } from '@/lib/i18n/products';
 
 // Data file path

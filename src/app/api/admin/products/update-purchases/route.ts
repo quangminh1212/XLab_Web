@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
 import { Product } from '@/models/ProductModel';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');

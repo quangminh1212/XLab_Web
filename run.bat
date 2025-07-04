@@ -12,14 +12,6 @@ echo 🔒 HTTPS: Enabled
 echo 🌐 Domain: xlab.id.vn
 echo.
 
-goto prod_setup
-
-:prod_setup
-echo.
-echo ==========================================
-echo    Production Setup for xlab.id.vn
-echo ==========================================
-echo.
 echo [1] Kiem tra Node.js version...
 node --version
 if errorlevel 1 (
@@ -31,7 +23,7 @@ if errorlevel 1 (
 echo ✅ Node.js OK
 
 echo [2] Sua loi SWC version mismatch...
-call npm install @next/swc-win32-x64-msvc@15.2.4
+call npm install @next/swc-win32-x64-msvc@15.2.4 --no-audit --no-fund --silent
 echo ✅ SWC version fixed
 
 echo [3] Kiem tra environment production...
@@ -48,7 +40,7 @@ copy ".env.production" ".env.local" >nul
 echo ✅ Da copy .env.production -> .env.local
 
 echo [5] Cai dat dependencies (bao gom dev dependencies cho build)...
-call npm ci
+call npm ci --no-audit --no-fund --silent
 if errorlevel 1 (
     echo ❌ Loi khi cai dat dependencies!
     pause
@@ -86,6 +78,18 @@ call node scripts/fix-specific-errors.js 2>nul || (
 )
 echo ✅ ESLint errors processed
 
+echo [9.1] Fix TypeScript import errors...
+call node scripts/fix-import-errors.js 2>nul || (
+    echo ⚠️  Import fix script co loi, bo qua...
+)
+echo ✅ Import errors processed
+
+echo [9.2] Fix 'use client' directive errors...
+call node scripts/fix-use-client-directive.js 2>nul || (
+    echo ⚠️  Use client directive fix script co loi, bo qua...
+)
+echo ✅ Use client directive errors processed
+
 echo [10] Clear Next.js cache...
 if exist ".next" (
     rd /s /q ".next"
@@ -93,23 +97,23 @@ if exist ".next" (
 echo ✅ Cache cleared
 
 echo [11] Chay type checking...
-tsc --version >nul 2>&1 || (
-    echo ⚠️  TypeScript chua duoc cai dat globally, cai dat...
-    call npm install -g typescript >nul 2>&1
+call .\node_modules\.bin\tsc --version >nul 2>&1 || (
+    echo ⚠️  TypeScript chua duoc cai dat, cai dat...
+    call npm install typescript >nul 2>&1
 )
-call npm run type-check 2>nul || (
+call .\node_modules\.bin\tsc --noEmit 2>nul || (
     echo ⚠️  Type checking co loi, tiep tuc build...
 )
 echo ✅ Type checking completed
 
 echo [12] Chay linting...
-call npm run lint 2>nul || (
+call .\node_modules\.bin\next lint 2>nul || (
     echo ⚠️  Linting co loi, tiep tuc build...
 )
 echo ✅ Linting completed
 
 echo [13] Build ung dung cho production...
-call npm run build
+call .\node_modules\.bin\next build
 if errorlevel 1 (
     echo ❌ Build failed!
     pause
@@ -140,7 +144,7 @@ echo Press Ctrl+C to stop the server
 echo.
 
 cd %~dp0
-npm run start
+.\node_modules\.bin\next start
 goto end
 
 

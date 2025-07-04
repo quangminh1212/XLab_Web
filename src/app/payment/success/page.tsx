@@ -1,11 +1,13 @@
-'use client';
-
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
+
+'use client';
+
+
 export default function PaymentSuccessPage() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();

@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { getAllProducts } from '@/lib/i18n/products';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { Product } from '@/models/ProductModel';
+import { getAllProducts } from '@/lib/i18n/products';
 
 // Đọc dữ liệu sản phẩm từ JSON file
 const productsPath = path.join(process.cwd(), 'src/data/products.json');

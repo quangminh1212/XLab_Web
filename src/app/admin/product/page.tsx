@@ -1,9 +1,10 @@
-'use client';
-
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import withAdminAuth from '@/components/withAdminAuth';
+
+'use client';
+
 function AdminProductRedirectPage() {
   const router = useRouter();
 
