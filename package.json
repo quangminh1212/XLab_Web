@@ -11,6 +11,7 @@
     "build:export": "node scripts/fix-build-error.js && (cross-env NEXT_PUBLIC_EXPORT=true npx next build || node scripts/build-cleanup.js) && node scripts/post-build.js",
     "build:clean": "npx rimraf .next node_modules/.cache && npm run build",
     "fix-build": "node scripts/fix-all-build-issues.js",
+    "run-all": "node scripts/fix-all-build-issues.js && npx next build && node scripts/post-build.js && npm start",
     "start": "cross-env NODE_ENV=production node .next/standalone/server.js",
     "start:prod": "cross-env NODE_ENV=production node scripts/direct-start.js",
     "lint": "npx next lint",

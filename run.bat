@@ -82,21 +82,30 @@ if exist .next\standalone (
 echo ===========================================
 echo Starting production server...
 echo ===========================================
-SET NODE_ENV=production
-SET PORT=3000
 
-echo Option 1: Using standalone server
-call node .next/standalone/server.js
+echo Running server with npm start...
+call npm start
 IF %ERRORLEVEL% NEQ 0 (
   echo ======================================================
-  echo Standalone server failed, trying optimized server...
+  echo Server failed to start with npm start, trying alternatives...
   echo ======================================================
-  call node scripts/optimize.js --start-server
+  
+  SET NODE_ENV=production
+  SET PORT=3000
+  
+  echo Option 1: Using standalone server directly...
+  call node .next/standalone/server.js
   IF %ERRORLEVEL% NEQ 0 (
     echo ======================================================
-    echo Optimized server failed, falling back to Next.js start...
+    echo Standalone server failed, trying optimized server...
     echo ======================================================
-    call npx next start
+    call node scripts/optimize.js --start-server
+    IF %ERRORLEVEL% NEQ 0 (
+      echo ======================================================
+      echo All server options failed, falling back to Next.js start...
+      echo ======================================================
+      call npx next start
+    )
   )
 )
 
