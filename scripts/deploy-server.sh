@@ -91,6 +91,6 @@ pm2 save
 pm2 startup
 
 echo "✅ Triển khai hoàn tất!"
-echo "🌐 Website: https://xlab.vn"
+echo "🌐 Website: https://xlab.id.vn"
 echo "📊 Kiểm tra status: pm2 status"
 echo "📝 Xem logs: pm2 logs xlab-web"

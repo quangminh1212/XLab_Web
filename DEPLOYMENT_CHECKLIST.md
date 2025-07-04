@@ -3,21 +3,21 @@
 ## Pre-Deployment Setup
 
 ### 1. Domain & DNS Configuration
-- [ ] Purchase domain `xlab.vn` (if not already owned)
+- [ ] Purchase domain `xlab.id.vn` (if not already owned)
 - [ ] Configure DNS A records pointing to server IP
 - [ ] Set up www subdomain (CNAME or A record)
 - [ ] Configure MX records for email (optional)
 - [ ] Verify DNS propagation
 
 ### 2. SSL Certificate
-- [ ] Obtain SSL certificate for `xlab.vn` and `www.xlab.vn`
+- [ ] Obtain SSL certificate for `xlab.id.vn` and `www.xlab.id.vn`
 - [ ] Configure automatic renewal (Let's Encrypt recommended)
 - [ ] Test HTTPS connectivity
 
 ### 3. Environment Variables
 - [ ] Copy `.env.production` to `.env.local`
 - [ ] Generate new `NEXTAUTH_SECRET` for production
-- [ ] Update `NEXTAUTH_URL` to `https://xlab.vn`
+- [ ] Update `NEXTAUTH_URL` to `https://xlab.id.vn`
 - [ ] Configure production Google OAuth credentials
 - [ ] Set production admin emails
 - [ ] Add any additional environment variables
@@ -25,8 +25,8 @@
 ### 4. Google OAuth Setup
 - [ ] Create new OAuth app in Google Cloud Console
 - [ ] Add authorized redirect URIs:
-  - `https://xlab.vn/api/auth/callback/google`
-  - `https://www.xlab.vn/api/auth/callback/google`
+  - `https://xlab.id.vn/api/auth/callback/google`
+  - `https://www.xlab.id.vn/api/auth/callback/google`
 - [ ] Update environment variables with new credentials
 
 ## Deployment Options

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "name": "xlab-web",
-  "alias": ["xlab.vn", "www.xlab.vn"],
+  "alias": ["xlab.id.vn", "www.xlab.id.vn"],
   "regions": ["sin1", "hkg1"],
   "env": {
     "NODE_ENV": "production"
@@ -41,8 +41,8 @@
   ],
   "redirects": [
     {
-      "source": "/www.xlab.vn/(.*)",
-      "destination": "https://xlab.vn/$1",
+      "source": "/www.xlab.id.vn/(.*)",
+      "destination": "https://xlab.id.vn/$1",
       "permanent": true
     }
   ],

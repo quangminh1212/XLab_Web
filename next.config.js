@@ -15,8 +15,8 @@ const nextConfig = {
         'localhost:3000',
         'localhost:3001',
         'localhost:3002',
-        'xlab.vn',
-        'www.xlab.vn'
+        'xlab.id.vn',
+        'www.xlab.id.vn'
       ],
     },
     optimizeCss: true,

@@ -8,7 +8,7 @@ echo "=================================="
 
 # Check website response
 echo "🌐 Kiểm tra website..."
-HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://xlab.vn)
+HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://xlab.id.vn)
 if [ "$HTTP_STATUS" = "200" ]; then
     echo "✅ Website hoạt động bình thường (HTTP $HTTP_STATUS)"
 else
@@ -17,7 +17,7 @@ fi
 
 # Check SSL certificate
 echo "🔒 Kiểm tra SSL certificate..."
-SSL_EXPIRY=$(echo | openssl s_client -servername xlab.vn -connect xlab.vn:443 2>/dev/null | openssl x509 -noout -dates | grep notAfter | cut -d= -f2)
+SSL_EXPIRY=$(echo | openssl s_client -servername xlab.id.vn -connect xlab.id.vn:443 2>/dev/null | openssl x509 -noout -dates | grep notAfter | cut -d= -f2)
 echo "📅 SSL hết hạn: $SSL_EXPIRY"
 
 # Check PM2 processes
