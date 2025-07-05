@@ -18,9 +18,7 @@ if errorlevel 1 (
 )
 echo [SUCCESS] Node.js is installed
 
-echo [INFO] Checking npm...
-timeout /t 1 >nul
-echo [SUCCESS] npm is installed
+echo [SUCCESS] npm is available
 
 echo.
 echo [INFO] Checking if build exists...
@@ -30,12 +28,22 @@ if exist ".next\BUILD_ID" (
 )
 
 echo [INFO] Installing dependencies...
-npm install
+call npm install
+if errorlevel 1 (
+    echo [ERROR] npm install failed!
+    pause
+    exit /b 1
+)
 echo [SUCCESS] Dependencies installed
 
 echo [INFO] Building production...
 set SKIP_TYPE_CHECK=true
-npm run build
+call npm run build
+if errorlevel 1 (
+    echo [ERROR] Build failed!
+    pause
+    exit /b 1
+)
 echo [SUCCESS] Build completed
 
 :start_services
