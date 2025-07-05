@@ -1,6 +1,4 @@
 @echo off
-chcp 65001 >nul 2>&1
-setlocal enabledelayedexpansion
 
 title XLab Web - Complete Hosting System
 
@@ -11,130 +9,146 @@ echo                   Auto Setup + Hosting xlab.id.vn
 echo ================================================================
 echo.
 
-REM Kiem tra Node.js
-echo [INFO] Kiem tra Node.js...
-node --version >nul 2>&1
+echo [INFO] Checking Node.js...
+node -v
 if errorlevel 1 (
-    echo [ERROR] Node.js chua duoc cai dat!
+    echo [ERROR] Node.js not installed!
+    echo [INFO] Download from: https://nodejs.org/
     pause
     exit /b 1
 )
-echo [SUCCESS] Node.js da duoc cai dat
+echo [SUCCESS] Node.js is installed
 
-REM Kiem tra npm
-echo [INFO] Kiem tra npm...
-npm --version >nul 2>&1
+echo [INFO] Checking npm...
+npm -v
 if errorlevel 1 (
-    echo [ERROR] npm chua duoc cai dat!
+    echo [ERROR] npm not installed!
     pause
     exit /b 1
 )
-echo [SUCCESS] npm da duoc cai dat
+echo [SUCCESS] npm is installed
 
-REM Cai dat dependencies
-echo [INFO] Cai dat dependencies...
+echo [INFO] Checking if build exists...
+if exist ".next\BUILD_ID" (
+    echo [SUCCESS] Build exists, skipping npm install and build
+    goto start_services
+)
+
+echo [INFO] Installing dependencies...
 call npm install
 if errorlevel 1 (
-    echo [ERROR] Loi khi cai dat dependencies!
+    echo [ERROR] Failed to install dependencies!
     pause
     exit /b 1
 )
-echo [SUCCESS] Dependencies da duoc cai dat
+echo [SUCCESS] Dependencies installed
 
-REM Build production
-echo [INFO] Build production...
-if not exist ".next\BUILD_ID" (
-    set SKIP_TYPE_CHECK=true
-    call npm run build
-    if errorlevel 1 (
-        echo [ERROR] Build that bai!
-        pause
-        exit /b 1
-    )
+echo [INFO] Building production...
+set SKIP_TYPE_CHECK=true
+call npm run build
+if errorlevel 1 (
+    echo [ERROR] Build failed!
+    pause
+    exit /b 1
 )
-echo [SUCCESS] Production build hoan tat
+echo [SUCCESS] Build completed
 
-REM Cai dat Nginx
-echo [INFO] Cai dat Nginx...
-if not exist "C:\nginx\nginx.exe" (
-    powershell -ExecutionPolicy Bypass -File download-nginx.ps1
-)
-
-REM Cau hinh Nginx
-if exist "C:\nginx\nginx.exe" (
-    if exist "nginx.conf" (
-        copy "nginx.conf" "C:\nginx\conf\nginx.conf" >nul 2>&1
-    )
-    echo [SUCCESS] Nginx da san sang
-)
-
-REM Tai Cloudflared
-echo [INFO] Tai Cloudflared...
-if not exist "cloudflared.exe" (
-    powershell -ExecutionPolicy Bypass -File download-cloudflared.ps1
-)
-
+:start_services
 echo.
 echo ================================================================
-echo                    KHOI DONG SERVICES
+echo                    STARTING COMPLETE HOSTING
 echo ================================================================
 
-REM Dong cac service cu
+echo [INFO] Stopping old services...
 taskkill /f /im node.exe >nul 2>&1
 taskkill /f /im nginx.exe >nul 2>&1
 taskkill /f /im cloudflared.exe >nul 2>&1
 timeout /t 2 >nul
 
-REM Khoi dong XLab Server
 echo [1/3] Starting XLab Web Server...
 start "XLab Web Server" /min cmd /c "npm run start"
-timeout /t 5 >nul
+timeout /t 8 >nul
 
-netstat -an | find "3000" >nul 2>&1
+echo [INFO] Checking if server started...
+netstat -an | find "3000"
 if errorlevel 1 (
-    echo [ERROR] XLab Server khong khoi dong duoc!
+    echo [ERROR] XLab Server failed to start!
     pause
     exit /b 1
 )
-echo [SUCCESS] XLab Server da khoi dong (port 3000)
+echo [SUCCESS] XLab Server started (port 3000)
 
-REM Khoi dong Nginx
+echo [2/3] Setting up Nginx...
 if exist "C:\nginx\nginx.exe" (
-    echo [2/3] Starting Nginx...
+    echo [INFO] Starting Nginx...
     start "Nginx" /min cmd /c "cd /d C:\nginx && nginx.exe"
     timeout /t 3 >nul
-    echo [SUCCESS] Nginx da khoi dong
+    echo [SUCCESS] Nginx started (port 80)
 ) else (
-    echo [2/3] Nginx khong co san, bo qua...
+    echo [INFO] Nginx not installed, downloading...
+    powershell -ExecutionPolicy Bypass -File download-nginx.ps1
+    if exist "C:\nginx\nginx.exe" (
+        copy "nginx.conf" "C:\nginx\conf\nginx.conf" >nul 2>&1
+        start "Nginx" /min cmd /c "cd /d C:\nginx && nginx.exe"
+        timeout /t 3 >nul
+        echo [SUCCESS] Nginx installed and started
+    ) else (
+        echo [WARNING] Nginx installation failed
+    )
 )
 
-REM Khoi dong Cloudflare Tunnel
+echo [3/3] Setting up Cloudflare Tunnel...
 if exist "cloudflared.exe" (
-    echo [3/3] Starting Cloudflare Tunnel...
-    start "Cloudflare Tunnel" cmd /c "cloudflared.exe tunnel --url http://localhost:80"
+    echo [INFO] Starting Cloudflare Tunnel...
+    start "Cloudflare Tunnel" cmd /c "echo Cloudflare Tunnel for xlab.id.vn && echo Public URL will appear below: && cloudflared.exe tunnel --url http://localhost:80"
     timeout /t 3 >nul
-    echo [SUCCESS] Cloudflare Tunnel da khoi dong
+    echo [SUCCESS] Cloudflare Tunnel started
 ) else (
-    echo [3/3] Cloudflared khong co san, bo qua...
+    echo [INFO] Cloudflared not found, downloading...
+    powershell -ExecutionPolicy Bypass -File download-cloudflared.ps1
+    if exist "cloudflared.exe" (
+        start "Cloudflare Tunnel" cmd /c "echo Cloudflare Tunnel for xlab.id.vn && echo Public URL will appear below: && cloudflared.exe tunnel --url http://localhost:80"
+        timeout /t 3 >nul
+        echo [SUCCESS] Cloudflared downloaded and started
+    ) else (
+        echo [WARNING] Cloudflared download failed
+    )
 )
 
 echo.
 echo ================================================================
-echo                    WEBSITE SAN SANG!
+echo                    WEBSITE XLAB.ID.VN READY!
 echo ================================================================
-echo [✅] XLab Web Server: http://localhost:3000
+echo.
+echo [SUCCESS] Website started with these URLs:
+echo.
+echo [LOCAL ACCESS:]
+echo   - XLab Server: http://localhost:3000
 if exist "C:\nginx\nginx.exe" (
-    echo [✅] Nginx Proxy: http://localhost:80
+    echo   - Nginx Proxy: http://localhost:80
 )
+echo.
 if exist "cloudflared.exe" (
-    echo [✅] Cloudflare Tunnel: Kiem tra cua so tunnel de lay URL
+    echo [PUBLIC ACCESS:]
+    echo   - Cloudflare Tunnel: Check 'Cloudflare Tunnel' window
+    echo   - URL format: https://random.trycloudflare.com
+    echo   - This URL shows xlab.id.vn content
 )
+echo.
+echo [ADMIN:]
+echo   - Environment: Production
+echo   - Authentication: Google OAuth
+echo   - Admin Email: xlab.rnd@gmail.com
+echo.
 echo ================================================================
 echo.
-echo [INFO] Website xlab.id.vn da san sang!
-echo [INFO] Nhan Ctrl+C de dung tat ca service.
+echo [INFO] All services running. Website xlab.id.vn is ready!
+echo [INFO] Press Ctrl+C to stop all services.
+echo [INFO] If you close this window, all services will stop.
 echo.
 
+echo [INFO] Waiting for services... (Press Ctrl+C to stop all)
 :wait_loop
-timeout /t 10 >nul
+timeout /t 30 >nul
+echo [INFO] Services still running...
 goto wait_loop
