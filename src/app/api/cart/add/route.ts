@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-
-import { getProductBySlug } from '@/lib/utils';
 import { products } from '@/data/mockData';
+import { getProductBySlug } from '@/lib/utils';
 
 // In a real application, this would interact with a database or session store
 // For now, we'll use a mock implementation

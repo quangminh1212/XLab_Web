@@ -1,13 +1,11 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-
-import { formatCurrency } from '@/lib/utils';
-
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import { formatCurrency } from '@/lib/utils';
+import { useSession } from 'next-auth/react';
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();

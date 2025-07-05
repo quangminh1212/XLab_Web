@@ -1,11 +1,10 @@
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+'use client';
 
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Order, OrderStats } from '@/models/OrderModel';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-'use client';
 
 function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);

@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
 'use client';
+
+import React, { useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 // Component hiển thị khi JavaScript không tải được
 export default function ProductFallback() {

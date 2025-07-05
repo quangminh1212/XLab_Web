@@ -1,10 +1,9 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-
-import { categories } from '@/data/mockData';
-
 'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { categories } from '@/data/mockData';
 
 export default function CategoriesPage() {
   return (

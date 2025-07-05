@@ -1,10 +1,9 @@
-import fs from 'fs/promises';
-import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { findTransactionByCode, getSheetDataFromCSV } from '@/lib/googleSheets';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Real bank transaction verification using Google Sheets
 interface BankTransaction {
@@ -26,7 +25,7 @@ const verifiedTransactions: Record<string, BankTransaction> = {};
 const processedTransactions: Set<string> = new Set(); // Tránh xử lý lặp lại
 
 // Function to get user balance
-const _getUserBalance = async (userEmail: string): Promise<number> => {
+const getUserBalance = async (userEmail: string): Promise<number> => {
   try {
     const balancePath = path.join(process.cwd(), 'data', 'balances.json');
 
@@ -39,7 +38,7 @@ const _getUserBalance = async (userEmail: string): Promise<number> => {
       return 0;
     }
   } catch (error) {
-    // // // // // console.error('Error reading balance:', error);
+    console.error('Error reading balance:', error);
     return 0;
   }
 };
@@ -76,12 +75,12 @@ const updateUserBalance = async (userEmail: string, amount: number): Promise<num
     // Write back to file
     await fs.writeFile(balancePath, JSON.stringify(balances, null, 2));
 
-    // // // // // console.log(
-    //   `💰 Balance updated for ${userEmail}: ${currentBalance} + ${amount} = ${newBalance}`,
-    // );
+    console.log(
+      `💰 Balance updated for ${userEmail}: ${currentBalance} + ${amount} = ${newBalance}`,
+    );
     return newBalance;
   } catch (error) {
-    // // // // // console.error('Error updating balance:', error);
+    console.error('Error updating balance:', error);
     throw error;
   }
 };
@@ -104,7 +103,7 @@ const checkBankTransaction = async (
 
     // If API method fails, try CSV method as fallback
     if (!sheetTransaction) {
-      // // // // // console.log('Trying CSV method as fallback...');
+      console.log('Trying CSV method as fallback...');
       const allTransactions = await getSheetDataFromCSV();
       sheetTransaction =
         allTransactions.find(
@@ -133,18 +132,18 @@ const checkBankTransaction = async (
 
         return verifiedTransaction;
       } else {
-        // // // // // console.log('Transaction found but validation failed:', {
-        //   expectedAmount,
-        //   actualAmount: sheetTransaction.amount,
-        //   expectedAccount: accountNumber,
-        //   actualAccount: sheetTransaction.accountNumber,
-        // });
+        console.log('Transaction found but validation failed:', {
+          expectedAmount,
+          actualAmount: sheetTransaction.amount,
+          expectedAccount: accountNumber,
+          actualAccount: sheetTransaction.accountNumber,
+        });
       }
     }
 
     return null;
   } catch (error) {
-    // // // // // console.error('Error checking bank transaction:', error);
+    console.error('Error checking bank transaction:', error);
     return null;
   }
 };
@@ -163,13 +162,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing transaction ID' }, { status: 400 });
     }
 
-    // // // // // console.log('Checking transaction:', {
-    //   transactionId,
-    //   amount,
-    //   bankCode,
-    //   accountNumber,
-    //   userEmail: session.user.email,
-    // });
+    console.log('Checking transaction:', {
+      transactionId,
+      amount,
+      bankCode,
+      accountNumber,
+      userEmail: session.user.email,
+    });
 
     // Check bank transaction status from Google Sheets
     const bankTransaction = await checkBankTransaction(
@@ -179,20 +178,20 @@ export async function POST(request: NextRequest) {
       accountNumber,
     );
 
-    // // // // // console.log('🔍 Bank transaction result:', {
-    //   found: !!bankTransaction,
-    //   transaction: bankTransaction,
-    //   alreadyProcessed: processedTransactions.has(transactionId),
-    // });
+    console.log('🔍 Bank transaction result:', {
+      found: !!bankTransaction,
+      transaction: bankTransaction,
+      alreadyProcessed: processedTransactions.has(transactionId),
+    });
 
     if (bankTransaction && bankTransaction.status === 'completed') {
       // Transaction found and verified
-      // // // // // console.log(`✅ Transaction verified for user ${session.user.email}:`, {
-      //   transactionId,
-      //   amount: bankTransaction.amount,
-      //   description: bankTransaction.description,
-      //   timestamp: bankTransaction.timestamp,
-      // });
+      console.log(`✅ Transaction verified for user ${session.user.email}:`, {
+        transactionId,
+        amount: bankTransaction.amount,
+        description: bankTransaction.description,
+        timestamp: bankTransaction.timestamp,
+      });
 
       // Auto-add money to account if not already processed
       if (!processedTransactions.has(transactionId)) {
@@ -200,11 +199,11 @@ export async function POST(request: NextRequest) {
           const newBalance = await updateUserBalance(session.user.email, bankTransaction.amount);
           processedTransactions.add(transactionId); // Mark as processed
 
-          // // // // // console.log(
-          //   `🎉 Auto-deposited ${bankTransaction.amount} VND to ${session.user.email}, new balance: ${newBalance}`,
-          // );
+          console.log(
+            `🎉 Auto-deposited ${bankTransaction.amount} VND to ${session.user.email}, new balance: ${newBalance}`,
+          );
         } catch (error) {
-          // // // // // console.error('Error auto-depositing funds:', error);
+          console.error('Error auto-depositing funds:', error);
           // Continue with response even if balance update fails
         }
       }
@@ -225,7 +224,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Transaction not found or validation failed
-    // // // // // console.log(`❌ Transaction not found or validation failed: ${transactionId}`);
+    console.log(`❌ Transaction not found or validation failed: ${transactionId}`);
     return NextResponse.json({
       success: false,
       status: 'pending',
@@ -233,7 +232,7 @@ export async function POST(request: NextRequest) {
         'Giao dịch chưa được tìm thấy hoặc đang chờ xử lý. Vui lòng đợi vài phút và thử lại.',
     });
   } catch (error) {
-    // // // // // console.error('Error checking bank transfer:', error);
+    console.error('Error checking bank transfer:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

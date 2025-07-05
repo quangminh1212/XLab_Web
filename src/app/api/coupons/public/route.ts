@@ -1,8 +1,7 @@
+import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 // Create path to data files

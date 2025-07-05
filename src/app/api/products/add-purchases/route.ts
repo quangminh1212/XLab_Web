@@ -1,7 +1,6 @@
+import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { NextRequest, NextResponse } from 'next/server';
-
 import { Product } from '@/models/ProductModel';
 
 // Data file path
@@ -31,7 +30,7 @@ function saveProducts(products: Product[]): void {
   }
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const products = getProducts();
     let updatedCount = 0;
@@ -59,7 +58,7 @@ export async function GET(_request: NextRequest) {
       success: true,
       message: `Đã thêm số lượt mua cho ${updatedCount} sản phẩm`,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error adding purchase counts:', error);
     return NextResponse.json(
       {

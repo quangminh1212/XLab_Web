@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { import { getServerSession } from 'next-auth/next';
-
+import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-
+import {
   getUsers,
   getAllUserEmails,
   getUserDataFromFile,

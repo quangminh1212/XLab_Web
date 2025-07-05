@@ -1,11 +1,10 @@
-import fs from 'fs';
-import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { v4 as uuidv4 } from 'uuid';
-
-import { Product, ProductCategory, ProductSpecification } from '@/models/ProductModel';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { Product, ProductCategory, ProductSpecification } from '@/models/ProductModel';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 import { getAllProducts, saveProduct, deleteProduct, updateProduct } from '@/lib/i18n/products';
 
 /**

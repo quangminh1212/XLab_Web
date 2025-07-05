@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
-
 'use client';
+
+import { useState, useEffect } from 'react';
+import { signIn } from 'next-auth/react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function RegisterPage() {
   const router = useRouter();

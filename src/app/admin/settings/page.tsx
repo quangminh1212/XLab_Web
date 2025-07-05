@@ -1,11 +1,10 @@
-import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+'use client';
 
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import withAdminAuth from '@/components/withAdminAuth';
 import { SystemSettings, defaultSystemSettings } from '@/models/SystemSettingsModel';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-'use client';
 
 function SettingsPage() {
   const { data: session } = useSession();

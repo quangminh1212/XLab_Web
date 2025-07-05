@@ -1,13 +1,12 @@
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+'use client';
 
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
-import { formatCurrency } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-'use client';
+import { formatCurrency } from '@/lib/utils';
 
 interface Stats {
   products: number;

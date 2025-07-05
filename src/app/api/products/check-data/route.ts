@@ -1,7 +1,6 @@
+import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { NextRequest, NextResponse } from 'next/server';
-
 import { Product } from '@/models/ProductModel';
 
 // Data file path
@@ -22,7 +21,7 @@ function getProducts(): Product[] {
   }
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const products = getProducts();
 
@@ -44,7 +43,7 @@ export async function GET(_request: NextRequest) {
       productsWithPurchases: productsWithPurchases.length,
       products: simplifiedProducts,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error checking product data:', error);
     return NextResponse.json(
       {

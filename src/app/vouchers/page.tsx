@@ -1,6 +1,7 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 
-'use client';
 interface Coupon {
   id: string;
   code: string;

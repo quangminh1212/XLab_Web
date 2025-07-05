@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-
 'use client';
+
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 interface UserStats {
   profile: {

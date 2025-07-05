@@ -1,8 +1,8 @@
-import Image from 'next/image';
+'use client';
 
 import { SpeechToTextDemo } from '@/components/product';
+import Image from 'next/image';
 
-'use client';
 const VoiceTypingDemo = () => {
   return (
     <div className="mt-8 pt-6 border-t border-gray-200">

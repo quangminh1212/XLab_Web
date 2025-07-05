@@ -1,16 +1,13 @@
-import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-
-import ProductCard from '@/components/product/ProductCard';
-import ProductImage from '@/components/product/ProductImage';
-import { Button } from '@/components/common/button';
-import { categories } from '@/data/mockData';
-import { useLanguage } from '@/contexts/LanguageContext';
-
 'use client';
 
-
+import React, { useState, useEffect } from 'react';
+import { categories } from '@/data/mockData';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import ProductImage from '@/components/product/ProductImage';
+import ProductCard from '@/components/product/ProductCard';
+import { Button } from '@/components/common/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ProductsPage() {
   const { t } = useLanguage();

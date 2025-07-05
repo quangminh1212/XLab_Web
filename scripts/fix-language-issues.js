@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const glob = require('glob');
 
 console.log('🔍 Bắt đầu quét và sửa lỗi so sánh ngôn ngữ...');
 
@@ -10,34 +11,11 @@ const directories = [
   'src/contexts'
 ];
 
-// Hàm đệ quy để tìm file TypeScript/TSX
-function findTSFiles(dir) {
-  let files = [];
-  try {
-    if (!fs.existsSync(dir)) return files;
-
-    const items = fs.readdirSync(dir);
-    for (const item of items) {
-      const fullPath = path.join(dir, item);
-      const stat = fs.statSync(fullPath);
-
-      if (stat.isDirectory() && item !== 'node_modules' && !item.startsWith('.')) {
-        files = [...files, ...findTSFiles(fullPath)];
-      } else if (stat.isFile() && (item.endsWith('.ts') || item.endsWith('.tsx'))) {
-        files.push(fullPath);
-      }
-    }
-  } catch (error) {
-    console.log(`⚠️  Không thể đọc thư mục: ${dir}`);
-  }
-  return files;
-}
-
-// Tìm tất cả file TypeScript/TSX
+// Tìm tất cả các file TypeScript và TSX trong các thư mục đã chỉ định
 let tsFiles = [];
 directories.forEach(dir => {
-  const fullDir = path.join(process.cwd(), dir);
-  const files = findTSFiles(fullDir);
+  const pattern = path.join(process.cwd(), dir, '**/*.{ts,tsx}');
+  const files = glob.sync(pattern, { ignore: '**/node_modules/**' });
   tsFiles = [...tsFiles, ...files];
 });
 

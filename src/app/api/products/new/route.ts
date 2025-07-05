@@ -1,9 +1,8 @@
+import { NextResponse } from 'next/server';
+import { products } from '@/data/mockData';
+import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
-import { NextResponse } from 'next/server';
-
-import { Product } from '@/models/ProductModel';
-import { products } from '@/data/mockData';
 import { saveProduct } from '@/lib/i18n/products';
 
 // Hàm tạo ID từ tên sản phẩm

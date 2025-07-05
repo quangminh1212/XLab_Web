@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-
-import { getProductBySlug, incrementDownloadCount } from '@/lib/utils';
 import { products } from '@/data/mockData';
+import { getProductBySlug, incrementDownloadCount } from '@/lib/utils';
 
 export async function GET(request: Request) {
   try {

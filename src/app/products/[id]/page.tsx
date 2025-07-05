@@ -1,9 +1,8 @@
+import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
-import { default as dynamicImport } from 'next/dynamic';
-import { notFound } from 'next/navigation';
-
 import { Product } from '@/models/ProductModel';
+import { default as dynamicImport } from 'next/dynamic';
 
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {

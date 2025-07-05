@@ -1,13 +1,12 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+'use client';
 
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-'use client';
 
 function AdminProductsPage() {
   const router = useRouter();

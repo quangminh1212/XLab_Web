@@ -1,13 +1,12 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+'use client';
 
+import Link from 'next/link';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-'use client';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
