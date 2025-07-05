@@ -15,14 +15,24 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
+<<<<<<< HEAD
   output: 'standalone', // For Docker deployment
   trailingSlash: false,
+=======
+  typescript: {
+    ignoreBuildErrors: process.env.SKIP_TYPE_CHECK === 'true',
+  },
+  eslint: {
+    ignoreDuringBuilds: process.env.SKIP_TYPE_CHECK === 'true',
+  },
+>>>>>>> dev_22
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
   experimental: {
     serverActions: {
+<<<<<<< HEAD
       allowedOrigins: [
         'localhost:3000',
         'localhost:3001',
@@ -30,8 +40,11 @@ const nextConfig = {
         'xlab.id.vn',
         'www.xlab.id.vn'
       ],
+=======
+      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002', 'xlab.id.vn', 'www.xlab.id.vn'],
+>>>>>>> dev_22
     },
-    optimizeCss: true,
+    optimizeCss: false,
     optimisticClientCache: true,
   },
   images: {
@@ -41,6 +54,8 @@ const nextConfig = {
       'i.pravatar.cc',
       'images.unsplash.com',
       'lh3.googleusercontent.com',
+      'xlab.id.vn',
+      'www.xlab.id.vn',
     ],
     remotePatterns: [
       {

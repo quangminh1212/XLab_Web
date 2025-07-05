@@ -107,7 +107,7 @@ function extractIdFromUrl(url: string): string {
 export const dynamic = 'force-dynamic';
 
 // GET product handler
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PUT product handler
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -251,7 +251,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE product handler
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
