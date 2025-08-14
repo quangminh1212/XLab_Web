@@ -3,21 +3,15 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  typescript: {
-    ignoreBuildErrors: process.env.SKIP_TYPE_CHECK === 'true',
-  },
-  eslint: {
-    ignoreDuringBuilds: process.env.SKIP_TYPE_CHECK === 'true',
-  },
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002', 'xlab.id.vn', 'www.xlab.id.vn'],
+      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
-    optimizeCss: false,
+    optimizeCss: true,
     optimisticClientCache: true,
   },
   images: {
@@ -27,8 +21,6 @@ const nextConfig = {
       'i.pravatar.cc',
       'images.unsplash.com',
       'lh3.googleusercontent.com',
-      'xlab.id.vn',
-      'www.xlab.id.vn',
     ],
     remotePatterns: [
       {
