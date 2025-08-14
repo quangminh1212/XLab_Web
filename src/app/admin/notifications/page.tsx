@@ -280,6 +280,7 @@ function NotificationsPage() {
       }, 5000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [successMessage, errorMessage]);
 
   // Save settings

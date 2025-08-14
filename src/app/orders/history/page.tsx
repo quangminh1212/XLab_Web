@@ -28,7 +28,7 @@ export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
-  const { t, language } = useLanguage();
+  const { t, language, localCode } = useLanguage();
 
   useEffect(() => {
     // Tải danh sách sản phẩm
@@ -157,7 +157,7 @@ export default function OrderHistoryPage() {
   // Format ngày tháng
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US', {
+    return date.toLocaleString(localCode === 'vi' ? 'vi-VN' : 'en-US', {
       hour: '2-digit',
       minute: '2-digit',
       day: '2-digit',
@@ -168,7 +168,7 @@ export default function OrderHistoryPage() {
 
   // Format tiền tệ
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US', {
+    return new Intl.NumberFormat(localCode === 'vi' ? 'vi-VN' : 'en-US', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,

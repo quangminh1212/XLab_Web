@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import fs from 'fs';
 import path from 'path';
 import { Product, ProductCategory } from '@/models/ProductModel';
@@ -105,8 +105,18 @@ function extractIdFromUrl(url: string): string {
 // Handler setup
 export const dynamic = 'force-dynamic';
 
+/**
+ * Normalize language code from Accept-Language header to internal codes
+ * Maps 'en' -> 'eng', others -> 'vie'
+ */
+function normalizeLanguageHeader(lang: string | null): 'eng' | 'vie' {
+  if (!lang) return 'vie';
+  const primary = lang.split(',')[0].split('-')[0].toLowerCase();
+  return primary === 'en' ? 'eng' : 'vie';
+}
+
 // GET product handler
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -114,12 +124,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    // Get params and normalized language
+    const { id } = await paramsPromise;
 
-    // Get language from header or default to 'vie'
-    const language = request.headers.get('accept-language') || 'vie';
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = normalizeLanguageHeader(acceptLanguage);
     console.log(`Fetching product ${id} with language: ${language}`);
 
     // Find product using i18n product function
@@ -137,7 +146,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PUT product handler
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -145,12 +154,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    // Get params and normalized language
+    const { id } = await paramsPromise;
 
-    // Get language from header or default to 'vie'
-    const language = request.headers.get('accept-language') || 'vie';
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = normalizeLanguageHeader(acceptLanguage);
     console.log(`Updating product ${id} with language: ${language}`);
 
     // Get the updated product data from the request
@@ -250,7 +258,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE product handler
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -258,17 +266,16 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    // Get params and (optional) normalized language
+    const { id } = await paramsPromise;
 
-    // Get language from header or default to both languages
-    const language = request.headers.get('accept-language');
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = acceptLanguage ? normalizeLanguageHeader(acceptLanguage) : undefined;
     console.log(`Deleting product ${id} ${language ? `for language: ${language}` : 'for all languages'}`);
 
     // Delete product using i18n product function (if language is specified, only delete that language version)
-    const deleteResult = await deleteProduct(id, language || undefined);
-    
+    const deleteResult = await deleteProduct(id, language);
+
     if (!deleteResult) {
       return NextResponse.json({ error: 'Product not found or failed to delete' }, { status: 404 });
     }

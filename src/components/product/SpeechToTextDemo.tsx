@@ -20,7 +20,7 @@ const SpeechToTextDemo = () => {
     // Kiểm tra xem trình duyệt có hỗ trợ Web Speech API không
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       setIsSupported(false);
-      return;
+      return undefined;
     }
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

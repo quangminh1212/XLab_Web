@@ -330,7 +330,7 @@ function CouponsPage() {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
+    ).toLocaleDateString((useLanguage().localCode === 'vi') ? 'vi-VN' : 'en-US');
   };
 
   // Check if coupon is expired
@@ -469,6 +469,7 @@ function CouponsPage() {
       }, 5000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [successMessage, errorMessage]);
 
   // Phân chia mã giảm giá thành nhóm còn hạn và hết hạn
