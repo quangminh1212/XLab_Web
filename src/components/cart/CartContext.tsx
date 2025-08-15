@@ -1,7 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback, useRef } from 'react';
 
 // Constants
 const PLACEHOLDER_IMAGE = '/images/placeholder/product-placeholder.svg';

@@ -1,10 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/authOptions';
 import fs from 'fs';
 import path from 'path';
-import { Product, ProductCategory } from '@/models/ProductModel';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/authOptions';
 import { getProductById, updateProduct, deleteProduct } from '@/lib/i18n/products';
+import { Product, ProductCategory } from '@/models/ProductModel';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');

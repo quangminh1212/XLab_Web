@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
 import fs from 'fs';
 import path from 'path';
+
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+
+import { authOptions } from '@/lib/authOptions';
 
 // Tạo đường dẫn đến file lưu dữ liệu
 const dataDir = path.join(process.cwd(), 'data');

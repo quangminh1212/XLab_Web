@@ -1,7 +1,8 @@
 import { type ClassValue } from 'clsx';
+
 import { products } from '@/data/mockData';
-import { Product } from '@/types';
 import { Language } from '@/i18n';
+import { Product } from '@/types';
 
 // Safe imports to handle potential undefined modules
 let clsx: any;

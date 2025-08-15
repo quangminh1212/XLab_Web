@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { siteConfig } from '@/config/siteConfig';
 
 export default function Analytics(): JSX.Element | null {

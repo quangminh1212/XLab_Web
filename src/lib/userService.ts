@@ -1,8 +1,9 @@
+import crypto from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
-import crypto from 'crypto';
-import { User } from '@/models/UserModel';
+
 import { Transaction } from '@/models/TransactionModel';
+import { User } from '@/models/UserModel';
 
 // File paths cũ (fallback)
 const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
@@ -515,7 +516,7 @@ export async function syncUserBalance(email: string): Promise<number> {
     let balanceFromUsers = 0;
     let balanceFromBalances = 0;
     let balanceFromUserFile = 0;
-    let errorMessages = [];
+    const errorMessages = [];
     let userData: UserData | null = null;
 
     // Get from user's individual file

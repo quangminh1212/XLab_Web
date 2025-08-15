@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
+import React, { useEffect } from 'react';
 
 /**
  * StyleLoader component to ensure CSS styles are loaded correctly without 404 errors

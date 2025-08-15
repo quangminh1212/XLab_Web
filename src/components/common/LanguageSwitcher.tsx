@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
+import { useState, useRef, useEffect } from 'react';
+
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LanguageSwitcherProps {
   className?: string;

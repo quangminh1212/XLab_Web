@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function HomeTestimonials() {

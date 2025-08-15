@@ -1,14 +1,14 @@
 // Import các module ngôn ngữ tiếng Việt
+import about from './about';
+import account from './account';
 import admin from './admin';
 import common from './common';
-import home from './home';
-import testimonials from './testimonials';
-import account from './account';
-import about from './about';
 import contact from './contact';
-import warranty from './warranty';
+import home from './home';
 import login from './login';
 import terms from './terms';
+import testimonials from './testimonials';
+import warranty from './warranty';
 
 // Hợp nhất tất cả các module lại thành một đối tượng
 const vie = {

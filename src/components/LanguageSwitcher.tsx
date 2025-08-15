@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Language } from '@/i18n';
 

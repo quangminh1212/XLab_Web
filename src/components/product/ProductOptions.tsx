@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { formatCurrency } from '@/lib/utils';
+
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatCurrency } from '@/lib/utils';
 
 interface ProductOptionsProps {
   options: string[];

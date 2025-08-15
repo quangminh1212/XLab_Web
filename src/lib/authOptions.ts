@@ -1,7 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import { JWT } from 'next-auth/jwt';
 import { Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import GoogleProvider from 'next-auth/providers/google';
 
 // Extend the Session interface (same augmentation used in route)
 declare module 'next-auth' {

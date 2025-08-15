@@ -1,11 +1,13 @@
-import { products as mockProducts } from '@/data/mockData';
-import type { Product as MockProduct } from '@/types';
-import ProductDetail from '@/app/products/[id]/ProductDetail';
-import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
-import { Product } from '@/models/ProductModel';
+
+import { notFound } from 'next/navigation';
+
+import ProductDetail from '@/app/products/[id]/ProductDetail';
+import { products as mockProducts } from '@/data/mockData';
 import { getAllProducts, normalizeLanguageCode } from '@/lib/i18n/products';
+import { Product } from '@/models/ProductModel';
+import type { Product as MockProduct } from '@/types';
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'force-dynamic';

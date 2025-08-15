@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { getAllProducts } from '@/lib/i18n/products';
 
 export async function GET(req: NextRequest) {

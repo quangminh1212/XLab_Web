@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import ProductGrid from './ProductGrid';
+
 import { useLanguage } from '@/contexts/LanguageContext';
+
+import ProductGrid from './ProductGrid';
 
 interface OptionPrice {
   price: number;

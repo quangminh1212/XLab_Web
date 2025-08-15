@@ -1,9 +1,11 @@
-import { NextResponse } from 'next/server';
-import { authOptions } from '@/lib/authOptions';
-import { getServerSession } from 'next-auth/next';
-import { Order, OrderStats } from '@/models/OrderModel';
 import fs from 'fs';
 import path from 'path';
+
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/authOptions';
+import { Order, OrderStats } from '@/models/OrderModel';
 
 // Function to load user data from JSON files
 function loadUserData() {

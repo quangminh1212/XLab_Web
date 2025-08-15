@@ -1,10 +1,11 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 
 export default function PaymentSuccessPage() {

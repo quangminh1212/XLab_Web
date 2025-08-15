@@ -1,8 +1,10 @@
+import fs from 'fs';
+import path from 'path';
+
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
+
 import { authOptions } from '@/lib/authOptions';
-import path from 'path';
-import fs from 'fs';
 
 // Debug API to directly read user data file
 export async function GET(request: Request) {

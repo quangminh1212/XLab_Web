@@ -1,4 +1,5 @@
 import Link from 'next/link';
+
 import { siteConfig } from '@/config/siteConfig';
 
 export default function PrivacyPage() {

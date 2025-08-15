@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import path from 'path';
-import { Product } from '@/models/ProductModel';
+
+import { NextRequest, NextResponse } from 'next/server';
+
 import { getProductById } from '@/lib/i18n/products';
+import { Product } from '@/models/ProductModel';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');

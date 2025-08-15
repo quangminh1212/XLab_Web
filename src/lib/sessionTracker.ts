@@ -1,5 +1,9 @@
+import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
+
 import { authOptions } from '@/lib/authOptions';
+import { User } from '@/models/UserModel';
+
 import {
   getUserData,
   saveUserData,
@@ -9,8 +13,6 @@ import {
   cleanupCorruptedFiles,
 } from './userDataManager';
 import { syncAllUserData } from './userService';
-import { User } from '@/models/UserModel';
-import { NextRequest } from 'next/server';
 
 // Interface cho thông tin session
 interface SessionInfo {

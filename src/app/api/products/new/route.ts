@@ -1,9 +1,12 @@
-import { NextResponse } from 'next/server';
-import { products } from '@/data/mockData';
-import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
+
+import { NextResponse } from 'next/server';
+
+import { products } from '@/data/mockData';
 import { saveProduct } from '@/lib/i18n/products';
+import { Product } from '@/models/ProductModel';
+
 
 // Hàm tạo ID từ tên sản phẩm
 function generateIdFromName(name: string): string {

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { signIn, useSession } from 'next-auth/react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function LoginPage() {

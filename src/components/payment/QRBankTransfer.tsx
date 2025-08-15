@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
+import { useState, useEffect, useRef } from 'react';
 import { QRPay, BanksObject } from 'vietnam-qr-pay';
 
 interface QRBankTransferProps {

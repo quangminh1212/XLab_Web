@@ -1,16 +1,17 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback, useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { useNotifications } from '@/contexts/NotificationContext';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
+
 import { useCart } from '@/components/cart/CartContext';
-import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+import BalanceDisplay from '@/components/common/BalanceDisplay';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 // Thêm interface cho voucher
 interface PublicCoupon {

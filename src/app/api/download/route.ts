@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import { products } from '@/data/mockData';
 import { getProductBySlug, incrementDownloadCount } from '@/lib/utils';
 

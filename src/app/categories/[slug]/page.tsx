@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import { categories, products } from '@/data/mockData';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import React from 'react';
+
 import ProductCard from '@/components/product/ProductCard';
 import ProductImage from '@/components/product/ProductImage';
+import { categories, products } from '@/data/mockData';
 
 interface CategoryPageProps {
   params: Promise<{

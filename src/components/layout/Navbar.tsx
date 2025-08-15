@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Fragment, useState } from 'react';
 import { signOut } from 'next-auth/react';
+import { Fragment, useState } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Navbar({ session }: { session: any }) {

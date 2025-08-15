@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { categories } from '@/data/mockData';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import ProductImage from '@/components/product/ProductImage';
-import ProductCard from '@/components/product/ProductCard';
+import React, { useState, useEffect } from 'react';
+
 import { Button } from '@/components/common/button';
+import ProductCard from '@/components/product/ProductCard';
+import ProductImage from '@/components/product/ProductImage';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { categories } from '@/data/mockData';
 
 export default function ProductsPage() {
   const { t } = useLanguage();

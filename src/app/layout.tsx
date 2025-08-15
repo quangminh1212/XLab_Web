@@ -3,8 +3,9 @@ import '../styles/app-layout.css';
 import '@/lib/init';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import { siteConfig } from '@/config/siteConfig';
+
 import { ClientLayoutWrapper } from '@/components/layout';
+import { siteConfig } from '@/config/siteConfig';
 
 const inter = Inter({
   subsets: ['latin'],

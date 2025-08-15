@@ -1,10 +1,12 @@
+import fs from 'fs';
+import path from 'path';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import sharp from 'sharp';
-import path from 'path';
-import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+
+import { authOptions } from '@/lib/auth';
 import { createDirectory } from '@/lib/fileSystem';
 
 export async function POST(req: NextRequest) {

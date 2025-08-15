@@ -1,5 +1,6 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import {
   createContext,
   useContext,
@@ -9,7 +10,6 @@ import {
   useCallback,
   useRef,
 } from 'react';
-import { useSession } from 'next-auth/react';
 
 interface BalanceContextType {
   balance: number;
