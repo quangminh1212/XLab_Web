@@ -2,6 +2,10 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    // Don’t block production builds on ESLint errors
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

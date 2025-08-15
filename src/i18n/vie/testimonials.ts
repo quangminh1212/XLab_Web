@@ -19,6 +19,12 @@ const testimonials = {
   'results': 'Kết quả đạt được:',
   'verified': 'Đã xác minh',
   'title': 'Đánh giá của khách hàng',
+
+  // CTA section placeholders
+  'cta.title': 'Sẵn sàng bắt đầu?',
+  'cta.description': 'Liên hệ với chúng tôi để khám phá giải pháp phù hợp hoặc duyệt các dịch vụ sẵn có.',
+  'cta.contact': 'Liên hệ',
+  'cta.explore': 'Khám phá dịch vụ',
 };
 
 export default testimonials; 

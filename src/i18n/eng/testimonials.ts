@@ -19,6 +19,12 @@ const testimonials = {
   'results': 'Results achieved:',
   'verified': 'Verified',
   'title': 'Customer Reviews',
+
+  // CTA section placeholders
+  'cta.title': 'Ready to get started?',
+  'cta.description': 'Contact us to explore solutions tailored to your needs or browse our services.',
+  'cta.contact': 'Contact us',
+  'cta.explore': 'Explore services',
 };
 
 export default testimonials; 
