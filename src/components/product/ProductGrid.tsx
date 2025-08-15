@@ -165,7 +165,7 @@ const ProductGrid = ({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-6 auto-rows-fr`}>
+      <div className={`grid ${getColumnsClass()} gap-6`}>
         {products.map((product) => {
           // Extract category as string only
           let categoryString;
@@ -225,7 +225,7 @@ const ProductGrid = ({
           console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
 
           return (
-            <div key={safeProps.key} className="h-full aspect-[1/1] flex">
+            <div key={safeProps.key} className="h-full flex">
               <ProductCard
                 id={safeProps.id}
                 name={safeProps.name}

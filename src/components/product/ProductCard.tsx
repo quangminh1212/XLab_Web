@@ -125,8 +125,27 @@ export default function ProductCard({
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image);
 
-  // Sử dụng mô tả đã được dịch
-  const shortDescription = translatedDescription || '';
+  // Chuẩn hóa mô tả: loại bỏ thẻ HTML và ký tự thừa để tránh hiển thị thô trong thẻ sản phẩm
+  const normalizeDescription = (input: string) => {
+    if (!input) return '';
+    try {
+      const noTags = input.replace(/<[^>]*>/g, ' ');
+      return noTags
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+        .replace(/\s+/g, ' ')
+        .trim();
+    } catch {
+      return input;
+    }
+  };
+
+  // Sử dụng mô tả đã được dịch và làm sạch
+  const shortDescription = normalizeDescription(translatedDescription || '');
 
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage =

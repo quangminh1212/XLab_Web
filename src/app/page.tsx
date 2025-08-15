@@ -374,8 +374,8 @@ function HomePage() {
                       const prices = getProductPrices(product);
                         
                       return (
-                        <div key={product.id} className="aspect-[1/1.5]">
-                          <ProductCard 
+                        <div key={product.id}>
+                          <ProductCard
                             id={product.id}
                             name={product.name}
                             description={product.shortDescription || product.description || ''}
@@ -409,8 +409,8 @@ function HomePage() {
                       const prices = getProductPrices(product);
                       
                       return (
-                        <div key={product.id} className="aspect-[1/1.5]">
-                          <ProductCard 
+                        <div key={product.id}>
+                          <ProductCard
                             id={product.id}
                             name={product.name}
                             description={product.shortDescription || product.description || ''}
