@@ -11,7 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const { language, t, localCode } = useLanguage();
+  const { language, t, localCode , localCode , localCode } = useLanguage();
 
   // Khôi phục trạng thái sidebar từ localStorage
   // Restore sidebar state from localStorage

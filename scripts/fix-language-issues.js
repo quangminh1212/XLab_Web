@@ -25,7 +25,7 @@ let fixedFiles = 0;
 let totalIssuesFixed = 0;
 
 // Biểu thức chính quy để tìm và thay thế
-const patterns = [
+const replaceRules = [
   {
     // language === 'vi' hoặc language === "vi"
     pattern: /language\s*===\s*(['"])vi\1/g,
@@ -67,11 +67,11 @@ tsFiles.forEach(file => {
     let fileIssuesFixed = 0;
 
     // Áp dụng tất cả các mẫu thay thế
-    patterns.forEach(({ pattern, replacement }) => {
+    replaceRules.forEach(({ pattern, replacement }) => {
       // Đếm số lần xuất hiện trước khi thay thế
       const matches = content.match(pattern);
       const matchCount = matches ? matches.length : 0;
-      
+
       if (matchCount > 0) {
         content = content.replace(pattern, replacement);
         fileFixed = true;
