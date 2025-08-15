@@ -1,0 +1,4 @@
+# Ignore JS scripts from typed lint
+src/scripts/**
+src/components/auth/withAdminAuth.js
+

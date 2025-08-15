@@ -310,7 +310,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
               <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
               <li>Kiểm tra số tiền và mã giao dịch</li>
               <li>Xác nhận chuyển khoản</li>
-              <li className="font-semibold">Nhấn nút "Kiểm tra thanh toán"</li>
+              <li className="font-semibold">Nhấn nút &quot;Kiểm tra thanh toán&quot;</li>
             </ol>
             <div className="mt-2 text-xs text-teal-900 font-semibold flex items-center gap-1">
               <svg
