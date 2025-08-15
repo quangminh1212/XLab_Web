@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
@@ -233,9 +234,11 @@ export default function PaymentSuccessPage() {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                   {getProductImage(productName) ? (
-                    <img
+                    <Image
                       src={getProductImage(productName)!}
                       alt={productName}
+                      width={64}
+                      height={64}
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (

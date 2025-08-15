@@ -8,8 +8,7 @@ interface RichTextContentProps {
 }
 
 const RichTextContent: React.FC<RichTextContentProps> = ({ content, className = '' }) => {
-  // Nếu không có nội dung, không hiển thị gì cả
-  if (!content) return null;
+  // State to store processed HTML will be initialized below (hooks must always run)
 
   // State to store processed HTML
   const [processedContent, setProcessedContent] = useState(content);
@@ -77,6 +76,10 @@ const RichTextContent: React.FC<RichTextContentProps> = ({ content, className = 
   };
 
   // Nếu là HTML thì dùng dangerouslySetInnerHTML, nếu không thì hiển thị text thường
+  if (!content) {
+    return <div className={`rich-text-content ${className}`}></div>;
+  }
+
   return isHtml ? (
     <div
       className={`rich-text-content ${className}`}
