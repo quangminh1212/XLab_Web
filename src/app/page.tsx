@@ -1,10 +1,7 @@
 'use client';
 
 // Thêm comment này để kiểm tra hot-reload
-import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import React, { useState, useEffect } from 'react';
 
 import { CartItem } from '@/components/cart/CartContext';

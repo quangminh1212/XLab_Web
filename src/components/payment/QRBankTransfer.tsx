@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import QRCode from 'qrcode';
 import { useState, useEffect, useRef } from 'react';
-import { QRPay, BanksObject } from 'vietnam-qr-pay';
+import { QRPay } from 'vietnam-qr-pay';
 
 interface QRBankTransferProps {
   amount: number;

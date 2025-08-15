@@ -44,8 +44,8 @@ export async function GET(request: Request) {
       
       // Check if user's data file has cart items that aren't being returned
       try {
-        const fs = require('fs');
-        const path = require('path');
+        const fs = await import('fs');
+        const path = await import('path');
         const filePath = path.join(process.cwd(), 'data', 'users', `${session.user.email.replace(/[^a-zA-Z0-9@.-]/g, '_')}.json`);
         
         if (fs.existsSync(filePath)) {
