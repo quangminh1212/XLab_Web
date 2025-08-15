@@ -54,6 +54,12 @@ async function getProducts(lang = 'vie'): Promise<Product[]> {
         } else if (Array.isArray(parsedData)) {
           productsFromJson = parsedData;
         }
+        // Normalize backslashes to forward slashes in image paths
+        productsFromJson = productsFromJson.map((p: any) => ({
+          ...p,
+          images: Array.isArray(p.images) ? p.images.map((x: any) => typeof x === 'string' ? x.replace(/\\/g, '/') : x) : p.images,
+          imageUrl: typeof p.imageUrl === 'string' ? p.imageUrl.replace(/\\/g, '/') : p.imageUrl,
+        }));
       } catch (error) {
         console.error('Error parsing products.json:', error);
       }

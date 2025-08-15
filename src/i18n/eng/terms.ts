@@ -57,9 +57,6 @@ const terms = {
   'section10.title': '10. Limitation of Liability',
   'section10.content': 'To the maximum extent permitted by law, XLab shall not be liable for any indirect, incidental, special, consequential, or punitive damages.',
   'terms.section10.title': '10. Limitation of Liability',
-  'terms.section10.title': '10. Limitation of Liability',
-  'terms.section10.content': 'To the maximum extent permitted by law, XLab shall not be liable for any indirect, incidental, special, consequential, or punitive damages.',
-
   'terms.section10.content': 'To the maximum extent permitted by law, XLab shall not be liable for any indirect, incidental, special, consequential, or punitive damages.',
 
   'section11.title': '11. Changes to Terms',

@@ -10,14 +10,15 @@ interface ProductImageProps {
 }
 
 const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProps) => {
-  // Validate image URLs
+  // Validate and normalize image URLs
   const validateImageUrl = (url: string): string => {
-    if (!url) return '/images/placeholder/product-placeholder.jpg';
-    if (url.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg';
-    if (url.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
-    if (url.trim() === '') return '/images/placeholder/product-placeholder.jpg';
-
-    return url;
+    const placeholder = '/images/placeholder/product-placeholder.jpg';
+    if (!url) return placeholder;
+    const fixed = url.replace(/\\/g, '/');
+    if (fixed.startsWith('blob:')) return placeholder;
+    if (fixed.includes('undefined')) return placeholder;
+    if (fixed.trim() === '') return placeholder;
+    return fixed;
   };
 
   // Process the image array

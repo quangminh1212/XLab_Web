@@ -168,9 +168,9 @@ export default function ProductsPage() {
       const imageUrl = product.images[0];
       // Kiểm tra xem đây là string hay object
       if (typeof imageUrl === 'string') {
-        return imageUrl;
+        return imageUrl.replace(/\\/g, '/');
       } else if (imageUrl.url) {
-        return imageUrl.url;
+        return String(imageUrl.url).replace(/\\/g, '/');
       }
     }
 

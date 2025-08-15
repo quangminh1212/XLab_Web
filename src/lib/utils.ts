@@ -1,5 +1,4 @@
 import { type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { products } from '@/data/mockData';
 import { Product } from '@/types';
 import { Language } from '@/i18n';
@@ -11,6 +10,14 @@ try {
 } catch (error) {
   console.warn('Failed to import clsx, using fallback');
   clsx = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
+}
+
+let twMerge: any;
+try {
+  twMerge = require('tailwind-merge').twMerge;
+} catch (error) {
+  console.warn('Failed to import tailwind-merge, using fallback');
+  twMerge = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
 }
 
 /**

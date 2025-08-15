@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     const dirPath = path.join(process.cwd(), 'public', 'images', targetDir);
     const filePath = path.join(dirPath, fileName);
-    const publicPath = `/images/${targetDir}/${fileName}`;
+    const publicPath = `/images/${targetDir}/${fileName}`.replace(/\\/g, '/');
 
     // Create directory if it doesn't exist
     if (!fs.existsSync(dirPath)) {
