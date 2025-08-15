@@ -113,6 +113,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
             src={displayImage}
             alt={name}
             fill
+            unoptimized
             className={`object-contain transition-opacity duration-300 ${
               isLoading ? 'opacity-0' : 'opacity-100'
             }`}
