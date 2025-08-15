@@ -16,7 +16,7 @@ export default function PrivacyPage() {
 
             <h2>1. Giới thiệu</h2>
             <p>
-              {siteConfig.legal.companyName} ("chúng tôi", "của chúng tôi") cam kết bảo vệ quyền
+              {siteConfig.legal.companyName} (&quot;chúng tôi&quot;, &quot;của chúng tôi&quot;) cam kết bảo vệ quyền
               riêng tư của bạn. Chính sách bảo mật này mô tả cách chúng tôi thu thập, sử dụng và
               chia sẻ thông tin cá nhân của bạn khi bạn truy cập hoặc sử dụng trang web, ứng dụng
               hoặc dịch vụ của chúng tôi.

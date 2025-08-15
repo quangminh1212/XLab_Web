@@ -1,12 +1,9 @@
-import { type ClassValue, clsx } from 'clsx';
+import { type ClassValue, clsx as _clsx } from 'clsx';
+import { twMerge as _twMerge } from 'tailwind-merge';
 
-let twMerge: any;
-try {
-  twMerge = require('tailwind-merge').twMerge;
-} catch (error) {
-  console.warn('Failed to import tailwind-merge in shared utils, using fallback');
-  twMerge = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
-}
+const twMerge: any = _twMerge ?? ((...inputs: any[]) => inputs.filter(Boolean).join(' '));
+const clsx: any = _clsx ?? ((...inputs: any[]) => inputs.filter(Boolean).join(' '));
+
 import { products } from '@/data/mockData';
 import { Product } from '@/types';
 

@@ -1,25 +1,15 @@
 import { type ClassValue } from 'clsx';
+import { clsx as _clsx } from 'clsx';
+import { twMerge as _twMerge } from 'tailwind-merge';
 
 import { products } from '@/data/mockData';
 import { Language } from '@/i18n';
 import { Product } from '@/types';
 
 // Safe imports to handle potential undefined modules
-let clsx: any;
-try {
-  clsx = require('clsx').clsx;
-} catch (error) {
-  console.warn('Failed to import clsx, using fallback');
-  clsx = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
-}
 
-let twMerge: any;
-try {
-  twMerge = require('tailwind-merge').twMerge;
-} catch (error) {
-  console.warn('Failed to import tailwind-merge, using fallback');
-  twMerge = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
-}
+const clsx: any = _clsx ?? ((...inputs: any[]) => inputs.filter(Boolean).join(' '));
+const twMerge: any = _twMerge ?? ((...inputs: any[]) => inputs.filter(Boolean).join(' '));
 
 /**
  * Kết hợp các class CSS với clsx và tailwind-merge

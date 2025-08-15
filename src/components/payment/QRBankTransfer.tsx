@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import QRCode from 'qrcode';
 import { useState, useEffect, useRef } from 'react';
 import { QRPay, BanksObject } from 'vietnam-qr-pay';
@@ -188,7 +189,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
             {qrCodeUrl ? (
               <div className="inline-block p-6 bg-white rounded-xl shadow-inner">
                 <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
-                  <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
+                  <Image src={qrCodeUrl} alt="QR Code" width={288} height={288} className="w-72 h-72" />
                 </div>
               </div>
             ) : (
