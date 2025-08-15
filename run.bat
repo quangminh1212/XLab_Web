@@ -18,6 +18,20 @@ if errorlevel 1 (
 )
 echo.
 
+REM ===== Parse arguments =====
+REM Usage: run.bat [PORT] [clean]
+set "PORT=3000"
+if not "%~1"=="" (
+  if /I "%~1"=="clean" (
+    set "CLEAN=1"
+  ) else (
+    set "PORT=%~1"
+  )
+)
+if not "%~2"=="" (
+  if /I "%~2"=="clean" set "CLEAN=1"
+)
+
 echo Preparing i18n directories...
 if not exist "src\i18n\eng\product" (
     mkdir "src\i18n\eng\product"
@@ -43,22 +57,16 @@ node scripts/fix-language-issues.js
 if errorlevel 1 echo (non-fatal) Language fix script returned error.
 echo.
 
-echo Clearing Next.js cache...
-if exist ".next" (
-    rd /s /q ".next"
-)
-echo.
-
-REM === Detect free port starting from 3000 ===
-set "PORT=3000"
-for /L %%P in (3000,1,3010) do (
-  powershell -NoProfile -Command "if (Get-NetTCPConnection -LocalPort %%P -State Listen -ErrorAction SilentlyContinue) { exit 1 } else { exit 0 }"
-  if not errorlevel 1 (
-    set "PORT=%%P"
-    goto :PORT_FOUND
+if defined CLEAN (
+  echo Clearing Next.js cache...
+  if exist ".next" (
+      rd /s /q ".next"
   )
+  echo.
+) else (
+  echo Skipping cache clear. Use "clean" argument to force.
 )
-:PORT_FOUND
+
 echo Using PORT %PORT%
 
 echo Starting development server (no timestamps)...
