@@ -13,9 +13,9 @@ const directories = [
 
 // Tìm tất cả các file TypeScript và TSX trong các thư mục đã chỉ định
 let tsFiles = [];
-directories.forEach(dir => {
-  const pattern = path.join(process.cwd(), dir, '**/*.{ts,tsx}');
-  const files = glob.sync(pattern, { ignore: '**/node_modules/**' });
+const patterns = directories.map(dir => `${dir.replace(/\\/g, '/')}/**/*.{ts,tsx}`);
+patterns.forEach(pattern => {
+  const files = glob.sync(pattern, { ignore: ['**/node_modules/**'] });
   tsFiles = [...tsFiles, ...files];
 });
 
