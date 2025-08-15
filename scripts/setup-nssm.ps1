@@ -2,7 +2,7 @@ param(
   [string]$ServiceName = "XLabNext",
   [string]$AppDir = (Resolve-Path "..").Path,
   [int]$Port = 3000,
-  [string]$Host = "127.0.0.1",
+  [string]$BindHost = "127.0.0.1",
   [string]$NssmPath = ""
 )
 
@@ -36,10 +36,10 @@ $LogsDir = Join-Path $AppDir "logs"
 if (-not (Test-Path $LogsDir)) { New-Item -ItemType Directory -Path $LogsDir | Out-Null }
 
 $Cmd = "$env:ComSpec"
-$Args = "/c `"$StartBat $Port $Host`""
+$SvcArgs = "/c `"$StartBat $Port $BindHost`""
 
 Write-Host "Installing service '$ServiceName' with NSSM..."
-& $NssmPath install $ServiceName $Cmd $Args | Out-Null
+& $NssmPath install $ServiceName $Cmd $SvcArgs | Out-Null
 & $NssmPath set $ServiceName AppDirectory $AppDir | Out-Null
 & $NssmPath set $ServiceName AppStdout (Join-Path $LogsDir "service.out.log") | Out-Null
 & $NssmPath set $ServiceName AppStderr (Join-Path $LogsDir "service.err.log") | Out-Null

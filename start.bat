@@ -46,7 +46,14 @@ echo ================= XLab Production =================
 echo NODE_ENV=%NODE_ENV%
 echo HOST=%HOST% PORT=%PORT%
 echo Working Dir: %cd%
-echo Logs: logs\app.log, logs\app.err
+
+REM Build a date stamp for daily log files (YYYY-MM-DD)
+set "DATESTR=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%"
+set "DATESTR=!DATESTR: =0!"
+set "APP_LOG=%LOG_DIR%\app_!DATESTR!.log"
+set "APP_ERR=%LOG_DIR%\app_!DATESTR!.err"
+
+echo Logs: !APP_LOG!, !APP_ERR!
 echo ===================================================
 
 REM Build once if .next missing
@@ -54,8 +61,8 @@ if not exist .next (
   echo Running production build...
   call npm run build 1>>"logs\build.log" 2>>"logs\build.err"
 
-REM Simple size-based log rotation (app.log and app.err)
-for %%F in ("%LOG_DIR%\app.log" "%LOG_DIR%\app.err") do (
+REM Simple size-based log rotation for today's logs
+for %%F in ("!APP_LOG!" "!APP_ERR!") do (
   if exist %%F (
     for %%S in (%%~zF) do (
       if %%S GEQ %MAX_LOG_SIZE% (
@@ -77,7 +84,7 @@ for %%F in ("%LOG_DIR%\app.log" "%LOG_DIR%\app.err") do (
 :loop
   echo Starting Next.js server...
   REM Pass flags to next start via npm script
-  call npm run start -- -p %PORT% -H %HOST% 1>>"logs\app.log" 2>>"logs\app.err"
+  call npm run start -- -p %PORT% -H %HOST% 1>>"!APP_LOG!" 2>>"!APP_ERR!"
   set "EXITCODE=%ERRORLEVEL%"
   echo [%DATE% %TIME%] Next.js exited with code %EXITCODE% >> "logs\restart.log"
   echo Restarting in 5 seconds... Press Ctrl+C to stop.
