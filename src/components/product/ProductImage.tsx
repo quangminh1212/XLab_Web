@@ -41,7 +41,8 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
       setIsLoading(true);
       setImageFailed(false);
     }
-  }, [images, processedImages?.[0]]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [processedImages?.[0]]);
 
   // Fallback array if images is undefined
   const imageArray = processedImages.length

@@ -11,7 +11,7 @@ interface ProductOptionsProps {
   productOptions: string[];
   selectedOption: string;
   setSelectedOption: (option: string) => void;
-  optionPrices?: { [key: string]: any };
+  optionPrices?: { [key: string]: { price: number; originalPrice?: number } };
   product?: { defaultProductOption?: string };
 }
 

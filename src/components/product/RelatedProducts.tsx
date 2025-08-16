@@ -82,7 +82,7 @@ export default function RelatedProducts({
           const data = await response.json();
           setProducts(data);
         }
-      } catch (error) {
+      } catch (_error) {
         // console.error('Error fetching related products:', error);
         setProducts([]);
       } finally {
@@ -114,7 +114,7 @@ export default function RelatedProducts({
     }
     
     if (typeof category === 'object' && category !== null) {
-      const categoryObj = category as any;
+      const categoryObj = category as { name?: unknown; id?: unknown };
       
       if (categoryObj.name && typeof categoryObj.name === 'string') {
         return categoryObj.name;
