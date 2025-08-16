@@ -23,7 +23,7 @@ export const StyleLoader: React.FC = () => {
             ) {
               // This is a CSS link that might 404, add an error handler
               (node as HTMLLinkElement).onerror = () => {
-                console.log('CSS failed to load:', (node as HTMLLinkElement).href);
+                // console.debug('CSS failed to load:', (node as HTMLLinkElement).href);
                 // Add a class to indicate the CSS failed to load
                 document.documentElement.classList.add('css-fallback-active');
               };
