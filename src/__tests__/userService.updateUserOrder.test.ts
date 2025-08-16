@@ -5,8 +5,8 @@ import { updateUserOrder } from '@/lib/userService';
 // does not throw synchronously. The function performs async I/O; we only verify it can be invoked.
 
 test('updateUserOrder is callable and returns a Promise', async () => {
-  // @ts-expect-error simplify call with fake data; we only assert invocation shape
-  const promise = updateUserOrder('someone@example.com', 'order-1', { status: 'paid' });
+  // simplify call with fake data; we only assert invocation shape
+  const promise = updateUserOrder('someone@example.com', 'order-1', { status: 'paid' } as any);
   expect(promise).toBeInstanceOf(Promise);
 });
 
