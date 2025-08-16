@@ -8,8 +8,8 @@ import { Product } from '@/types';
 
 // Safe imports to handle potential undefined modules
 
-const clsx: any = _clsx ?? ((...inputs: any[]) => inputs.filter(Boolean).join(' '));
-const twMerge: any = _twMerge ?? ((...inputs: any[]) => inputs.filter(Boolean).join(' '));
+const clsx = _clsx ?? ((...inputs: ClassValue[]) => inputs.filter(Boolean).join(' '));
+const twMerge = _twMerge ?? ((...inputs: ClassValue[]) => inputs.filter(Boolean).join(' '));
 
 /**
  * Kết hợp các class CSS với clsx và tailwind-merge
