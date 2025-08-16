@@ -423,7 +423,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         const imageUrl = URL.createObjectURL(file);
         setDescriptionImages([...descriptionImages, imageUrl]);
       }
-      setDescriptionImages([...descriptionImages, imageUrl]);
     }
 
     // Reset input file

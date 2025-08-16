@@ -20,7 +20,7 @@ function normalizeLanguageHeader(lang: string | null): string {
   if (!lang) return 'vie'; // Default to Vietnamese
   
   // Extract primary language code before any quality values
-  const primaryLang = lang.split(',')[0].split('-')[0].toLowerCase();
+  const primaryLang = lang.split(',')[0]?.split('-')[0]?.toLowerCase() ?? 'vi';
   
   // Map to our supported codes
   if (primaryLang === 'en') return 'eng';

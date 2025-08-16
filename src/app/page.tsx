@@ -78,12 +78,12 @@ const getValidImageUrl = (product: Product): string => {
 
   // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
   if (product.images && product.images.length > 0) {
-    const imageUrl = product.images[0];
+    const imageUrl = product.images?.[0];
     // Kiểm tra xem đây là string hay object
     if (typeof imageUrl === 'string') {
       return imageUrl;
-    } else if (imageUrl.url) {
-      return imageUrl.url;
+    } else if (imageUrl && (imageUrl as any).url) {
+      return (imageUrl as any).url as string;
     }
   }
 
@@ -101,11 +101,11 @@ const getProductPrices = (product: Product): { price: number; originalPrice: num
   let price = 0;
   let originalPrice = 0;
   
-  if (product.defaultProductOption && 
-      product.optionPrices && 
+  if (product.defaultProductOption &&
+      product.optionPrices &&
       product.optionPrices[product.defaultProductOption]) {
-    price = product.optionPrices[product.defaultProductOption].price;
-    originalPrice = product.optionPrices[product.defaultProductOption].originalPrice;
+    price = product.optionPrices[product.defaultProductOption]!.price;
+    originalPrice = product.optionPrices[product.defaultProductOption]!.originalPrice;
   } else {
     // Fallback to regular price
     price = product.price || 0;

@@ -97,7 +97,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
   };
 
   // Determine which image to show
-  const displayImage = imageFailed ? '/images/placeholder/product-placeholder.jpg' : mainImage;
+  const displayImage: string = (imageFailed ? '/images/placeholder/product-placeholder.jpg' : mainImage) || '/images/placeholder/product-placeholder.jpg';
 
   return (
     <div className="w-full">

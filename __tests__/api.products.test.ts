@@ -16,7 +16,8 @@ describe('getAllProducts basic behavior', () => {
   it('reads products and returns array', async () => {
     const res = await getAllProducts('eng');
     expect(Array.isArray(res)).toBe(true);
-    expect(res[0].id).toBe('a');
+    expect(res.length).toBeGreaterThan(0);
+    expect(res[0]?.id).toBe('a');
   });
 });
 

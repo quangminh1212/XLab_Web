@@ -101,7 +101,7 @@ function getCategoryName(categoryId: string): string {
 // Extract product ID from URL
 function extractIdFromUrl(url: string): string {
   const segments = url.split('/');
-  return segments[segments.length - 1];
+  return segments[segments.length - 1] ?? '';
 }
 
 // Handler setup
@@ -113,7 +113,7 @@ export const dynamic = 'force-dynamic';
  */
 function normalizeLanguageHeader(lang: string | null): 'eng' | 'vie' {
   if (!lang) return 'vie';
-  const primary = lang.split(',')[0].split('-')[0].toLowerCase();
+  const primary = lang.split(',')[0]?.split('-')[0]?.toLowerCase() ?? 'vi';
   return primary === 'en' ? 'eng' : 'vie';
 }
 
