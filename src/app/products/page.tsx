@@ -373,8 +373,7 @@ export default function ProductsPage() {
               {/* Product grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 {sortedProducts.map((product) => {
-                  // Log the product data for debugging
-                  console.log(`Product ${product.id} image data:`, product.images);
+                  // console.debug(`[DEV] Product ${product.id} image data:`, product.images);
 
                   // Xác định giá hiển thị - ưu tiên tùy chọn mặc định nếu có
                   const displayPrice = 
@@ -395,7 +394,7 @@ export default function ProductsPage() {
                   // Lấy ảnh sản phẩm (sử dụng helper function)
                   const imageUrl = getValidImageUrl(product);
 
-                  console.log(`Processed image URL for ${product.name}:`, imageUrl);
+                  // console.debug(`[DEV] Processed image URL for ${product.name}:`, imageUrl);
 
                   return (
                     <div key={product.id}>

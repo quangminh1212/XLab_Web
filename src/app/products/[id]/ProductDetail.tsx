@@ -3,9 +3,7 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
 import RichTextContent from '@/components/common/RichTextContent';
@@ -20,10 +18,10 @@ import RelatedProducts from '../../../components/product/RelatedProducts';
 
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
-const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
+// const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
   loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
   ssr: false, // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
-});
+}); // tạm tắt sử dụng để tránh unused var warning
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
@@ -220,7 +218,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
 };
 
 // Component hiển thị thông số kỹ thuật
-const ProductSpecifications = ({
+// const ProductSpecifications = ({
   specifications,
 }: {
   specifications?: { key: string; value: string }[] | { [key: string]: string };
@@ -275,7 +273,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   }, [product.name, t]);
 
   // State để theo dõi số lượt xem
-  const [viewCount, setViewCount] = useState<number>(0);
+  const [_viewCount, _setViewCount] = useState<number>(0);
 
   // State lưu số lượng sản phẩm
   const [quantity, setQuantity] = useState<number>(1);
@@ -300,7 +298,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   });
 
   // State hiển thị tùy chọn hiện có
-  const [showOptions, setShowOptions] = useState(false);
+  const [_showOptions, _setShowOptions] = useState(false);
 
   // State cho việc kéo thả
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
@@ -310,7 +308,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [addedToCartMessage, setAddedToCartMessage] = useState<string>('');
 
   // Xử lý thêm tùy chọn mới
-  const handleAddOption = () => {
+  const _handleAddOption = () => {
     if (newOptionText.trim()) {
       setProductOptions([...productOptions, newOptionText.trim()]);
       setNewOptionText('');
@@ -318,14 +316,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
 
   // Xử lý xóa tùy chọn
-  const handleRemoveOption = (index: number) => {
+  const _handleRemoveOption = (index: number) => {
     const newOptions = [...productOptions];
     newOptions.splice(index, 1);
     setProductOptions(newOptions);
   };
 
   // Xử lý khi bắt đầu kéo
-  const handleDragStart = (index: number) => {
+  const _handleDragStart = (index: number) => {
     setDraggedItem(index);
   };
 
@@ -346,7 +344,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
 
   // Xử lý khi kết thúc kéo
-  const handleDragEnd = () => {
+  const _handleDragEnd = () => {
     setDraggedItem(null);
   };
 
@@ -552,7 +550,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // Tăng số lượt xem khi người dùng truy cập trang
   useEffect(() => {
     // Tăng số lượt xem khi component được mount và chỉ mount lần đầu 
-    setViewCount((prev) => prev + 1);
+    _setViewCount((prev) => prev + 1);
 
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
     // Không tham chiếu đến viewCount trong effect để tránh vòng lặp vô hạn
