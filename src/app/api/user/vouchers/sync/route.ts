@@ -187,7 +187,7 @@ export async function GET(request: Request) {
     let updatedCount = 0;
 
     for (const coupon of coupons) {
-      if (coupon.userUsage && typeof coupon.userUsage[userEmail] === 'number' && coupon.userUsage[userEmail] > 0) {
+      if (coupon.userUsage && (coupon.userUsage[userEmail] ?? 0) > 0) {
         // Kiểm tra xem voucher đã có trong dữ liệu người dùng chưa
         const existingVoucher = userData.vouchers.find((v) => v.code === coupon.code);
 

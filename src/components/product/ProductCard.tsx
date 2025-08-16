@@ -280,7 +280,9 @@ export default function ProductCard({
       .replace(/[^a-z0-9-]/g, '');
 
   // Color palette phù hợp với logo XLab (chuyên nghiệp, hiện đại)
-  const colorPalette = [
+  type Palette = { name: string; bg: string; hover: string; badge: string; button: string; buttonHover: string; price: string; stats: string; statsIcon: string; overlay: string };
+  const colorPalette: Palette[] = [
+
     {
       name: 'teal',
       bg: 'from-white via-primary-50 to-primary-100',
@@ -359,9 +361,8 @@ export default function ProductCard({
   const safeId = id || '0';
   const parsedId = parseInt(safeId);
   const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
-  const safeCurrentColor = currentColor ?? colorPalette[0];
-
   const currentColor = colorPalette[colorIndex] || colorPalette[0];
+  const safeCurrentColor: Palette = currentColor ?? colorPalette[0];
 
   return (
     <Link
