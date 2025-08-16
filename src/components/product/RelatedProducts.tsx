@@ -72,7 +72,7 @@ export default function RelatedProducts({
                 .slice(0, limit);
               setProducts(filtered);
             } else {
-              console.error('Expected array but received:', allProducts);
+              // console.error('Expected array but received:', allProducts);
               setProducts([]);
             }
           } else {
@@ -83,7 +83,7 @@ export default function RelatedProducts({
           setProducts(data);
         }
       } catch (error) {
-        console.error('Error fetching related products:', error);
+        // console.error('Error fetching related products:', error);
         setProducts([]);
       } finally {
         setLoading(false);
@@ -131,7 +131,7 @@ export default function RelatedProducts({
   };
 
   const mappedProducts = products.map((product) => {
-    console.log('RelatedProducts - Raw product:', product);
+    // console.log('RelatedProducts - Raw product:', product);
 
     // Đảm bảo tất cả thuộc tính đều là primitive values
     const safeId = String(product.id || '');
@@ -166,14 +166,16 @@ export default function RelatedProducts({
         safeImage = product.imageUrl;
       } else if (typeof product.imageUrl === 'object' && product.imageUrl !== null) {
         // Nếu imageUrl là object, thử lấy url từ object
-        safeImage = (product.imageUrl as any).url || (product.imageUrl as any).src || '/images/placeholder/product-placeholder.jpg';
+        // prefer url or src when available
+        safeImage = (product.imageUrl as any)?.url || (product.imageUrl as any)?.src || '/images/placeholder/product-placeholder.jpg';
       }
     } else if (product.image) {
       if (typeof product.image === 'string') {
         safeImage = product.image;
       } else if (typeof product.image === 'object' && product.image !== null) {
         // Nếu image là object, thử lấy url từ object
-        safeImage = (product.image as any).url || (product.image as any).src || '/images/placeholder/product-placeholder.jpg';
+        // prefer url or src when available
+        safeImage = (product.image as any)?.url || (product.image as any)?.src || '/images/placeholder/product-placeholder.jpg';
       }
     }
     
@@ -210,7 +212,7 @@ export default function RelatedProducts({
       weeklyPurchases: product.weeklyPurchases || 0,
     };
 
-    console.log('RelatedProducts - Mapped product:', mapped);
+    // console.log('RelatedProducts - Mapped product:', mapped);
     return mapped;
   });
 

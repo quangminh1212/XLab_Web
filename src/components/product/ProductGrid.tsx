@@ -107,7 +107,7 @@ const ProductGrid = ({
 
   // Tính giá gốc tương ứng với giá thấp nhất
   const calculateOriginalPrice = (product: Product, minPrice: number): number => {
-    let correspondingOriginalPrice: number | undefined;
+    let correspondingOriginalPrice: number | undefined; // used to compute discount, not returned directly
 
     // Nếu giá thấp nhất từ version
     if (product.versions && product.versions.length > 0) {
@@ -222,7 +222,7 @@ const ProductGrid = ({
             weeklyPurchases: product.weeklyPurchases ? Number(product.weeklyPurchases) : undefined,
           };
 
-          console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
+          // debug: Safe props computed
 
           return (
             <div key={safeProps.key} className="h-full flex">

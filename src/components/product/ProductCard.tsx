@@ -54,8 +54,7 @@ export default function ProductCard({
   const router = useRouter();
   const { addItem, clearCart } = useCart();
 
-  // Log the image URL for debugging
-  console.log(`ProductCard image URL for ${name}:`, image);
+  // Debug log removed in production
 
   // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
   useEffect(() => {
@@ -66,7 +65,7 @@ export default function ProductCard({
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log(`ProductCard translation data for ${id}:`, data);
+            // debug: translation data fetched
             // Cập nhật mô tả ngắn đã dịch
             if (data && data.shortDescription) {
               setTranslatedDescription(data.shortDescription);
@@ -85,7 +84,7 @@ export default function ProductCard({
             setTranslatedName(name);
           }
         } catch (error) {
-          console.error('Error fetching translation:', error);
+          // console.error('Error fetching translation:', error);
           setTranslatedDescription(description); // Fallback to original
           setTranslatedName(name);
         }
@@ -117,7 +116,7 @@ export default function ProductCard({
       // Kiểm tra nếu là URL đầy đủ
       const url = new URL(imgUrl, window.location.origin);
       return url.toString();
-    } catch (e) {
+    } catch (_e) {
       // Nếu không phải URL hợp lệ, sử dụng placeholder
       return '/images/placeholder/product-placeholder.jpg';
     }
@@ -266,7 +265,7 @@ export default function ProductCard({
 
   // Handle image error and use placeholder
   const handleImageError = () => {
-    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`);
+    // image load error
     setImageError(true);
     setIsImageLoaded(true); // Mark as loaded to hide spinner
   };
