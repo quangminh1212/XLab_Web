@@ -6,7 +6,11 @@ import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 
-import RichTextEditor from '@/components/common/RichTextEditor';
+import dynamic from 'next/dynamic';
+const RichTextEditor = dynamic(() => import('@/components/common/RichTextEditor'), {
+  ssr: false,
+  loading: () => <div className="min-h-[180px] bg-gray-50 rounded-md animate-pulse" />,
+});
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
 
