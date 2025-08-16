@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getAllProducts } from '@/lib/i18n/products';
+export const runtime = 'nodejs';
+
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,7 +25,7 @@ export async function GET(req: NextRequest) {
 
     // Get all products using i18n library
     const allProducts = await getAllProducts(language);
-    
+
     // Filter by published status
     let productList = allProducts.filter((p) => p.isPublished !== false);
 
@@ -144,12 +146,12 @@ export async function GET(req: NextRequest) {
 // Helper function to get product price
 function getPrice(product: any): number {
   // Ưu tiên giá từ tùy chọn mặc định nếu có
-  if (product.defaultProductOption && 
-      product.optionPrices && 
+  if (product.defaultProductOption &&
+      product.optionPrices &&
       product.optionPrices[product.defaultProductOption]) {
     return product.optionPrices[product.defaultProductOption].price;
   }
-  
+
   if (product.price) return product.price;
   if (product.versions && product.versions.length > 0) return product.versions[0].price;
   return 0;

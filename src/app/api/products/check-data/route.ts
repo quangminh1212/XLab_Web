@@ -3,6 +3,8 @@ import path from 'path';
 
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'nodejs';
+
 import { Product } from '@/models/ProductModel';
 
 // Data file path

@@ -9,6 +9,8 @@ import {
   getUserOrderStats,
 } from '@/lib/userService';
 
+export const runtime = 'nodejs';
+
 export async function GET() {
   try {
     // Lấy thông tin phiên đăng nhập

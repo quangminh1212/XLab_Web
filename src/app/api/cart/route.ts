@@ -10,6 +10,8 @@ import {
   // removeFromUserCart,
   clearUserCart,
 } from '@/lib/userService';
+export const runtime = 'nodejs';
+
 
 export interface CartItem {
   id: string;
@@ -34,20 +36,20 @@ export async function GET(_request: Request) {
     }
 
     const cart = await getUserCart(session.user.email);
-    
+
     // Make sure cart is always an array
     const safeCart = Array.isArray(cart) ? cart : [];
-    
+
     // Check if we need to force-populate the cart with test data when empty
     if (safeCart.length === 0) {
       // console.debug('🔍 API DEBUG - GET /api/cart - Cart is empty, adding fallback data');
-      
+
       // Check if user's data file has cart items that aren't being returned
       try {
         const fs = await import('fs');
         const path = await import('path');
         const filePath = path.join(process.cwd(), 'data', 'users', `${session.user.email.replace(/[^a-zA-Z0-9@.-]/g, '_')}.json`);
-        
+
         if (fs.existsSync(filePath)) {
           const userData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
           if (userData.cart && userData.cart.length > 0) {
@@ -64,7 +66,7 @@ export async function GET(_request: Request) {
         // console.error('Error reading user file directly:', _fileError);
       }
     }
-    
+
     // console.debug('🔍 API DEBUG - GET /api/cart - Cart retrieved:', safeCart.length, 'items');
 
     return NextResponse.json({
