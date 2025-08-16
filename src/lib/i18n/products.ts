@@ -19,7 +19,7 @@ export function normalizeLanguageCode(lang: string): string {
     }
     
     // Extract the primary language code
-    const primaryLang = lang.split(',')[0].split('-')[0].toLowerCase().trim();
+    const primaryLang = (lang?.split(',')[0]?.split('-')[0]?.toLowerCase()?.trim()) || 'vi';
     
     // Map to our directory structure
     if (primaryLang === 'en') return 'eng';

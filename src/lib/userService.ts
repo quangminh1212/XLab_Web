@@ -173,7 +173,7 @@ async function createNewUserFromEmail(email: string): Promise<User> {
   console.log(`Creating new user from email: ${email}`);
   const newUser: User = {
     id: Date.now().toString(),
-    name: email.split('@')[0],
+    name: (email.split('@')[0] ?? email) as string,
     email: email,
     image: undefined,
     isAdmin: false,
@@ -331,16 +331,18 @@ export async function updateUserBalance(email: string, amount: number): Promise<
     const users = await getUsers();
     const userIndex = users.findIndex((user) => user.email === email);
 
-    if (userIndex >= 0) {
-      users[userIndex].balance = (users[userIndex].balance || 0) + amount;
-      users[userIndex].updatedAt = new Date().toISOString();
+    if (userIndex >= 0 && users[userIndex]) {
+      users[userIndex]!.balance = (users[userIndex]!.balance || 0) + amount;
+      users[userIndex]!.updatedAt = new Date().toISOString();
       await saveUsers(users);
 
       // Tạo file riêng cho user này
-      const newUserData = createDefaultUserData(users[userIndex]);
+      const baseUser = users[userIndex]!;
+      const newUserData = createDefaultUserData(baseUser);
       await saveUserDataToFile(email, newUserData);
 
-      return users[userIndex];
+      return baseUser;
+    }
     }
   }
 
@@ -655,9 +657,9 @@ async function updateUserBalanceInFile(email: string, amount: number): Promise<v
     const users = await getUsers();
     const userIndex = users.findIndex((user) => user.email === email);
 
-    if (userIndex >= 0) {
-      users[userIndex].balance = (users[userIndex].balance || 0) + amount;
-      users[userIndex].updatedAt = new Date().toISOString();
+    if (userIndex >= 0 && users[userIndex]) {
+      users[userIndex]!.balance = (users[userIndex]!.balance || 0) + amount;
+      users[userIndex]!.updatedAt = new Date().toISOString();
       await saveUsers(users);
     }
   } catch (error) {
@@ -897,21 +899,21 @@ async function syncUserDataWithoutCart(email: string): Promise<void> {
     const allUsers = await getUsers();
     const userIndex = allUsers.findIndex((u) => u.email === email);
     
-    if (userIndex >= 0) {
+    if (userIndex >= 0 && allUsers[userIndex]) {
       // Update user in users.json without changing cart data
       // Just pass the profile properties that are part of the User type
-      allUsers[userIndex] = {
-        ...allUsers[userIndex],
+      allUsers[userIndex]! = {
+        ...allUsers[userIndex]!,
         name: userData.profile.name,
         email: userData.profile.email,
         image: userData.profile.image,
-        isAdmin: userData.profile.isAdmin,
-        isActive: userData.profile.isActive,
-        balance: userData.profile.balance,
-        createdAt: userData.profile.createdAt,
+        isAdmin: userData.profile.isAdmin ?? false,
+        isActive: userData.profile.isActive ?? true,
+        balance: userData.profile.balance ?? 0,
+        createdAt: allUsers[userIndex]?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         lastLogin: userData.profile.lastLogin,
-      };
+      } as User;
       await saveUsers(allUsers);
     }
   } catch (error) {

@@ -84,7 +84,7 @@ export default function CheckoutPage() {
       productDetail.images.length > 0
     ) {
       const imagesArr = productDetail.images as string[];
-      imageUrl = imagesArr[0];
+      imageUrl = imagesArr[0] ?? imageUrl;
     } else if (item.image && !item.image.includes('placeholder')) {
       imageUrl = item.image;
     }

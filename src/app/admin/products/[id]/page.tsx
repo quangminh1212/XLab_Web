@@ -349,9 +349,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
   // Xử lý upload hình ảnh
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // Giới hạn kích thước file là 5MB
     if (file.size > 5 * 1024 * 1024) {
@@ -420,7 +419,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       setTimeout(() => setError(null), 3000);
 
       // Fallback to blob URL if server upload fails
-      const imageUrl = URL.createObjectURL(file);
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setDescriptionImages([...descriptionImages, imageUrl]);
+      }
       setDescriptionImages([...descriptionImages, imageUrl]);
     }
 
@@ -432,9 +434,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
   // Xử lý upload ảnh nổi bật
   const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // Giới hạn kích thước file là 5MB
     if (file.size > 5 * 1024 * 1024) {
