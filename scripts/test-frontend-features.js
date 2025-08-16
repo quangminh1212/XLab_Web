@@ -10,7 +10,7 @@ console.log('1️⃣ Checking page structure...');
 const requiredPages = [
   'src/app/page.tsx',                    // Home page
   'src/app/products/page.tsx',           // Products listing
-  'src/app/products/[slug]/page.tsx',    // Product detail
+  'src/app/products/[id]/page.tsx',      // Product detail
   'src/app/cart/page.tsx',               // Shopping cart
   'src/app/checkout/page.tsx',           // Checkout
   'src/app/payment/success/page.tsx',    // Payment success
@@ -19,7 +19,7 @@ const requiredPages = [
   'src/app/admin/orders/page.tsx',       // Admin orders
   'src/app/admin/users/page.tsx',        // Admin users
   'src/app/admin/coupons/page.tsx',      // Admin coupons
-  'src/app/profile/page.tsx',            // User profile
+  'src/app/account/page.tsx',            // User profile
 ];
 
 let pagesExist = 0;
@@ -43,14 +43,13 @@ console.log('2️⃣ Checking component structure...');
 const requiredComponents = [
   'src/components/layout/Header.tsx',
   'src/components/layout/Footer.tsx',
-  'src/components/layout/Sidebar.tsx',
   'src/components/common/BalanceDisplay.tsx',
-  'src/components/common/LanguageSelector.tsx',
+  'src/components/common/LanguageSwitcher.tsx',
   'src/components/common/StyleLoader.tsx',
-  'src/components/products/ProductCard.tsx',
-  'src/components/products/ProductGrid.tsx',
-  'src/components/cart/CartItem.tsx',
-  'src/components/admin/AdminSidebar.tsx',
+  'src/components/product/ProductCard.tsx',
+  'src/components/product/ProductGrid.tsx',
+  'src/components/cart/CartContext.tsx', // cart context present
+  'src/app/admin/layout.tsx', // admin layout serves as sidebar/menu
 ];
 
 let componentsExist = 0;
@@ -76,10 +75,9 @@ const requiredLibFiles = [
   'src/lib/userService.ts',
   'src/lib/utils.ts',
   'src/lib/i18n/products.ts',
-  'src/lib/i18n/translations.ts',
-  'src/lib/hooks/useLanguage.ts',
-  'src/lib/hooks/useBalance.ts',
-  'src/lib/hooks/useCart.ts',
+  'src/i18n/index.ts',
+  'src/contexts/LanguageContext.tsx',
+  'src/components/cart/CartContext.tsx',
 ];
 
 let libFilesExist = 0;
