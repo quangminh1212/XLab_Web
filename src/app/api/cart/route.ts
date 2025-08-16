@@ -74,7 +74,7 @@ export async function GET(_request: Request) {
     });
   } catch (_error: any) {
     // console.error('Error getting cart:', _error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: _error?.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -108,7 +108,7 @@ export async function PUT(request: Request) {
     });
   } catch (_error: any) {
     // console.error('Error updating cart:', _error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: _error?.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
     });
   } catch (_error: any) {
     // console.error('Error adding to cart:', _error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: _error?.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -159,6 +159,6 @@ export async function DELETE(_request: Request) {
     });
   } catch (_error: any) {
     // console.error('Error clearing cart:', _error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: _error?.message || 'Internal server error' }, { status: 500 });
   }
 }
