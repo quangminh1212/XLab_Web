@@ -217,14 +217,15 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
   );
 };
 
+/*
 // Component hiển thị thông số kỹ thuật
-// const ProductSpecifications = ({
+const ProductSpecifications = ({
   specifications,
 }: {
   specifications?: { key: string; value: string }[] | { [key: string]: string };
 }) => {
   const { t } = useLanguage();
-  
+
   if (!specifications) return null;
 
   // Convert specifications từ object sang array nếu cần
@@ -255,6 +256,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
     </div>
   );
 };
+*/
 
 export default function ProductDetail({ product }: { product: ProductType }) {
   const { t } = useLanguage();
