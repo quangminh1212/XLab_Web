@@ -156,8 +156,32 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
     }
   }, [shortDescription, language, productId]);
 
+  // Chuẩn hóa mô tả ngắn: giải mã HTML entities và loại bỏ thẻ HTML
+  const normalizeShortDescription = (input: string) => {
+    if (!input) return '';
+    try {
+      // Decode basic HTML entities first
+      const decoded = input
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>');
+
+      // Remove any HTML tags after decoding
+      const noTags = decoded.replace(/<[^>]*>/g, ' ');
+
+      return noTags.replace(/\s+/g, ' ').trim();
+    } catch {
+      return input;
+    }
+  };
+
+  const cleanShortDescription = normalizeShortDescription(translatedShortDescription || '');
+
   return (
-    <p className="mt-4 text-gray-600 text-lg" style={{width: '100%', margin: '0 auto'}}>{translatedShortDescription || ''}</p>
+    <p className="mt-4 text-gray-600 text-lg" style={{width: '100%', margin: '0 auto'}}>{cleanShortDescription}</p>
   );
 };
 
