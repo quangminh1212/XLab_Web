@@ -885,8 +885,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
     // Tìm kiếm hình ảnh trong clipboard
     for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        const file = items[i].getAsFile();
+      const item = items[i];
+      if (!item) continue;
+      if (item.type && item.type.indexOf('image') !== -1) {
+        const file = item.getAsFile ? item.getAsFile() : null;
         if (!file) continue;
 
         // Giới hạn kích thước file là 5MB
@@ -958,8 +960,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
     // Tìm kiếm hình ảnh trong clipboard
     for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        const file = items[i].getAsFile();
+      const item = items[i];
+      if (!item) continue;
+      if (item.type && item.type.indexOf('image') !== -1) {
+        const file = item.getAsFile ? item.getAsFile() : null;
         if (!file) continue;
 
         // Giới hạn kích thước file là 5MB
@@ -1859,7 +1863,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                           ...prev,
                                           [option]: {
                                             ...prev[option],
-                                            originalPrice,
+                                            originalPrice: originalPrice ?? (prev[option]?.originalPrice ?? 0),
                                           },
                                         }));
                                       }}
