@@ -76,8 +76,8 @@ export default function ProductsPage() {
         }
 
         // Lọc theo tìm kiếm
-        if (searchTerm.trim() !== '') {
-          const search = searchTerm.toLowerCase();
+        if (_searchTerm.trim() !== '') {
+          const search = _searchTerm.toLowerCase();
           return (
             product.name.toLowerCase().includes(search) ||
             (product.description && product.description.toLowerCase().includes(search))
