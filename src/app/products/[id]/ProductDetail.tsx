@@ -282,7 +282,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // State lưu phiên bản sản phẩm được chọn
   const [selectedVersion, setSelectedVersion] = useState<string>(
-    product.versions && product.versions.length > 0 ? product.versions[0].name : '',
+    product.versions && product.versions.length > 0 ? (product.versions[0]?.name ?? '') : '',
   );
 
   // State quản lý tùy chọn mới
@@ -337,7 +337,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
     // Sắp xếp lại mảng
     const newOptions = [...productOptions];
-    const draggedOption = newOptions[draggedItem];
+    const draggedOption = newOptions[draggedItem] ?? '';
     newOptions.splice(draggedItem, 1);
     newOptions.splice(index, 0, draggedOption);
 
@@ -393,13 +393,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const calculateSelectedPrice = () => {
     // Nếu có giá tùy chọn, ưu tiên sử dụng giá của tùy chọn
     if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
-      return product.optionPrices[selectedOption].price;
+      return product.optionPrices[selectedOption]!.price;
     }
 
     // Nếu không có tùy chọn nào được chọn, sử dụng tùy chọn mặc định
-    if (!selectedOption && product.defaultProductOption && 
-        product.optionPrices && product.optionPrices[product.defaultProductOption]) {
-      return product.optionPrices[product.defaultProductOption].price;
+    if (!selectedOption && product.defaultProductOption &&
+        product.optionPrices && product.optionPrices[product.defaultProductOption!]) {
+      return product.optionPrices[product.defaultProductOption!]!.price;
     }
 
     // Ngược lại sử dụng giá của version
@@ -415,13 +415,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const calculateSelectedOriginalPrice = () => {
     // Nếu có giá gốc tùy chọn, ưu tiên sử dụng giá gốc của tùy chọn
     if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
-      return product.optionPrices[selectedOption].originalPrice;
+      return product.optionPrices[selectedOption]!.originalPrice;
     }
 
     // Nếu không có tùy chọn nào được chọn, sử dụng tùy chọn mặc định
-    if (!selectedOption && product.defaultProductOption && 
-        product.optionPrices && product.optionPrices[product.defaultProductOption]) {
-      return product.optionPrices[product.defaultProductOption].originalPrice;
+    if (!selectedOption && product.defaultProductOption &&
+        product.optionPrices && product.optionPrices[product.defaultProductOption!]) {
+      return product.optionPrices[product.defaultProductOption!]!.originalPrice;
     }
 
     // Ngược lại sử dụng giá gốc của version
@@ -451,7 +451,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     // Kiểm tra giá trong tùy chọn
     if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
       for (const option in product.optionPrices) {
-        const price = product.optionPrices[option].price;
+        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
         if (price < cheapestPrice) {
           cheapestPrice = price;
         }
@@ -478,10 +478,10 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     // Kiểm tra giá trong tùy chọn
     if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
       for (const option in product.optionPrices) {
-        const price = product.optionPrices[option].price;
+        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
         if (price < cheapestPrice) {
           cheapestPrice = price;
-          originalPrice = product.optionPrices[option].originalPrice;
+          originalPrice = product.optionPrices[option]?.originalPrice ?? 0;
         }
       }
     }
@@ -666,8 +666,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               {/* Hiển thị giá */}
               <div className="mt-4 flex items-center">
                 <div className="text-3xl font-bold text-primary-600">
-                  {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                    ? formatCurrency(product.optionPrices[product.defaultProductOption].price)
+                  {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
+                    ? formatCurrency(product.optionPrices[product.defaultProductOption!]!.price)
                     : calculateCheapestPrice() === 0
                       ? t('product.free')
                       : formatCurrency(calculateCheapestPrice())}
@@ -676,16 +676,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 {/* Always show discount % */}
                 <>
                   <div className="ml-4 text-xl text-gray-500 line-through">
-                    {formatCurrency(product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                      ? product.optionPrices[product.defaultProductOption].originalPrice
+                    {formatCurrency(product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
+                      ? product.optionPrices[product.defaultProductOption!]!.originalPrice
                       : calculateOriginalPriceOfCheapest())}
                   </div>
                   <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
-                    -{product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                      ? (product.optionPrices[product.defaultProductOption].originalPrice > product.optionPrices[product.defaultProductOption].price
-                          ? Math.round(((product.optionPrices[product.defaultProductOption].originalPrice - 
-                            product.optionPrices[product.defaultProductOption].price) / 
-                            product.optionPrices[product.defaultProductOption].originalPrice) * 100)
+                    -{product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
+                      ? ((product.optionPrices[product.defaultProductOption!]!.originalPrice > product.optionPrices[product.defaultProductOption!]!.price)
+                          ? Math.round((((product.optionPrices[product.defaultProductOption!]!.originalPrice -
+                            product.optionPrices[product.defaultProductOption!]!.price) /
+                            Math.max(1, product.optionPrices[product.defaultProductOption!]!.originalPrice)) * 100))
                           : 80)
                       : (calculateOriginalPriceOfCheapest() > calculateCheapestPrice()
                           ? calculateCheapestDiscountPercentage()
