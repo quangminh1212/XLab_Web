@@ -46,7 +46,7 @@ const SpeechToTextDemo = () => {
     };
 
     recognitionRef.current.onerror = (event: any) => {
-      console.error('Speech recognition error', event.error);
+      // Speech recognition error
       setIsListening(false);
     };
 
@@ -73,8 +73,8 @@ const SpeechToTextDemo = () => {
       try {
         recognitionRef.current.start();
         setIsListening(true);
-      } catch (error) {
-        console.error('Error starting speech recognition:', error);
+      } catch (_error) {
+        // error starting speech recognition
       }
     }
   };
@@ -85,8 +85,8 @@ const SpeechToTextDemo = () => {
       .then(() => {
         alert('Đã sao chép vào clipboard!');
       })
-      .catch((err) => {
-        console.error('Không thể sao chép: ', err);
+      .catch((_err) => {
+        // cannot copy to clipboard
       });
   };
 

@@ -55,8 +55,8 @@ const ProductOptions = ({
               }
             }
           }
-        } catch (error) {
-          console.error('Error fetching option translations:', error);
+        } catch (_error) {
+          // error fetching option translations (silent)
         }
       };
 

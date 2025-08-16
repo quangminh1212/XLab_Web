@@ -41,7 +41,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
       setIsLoading(true);
       setImageFailed(false);
     }
-  }, [images]);
+  }, [images, processedImages?.[0]]);
 
   // Fallback array if images is undefined
   const imageArray = processedImages.length
@@ -75,7 +75,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
 
   // Handle image error
   const handleImageError = () => {
-    console.error(`Không thể tải hình ảnh: ${mainImage}`);
+    // image load error for: mainImage
     setImageFailed(true);
     setIsLoading(false);
   };
