@@ -19,7 +19,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const { language, t, localCode , localCode } = useLanguage();
+  const { language, t, localCode , localCode , localCode , localCode } = useLanguage();
 
   // Luôn bắt đầu với bước 2 (thanh toán)
   const [step, setStep] = useState(2);
