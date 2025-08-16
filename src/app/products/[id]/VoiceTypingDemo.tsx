@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { SpeechToTextDemo } from '@/components/product';
+// import { SpeechToTextDemo } from '@/components/product';
 
 const VoiceTypingDemo = () => {
   return (
@@ -112,7 +112,7 @@ const VoiceTypingDemo = () => {
         </div>
 
         <div className="col-span-1 lg:col-span-2">
-          <SpeechToTextDemo />
+          {/* SpeechToTextDemo removed as per request */}
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
