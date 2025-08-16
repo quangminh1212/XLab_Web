@@ -18,9 +18,19 @@ set "LOG_DIR=logs"
 set "MAX_LOG_SIZE=5242880"  REM 5 MB
 
 
-REM Allow overriding PORT and HOST via args: start.bat [PORT] [HOST]
-if not "%~1"=="" set PORT=%~1
-if not "%~2"=="" set HOST=%~2
+REM Allow overriding PORT and HOST via args: start.bat [PORT] [HOST] [build]
+set "FORCE_BUILD="
+if /I "%~1"=="build" (
+  set "FORCE_BUILD=1"
+) else if not "%~1"=="" (
+  set PORT=%~1
+)
+if /I "%~2"=="build" (
+  set "FORCE_BUILD=1"
+) else if not "%~2"=="" (
+  set HOST=%~2
+)
+if /I "%~3"=="build" set "FORCE_BUILD=1"
 
 REM Load environment from .env.production (simple KEY=VALUE parser)
 if exist .env.production (
@@ -56,10 +66,15 @@ set "APP_ERR=%LOG_DIR%\app_!DATESTR!.err"
 echo Logs: !APP_LOG!, !APP_ERR!
 echo ===================================================
 
-REM Build once if .next missing
-if not exist .next (
-  echo Running production build...
-  call npm run build 1>>"logs\build.log" 2>>"logs\build.err"
+REM Build once if .next missing or FORCE_BUILD specified
+if not exist .next if not defined FORCE_BUILD goto :skip_build
+
+if defined FORCE_BUILD (
+  echo Force rebuilding production bundle...
+) else (
+  echo Running production build (bundle missing)...
+)
+call npm run build 1>>"logs\build.log" 2>>"logs\build.err"
 
 REM Simple size-based log rotation for today's logs
 for %%F in ("!APP_LOG!" "!APP_ERR!") do (
@@ -75,11 +90,12 @@ for %%F in ("!APP_LOG!" "!APP_ERR!") do (
   )
 )
 
-  if errorlevel 1 (
-    echo Build failed. Check logs\build.err
-    exit /b 1
-  )
+if errorlevel 1 (
+  echo Build failed. Check logs\build.err
+  exit /b 1
 )
+
+:skip_build
 
 :loop
   echo Starting Next.js server...

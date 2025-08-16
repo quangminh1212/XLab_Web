@@ -16,10 +16,11 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
-    // Avoid CSS chunk 404s in dev by disabling CSS optimizer
-    optimizeCss: false,
+    // Chỉ tắt tối ưu CSS trong development để tránh lỗi 404 CSS chunk
+    optimizeCss: process.env.NODE_ENV === 'development' ? false : true,
     optimisticClientCache: true,
   },
+  output: 'standalone',
   images: {
     domains: [
       'via.placeholder.com',
