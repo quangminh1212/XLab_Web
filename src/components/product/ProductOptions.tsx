@@ -89,15 +89,15 @@ const ProductOptions = ({
             {optionPrices && optionPrices[option] && (
               <div className="flex items-center">
                 <span className="text-primary-600 font-medium text-sm">
-                  {formatCurrency(optionPrices[option].price)}
+                  {formatCurrency(optionPrices?.[option]?.price ?? 0)}
                 </span>
-                {optionPrices[option].originalPrice && optionPrices[option].originalPrice > optionPrices[option].price && (
+                {!!optionPrices?.[option]?.originalPrice && (optionPrices?.[option]?.originalPrice as number) > (optionPrices?.[option]?.price ?? 0) && (
                   <>
                     <span className="text-xs text-gray-400 line-through ml-2">
-                      {formatCurrency(optionPrices[option].originalPrice)}
+                      {formatCurrency(optionPrices?.[option]?.originalPrice as number)}
                     </span>
                     <span className="ml-2 bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded">
-                      -{Math.round(((optionPrices[option].originalPrice - optionPrices[option].price) / optionPrices[option].originalPrice) * 100)}%
+                      -{Math.round((((optionPrices?.[option]?.originalPrice as number) - (optionPrices?.[option]?.price ?? 0)) / (optionPrices?.[option]?.originalPrice as number)) * 100)}%
                     </span>
                   </>
                 )}
