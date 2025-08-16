@@ -118,7 +118,7 @@ const ProductGrid = ({
     }
 
     // Nếu giá thấp nhất từ optionPrice
-    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+    if (product.optionPrices && typeof product.optionPrices === 'object' && Object.keys(product.optionPrices).length > 0) {
       for (const key in product.optionPrices) {
         if (product.optionPrices[key]?.price === minPrice) {
           return product.optionPrices[key]?.originalPrice ?? minPrice * 5;
@@ -137,9 +137,9 @@ const ProductGrid = ({
     if (typeof category === 'string') {
       return category;
     }
-    
+
     if (typeof category === 'object' && category !== null) {
-      const categoryObj = category as any;
+      const categoryObj = category as { name?: unknown; id?: unknown };
       
       // Try to get string representation from the category object
       if (categoryObj.name && typeof categoryObj.name === 'string') {

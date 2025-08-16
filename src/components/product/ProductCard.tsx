@@ -83,7 +83,7 @@ export default function ProductCard({
             setTranslatedDescription(description); // Fallback to original
             setTranslatedName(name);
           }
-        } catch (error) {
+        } catch (_error) {
           // console.error('Error fetching translation:', error);
           setTranslatedDescription(description); // Fallback to original
           setTranslatedName(name);
@@ -259,9 +259,9 @@ export default function ProductCard({
     onAddToCart(id);
   };
 
-  const handleView = () => {
-    if (onView) onView(id);
-  };
+  // const handleView = () => {
+  //   if (onView) onView(id);
+  // };
 
   // Handle image error and use placeholder
   const handleImageError = () => {
