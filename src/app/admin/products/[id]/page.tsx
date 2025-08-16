@@ -745,7 +745,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       // Kiểm tra giá trong các tùy chọn sản phẩm
       if (Object.keys(optionPrices).length > 0) {
         for (const option of Object.keys(optionPrices)) {
-          if (optionPrices[option].price > 0) {
+          const p = optionPrices[option]?.price ?? 0;
+          if (p > 0) {
             hasValidPrice = true;
             break;
           }
@@ -1699,14 +1700,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                     </span>
                                   )}
                                   {/* Di chuyển phần giảm giá lên đây */}
-                                  {optionPrices[option]?.originalPrice >
-                                    (optionPrices[option]?.price || 0) && (
+                                  {((optionPrices[option]?.originalPrice ?? 0) >
+                                    (optionPrices[option]?.price ?? 0)) && (
                                     <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium text-xs">
                                       Giảm{' '}
                                       {Math.round(
-                                        ((optionPrices[option].originalPrice -
-                                          optionPrices[option].price) /
-                                          optionPrices[option].originalPrice) *
+                                        (((optionPrices[option]?.originalPrice ?? 0) -
+                                          (optionPrices[option]?.price ?? 0)) /
+                                          Math.max(1, optionPrices[option]?.originalPrice ?? 1)) *
                                           100,
                                       )}
                                       %
@@ -1812,7 +1813,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                             price: price,
                                             originalPrice: !prev[option]?.originalPrice
                                               ? price
-                                              : prev[option].originalPrice,
+                                              : (prev[option]?.originalPrice ?? 0),
                                           },
                                         }));
                                       }}
