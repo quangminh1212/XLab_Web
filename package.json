@@ -24,14 +24,14 @@
     "fix:all": "node scripts/fix-all-issues.js",
     "type-check": "tsc --noEmit",
     "analyze": "cross-env ANALYZE=true next build",
-    "test": "jest",
-    "test:watch": "jest --watch",
+
     "check": "npm run lint && npm run type-check",
     "prepare": "node scripts/fix-next-errors.js",
     "postinstall": "node scripts/fix-next-errors.js",
     "health-check": "node scripts/comprehensive-health-check.js",
     "health-improve": "node scripts/gentle-improvements.js",
-    "build:log": "node scripts/build-with-logger.js"
+    "build:log": "node scripts/build-with-logger.js",
+    "logs:gc": "node scripts/logs-gc.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",

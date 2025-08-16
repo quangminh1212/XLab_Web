@@ -43,6 +43,10 @@ function timestamp() {
     child.on('close', (code) => {
       outStream.end();
       console.log(`\n✅ Build process exited with code: ${code}`);
+      try {
+        require('child_process').spawnSync(process.platform === 'win32' ? 'node.exe' : 'node', ['scripts/logs-gc.js'], { stdio: 'inherit' });
+      } catch {}
+
       console.log(`📌 Log saved at: ${logFile}`);
       process.exit(code);
     });
