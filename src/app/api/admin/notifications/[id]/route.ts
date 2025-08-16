@@ -111,15 +111,17 @@ export async function PUT(
     }
 
     // Cập nhật thông báo
+    const base = notifications[notificationIndex];
     const updatedNotification: Notification = {
-      ...notifications[notificationIndex],
-      title,
-      content,
-      type,
-      link: link || undefined,
-      priority,
-      expiresAt: expiresAt || undefined,
-      targetUsers: targetUsers || [],
+      ...base,
+      id: base.id,
+      title: String(title),
+      content: String(content),
+      type: String(type),
+      link: link ? String(link) : undefined,
+      priority: Number(priority),
+      expiresAt: expiresAt ? String(expiresAt) : undefined,
+      targetUsers: Array.isArray(targetUsers) ? targetUsers : [],
       updatedAt: new Date().toISOString(),
     };
 

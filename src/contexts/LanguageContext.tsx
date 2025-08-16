@@ -93,7 +93,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     // Xử lý keys như 'module.key.subkey'
     if (parts.length > 1) {
       const moduleName = parts[0]; // Lấy module (common, home, admin, ...)
-      const moduleData = (langData as any)[moduleName];
+      const moduleData = (langData as any)?.[moduleName];
       
       if (moduleData) {
         const value = getTranslationValue(moduleData, parts.slice(1));

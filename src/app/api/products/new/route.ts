@@ -187,7 +187,7 @@ export async function POST(request: Request) {
     
     // Lấy ngôn ngữ từ header hoặc mặc định là 'vie'
     const acceptLanguage = request.headers.get('accept-language') || 'vie';
-    const language = acceptLanguage.split(',')[0].trim().toLowerCase();
+    const language = (acceptLanguage?.split(',')[0] || 'vie').trim().toLowerCase();
     
     // Lưu sản phẩm vào thư mục i18n theo ngôn ngữ
     try {

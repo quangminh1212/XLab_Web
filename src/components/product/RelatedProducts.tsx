@@ -142,16 +142,16 @@ export default function RelatedProducts({
     let safePrice = 0;
     let safeOriginalPrice = 0;
     
-    if (product.defaultProductOption && 
-        product.optionPrices && 
-        product.optionPrices[product.defaultProductOption]) {
+    if (product.defaultProductOption &&
+        product.optionPrices &&
+        product.optionPrices[product.defaultProductOption!]) {
       // Use the default option's price
-      safePrice = product.optionPrices[product.defaultProductOption].price;
-      safeOriginalPrice = product.optionPrices[product.defaultProductOption].originalPrice;
+      safePrice = product.optionPrices[product.defaultProductOption!]!.price;
+      safeOriginalPrice = product.optionPrices[product.defaultProductOption!]!.originalPrice;
     } else {
       // Fallback to regular price
       safePrice = Number(product.price) || 0;
-      safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : undefined;
+      safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : 0;
     }
     
     // If originalPrice is still not valid, calculate 80% discount

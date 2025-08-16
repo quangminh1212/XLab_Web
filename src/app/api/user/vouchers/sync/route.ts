@@ -187,14 +187,14 @@ export async function GET(request: Request) {
     let updatedCount = 0;
 
     for (const coupon of coupons) {
-      if (coupon.userUsage && coupon.userUsage[userEmail] && coupon.userUsage[userEmail] > 0) {
+      if (coupon.userUsage && typeof coupon.userUsage[userEmail] === 'number' && coupon.userUsage[userEmail] > 0) {
         // Kiểm tra xem voucher đã có trong dữ liệu người dùng chưa
         const existingVoucher = userData.vouchers.find((v) => v.code === coupon.code);
 
         if (existingVoucher) {
           // Cập nhật thông tin nếu đã tồn tại
-          if (existingVoucher.usedCount !== coupon.userUsage[userEmail]) {
-            existingVoucher.usedCount = coupon.userUsage[userEmail];
+          if (existingVoucher.usedCount !== (coupon.userUsage[userEmail] ?? 0)) {
+            existingVoucher.usedCount = coupon.userUsage[userEmail] ?? 0;
             existingVoucher.lastUsed = new Date().toISOString();
             updatedCount++;
           }
@@ -203,7 +203,7 @@ export async function GET(request: Request) {
           userData.vouchers.push({
             code: coupon.code,
             name: coupon.name,
-            usedCount: coupon.userUsage[userEmail],
+            usedCount: coupon.userUsage[userEmail] ?? 0,
             lastUsed: new Date().toISOString(),
           });
           updatedCount++;

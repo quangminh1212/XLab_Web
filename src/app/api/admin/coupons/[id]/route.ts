@@ -247,20 +247,22 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Cập nhật mã giảm giá
-    const updatedCoupon = {
-      ...coupons[couponIndex],
-      code: code.toUpperCase(),
-      name,
-      description: description || '',
-      type,
+    const base = coupons[couponIndex];
+    const updatedCoupon: Coupon = {
+      ...base,
+      id: base.id,
+      code: String(code).toUpperCase(),
+      name: String(name),
+      description: description ? String(description) : '',
+      type: type as Coupon['type'],
       value: Number(value),
       minOrder: minOrder ? Number(minOrder) : undefined,
       maxDiscount: maxDiscount ? Number(maxDiscount) : undefined,
       usageLimit: usageLimit ? Number(usageLimit) : undefined,
-      usedCount: usedCount !== undefined ? Number(usedCount) : coupons[couponIndex].usedCount,
+      usedCount: usedCount !== undefined ? Number(usedCount) : base.usedCount,
       startDate: startDate.includes('T') ? startDate : `${startDate}T00:00:00.000Z`,
       endDate: endDate.includes('T') ? endDate : `${endDate}T23:59:59.999Z`,
-      applicableProducts: applicableProducts || [],
+      applicableProducts: Array.isArray(applicableProducts) ? applicableProducts : [],
       isPublic: typeof isPublic === 'boolean' ? isPublic : true,
       updatedAt: new Date().toISOString(),
     };
@@ -305,6 +307,9 @@ export async function DELETE(
     }
 
     const deletedCoupon = coupons[couponIndex];
+    if (!deletedCoupon) {
+      return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
+    }
 
     // Kiểm tra xem mã giảm giá đã được sử dụng chưa
     if (deletedCoupon.usedCount > 0) {

@@ -97,7 +97,7 @@ const checkBankTransaction = async (
   try {
     // Check if already verified
     if (verifiedTransactions[transactionId]) {
-      return verifiedTransactions[transactionId];
+      return verifiedTransactions[transactionId] ?? null;
     }
 
     // Try to find transaction in Google Sheets

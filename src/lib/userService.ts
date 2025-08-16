@@ -343,7 +343,6 @@ export async function updateUserBalance(email: string, amount: number): Promise<
 
       return baseUser;
     }
-    }
   }
 
   return null;
@@ -421,7 +420,10 @@ export async function addToUserCart(email: string, item: CartItem): Promise<void
 
   if (existingItemIndex > -1) {
     // Cập nhật số lượng
-    currentCart[existingItemIndex].quantity += item.quantity || 1;
+    const target = currentCart[existingItemIndex];
+    if (target) {
+      target.quantity += item.quantity || 1;
+    }
   } else {
     // Thêm mới
     currentCart.push({

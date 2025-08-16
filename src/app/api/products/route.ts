@@ -114,14 +114,16 @@ export async function GET(req: NextRequest) {
       if (processedProduct.versions && processedProduct.versions.length > 0) {
         // Add price fields for compatibility with UI
         const firstVersion = processedProduct.versions[0];
-        (processedProduct as any).price = firstVersion.price;
-        (processedProduct as any).originalPrice = firstVersion.originalPrice;
+        if (firstVersion) {
+          (processedProduct as any).price = firstVersion.price;
+          (processedProduct as any).originalPrice = firstVersion.originalPrice;
 
-        // Calculate discount percentage if applicable
-        if (firstVersion.originalPrice > firstVersion.price) {
-          (processedProduct as any).discountPercentage = Math.round(
-            (1 - firstVersion.price / firstVersion.originalPrice) * 100,
-          );
+          // Calculate discount percentage if applicable
+          if (firstVersion.originalPrice > firstVersion.price) {
+            (processedProduct as any).discountPercentage = Math.round(
+              (1 - firstVersion.price / firstVersion.originalPrice) * 100,
+            );
+          }
         }
       }
 

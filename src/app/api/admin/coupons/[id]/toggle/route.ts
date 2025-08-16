@@ -88,8 +88,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     // Cập nhật trạng thái
-    coupons[couponIndex].isActive = isActive;
-    coupons[couponIndex].updatedAt = new Date().toISOString();
+    const target = coupons[couponIndex];
+    if (!target) {
+      return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
+    }
+    target.isActive = isActive;
+    target.updatedAt = new Date().toISOString();
 
     // Lưu thay đổi vào file
     saveCoupons(coupons);
