@@ -38,7 +38,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log("ProductDescription translation data:", data); // Ghi log để debug
+            // ProductDescription translation data for debug: data
             if (data && data.description) {
               setTranslatedDescription(data.description);
             } else {
@@ -48,7 +48,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
             setTranslatedDescription(description); // Fallback to original
           }
         } catch (error) {
-          console.error('Error fetching translation:', error);
+          // Error fetching translation
           setTranslatedDescription(description); // Fallback to original
         }
       };
@@ -141,7 +141,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log("ProductShortDescription translation data:", data); // Ghi log để debug
+            // ProductShortDescription translation data for debug: data
             if (data && data.shortDescription) {
               setTranslatedShortDescription(data.shortDescription);
             } else {
@@ -151,7 +151,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
             setTranslatedShortDescription(shortDescription); // Fallback to original
           }
         } catch (error) {
-          console.error('Error fetching short description translation:', error);
+          // Error fetching short description translation
           setTranslatedShortDescription(shortDescription); // Fallback to original
         }
       };
@@ -181,7 +181,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log("ProductFeatures translation data:", data); // Ghi log để debug
+            // ProductFeatures translation data for debug: data
             if (data && data.features) {
               setTranslatedFeatures(data.features);
             } else {
@@ -191,7 +191,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
             setTranslatedFeatures(features); // Fallback to original
           }
         } catch (error) {
-          console.error('Error fetching feature translations:', error);
+          // Error fetching feature translations
           setTranslatedFeatures(features); // Fallback to original
         }
       };
@@ -556,7 +556,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
     // Không tham chiếu đến viewCount trong effect để tránh vòng lặp vô hạn
-    console.log(`Đang xem sản phẩm: ${product.name}`);
+    // viewing product: product.name
   }, [product.id, product.name]); // Chỉ phụ thuộc vào ID và tên sản phẩm
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
