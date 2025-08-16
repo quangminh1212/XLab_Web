@@ -46,7 +46,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     // Get language data
     const langData = translations[language];
     if (!langData) {
-      console.warn(`No translations found for language: ${language}`);
+      // console.warn(`No translations found for language: ${language}`);
       return key;
     }
 
@@ -116,7 +116,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     }
     
     // Nếu không tìm thấy, trả về key gốc
-    console.warn(`Translation key not found: ${key}`);
+    // console.warn(`Translation key not found: ${key}`);
     return key;
   };
 
