@@ -47,14 +47,19 @@ const replaceRules = [
     replacement: '(localCode === $1en$1)'
   },
   {
-    // Đảm bảo import localCode từ useLanguage nếu chưa có
+    // Đảm bảo import localCode từ useLanguage nếu chưa có (chỉ khi chưa có localCode)
     pattern: /const\s*{\s*language\s*,\s*t\s*}\s*=\s*useLanguage\(\);/g,
     replacement: 'const { language, t, localCode } = useLanguage();'
   },
   {
-    // Đảm bảo import localCode từ useLanguage nếu chưa có (trường hợp có thêm biến khác)
-    pattern: /const\s*{\s*language\s*,\s*t\s*,\s*([^}]+)\s*}\s*=\s*useLanguage\(\);/g,
-    replacement: 'const { language, t, $1, localCode } = useLanguage();'
+    // Sửa các biến trùng lặp localCode
+    pattern: /const\s*{\s*([^}]*),\s*localCode\s*,\s*localCode([^}]*)\s*}\s*=\s*useLanguage\(\);/g,
+    replacement: 'const { $1, localCode$2 } = useLanguage();'
+  },
+  {
+    // Sửa nhiều biến localCode trùng lặp
+    pattern: /(localCode\s*,\s*)+localCode/g,
+    replacement: 'localCode'
   }
 ];
 

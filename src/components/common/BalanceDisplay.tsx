@@ -15,7 +15,7 @@ interface BalanceDisplayProps {
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading } = useBalance();
-  const { language, t, localCode , localCode , localCode , localCode } = useLanguage();
+  const { language, t, localCode } = useLanguage();
 
   const formattedBalance = useMemo(() => {
     return formatCurrency(balance, language);
