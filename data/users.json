@@ -32,5 +32,16 @@
     "createdAt": "2025-06-01T18:28:16.653Z",
     "updatedAt": "2025-06-01T18:28:22.770Z",
     "lastLogin": "2025-06-01T18:28:16.653Z"
+  },
+  {
+    "id": "1755349201129",
+    "name": "someone",
+    "email": "someone@example.com",
+    "isAdmin": false,
+    "isActive": true,
+    "balance": 0,
+    "createdAt": "2025-08-16T13:00:01.129Z",
+    "updatedAt": "2025-08-16T13:00:01.129Z",
+    "lastLogin": "2025-08-16T13:00:01.129Z"
   }
 ]
