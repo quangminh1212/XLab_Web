@@ -62,7 +62,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     // Await params trước khi sử dụng thuộc tính của nó
     const { id: productId } = await params;
 
-    console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
+    // tìm kiếm sản phẩm với ID hoặc slug: productId
 
     // Lấy dữ liệu sản phẩm từ file JSON
     const products = getProducts();
@@ -77,19 +77,14 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
     // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
     if (!product) {
-      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
+      // Không tìm thấy sản phẩm với ID hoặc slug: productId
       notFound();
     }
 
     // Xác định categoryId cho sản phẩm liên quan
-    const categoryId = product.categories && product.categories.length > 0 
-      ? product.categories[0].id 
+    const categoryId = product.categories && product.categories.length > 0
+      ? product.categories[0].id
       : undefined;
-
-    // Ghi log thông tin truy cập
-    console.log(
-      `Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`,
-    );
 
     // Truyền dữ liệu sản phẩm sang client component
     return (
