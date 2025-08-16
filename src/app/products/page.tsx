@@ -1,12 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import { Button } from '@/components/common/button';
 import ProductCard from '@/components/product/ProductCard';
-import ProductImage from '@/components/product/ProductImage';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/data/mockData';
 
@@ -18,7 +15,7 @@ export default function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [_searchTerm, _setSearchTerm] = useState<string>('');
 
   // Set filter from URL params
   useEffect(() => {

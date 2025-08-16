@@ -81,10 +81,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       notFound();
     }
 
-    // Xác định categoryId cho sản phẩm liên quan
-    const categoryId = product.categories && product.categories.length > 0
-      ? product.categories[0].id
-      : undefined;
+    // Xác định categoryId cho sản phẩm liên quan (không dùng hiện tại)
+    // const categoryId = product.categories && product.categories.length > 0
+    //   ? product.categories[0].id
+    //   : undefined;
 
     // Truyền dữ liệu sản phẩm sang client component
     return (
