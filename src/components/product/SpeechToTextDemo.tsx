@@ -14,7 +14,8 @@ const SpeechToTextDemo = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(true);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  // Use a permissive type to avoid DOM lib dependency for SpeechRecognition
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     // Kiểm tra xem trình duyệt có hỗ trợ Web Speech API không
@@ -30,7 +31,7 @@ const SpeechToTextDemo = () => {
     recognitionRef.current.interimResults = true;
     recognitionRef.current.lang = 'vi-VN'; // Mặc định là tiếng Việt
 
-    recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+    recognitionRef.current.onresult = (event: any) => {
       let interimTranscript = '';
       let finalTranscript = '';
 
@@ -53,25 +54,25 @@ const SpeechToTextDemo = () => {
     recognitionRef.current.onend = () => {
       // Nếu người dùng vẫn đang muốn lắng nghe, khởi động lại recognition
       if (isListening) {
-        recognitionRef.current.start();
+        recognitionRef.current?.start();
       }
     };
 
     // Cleanup
     return () => {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        recognitionRef.current?.stop();
       }
     };
   }, [isListening]);
 
   const toggleListening = () => {
     if (isListening) {
-      recognitionRef.current.stop();
+      recognitionRef.current?.stop();
       setIsListening(false);
     } else {
       try {
-        recognitionRef.current.start();
+        recognitionRef.current?.start();
         setIsListening(true);
       } catch (_error) {
         // error starting speech recognition
