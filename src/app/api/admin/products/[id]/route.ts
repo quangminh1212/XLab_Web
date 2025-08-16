@@ -141,8 +141,8 @@ export async function GET(request: NextRequest, { params: paramsPromise }: { par
     }
 
     return NextResponse.json(product);
-  } catch (error) {
-    console.error('Error fetching product:', error);
+  } catch (_error) {
+    // console.error('Error fetching product:', _error);
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
   }
 }
@@ -161,7 +161,7 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
 
     const acceptLanguage = request.headers.get('accept-language');
     const language = normalizeLanguageHeader(acceptLanguage);
-    console.log(`Updating product ${id} with language: ${language}`);
+    // console.debug(`Updating product ${id} with language: ${language}`);
 
     // Get the updated product data from the request
     const updatedProductData = await request.json();
@@ -192,7 +192,7 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
     // If ID was changed, we need to delete the old product after successful update
     if (isIdChanged) {
       // Log the ID change
-      console.log(`Product ID changed from ${id} to ${updatedProductData.id}`);
+      // console.debug(`Product ID changed from ${id} to ${updatedProductData.id}`);
       
       try {
         // Move the images from old product folder to new product folder
@@ -216,10 +216,10 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
             
             // Copy the file to new location
             fs.copyFileSync(oldFilePath, newFilePath);
-            console.log(`Copied image from ${oldFilePath} to ${newFilePath}`);
+            // console.debug(`Copied image from ${oldFilePath} to ${newFilePath}`);
           }
           
-          console.log(`All images moved from ${oldImagesDir} to ${newImagesDir}`);
+          // console.debug(`All images moved from ${oldImagesDir} to ${newImagesDir}`);
           
           // Update image paths in the product data
           if (mergedProduct.images && Array.isArray(mergedProduct.images)) {
@@ -244,8 +244,8 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
             });
           }
         }
-      } catch (error) {
-        console.error('Error moving product images:', error);
+      } catch (_error) {
+        // console.error('Error moving product images:', _error);
       }
       
       // Delete the old product version with the old ID
@@ -253,8 +253,8 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
     }
 
     return NextResponse.json(mergedProduct);
-  } catch (error) {
-    console.error('Error updating product:', error);
+  } catch (_error) {
+    // console.error('Error updating product:', _error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
   }
 }
@@ -273,7 +273,7 @@ export async function DELETE(request: NextRequest, { params: paramsPromise }: { 
 
     const acceptLanguage = request.headers.get('accept-language');
     const language = acceptLanguage ? normalizeLanguageHeader(acceptLanguage) : undefined;
-    console.log(`Deleting product ${id} ${language ? `for language: ${language}` : 'for all languages'}`);
+    // console.debug(`Deleting product ${id} ${language ? `for language: ${language}` : 'for all languages'}`);
 
     // Delete product using i18n product function (if language is specified, only delete that language version)
     const deleteResult = await deleteProduct(id, language);
@@ -283,8 +283,8 @@ export async function DELETE(request: NextRequest, { params: paramsPromise }: { 
     }
 
     return NextResponse.json({ message: 'Product deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting product:', error);
+  } catch (_error) {
+    // console.error('Error deleting product:', _error);
     return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
   }
 }

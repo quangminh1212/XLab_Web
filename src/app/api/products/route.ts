@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     const acceptLanguage = req.headers.get('accept-language');
     const language = langParam || acceptLanguage || 'vie';
 
-    console.log(`Getting products with language: ${language}`);
+    // console.debug(`Getting products with language: ${language}`);
 
     // Get all products using i18n library
     const allProducts = await getAllProducts(language);
@@ -34,23 +34,23 @@ export async function GET(req: NextRequest) {
         // Handle both string array and object array formats
         return product.categories.some((cat: any) => {
           if (typeof cat === 'string') return cat === category;
-          if (cat.id) return cat.id === category || cat.slug === category;
+          if ((cat as any).id) return (cat as any).id === category || (cat as any).slug === category;
           return false;
         });
       });
-      console.log(`Filtered by category ${category}, found ${productList.length} products`);
+      // console.debug(`Filtered by category ${category}, found ${productList.length} products`);
     }
 
     // Filter by type if provided
     if (type) {
       productList = productList.filter((p) => p.type === type);
-      console.log(`Filtered by type ${type}, found ${productList.length} products`);
+      // console.debug(`Filtered by type ${type}, found ${productList.length} products`);
     }
 
     // Filter by featured if provided
     if (featured === 'true') {
       productList = productList.filter((p) => (p as any).isFeatured === true);
-      console.log(`Filtered by featured, found ${productList.length} products`);
+      // console.debug(`Filtered by featured, found ${productList.length} products`);
     }
 
     // Filter by search term if provided
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
           (product.shortDescription && product.shortDescription.toLowerCase().includes(searchLower))
         );
       });
-      console.log(`Filtered by search "${search}", found ${productList.length} products`);
+      // console.debug(`Filtered by search "${search}", found ${productList.length} products`);
     }
 
     // Sort products
@@ -85,13 +85,13 @@ export async function GET(req: NextRequest) {
     // Exclude specific product if exclude is provided
     if (exclude) {
       productList = productList.filter((p) => p.id !== exclude && p.slug !== exclude);
-      console.log(`Excluded product ${exclude}, remaining ${productList.length} products`);
+      // console.debug(`Excluded product ${exclude}, remaining ${productList.length} products`);
     }
 
     // Limit results if limit is provided
     if (limit && !isNaN(limit)) {
       productList = productList.slice(0, limit);
-      console.log(`Limited to ${productList.length} products`);
+      // console.debug(`Limited to ${productList.length} products`);
     }
 
     // Process blob URLs in images
@@ -135,8 +135,8 @@ export async function GET(req: NextRequest) {
       data: processedProducts,
       total: processedProducts.length,
     });
-  } catch (error) {
-    console.error('Error fetching products:', error);
+  } catch (_error) {
+    // console.error('Error fetching products:', _error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
 }
