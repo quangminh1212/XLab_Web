@@ -361,7 +361,7 @@ export default function ProductCard({
   const safeId = id || '0';
   const parsedId = parseInt(safeId);
   const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
-  const currentColor: Palette = colorPalette[colorIndex] || colorPalette[0];
+  const currentColor: Palette = (colorPalette[colorIndex] || colorPalette[0]) as Palette;
   const safeCurrentColor: Palette = currentColor;
 
   return (

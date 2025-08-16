@@ -1023,10 +1023,11 @@ export async function updateUserOrder(
     const orderIndex = userData.orders.findIndex((order) => order.id === orderId);
     if (orderIndex >= 0) {
       const { id: _ignoreId, ...restUpdates } = updates as any;
+      const existing = userData.orders[orderIndex]!;
       userData.orders[orderIndex] = {
-        ...userData.orders[orderIndex],
+        ...existing,
         ...restUpdates,
-        id: userData.orders[orderIndex].id,
+        id: existing.id,
         updatedAt: new Date().toISOString(),
       };
 
