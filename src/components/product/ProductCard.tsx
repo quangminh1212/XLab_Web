@@ -73,7 +73,7 @@ export default function ProductCard({
             } else {
               setTranslatedDescription(description); // Fallback to original if no translation
             }
-            
+
             // Cập nhật tên sản phẩm đã dịch
             if (data && data.name) {
               setTranslatedName(data.name);
@@ -162,15 +162,15 @@ export default function ProductCard({
   // Xử lý category có thể là object phức tạp
   const getCategoryName = (categoryValue: string | object | undefined): string | undefined => {
     if (!categoryValue) return undefined;
-    
+
     if (typeof categoryValue === 'string') {
       return categoryValue;
     }
-    
+
     if (typeof categoryValue === 'object') {
       // Nếu là object, thử lấy thuộc tính name hoặc id
       const categoryObj = categoryValue as any;
-      
+
       if (categoryObj.name) {
         // Nếu có thuộc tính name
         if (typeof categoryObj.name === 'string') {
@@ -179,7 +179,7 @@ export default function ProductCard({
           return categoryObj.name.id;
         }
       }
-      
+
       if (categoryObj.id) {
         // Nếu có thuộc tính id
         if (typeof categoryObj.id === 'string') {
@@ -189,7 +189,7 @@ export default function ProductCard({
         }
       }
     }
-    
+
     return undefined;
   };
 
@@ -359,19 +359,21 @@ export default function ProductCard({
   const safeId = id || '0';
   const parsedId = parseInt(safeId);
   const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
+  const safeCurrentColor = currentColor ?? colorPalette[0];
+
   const currentColor = colorPalette[colorIndex] || colorPalette[0];
 
   return (
     <Link
       href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full w-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
+      className={`group flex flex-col h-full w-full bg-gradient-to-br ${safeCurrentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${safeCurrentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative pt-[100%] bg-white">
         {/* Always show discount % even if there's no actual discount */}
         <div
-          className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
+          className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${safeCurrentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
         >
           -{originalPrice && originalPrice > price ? discountPercentage : 80}%
         </div>
@@ -410,10 +412,10 @@ export default function ProductCard({
 
         {showAddedEffect && (
           <div
-            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
+            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${safeCurrentColor.overlay} z-20 animate-fadeInOut`}
           >
             <div
-              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-3 py-1 rounded-full flex items-center shadow-lg text-xs`}
+              className={`bg-gradient-to-r ${safeCurrentColor.badge} text-white font-bold px-3 py-1 rounded-full flex items-center shadow-lg text-xs`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -505,7 +507,7 @@ export default function ProductCard({
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
-                className={`text-base font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+                className={`text-base font-extrabold bg-gradient-to-r ${safeCurrentColor.price} bg-clip-text text-transparent`}
               >
                 {formatCurrency(price)}
               </span>
@@ -520,13 +522,13 @@ export default function ProductCard({
           <div className="flex flex-col items-end gap-1">
             {weeklyPurchases > 0 && (
               <div
-                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${safeCurrentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                  className={`h-2 w-2 mr-1 ${safeCurrentColor.statsIcon}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path
@@ -541,13 +543,13 @@ export default function ProductCard({
             )}
             {totalSold > 0 && (
               <div
-                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${safeCurrentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                  className={`h-2 w-2 mr-1 ${safeCurrentColor.statsIcon}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path

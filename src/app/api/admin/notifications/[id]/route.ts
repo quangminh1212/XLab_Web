@@ -112,14 +112,17 @@ export async function PUT(
 
     // Cập nhật thông báo
     const base = notifications[notificationIndex];
+    if (!base) {
+      return NextResponse.json({ error: 'Không tìm thấy thông báo' }, { status: 404 });
+    }
     const updatedNotification: Notification = {
       ...base,
       id: base.id,
       title: String(title),
       content: String(content),
-      type: String(type),
+      type: type as Notification['type'],
       link: link ? String(link) : undefined,
-      priority: Number(priority),
+      priority: priority as Notification['priority'],
       expiresAt: expiresAt ? String(expiresAt) : undefined,
       targetUsers: Array.isArray(targetUsers) ? targetUsers : [],
       updatedAt: new Date().toISOString(),

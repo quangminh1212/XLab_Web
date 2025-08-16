@@ -292,13 +292,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
 
   // State tùy chọn đang chọn - ưu tiên chọn tùy chọn mặc định nếu có
-  const [selectedOption, setSelectedOption] = useState<string>(
-    product.defaultProductOption && product.productOptions?.includes(product.defaultProductOption)
-      ? product.defaultProductOption 
-      : product.productOptions && product.productOptions.length > 0 
-        ? product.productOptions[0] 
-        : '',
-  );
+  const [selectedOption, setSelectedOption] = useState<string>(() => {
+    const hasDefault = product.defaultProductOption && product.productOptions?.includes(product.defaultProductOption);
+    if (hasDefault) return product.defaultProductOption as string;
+    if (product.productOptions && product.productOptions.length > 0) return product.productOptions[0] as string;
+    return '';
+  });
 
   // State hiển thị tùy chọn hiện có
   const [showOptions, setShowOptions] = useState(false);
@@ -522,7 +521,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       // Xử lý đường dẫn ảnh
       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
         productImage = fixImagePath(firstImage);
-      } else if (typeof firstImage !== 'string' && firstImage.url) {
+      } else if (firstImage && typeof firstImage !== 'string' && firstImage.url) {
         productImage = fixImagePath(firstImage.url);
       }
     }
@@ -803,7 +802,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                       const firstImage = product.images?.[0];
                       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
                         productImage = fixImagePath(firstImage);
-                      } else if (typeof firstImage !== 'string' && firstImage.url) {
+                      } else if (firstImage && typeof firstImage !== 'string' && firstImage.url) {
                         productImage = fixImagePath(firstImage.url);
                       }
                     }

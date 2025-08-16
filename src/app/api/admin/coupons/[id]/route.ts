@@ -248,6 +248,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     // Cập nhật mã giảm giá
     const base = coupons[couponIndex];
+    if (!base) {
+      return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
+    }
     const updatedCoupon: Coupon = {
       ...base,
       id: base.id,
@@ -264,6 +267,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       endDate: endDate.includes('T') ? endDate : `${endDate}T23:59:59.999Z`,
       applicableProducts: Array.isArray(applicableProducts) ? applicableProducts : [],
       isPublic: typeof isPublic === 'boolean' ? isPublic : true,
+      isActive: base.isActive ?? true,
       updatedAt: new Date().toISOString(),
     };
 
