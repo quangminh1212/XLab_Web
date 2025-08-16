@@ -1810,16 +1810,16 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       onChange={(e) => {
                                         const value = parseFloat(e.target.value);
                                         const price = isNaN(value) ? 0 : value;
-                                        setOptionPrices((prev) => ({
-                                          ...prev,
-                                          [option]: {
-                                            ...prev[option],
-                                            price: price,
-                                            originalPrice: !prev[option]?.originalPrice
-                                              ? price
-                                              : (prev[option]?.originalPrice ?? 0),
-                                          },
-                                        }));
+                                        setOptionPrices((prev) => {
+                                          const prevOpt = prev[option] ?? { price: 0, originalPrice: 0 };
+                                          return {
+                                            ...prev,
+                                            [option]: {
+                                              price: price,
+                                              originalPrice: prevOpt.originalPrice > 0 ? prevOpt.originalPrice : price,
+                                            },
+                                          };
+                                        });
                                       }}
                                       className="w-full p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 text-right font-semibold bg-white pr-6"
                                       min="0"
@@ -1859,13 +1859,16 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       onChange={(e) => {
                                         const value = parseFloat(e.target.value);
                                         const originalPrice = isNaN(value) ? 0 : value;
-                                        setOptionPrices((prev) => ({
-                                          ...prev,
-                                          [option]: {
-                                            ...prev[option],
-                                            originalPrice: originalPrice ?? (prev[option]?.originalPrice ?? 0),
-                                          },
-                                        }));
+                                        setOptionPrices((prev) => {
+                                          const prevOpt = prev[option] ?? { price: 0, originalPrice: 0 };
+                                          return {
+                                            ...prev,
+                                            [option]: {
+                                              price: prevOpt.price,
+                                              originalPrice: originalPrice,
+                                            },
+                                          };
+                                        });
                                       }}
                                       className="w-full p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 text-gray-600 transition-all duration-200 text-right font-semibold bg-white pr-6"
                                       min="0"
