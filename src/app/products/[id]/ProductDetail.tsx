@@ -1,6 +1,5 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, Fragment } from 'react';
@@ -17,11 +16,7 @@ import { Product as ProductType } from '@/models/ProductModel';
 import RelatedProducts from '../../../components/product/RelatedProducts';
 
 
-// Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
-// const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
-//   loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
-//   ssr: false, // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
-// }); // tạm tắt sử dụng để tránh unused var warning
+
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
