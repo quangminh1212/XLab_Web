@@ -656,21 +656,25 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     // Xóa giá của tùy chọn
     setOptionPrices((prev) => {
       const newPrices = { ...prev };
-      delete newPrices[option];
+      if (option) {
+        delete (newPrices as any)[option as string];
+      }
       return newPrices;
     });
 
     // Xóa thời hạn của tùy chọn
     setOptionDurations((prev) => {
       const newDurations = { ...prev };
-      delete newDurations[option];
+      if (option) {
+        delete (newDurations as any)[option as string];
+      }
       return newDurations;
     });
 
     // Nếu xóa tùy chọn mặc định, chọn tùy chọn đầu tiên còn lại làm mặc định
     if (option === defaultProductOption) {
       if (newOptions.length > 0) {
-        setDefaultProductOption(newOptions[0]);
+        setDefaultProductOption(newOptions[0] ?? '');
       } else {
         setDefaultProductOption('');
       }
@@ -701,7 +705,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     // Cập nhật optionPrices
     setOptionPrices((prev) => {
       const newPrices = { ...prev };
-      newPrices[newOption] = newPrices[oldOption];
+      newPrices[newOption] = newPrices[oldOption] ?? { price: 0, originalPrice: 0 };
       delete newPrices[oldOption];
       return newPrices;
     });
@@ -709,7 +713,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     // Cập nhật optionDurations
     setOptionDurations((prev) => {
       const newDurations = { ...prev };
-      newDurations[newOption] = newDurations[oldOption];
+      newDurations[newOption] = newDurations[oldOption] ?? '';
       delete newDurations[oldOption];
       return newDurations;
     });

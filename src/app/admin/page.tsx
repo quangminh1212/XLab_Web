@@ -158,8 +158,8 @@ function AdminDashboard() {
                         {formatCurrency(
                           product.defaultProductOption && 
                           product.optionPrices && 
-                          product.optionPrices[product.defaultProductOption] 
-                            ? product.optionPrices[product.defaultProductOption].price 
+                          product.defaultProductOption && product.optionPrices?.[product.defaultProductOption]
+                            ? product.optionPrices[product.defaultProductOption]!.price
                             : product.versions && product.versions.length > 0 
                               ? product.versions[0]?.price || 0 
                               : product.price || 0, 
