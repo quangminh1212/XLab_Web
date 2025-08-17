@@ -6,9 +6,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
+import { put } from '@vercel/blob';
 
 import { authOptions } from '@/lib/authOptions';
-
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,10 +23,10 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     // Lấy thông tin sản phẩm từ formData
-    const productId = formData.get('productId') as string;
-    const productSlug = formData.get('productSlug') as string;
-    const productName = formData.get('productName') as string;
-    
+    const productId = (formData.get('productId') as string) || '';
+    const productSlug = (formData.get('productSlug') as string) || '';
+    const productName = (formData.get('productName') as string) || '';
+
     // Lấy thông tin resize nếu có
     const width = formData.get('width') ? parseInt(formData.get('width') as string, 10) : null;
     const height = formData.get('height') ? parseInt(formData.get('height') as string, 10) : null;
@@ -60,37 +60,22 @@ export async function POST(request: NextRequest) {
       ? `${sanitizedProductName}-${uuidv4()}.${fileExtension}`
       : `${uuidv4()}.${fileExtension}`;
 
-    // Define the directory to save the uploaded image
+    // Đường dẫn/khóa lưu trữ theo sản phẩm
     let targetDir = 'products';
-
-    // Ưu tiên sử dụng productId thay vì slug
     if (productId) {
       targetDir = path.join('products', productId);
-    } 
-    // Nếu không có productId, sử dụng slug làm backup
-    else if (productSlug) {
+    } else if (productSlug) {
       targetDir = path.join('products', productSlug);
     }
 
-    const dirPath = path.join(process.cwd(), 'public', 'images', targetDir);
-    const filePath = path.join(dirPath, fileName);
-    const publicPath = `/images/${targetDir}/${fileName}`.replace(/\\/g, '/');
-
-    // Create directory if it doesn't exist
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-
-    // Convert file to array buffer
+    // Chuẩn bị buffer dữ liệu (có thể resize)
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const originalBuffer = Buffer.from(bytes);
 
-    // Xử lý resize ảnh nếu có yêu cầu
-    if (width || height) {
-      try {
-        const sharpInstance = sharp(buffer);
-        
-        // Cấu hình resize
+    let processedBuffer: Buffer = originalBuffer;
+    try {
+      if (width || height) {
+        const sharpInstance = sharp(originalBuffer);
         if (width && height) {
           sharpInstance.resize(width, height, { fit: 'inside', withoutEnlargement: true });
         } else if (width) {
@@ -98,8 +83,6 @@ export async function POST(request: NextRequest) {
         } else if (height) {
           sharpInstance.resize(null, height, { withoutEnlargement: true });
         }
-        
-        // Giữ định dạng gốc hoặc chuyển đổi sang định dạng phù hợp
         if (fileExtension === 'png') {
           sharpInstance.png({ quality });
         } else if (fileExtension === 'webp') {
@@ -107,51 +90,53 @@ export async function POST(request: NextRequest) {
         } else {
           sharpInstance.jpeg({ quality });
         }
-        
-        // Lưu file đã xử lý
-        const resizedBuffer = await sharpInstance.toBuffer();
-        await fsPromises.writeFile(filePath, resizedBuffer);
-      } catch (err) {
-        console.error('Error resizing image:', err);
-        // Fallback to original if resizing fails
-        await fsPromises.writeFile(filePath, buffer);
+        processedBuffer = await sharpInstance.toBuffer();
       }
-    } else {
-      // Nếu không resize thì lưu file gốc
-      await fsPromises.writeFile(filePath, buffer);
+    } catch (err) {
+      console.error('Error resizing image (will use original):', err);
+      processedBuffer = originalBuffer;
     }
 
-    // Lấy thông tin file đã xử lý
-    let imageInfo = null;
+    // Metadata
+    let imageInfo: any = null;
     try {
-      const metadata = await sharp(filePath).metadata();
+      const metadata = await sharp(processedBuffer).metadata();
       imageInfo = {
         width: metadata.width,
         height: metadata.height,
         format: metadata.format,
-        size: fs.statSync(filePath).size
+        size: processedBuffer.length,
       };
-    } catch (error) {
-      console.error('Error getting image metadata:', error);
+    } catch (err) {
+      console.error('Error reading image metadata:', err);
     }
 
-    // Log success
-    console.log(`File uploaded successfully: ${publicPath}`, imageInfo);
+    // Ưu tiên upload lên Vercel Blob; nếu thất bại thì fallback lưu local (dev)
+    const blobKey = `${targetDir.replace(/\\/g, '/')}/${fileName}`.replace(/\+/g, '/');
+    const contentType = file.type || `image/${fileExtension}`;
 
-    // Return the public URL path and image info
-    return NextResponse.json({
-      success: true,
-      url: publicPath,
-      fileName: fileName,
-      imageInfo: imageInfo
-    });
+    try {
+      const blob = await put(blobKey, processedBuffer, { access: 'public', contentType });
+      console.log('Uploaded to Vercel Blob:', blob.url);
+      return NextResponse.json({ success: true, url: blob.url, fileName, imageInfo });
+    } catch (err) {
+      console.warn('Blob upload failed, falling back to local file write (dev only):', err);
+
+      // Local fallback (development): write into public/images
+      const dirPath = path.join(process.cwd(), 'public', 'images', targetDir);
+      const filePath = path.join(dirPath, fileName);
+      const publicPath = `/images/${targetDir}/${fileName}`.replace(/\\/g, '/');
+
+      if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
+      }
+      await fsPromises.writeFile(filePath, processedBuffer);
+
+      console.log(`File uploaded locally: ${publicPath}`, imageInfo);
+      return NextResponse.json({ success: true, url: publicPath, fileName, imageInfo });
+    }
   } catch (error) {
     console.error('Error uploading file:', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to upload file',
-      },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
   }
 }
