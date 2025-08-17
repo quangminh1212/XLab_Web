@@ -5,8 +5,19 @@ import { updateUserOrder } from '@/lib/userService';
 // does not throw synchronously. The function performs async I/O; we only verify it can be invoked.
 
 test('updateUserOrder is callable and returns a Promise', async () => {
-  // simplify call with fake data; we only assert invocation shape
+  // silence console logs that may occur asynchronously inside updateUserOrder
+  const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+  const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
   const promise = updateUserOrder('someone@example.com', 'order-1', { status: 'paid' } as any);
   expect(promise).toBeInstanceOf(Promise);
+
+  // do not await promise (we only validate shape), but yield microtask queue
+  await Promise.resolve();
+
+  logSpy.mockRestore();
+  warnSpy.mockRestore();
+  errorSpy.mockRestore();
 });
 
