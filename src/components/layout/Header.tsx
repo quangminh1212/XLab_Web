@@ -355,6 +355,7 @@ const Header = () => {
                   alt="XLab Logo"
                   width={100}
                   height={60}
+                  unoptimized
                   className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
                 />
               </Link>

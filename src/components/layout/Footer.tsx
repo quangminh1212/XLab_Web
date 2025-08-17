@@ -32,7 +32,7 @@ export default function Footer() {
             <div className="flex flex-col sm:flex-row gap-8 mb-8">
               <div className="flex-shrink-0 mb-4 sm:mb-0 sm:self-start">
                 <Link href="/" className="inline-block">
-                  <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} className="max-w-full" />
+                  <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="max-w-full" />
                 </Link>
               </div>
               <div className="sm:max-w-[280px]">

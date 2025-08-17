@@ -53,6 +53,7 @@ export default function LoginPage() {
                 width={150}
                 height={60}
                 priority
+                unoptimized
                 className="h-16 w-auto"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

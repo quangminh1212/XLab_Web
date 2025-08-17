@@ -103,6 +103,7 @@ export default function RegisterPage() {
               width={150}
               height={60}
               priority
+              unoptimized
               className="h-16 w-auto"
             />
           </Link>
