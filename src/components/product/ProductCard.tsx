@@ -111,7 +111,6 @@ export default function ProductCard({
     try {
       // Kiểm tra nếu là đường dẫn tương đối
       if (fixed.startsWith('/')) {
-        // Thêm domain nếu cần
         return fixed;
       }
 
@@ -126,6 +125,11 @@ export default function ProductCard({
 
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image);
+  // Log (giữ trong production vì dùng console.warn/console.error vẫn được giữ lại theo next.config)
+  try {
+    // Chỉ log 1 lần cho mỗi thẻ bằng id
+    console.warn('[IMG] ProductCard src', { id, name, incoming: image, clean: cleanImageUrl });
+  } catch { /* no-op */ }
 
   // Chuẩn hóa mô tả: loại bỏ thẻ HTML và ký tự thừa để tránh hiển thị thô trong thẻ sản phẩm
   const normalizeDescription = (input: string) => {
@@ -266,8 +270,11 @@ export default function ProductCard({
   // };
 
   // Handle image error and use placeholder
-  const handleImageError = () => {
-    // image load error
+  const handleImageError = (e?: any) => {
+    try {
+      const failedSrc = (e?.currentTarget as HTMLImageElement)?.currentSrc || (e?.target as HTMLImageElement)?.src || cleanImageUrl;
+      console.error('[IMG] onError - fallback to placeholder', { id, name, failedSrc, incoming: image, clean: cleanImageUrl });
+    } catch { /* no-op */ }
     setImageError(true);
     setIsImageLoaded(true); // Mark as loaded to hide spinner
   };

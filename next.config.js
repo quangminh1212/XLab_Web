@@ -61,6 +61,30 @@ const nextConfig = {
     },
   },
   webpack: (config, { dev, isServer }) => {
+    // Log danh sách ảnh ở build time (server side)
+    if (isServer && process.env.NODE_ENV === 'production') {
+      try {
+        const fs = require('fs');
+        const pathLib = require('path');
+        const base = pathLib.join(__dirname, 'public', 'images', 'products');
+        const walk = (dir) => {
+          try {
+            return fs.readdirSync(dir).flatMap((name) => {
+              const p = pathLib.join(dir, name);
+              const stat = fs.statSync(p);
+              return stat.isDirectory() ? walk(p) : [p];
+            });
+          } catch {
+            return [];
+          }
+        };
+        const files = walk(base).map((p) => p.replace(__dirname, ''));
+        console.warn('[BUILD] Ảnh products phát hiện:', files.slice(0, 50));
+      } catch (e) {
+        console.warn('[BUILD] Không log được danh sách ảnh:', e?.message || e);
+      }
+    }
+
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),

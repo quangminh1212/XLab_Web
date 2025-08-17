@@ -394,7 +394,9 @@ export default function ProductsPage() {
                   // Lấy ảnh sản phẩm (sử dụng helper function)
                   const imageUrl = getValidImageUrl(product);
 
-                  // console.debug(`[DEV] Processed image URL for ${product.name}:`, imageUrl);
+                  try {
+                    console.warn('[IMG] /products item', { id: product.id, name: product.name, first: (product.images && product.images[0]) || product.imageUrl, final: imageUrl });
+                  } catch { /* no-op */ }
 
                   return (
                     <div key={product.id}>
