@@ -145,10 +145,6 @@ const nextConfig = {
             value: 'strict-origin-when-cross-origin',
           },
           {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
             key: 'Content-Security-Policy',
             value: process.env.NODE_ENV === 'production'
               ? "default-src 'self'; img-src 'self' data: blob: https: http: *; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;"
@@ -156,11 +152,11 @@ const nextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
+            value: 'geolocation=(), camera=(), microphone=(), browsing-topics=()',
           },
           {
             key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
+            value: process.env.NODE_ENV === 'production' ? 'max-age=63072000; includeSubDomains; preload' : '',
           },
         ].filter(header => header.value !== ""),
       },
