@@ -162,6 +162,22 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         />
         <DynamicProductDetail product={product} />
 
+        {/* BreadcrumbList JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: `${siteConfig.url}/` },
+                { '@type': 'ListItem', position: 2, name: 'Sản phẩm', item: `${siteConfig.url}/products` },
+                { '@type': 'ListItem', position: 3, name: product.name, item: `${siteConfig.url}/products/${product.slug || product.id}` },
+              ],
+            }),
+          }}
+        />
+
         {/* Phần chính sách bảo hành */}
         <div className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="bg-white p-6 rounded-lg shadow-sm">
