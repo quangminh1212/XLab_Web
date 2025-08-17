@@ -50,6 +50,7 @@ export interface Product {
   description: string;
   shortDescription?: string;
   images?: ProductImage[] | string[];
+  imageUrl?: string;
   descriptionImages?: string[];
   features?: ProductFeature[] | any[];
   specifications?: ProductSpecification[] | any[];

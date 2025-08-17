@@ -103,14 +103,14 @@ export async function GET(req: NextRequest) {
             if (typeof img === 'string') {
               const fixed = img.replace(/\\/g, '/');
               return fixed.startsWith('blob:')
-                ? '/images/placeholder/product-placeholder.jpg'
+                ? '/images/placeholder/product-placeholder.svg'
                 : fixed;
             }
             return String((img as any).url || '').replace(/\\/g, '/');
           })
         : [];
 
-      const firstImage = normalizedImages[0] || product.imageUrl || '/images/placeholder/product-placeholder.jpg';
+      const firstImage = normalizedImages[0] || (product as any).imageUrl || '/images/placeholder/product-placeholder.svg';
 
       const processedProduct = {
         ...product,
