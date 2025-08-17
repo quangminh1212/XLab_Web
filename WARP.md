@@ -97,7 +97,12 @@ Conventions to respect (from project docs)
 - Component naming: PascalCase; utils/hooks: camelCase; constants: UPPER_SNAKE_CASE
 - Feature-first structure: keep feature code in src/features/<feature> with its own components/hooks/services
 
-commit sau mỗi thay đổi của dự án
-commit nhiều nhất có thể
-commit nhưng không push lên
-Luôn trả lời bằng tiếng việt
+Windows (PowerShell) notes
+- Set an env var for a single command:
+  - $env:ANALYZE = 'true'; npm run analyze; $env:ANALYZE = $null
+- Copy env example locally:
+  - Copy-Item .env.example .env.local
+- Run a single test file:
+  - npx jest __tests__/api.products.route.test.ts
+- Filter tests by name:
+  - npx jest __tests__/api.products.route.test.ts -t "sorts by popular"
