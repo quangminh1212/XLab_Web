@@ -28,6 +28,7 @@ const config: Config = {
     '<rootDir>/__tests__/**/*.test.ts',
     '<rootDir>/src/**/__tests__/**/*.test.ts',
   ],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
 export default config;
