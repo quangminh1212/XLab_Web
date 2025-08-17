@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 
 import { CartItem } from '@/components/cart/CartContext';
 import { useCart } from '@/components/cart/CartContext';
-import ProductCard from '@/components/product/ProductCard';
+import { ProductCard } from '@/features/products/components';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Types

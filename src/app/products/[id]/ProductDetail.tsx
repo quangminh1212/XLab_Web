@@ -13,7 +13,7 @@ import { Product as ProductType } from '@/models/ProductModel';
 // import { Product as UIProduct } from '@/types';
 
 
-import RelatedProducts from '../../../components/product/RelatedProducts';
+import { RelatedProducts } from '@/features/products/components';
 
 
 

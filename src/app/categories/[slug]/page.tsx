@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
-import ProductCard from '@/components/product/ProductCard';
-import ProductImage from '@/components/product/ProductImage';
+import { ProductCard, ProductImage } from '@/features/products/components';
 import { categories, products } from '@/data/mockData';
 
 interface CategoryPageProps {

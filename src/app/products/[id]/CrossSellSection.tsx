@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-import ProductGrid from '@/components/product/ProductGrid';
+import { ProductGrid } from '@/features/products/components';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Product {

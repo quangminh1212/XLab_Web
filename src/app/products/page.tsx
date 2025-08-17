@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import ProductCard from '@/components/product/ProductCard';
+import { ProductCard } from '@/features/products/components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/data/mockData';
 
