@@ -69,16 +69,17 @@ export function getOriginalOfCheapest(product: PriceableProduct): number {
 
   if (product.versions && product.versions.length > 0) {
     const ver = product.versions.find(v => v.price === cheapest)
-    if (ver) return ver.originalPrice
+    if (ver) return ver.originalPrice > cheapest ? ver.originalPrice : cheapest * 5
   }
 
   if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
     for (const key of Object.keys(product.optionPrices)) {
       const opt = product.optionPrices[key]
-      if (opt?.price === cheapest) return opt.originalPrice ?? cheapest * 5
+      if (opt?.price === cheapest) return (opt.originalPrice && opt.originalPrice > cheapest) ? opt.originalPrice : cheapest * 5
     }
   }
 
-  return product.originalPrice ?? cheapest * 5
+  const orig = product.originalPrice ?? 0
+  return orig > cheapest ? orig : cheapest * 5
 }
 
