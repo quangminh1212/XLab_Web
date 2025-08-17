@@ -34,17 +34,13 @@ const nextConfig = {
       'lh3.googleusercontent.com',
     ],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-      {
-        protocol: 'http',
-        hostname: '**',
-      },
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' },
     ],
     formats: ['image/webp', 'image/avif'],
-    unoptimized: process.env.NODE_ENV === 'development',
+    // Bật unoptimized toàn cục để tránh mọi vấn đề tối ưu ảnh trên host (Vercel)
+    // và đảm bảo ảnh public/ và ảnh từ URL hiển thị đúng ở mọi nơi.
+    unoptimized: true,
   },
   compiler: {
     styledComponents: true,
