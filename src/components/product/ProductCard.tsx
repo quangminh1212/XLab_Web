@@ -102,20 +102,21 @@ export default function ProductCard({
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
     if (!imgUrl) return '/images/placeholder/product-placeholder.jpg';
-    if (imgUrl.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg';
-    if (imgUrl.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
-    if (imgUrl.trim() === '') return '/images/placeholder/product-placeholder.jpg';
+    const fixed = imgUrl.replace(/\\/g, '/');
+    if (fixed.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg';
+    if (fixed.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
+    if (fixed.trim() === '') return '/images/placeholder/product-placeholder.jpg';
 
     // Nếu đường dẫn không tồn tại hoặc không hợp lệ, sử dụng placeholder
     try {
       // Kiểm tra nếu là đường dẫn tương đối
-      if (imgUrl.startsWith('/')) {
+      if (fixed.startsWith('/')) {
         // Thêm domain nếu cần
-        return imgUrl;
+        return fixed;
       }
 
       // Kiểm tra nếu là URL đầy đủ
-      const url = new URL(imgUrl, window.location.origin);
+      const url = new URL(fixed, window.location.origin);
       return url.toString();
     } catch (_e) {
       // Nếu không phải URL hợp lệ, sử dụng placeholder

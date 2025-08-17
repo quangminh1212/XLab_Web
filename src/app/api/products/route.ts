@@ -103,11 +103,12 @@ export async function GET(req: NextRequest) {
         images: Array.isArray(product.images)
           ? product.images.map((img) => {
               if (typeof img === 'string') {
-                return img.startsWith('blob:')
+                const fixed = img.replace(/\\/g, '/');
+                return fixed.startsWith('blob:')
                   ? '/images/placeholder/product-placeholder.jpg'
-                  : img;
+                  : fixed;
               }
-              return img.url;
+              return String((img as any).url || '').replace(/\\/g, '/');
             })
           : [],
       };
