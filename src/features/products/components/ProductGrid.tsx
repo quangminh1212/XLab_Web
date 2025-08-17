@@ -1,2 +1,2 @@
-export { default } from '@/components/product/ProductGrid';
+export { default } from './ProductGrid.impl';
 
