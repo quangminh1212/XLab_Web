@@ -1,19 +1,19 @@
-import { describe, it, expect, beforeEach, vi } from '@jest/globals';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 // Mock language context
-vi.mock('@/contexts/LanguageContext', () => ({
+jest.mock('@/contexts/LanguageContext', () => ({
   useLanguage: () => ({ t: (k: string) => k, language: 'vi' }),
 }));
 
 // Mock cart context minimal
-vi.mock('@/components/cart/CartContext', () => ({
-  useCart: () => ({ addItem: vi.fn(), clearCart: vi.fn() }),
+jest.mock('@/components/cart/CartContext', () => ({
+  useCart: () => ({ addItem: jest.fn(), clearCart: jest.fn() }),
 }));
 
 // Stub next/image to regular img for tests
-vi.mock('next/image', () => ({ __esModule: true, default: (props: any) => {
+jest.mock('next/image', () => ({ __esModule: true, default: (props: any) => {
   // eslint-disable-next-line @next/next/no-img-element
   return React.createElement('img', { ...props, alt: props.alt || '' });
 }}));

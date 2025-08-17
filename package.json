@@ -8,9 +8,9 @@
     "dev:clean": "node scripts/fix-next-errors.js && npm run dev",
     "dev:safe": "node scripts/fix-next-errors.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
-    "build": "node ./node_modules/next/dist/bin/next build",
-    "build:export": "cross-env NEXT_PUBLIC_EXPORT=true node ./node_modules/next/dist/bin/next build",
-    "start": "node ./node_modules/next/dist/bin/next start",
+    "build": "next build",
+    "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
+    "start": "next start",
     "start:log": "node scripts/start-with-logger.js start",
     "start:export": "serve out -p 3000",
     "lint": "next lint",
@@ -116,6 +116,6 @@
   "license": "ISC",
   "description": "",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20 <23"
   }
 }
