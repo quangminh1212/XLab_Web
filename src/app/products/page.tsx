@@ -8,6 +8,7 @@ import { ProductCard } from '@/features/products/components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/data/mockData';
 import { getValidImageUrl } from '@/features/products/services/images';
+import { getDisplayPrices } from '@/features/products/services/pricing';
 
 export default function ProductsPage() {
   const { t } = useLanguage();
@@ -356,21 +357,7 @@ export default function ProductsPage() {
                 {sortedProducts.map((product) => {
                   // console.debug(`[DEV] Product ${product.id} image data:`, product.images);
 
-                  // Xác định giá hiển thị - ưu tiên tùy chọn mặc định nếu có
-                  const displayPrice = 
-                    product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                      ? product.optionPrices[product.defaultProductOption].price
-                      : product.versions && product.versions.length > 0
-                        ? product.versions[0].price || 0
-                        : product.price || 0;
-
-                  // Xác định giá gốc - ưu tiên tùy chọn mặc định nếu có
-                  const originalPrice =
-                    product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                      ? product.optionPrices[product.defaultProductOption].originalPrice
-                      : product.versions && product.versions.length > 0
-                        ? product.versions[0].originalPrice || 0
-                        : product.salePrice || 0;
+                                    const { price: displayPrice, originalPrice } = getDisplayPrices(product);
 
                   // Lấy ảnh sản phẩm (sử dụng helper function)
                   const imageUrl = getValidImageUrl(product);

@@ -8,6 +8,7 @@ import { CartItem } from '@/components/cart/CartContext';
 import { useCart } from '@/components/cart/CartContext';
 import { ProductCard } from '@/features/products/components';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getDisplayPrices } from '@/features/products/services/pricing';
 import { getValidImageUrl } from '@/features/products/services/images';
 
 // Types
@@ -76,31 +77,8 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, titl
 // Helper function: dùng shared service for image
 
 
-// Helper function to get the correct price based on default option
-const getProductPrices = (product: Product): { price: number; originalPrice: number } => {
-  // Get price from default option if available
-  let price = 0;
-  let originalPrice = 0;
-  
-  if (product.defaultProductOption &&
-      product.optionPrices &&
-      product.optionPrices[product.defaultProductOption]) {
-    price = product.optionPrices[product.defaultProductOption]!.price;
-    originalPrice = product.optionPrices[product.defaultProductOption]!.originalPrice;
-  } else {
-    // Fallback to regular price
-    price = product.price || 0;
-    originalPrice = product.originalPrice || 0;
-  }
-  
-  // If originalPrice is not set or is less than or equal to the price, 
-  // set it to 5x the price to show an 80% discount
-  if (!originalPrice || originalPrice <= price) {
-    originalPrice = price * 5;
-  }
-  
-  return { price, originalPrice };
-};
+// Helper: dùng shared pricing service
+
 
 function HomePage() {
   const { t } = useLanguage();
@@ -350,7 +328,7 @@ function HomePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {featuredProducts.map((product) => {
                       // Get prices based on default option
-                      const prices = getProductPrices(product);
+                      const prices = getDisplayPrices(product);
                         
                       return (
                         <div key={product.id}>
@@ -385,7 +363,7 @@ function HomePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {newProducts.map((product) => {
                       // Get prices based on default option
-                      const prices = getProductPrices(product);
+                      const prices = getDisplayPrices(product);
                       
                       return (
                         <div key={product.id}>
