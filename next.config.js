@@ -78,10 +78,11 @@ const nextConfig = {
             return [];
           }
         };
-        const files = walk(base).map((p) => p.replace(__dirname, ''));
-        console.warn('[BUILD] Ảnh products phát hiện:', files.slice(0, 50));
+        // Debug list of product images during build (removed for production cleanliness)
+        // const files = walk(base).map((p) => p.replace(__dirname, ''));
+        // console.warn('[BUILD] Product images detected:', files.slice(0, 50));
       } catch (e) {
-        console.warn('[BUILD] Không log được danh sách ảnh:', e?.message || e);
+        // console.warn('[BUILD] Unable to log image list:', e?.message || e);
       }
     }
 

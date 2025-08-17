@@ -125,13 +125,6 @@ export default function ProductCard({
 
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image);
-  // Log (giữ trong production vì dùng console.warn/console.error vẫn được giữ lại theo next.config)
-  try {
-    // Chỉ log 1 lần cho mỗi thẻ bằng id
-    console.warn('[IMG] ProductCard src', { id, name, incoming: image, clean: cleanImageUrl });
-  } catch { /* no-op */ }
-
-
   // Quản lý src thực tế và logic retry 1 lần nếu lỗi
   const [imgSrc, setImgSrc] = useState<string>(cleanImageUrl);
   const [retryTried, setRetryTried] = useState<boolean>(false);
@@ -285,7 +278,7 @@ export default function ProductCard({
   const handleImageError = (e?: any) => {
     try {
       const failedSrc = (e?.currentTarget as HTMLImageElement)?.currentSrc || (e?.target as HTMLImageElement)?.src || imgSrc;
-      console.error('[IMG] onError', { id, name, failedSrc, incoming: image, clean: cleanImageUrl, retryTried });
+      // imaged error handled silently in production
     } catch { /* no-op */ }
 
     // Nếu chưa retry, thử lại 1 lần với URL tuyệt đối
@@ -293,7 +286,6 @@ export default function ProductCard({
       try {
         const abs = new URL(imgSrc, window.location.origin).toString();
         if (abs !== imgSrc) {
-          console.warn('[IMG] retry with absolute url', { id, from: imgSrc, to: abs });
           setRetryTried(true);
           setImgSrc(abs);
           setImageError(false);

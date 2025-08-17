@@ -1,44 +1,5 @@
 [
   {
-    "id": "21wefwq",
-    "name": "21wefwq",
-    "slug": "21wefwq",
-    "description": "qừewefqwfqwfe",
-    "shortDescription": "qừdqwerqwerwe",
-    "isPublished": false,
-    "images": [],
-    "descriptionImages": [],
-    "features": [],
-    "requirements": [],
-    "specifications": [],
-    "categories": [],
-    "versions": [
-      {
-        "name": "Default",
-        "description": "Phiên bản mặc định",
-        "price": 0,
-        "originalPrice": 0,
-        "features": []
-      }
-    ],
-    "createdAt": "2025-06-27T05:53:56.009Z",
-    "updatedAt": "2025-06-27T05:53:56.009Z",
-    "rating": 5,
-    "weeklyPurchases": 12,
-    "type": "software",
-    "isAccount": false,
-    "productOptions": [
-      "qrsadwer"
-    ],
-    "defaultProductOption": "qrsadwer",
-    "optionPrices": {
-      "qrsadwer": {
-        "price": 12000,
-        "originalPrice": 420000
-      }
-    }
-  },
-  {
     "id": "canva",
     "name": "Canva",
     "slug": "canva",
