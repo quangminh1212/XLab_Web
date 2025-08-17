@@ -12,7 +12,7 @@ interface ProductImageProps {
 const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProps) => {
   // Validate and normalize image URLs
   const validateImageUrl = (url: string): string => {
-    const placeholder = '/images/placeholder/product-placeholder.jpg';
+    const placeholder = '/images/placeholder/product-placeholder.svg';
     if (!url) return placeholder;
     const fixed = url.replace(/\\/g, '/');
     if (fixed.startsWith('blob:')) return placeholder;
@@ -23,7 +23,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
 
   // Process the image array
   const processedImages = images?.map(validateImageUrl) || [
-    '/images/placeholder/product-placeholder.jpg',
+    '/images/placeholder/product-placeholder.svg',
   ];
 
   const [mainImage, setMainImage] = useState(processedImages[0]);
@@ -98,7 +98,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
   };
 
   // Determine which image to show
-  const displayImage: string = (imageFailed ? '/images/placeholder/product-placeholder.jpg' : mainImage) || '/images/placeholder/product-placeholder.jpg';
+  const displayImage: string = (imageFailed ? '/images/placeholder/product-placeholder.svg' : mainImage) || '/images/placeholder/product-placeholder.svg';
 
   return (
     <div className="w-full">
@@ -165,7 +165,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
                   console.error(`Không thể tải thumbnail: ${image}`);
                   // Replace with placeholder image
                   (e.target as HTMLImageElement).src =
-                    '/images/placeholder/product-placeholder.jpg';
+                    '/images/placeholder/product-placeholder.svg';
                 }}
               />
             </button>

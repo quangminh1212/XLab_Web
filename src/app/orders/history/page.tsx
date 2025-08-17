@@ -58,7 +58,7 @@ export default function OrderHistoryPage() {
       return firstImage;
     }
 
-    return '/images/placeholder/product-placeholder.jpg';
+    return '/images/placeholder/product-placeholder.svg';
   };
 
   useEffect(() => {
@@ -285,7 +285,7 @@ export default function OrderHistoryPage() {
                             className="object-contain"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.src = '/images/placeholder/product-placeholder.jpg';
+                              target.src = '/images/placeholder/product-placeholder.svg';
                             }}
                           />
                         </div>

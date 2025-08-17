@@ -167,7 +167,7 @@ export default function RelatedProducts({
       } else if (typeof product.imageUrl === 'object' && product.imageUrl !== null) {
         // Nếu imageUrl là object, thử lấy url từ object
         // prefer url or src when available
-        safeImage = (product.imageUrl as any)?.url || (product.imageUrl as any)?.src || '/images/placeholder/product-placeholder.jpg';
+        safeImage = (product.imageUrl as any)?.url || (product.imageUrl as any)?.src || '/images/placeholder/product-placeholder.svg';
       }
     } else if (product.image) {
       if (typeof product.image === 'string') {
@@ -175,13 +175,13 @@ export default function RelatedProducts({
       } else if (typeof product.image === 'object' && product.image !== null) {
         // Nếu image là object, thử lấy url từ object
         // prefer url or src when available
-        safeImage = (product.image as any)?.url || (product.image as any)?.src || '/images/placeholder/product-placeholder.jpg';
+        safeImage = (product.image as any)?.url || (product.image as any)?.src || '/images/placeholder/product-placeholder.svg';
       }
     }
     
     // Nếu không có ảnh hợp lệ, sử dụng placeholder
     if (!safeImage) {
-      safeImage = '/images/placeholder/product-placeholder.jpg';
+      safeImage = '/images/placeholder/product-placeholder.svg';
     }
 
     const safeRating = product.rating ? Number(product.rating) : undefined;

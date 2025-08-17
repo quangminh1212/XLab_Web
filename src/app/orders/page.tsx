@@ -112,7 +112,7 @@ export default function OrdersPage() {
       return firstImage;
     }
 
-    return '/images/placeholder/product-placeholder.jpg';
+    return '/images/placeholder/product-placeholder.svg';
   };
 
   useEffect(() => {

@@ -74,7 +74,7 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, titl
 
 // Helper function
 const getValidImageUrl = (product: Product): string => {
-  if (!product) return '/images/placeholder/product-placeholder.jpg';
+  if (!product) return '/images/placeholder/product-placeholder.svg';
 
   // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
   if (product.images && product.images.length > 0) {
@@ -92,7 +92,7 @@ const getValidImageUrl = (product: Product): string => {
     return product.imageUrl;
   }
 
-  return '/images/placeholder/product-placeholder.jpg';
+  return '/images/placeholder/product-placeholder.svg';
 };
 
 // Helper function to get the correct price based on default option

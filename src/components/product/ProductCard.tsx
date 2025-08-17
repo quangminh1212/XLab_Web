@@ -101,11 +101,11 @@ export default function ProductCard({
 
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
-    if (!imgUrl) return '/images/placeholder/product-placeholder.jpg';
+    if (!imgUrl) return '/images/placeholder/product-placeholder.svg';
     const fixed = imgUrl.replace(/\\/g, '/');
-    if (fixed.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg';
-    if (fixed.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
-    if (fixed.trim() === '') return '/images/placeholder/product-placeholder.jpg';
+    if (fixed.startsWith('blob:')) return '/images/placeholder/product-placeholder.svg';
+    if (fixed.includes('undefined')) return '/images/placeholder/product-placeholder.svg';
+    if (fixed.trim() === '') return '/images/placeholder/product-placeholder.svg';
 
     // Nếu đường dẫn không tồn tại hoặc không hợp lệ, sử dụng placeholder
     try {
@@ -120,7 +120,7 @@ export default function ProductCard({
       return url.toString();
     } catch (_e) {
       // Nếu không phải URL hợp lệ, sử dụng placeholder
-      return '/images/placeholder/product-placeholder.jpg';
+      return '/images/placeholder/product-placeholder.svg';
     }
   };
 
@@ -157,7 +157,7 @@ export default function ProductCard({
 
   // The actual image to display (with fallback) - moved up for use in handleAddToCart
   const displayImageUrl = imageError
-    ? '/images/placeholder/product-placeholder.jpg'
+    ? '/images/placeholder/product-placeholder.svg'
     : cleanImageUrl;
 
   // Xử lý category có thể là object phức tạp
