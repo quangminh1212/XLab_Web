@@ -10,6 +10,7 @@ export const env = createEnv({
     ASSET_PREFIX: z.string().url().optional(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     ADMIN_EMAILS: z.string().optional(),
+    STRICT_CSP_STYLES: z.enum(['true', 'false']).optional(),
   },
   client: {
     NEXT_PUBLIC_EXPORT: z.enum(['true', 'false']).optional(),
@@ -23,6 +24,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     ADMIN_EMAILS: process.env.ADMIN_EMAILS,
     NEXT_PUBLIC_EXPORT: process.env.NEXT_PUBLIC_EXPORT,
+    STRICT_CSP_STYLES: process.env.STRICT_CSP_STYLES,
   },
 });
 

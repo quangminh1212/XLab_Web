@@ -10,7 +10,7 @@ export function generateNonce(): string {
   return out;
 }
 
-export function buildCSP(nonce: string, isProd: boolean): string {
+export function buildCSP(nonce: string, isProd: boolean, strictStyles: boolean = false): string {
   // Lưu ý:
   // - Tạm thời giữ 'unsafe-inline' cho script để tránh phá vỡ nếu có inline script của framework/chưa gắn nonce đầy đủ.
   // - Dev: cho phép 'unsafe-eval' để hỗ trợ sourcemap/eval.
@@ -18,8 +18,8 @@ export function buildCSP(nonce: string, isProd: boolean): string {
   const scriptSrc = ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"].concat(
     isProd ? [] : ["'unsafe-eval'"]
   );
-  // Tối thiểu vẫn giữ inline style cho Tailwind/preflight
-  const styleSrc = ["'self'", "'unsafe-inline'"];
+  // Style: ở prod có thể bật strict để bỏ 'unsafe-inline'
+  const styleSrc = strictStyles ? ["'self'", `'nonce-${nonce}'`] : ["'self'", "'unsafe-inline'"];
 
   const connectBase = ["'self'", 'https:'].concat(isProd ? [] : ['ws:', 'http:']);
 
