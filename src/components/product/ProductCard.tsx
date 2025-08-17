@@ -387,7 +387,7 @@ export default function ProductCard({
           unoptimized
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className={`object-contain transition-all duration-500 scale-100 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoad={() => setIsImageLoaded(true)}
+          onLoadingComplete={() => setIsImageLoaded(true)}
           priority={false}
           onError={handleImageError}
         />
