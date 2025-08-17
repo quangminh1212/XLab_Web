@@ -6,7 +6,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
 import RichTextContent from '@/components/common/RichTextContent';
-import ProductOptions from '@/components/product/ProductOptions';
+import ProductOptions from '@/features/products/components/ProductOptions';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatCurrency } from '@/lib/utils';
 import { Product as ProductType } from '@/models/ProductModel';
