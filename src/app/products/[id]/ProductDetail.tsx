@@ -14,6 +14,7 @@ import { Product as ProductType } from '@/models/ProductModel';
 
 
 import { RelatedProducts } from '@/features/products/components';
+import { getCheapestPrice, getOriginalOfCheapest, getDisplayPrices } from '@/features/products/services/pricing';
 
 
 
@@ -426,7 +427,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       return version ? version.price : product.versions[0]?.price || 0;
     }
 
-    return calculateCheapestPrice();
+    return getCheapestPrice(product);
   };
 
   // Tính toán giá gốc của tùy chọn đã chọn
@@ -448,7 +449,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       return version ? version.originalPrice : product.versions[0]?.originalPrice || 0;
     }
 
-    return calculateOriginalPriceOfCheapest();
+    return getOriginalOfCheapest(product);
   };
 
   // Tính phần trăm giảm giá
@@ -686,9 +687,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 <div className="text-3xl font-bold text-primary-600">
                   {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
                     ? formatCurrency(product.optionPrices[product.defaultProductOption!]!.price)
-                    : calculateCheapestPrice() === 0
+                    : getCheapestPrice(product) === 0
                       ? t('product.free')
-                      : formatCurrency(calculateCheapestPrice())}
+                      : formatCurrency(getCheapestPrice(product))}
                 </div>
 
                 {/* Always show discount % */}
@@ -696,7 +697,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   <div className="ml-4 text-xl text-gray-500 line-through">
                     {formatCurrency(product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
                       ? product.optionPrices[product.defaultProductOption!]!.originalPrice
-                      : calculateOriginalPriceOfCheapest())}
+                      : getOriginalOfCheapest(product))}
                   </div>
                   <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
                     -{product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
@@ -705,7 +706,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                             product.optionPrices[product.defaultProductOption!]!.price) /
                             Math.max(1, product.optionPrices[product.defaultProductOption!]!.originalPrice)) * 100))
                           : 80)
-                      : (calculateOriginalPriceOfCheapest() > calculateCheapestPrice()
+                      : (getOriginalOfCheapest(product) > getCheapestPrice(product)
                           ? calculateCheapestDiscountPercentage()
                           : 80)}%
                   </div>

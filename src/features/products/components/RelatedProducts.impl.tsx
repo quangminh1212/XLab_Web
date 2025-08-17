@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 import ProductGrid from './ProductGrid';
+import { getDisplayPrices } from '@/features/products/services/pricing';
 
 interface OptionPrice {
   price: number;
@@ -138,26 +139,8 @@ export default function RelatedProducts({
     const safeName = String(product.name || '');
     const safeDescription = String(product.shortDescription || product.description || '');
     
-    // Get price from default option if available
-    let safePrice = 0;
-    let safeOriginalPrice = 0;
-    
-    if (product.defaultProductOption &&
-        product.optionPrices &&
-        product.optionPrices[product.defaultProductOption!]) {
-      // Use the default option's price
-      safePrice = product.optionPrices[product.defaultProductOption!]!.price;
-      safeOriginalPrice = product.optionPrices[product.defaultProductOption!]!.originalPrice;
-    } else {
-      // Fallback to regular price
-      safePrice = Number(product.price) || 0;
-      safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : 0;
-    }
-    
-    // If originalPrice is still not valid, calculate 80% discount
-    if (!safeOriginalPrice || safeOriginalPrice <= safePrice) {
-      safeOriginalPrice = safePrice * 5; // Create a fictional original price that's 5x the current price
-    }
+    // Dùng pricing service
+    const { price: safePrice, originalPrice: safeOriginalPrice } = getDisplayPrices(product);
     
     // Xử lý trường hợp image hoặc imageUrl có thể là object thay vì string
     let safeImage = '';

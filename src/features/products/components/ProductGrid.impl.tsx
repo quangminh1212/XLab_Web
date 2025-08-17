@@ -1,4 +1,5 @@
 import ProductCard from './ProductCard';
+import { getDisplayPrices } from '@/features/products/services/pricing';
 
 interface OptionPrice {
   price: number;
@@ -68,67 +69,8 @@ const ProductGrid = ({
     }
   };
 
-  // Tính giá từ các phiên bản và tùy chọn, ưu tiên lấy giá của tùy chọn mặc định
-  const calculateMinPrice = (product: Product): number => {
-    // Ưu tiên lấy giá từ tùy chọn mặc định nếu có
-    if (product.defaultProductOption &&
-        product.optionPrices &&
-        product.optionPrices[product.defaultProductOption!]) {
-      return product.optionPrices[product.defaultProductOption!]!.price;
-    }
+  // Dùng shared pricing service thay cho logic nội bộ
 
-    let minPrice = Infinity;
-
-    // Kiểm tra các phiên bản
-    if (product.versions && product.versions.length > 0) {
-      product.versions.forEach((version) => {
-        if (version.price < minPrice) {
-          minPrice = version.price;
-        }
-      });
-    }
-
-    // Kiểm tra các tùy chọn sản phẩm
-    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-      Object.values(product.optionPrices).forEach((option) => {
-        if (option && option.price < minPrice) {
-          minPrice = option.price;
-        }
-      });
-    }
-
-    // Nếu có giá cố định
-    if (product.price !== undefined && product.price < minPrice) {
-      minPrice = product.price;
-    }
-
-    return minPrice === Infinity ? 0 : minPrice;
-  };
-
-  // Tính giá gốc tương ứng với giá thấp nhất
-  const calculateOriginalPrice = (product: Product, minPrice: number): number => {
-    let correspondingOriginalPrice: number | undefined; // used to compute discount, not returned directly
-
-    // Nếu giá thấp nhất từ version
-    if (product.versions && product.versions.length > 0) {
-      const version = product.versions.find((v) => v.price === minPrice);
-      if (version) {
-        return version.originalPrice;
-      }
-    }
-
-    // Nếu giá thấp nhất từ optionPrice
-    if (product.optionPrices && typeof product.optionPrices === 'object' && Object.keys(product.optionPrices).length > 0) {
-      for (const key in product.optionPrices) {
-        if (product.optionPrices[key]?.price === minPrice) {
-          return product.optionPrices[key]?.originalPrice ?? minPrice * 5;
-        }
-      }
-    }
-
-    // Sử dụng giá gốc cố định nếu có
-    return product.originalPrice ?? minPrice * 5;
-  };
 
   // Xử lý category từ sản phẩm
   const getCategoryString = (category: string | object | undefined): string | undefined => {
@@ -193,14 +135,10 @@ const ProductGrid = ({
               displayOriginalPrice = finalPrice * 5; // Create a fictional original price that's 5x the current price
             }
           } else {
-            // Fall back to calculated minimum price
-            finalPrice = calculateMinPrice(product);
-            displayOriginalPrice = calculateOriginalPrice(product, finalPrice);
-            
-            // If originalPrice is not valid, calculate 80% discount
-            if (!displayOriginalPrice || displayOriginalPrice <= finalPrice) {
-              displayOriginalPrice = finalPrice * 5; // Create a fictional original price that's 5x the current price
-            }
+            // Fall back to pricing service
+            const prices = getDisplayPrices(product);
+            finalPrice = prices.price;
+            displayOriginalPrice = prices.originalPrice;
           }
 
           const safeProps = {
