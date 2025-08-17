@@ -387,15 +387,12 @@ export default function ProductCard({
           -{originalPrice && originalPrice > price ? discountPercentage : 80}%
         </div>
 
-        <Image
+        <img
           src={displayImageUrl}
           alt={name}
-          fill
-          unoptimized
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-contain transition-all duration-500 scale-100 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoadingComplete={() => setIsImageLoaded(true)}
-          priority={false}
+          loading="lazy"
+          className={`object-contain transition-all duration-500 scale-100 absolute inset-0 w-full h-full ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setIsImageLoaded(true)}
           onError={handleImageError}
         />
 
