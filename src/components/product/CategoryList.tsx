@@ -77,7 +77,7 @@ const CategoryList = ({
               >
                 <div className="relative w-full pt-[100%] bg-gray-100 rounded-lg overflow-hidden transition-all duration-300 group-hover:shadow-md">
                   <Image
-                    src={category.image || '/images/placeholder/category-placeholder.jpg'}
+                    src={category.image || '/images/placeholder/product-placeholder.jpg'}
                     alt={category.name}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -115,7 +115,7 @@ const CategoryList = ({
                     >
                       <div className="relative aspect-[16/9] bg-gray-100 rounded-lg overflow-hidden">
                         <Image
-                          src={category.image || '/images/placeholder/category-placeholder.jpg'}
+                          src={category.image || '/images/placeholder/product-placeholder.jpg'}
                           alt={category.name}
                           fill
                           className="object-cover"
