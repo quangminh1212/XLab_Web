@@ -3,9 +3,10 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
-    NEXTAUTH_SECRET: z.string().min(1),
-    GOOGLE_CLIENT_ID: z.string().min(1),
-    GOOGLE_CLIENT_SECRET: z.string().min(1),
+    // Chuyển 3 biến thành optional để tránh fail build trên CI/Vercel nếu chưa cấu hình ENV
+    NEXTAUTH_SECRET: z.string().min(1).optional(),
+    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+    GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
     UPDATE_PURCHASES_AUTH_KEY: z.string().optional(),
     ASSET_PREFIX: z.string().url().optional(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
