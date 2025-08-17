@@ -6,6 +6,12 @@ const path = require('path');
  * Xử lý các lỗi phổ biến gặp phải khi phát triển Next.js
  */
 
+// Skip when running on CI/Vercel to avoid filesystem side-effects during npm install
+if (process.env.CI === 'true' || process.env.VERCEL) {
+  console.log('⏭️  Skipping fix-next-errors.js on CI/Vercel environment');
+  process.exit(0);
+}
+
 console.log('🔧 Đang chuẩn bị môi trường Next.js...');
 
 // 1. Tạo thư mục cache và static nếu chưa tồn tại
@@ -45,13 +51,13 @@ const createI18nDirectories = () => {
   // Sao chép các file sản phẩm từ tiếng Việt sang tiếng Anh nếu cần
   const vieProductDir = path.join(process.cwd(), 'src/i18n/vie/product');
   const engProductDir = path.join(process.cwd(), 'src/i18n/eng/product');
-  
+
   if (fs.existsSync(vieProductDir)) {
     const files = fs.readdirSync(vieProductDir);
     files.forEach(file => {
       const sourceFile = path.join(vieProductDir, file);
       const targetFile = path.join(engProductDir, file);
-      
+
       if (!fs.existsSync(targetFile) && fs.statSync(sourceFile).isFile()) {
         fs.copyFileSync(sourceFile, targetFile);
         console.log(`✅ Đã sao chép file: ${file} từ tiếng Việt sang tiếng Anh`);
