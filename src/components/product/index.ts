@@ -3,4 +3,4 @@ export { default as ProductCard } from '@/features/products/components/ProductCa
 export { default as ProductGrid } from '@/features/products/components/ProductGrid';
 export { default as ProductImage } from '@/features/products/components/ProductImage';
 export { default as FeaturedProducts } from '@/features/products/components/FeaturedProducts';
-export { default as CategoryList } from './CategoryList';
+export { default as CategoryList } from '@/features/categories/components/CategoryList';
