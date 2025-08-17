@@ -131,6 +131,18 @@ export default function ProductCard({
     console.warn('[IMG] ProductCard src', { id, name, incoming: image, clean: cleanImageUrl });
   } catch { /* no-op */ }
 
+
+  // Quản lý src thực tế và logic retry 1 lần nếu lỗi
+  const [imgSrc, setImgSrc] = useState<string>(cleanImageUrl);
+  const [retryTried, setRetryTried] = useState<boolean>(false);
+
+  // Reset khi nguồn ảnh đầu vào thay đổi
+  useEffect(() => {
+    setImgSrc(cleanImageUrl);
+    setRetryTried(false);
+    setImageError(false);
+    setIsImageLoaded(false);
+  }, [cleanImageUrl]);
   // Chuẩn hóa mô tả: loại bỏ thẻ HTML và ký tự thừa để tránh hiển thị thô trong thẻ sản phẩm
   const normalizeDescription = (input: string) => {
     if (!input) return '';
@@ -162,7 +174,7 @@ export default function ProductCard({
   // The actual image to display (with fallback) - moved up for use in handleAddToCart
   const displayImageUrl = imageError
     ? '/images/placeholder/product-placeholder.svg'
-    : cleanImageUrl;
+    : imgSrc;
 
   // Xử lý category có thể là object phức tạp
   const getCategoryName = (categoryValue: string | object | undefined): string | undefined => {
@@ -272,9 +284,25 @@ export default function ProductCard({
   // Handle image error and use placeholder
   const handleImageError = (e?: any) => {
     try {
-      const failedSrc = (e?.currentTarget as HTMLImageElement)?.currentSrc || (e?.target as HTMLImageElement)?.src || cleanImageUrl;
-      console.error('[IMG] onError - fallback to placeholder', { id, name, failedSrc, incoming: image, clean: cleanImageUrl });
+      const failedSrc = (e?.currentTarget as HTMLImageElement)?.currentSrc || (e?.target as HTMLImageElement)?.src || imgSrc;
+      console.error('[IMG] onError', { id, name, failedSrc, incoming: image, clean: cleanImageUrl, retryTried });
     } catch { /* no-op */ }
+
+    // Nếu chưa retry, thử lại 1 lần với URL tuyệt đối
+    if (!retryTried) {
+      try {
+        const abs = new URL(imgSrc, window.location.origin).toString();
+        if (abs !== imgSrc) {
+          console.warn('[IMG] retry with absolute url', { id, from: imgSrc, to: abs });
+          setRetryTried(true);
+          setImgSrc(abs);
+          setImageError(false);
+          return;
+        }
+      } catch { /* ignore */ }
+      setRetryTried(true);
+    }
+
     setImageError(true);
     setIsImageLoaded(true); // Mark as loaded to hide spinner
   };
@@ -391,6 +419,9 @@ export default function ProductCard({
           src={displayImageUrl}
           alt={name}
           loading="lazy"
+          fetchPriority="low"
+          decoding="async"
+          referrerPolicy="no-referrer"
           className={`object-contain transition-all duration-500 scale-100 absolute inset-0 w-full h-full ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
           onError={handleImageError}
