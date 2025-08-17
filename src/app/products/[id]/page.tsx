@@ -7,6 +7,9 @@ import { notFound } from 'next/navigation';
 import { Product } from '@/models/ProductModel';
 
 // Loading component đơn giản để hiển thị ngay lập tức
+import type { Metadata } from 'next';
+import { siteConfig } from '@/config/siteConfig';
+
 function ProductFallbackLoading() {
   return (
     <div className="container mx-auto px-4 py-8 animate-pulse">
@@ -52,9 +55,45 @@ function getProducts(): Product[] {
     return JSON.parse(fileContent);
   } catch (error) {
     console.error('Error reading products data:', error);
+
     return [];
   }
 }
+export async function generateMetadata(
+  { params }: { params: Promise<{ id: string }> }
+): Promise<Metadata> {
+  const { id } = await params;
+  const products = getProducts();
+  const product = products.find((p) => p.slug === id) || products.find((p) => p.id === id);
+  const title = product ? `${product.name} | ${siteConfig.name}` : `Sản phẩm | ${siteConfig.name}`;
+  const description = (product?.shortDescription || product?.description || siteConfig.seo.defaultDescription)
+    .replace(/<[^>]*>/g, '')
+    .slice(0, 160);
+  const rawImage = product?.images?.[0] as any;
+  const image = typeof rawImage === 'string' ? rawImage : rawImage?.url || siteConfig.seo.ogImage;
+  const url = new URL(`/products/${id}`, siteConfig.url).toString();
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title,
+      description,
+      images: image ? [{ url: image as string, width: 1200, height: 630, alt: title }] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+    robots: product?.isPublished === false ? { index: false, follow: false } : { index: true, follow: true },
+  };
+}
+
 
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -89,8 +128,40 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     // Truyền dữ liệu sản phẩm sang client component
     return (
       <>
+        {/* JSON-LD Product structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Product',
+              name: product.name,
+              description: (product.shortDescription || product.description || '').replace(/<[^>]*>/g, '').slice(0, 500),
+              image: (() => {
+                const raw = (product.images && product.images[0]) as any;
+                const src = typeof raw === 'string' ? raw : raw?.url;
+                if (!src) return undefined;
+                return src.startsWith('http') ? src : `${siteConfig.url}${src}`;
+              })(),
+              sku: product.id,
+              brand: { '@type': 'Brand', name: siteConfig.name },
+              offers: {
+                '@type': 'Offer',
+                url: `${siteConfig.url}/products/${product.slug || product.id}`,
+                priceCurrency: 'VND',
+                price: (product.versions && product.versions[0]?.price) || product.price || 0,
+                availability: 'http://schema.org/InStock',
+              },
+              aggregateRating: product.rating ? {
+                '@type': 'AggregateRating',
+                ratingValue: Number(product.rating) || 5,
+                reviewCount: Number(product.totalPurchases || 1),
+              } : undefined,
+            }),
+          }}
+        />
         <DynamicProductDetail product={product} />
-        
+
         {/* Phần chính sách bảo hành */}
         <div className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -105,7 +176,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 <h3 className="font-medium text-gray-900 mb-1">Bảo hành 30 ngày</h3>
                 <p className="text-sm text-gray-600">Hoàn tiền hoặc đổi sản phẩm nếu không hài lòng trong vòng 30 ngày</p>
               </div>
-              
+
               <div className="flex flex-col items-center text-center p-4 border border-gray-200 rounded-lg">
                 <div className="rounded-full bg-green-100 p-3 mb-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,7 +186,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 <h3 className="font-medium text-gray-900 mb-1">Hỗ trợ 24/7</h3>
                 <p className="text-sm text-gray-600">Đội ngũ hỗ trợ kỹ thuật luôn sẵn sàng giúp đỡ bạn mọi lúc</p>
               </div>
-              
+
               <div className="flex flex-col items-center text-center p-4 border border-gray-200 rounded-lg">
                 <div className="rounded-full bg-purple-100 p-3 mb-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,7 +199,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
         </div>
-        
+
         {/* Phần thông tin hỗ trợ khách hàng */}
         <div className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="bg-gradient-to-r from-primary-50 to-primary-100 p-6 rounded-lg shadow-sm">
@@ -136,7 +207,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               <h2 className="text-2xl font-semibold text-gray-800 mb-2">Cần hỗ trợ thêm về sản phẩm?</h2>
               <p className="text-gray-600">Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-white p-5 rounded-lg shadow-sm text-center">
                 <div className="rounded-full bg-blue-100 p-3 mb-3 mx-auto w-fit">
@@ -148,7 +219,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 <p className="text-sm text-gray-600 mb-3">Phản hồi trong vòng 24 giờ</p>
                 <a href="mailto:support@xlab.vn" className="text-primary-600 font-medium hover:text-primary-700">support@xlab.vn</a>
               </div>
-              
+
               <div className="bg-white p-5 rounded-lg shadow-sm text-center">
                 <div className="rounded-full bg-green-100 p-3 mb-3 mx-auto w-fit">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,7 +230,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 <p className="text-sm text-gray-600 mb-3">Hỗ trợ từ 8h-22h hàng ngày</p>
                 <a href="tel:+84901234567" className="text-primary-600 font-medium hover:text-primary-700">090.123.4567</a>
               </div>
-              
+
               <div className="bg-white p-5 rounded-lg shadow-sm text-center">
                 <div className="rounded-full bg-purple-100 p-3 mb-3 mx-auto w-fit">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -173,7 +244,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
         </div>
-        
+
         <div id="fallback-container" style={{ display: 'none' }}>
           <DynamicProductFallback />
         </div>

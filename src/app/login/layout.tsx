@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Đăng nhập | XLab - Phần mềm và Dịch vụ',
   description: 'Đăng nhập vào tài khoản XLab của bạn để truy cập phần mềm và dịch vụ',
+  robots: { index: false, follow: false },
 };
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {

@@ -41,7 +41,7 @@ export const siteConfig = {
     defaultDescription:
       'XLab cung cấp các ứng dụng, phần mềm chất lượng cao cho cá nhân và doanh nghiệp.',
     twitterHandle: '@xlabvn',
-    ogImage: '/images/og-image.jpg',
+    ogImage: '/images/tech-workspace.jpg',
   },
 
   // Cấu hình thanh toán

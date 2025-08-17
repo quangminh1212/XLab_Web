@@ -1,3 +1,10 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Giới thiệu | XLab',
+  description: 'Về XLab - giải pháp phần mềm và dịch vụ công nghệ',
+};
+
 'use client';
 
 import { useEffect } from 'react';
@@ -6,12 +13,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const AboutLayout = ({ children }: { children: React.ReactNode }) => {
   const { t } = useLanguage();
-  
+
   // Cập nhật title và meta description khi component mount hoặc ngôn ngữ thay đổi
   useEffect(() => {
     // Sử dụng template string để tạo ra một chuỗi duy nhất
     document.title = `${t('about.title')} | XLab`;
-    
+
     // Cập nhật meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {

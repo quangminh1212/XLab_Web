@@ -1,13 +1,23 @@
 import { MetadataRoute } from 'next';
+import { siteConfig } from '@/config/siteConfig';
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url;
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/admin/', '/account/', '/checkout/', '/cart/', '/.well-known/'],
+      disallow: [
+        '/api/',
+        '/admin/',
+        '/account/',
+        '/checkout/',
+        '/payment/checkout/',
+        '/cart/',
+        '/.well-known/',
+      ],
     },
-    sitemap: 'https://xlab.com/sitemap.xml',
-    host: 'https://xlab.com',
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   };
 }

@@ -86,6 +86,48 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head />
+        {/* JSON-LD: Organization & Website */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  name: siteConfig.name,
+                  url: siteConfig.url,
+                  logo: `${siteConfig.url}/images/logo.jpg`,
+                  sameAs: [
+                    siteConfig.social.facebook,
+                    siteConfig.social.twitter,
+                    siteConfig.social.github,
+                    siteConfig.social.linkedin,
+                  ].filter(Boolean),
+                  contactPoint: {
+                    '@type': 'ContactPoint',
+                    email: siteConfig.contact.email,
+                    telephone: siteConfig.contact.phone,
+                    contactType: 'customer support',
+                    areaServed: 'VN',
+                    availableLanguage: ['vi', 'en'],
+                  },
+                },
+                {
+                  '@type': 'WebSite',
+                  name: siteConfig.name,
+                  url: siteConfig.url,
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: `${siteConfig.url}/search?q={search_term_string}`,
+                    'query-input': 'required name=search_term_string',
+                  },
+                },
+              ],
+            }),
+          }}
+        />
+
       <body className="font-sans antialiased">
         <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
