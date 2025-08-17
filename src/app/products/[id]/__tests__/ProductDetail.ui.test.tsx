@@ -44,13 +44,19 @@ function makeProduct(overrides: Partial<any> = {}) {
 }
 
 describe('ProductDetail UI', () => {
-  it('shows default option price by default', () => {
+  it('shows default option price, original price, and discount', () => {
     const product = makeProduct();
     render(React.createElement(ProductDetail, { product }));
 
-    // Hiển thị giá: ưu tiên defaultProductOption
-    // Trong UI, giá hiển thị dạng currency VND, nhưng để đơn giản, kiểm tra sự có mặt của "199" (giá gốc line-through) và "99" (giá)
+    // Giá hiện tại (99)
     expect(screen.getByText(/99\s?₫|₫\s?99|99/)).toBeTruthy();
+
+    // Giá gốc line-through (199)
+    expect(screen.getByText(/199\s?₫|₫\s?199|199/)).toBeTruthy();
+
+    // Discount: luôn hiển thị; nếu original <= price, UI fallback 80%, còn ở đây 199>99 nên hiển thị tính toán thật
+    // Tỷ lệ xấp xỉ 50% (chính xác 50.25% -> làm tròn 50)
+    expect(screen.getByText(/-50%/)).toBeTruthy();
   });
 
   it('changes price when selecting another option', () => {
