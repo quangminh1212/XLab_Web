@@ -8,6 +8,7 @@ import { CartItem } from '@/components/cart/CartContext';
 import { useCart } from '@/components/cart/CartContext';
 import { ProductCard } from '@/features/products/components';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getValidImageUrl } from '@/features/products/services/images';
 
 // Types
 interface Product {
@@ -72,28 +73,8 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, titl
   </div>
 );
 
-// Helper function
-const getValidImageUrl = (product: Product): string => {
-  if (!product) return '/images/placeholder/product-placeholder.svg';
+// Helper function: dùng shared service for image
 
-  // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
-  if (product.images && product.images.length > 0) {
-    const imageUrl = product.images?.[0];
-    // Kiểm tra xem đây là string hay object
-    if (typeof imageUrl === 'string') {
-      return imageUrl;
-    } else if (imageUrl && (imageUrl as any).url) {
-      return (imageUrl as any).url as string;
-    }
-  }
-
-  // Kiểm tra nếu có thuộc tính imageUrl
-  if (typeof product.imageUrl === 'string') {
-    return product.imageUrl;
-  }
-
-  return '/images/placeholder/product-placeholder.svg';
-};
 
 // Helper function to get the correct price based on default option
 const getProductPrices = (product: Product): { price: number; originalPrice: number } => {

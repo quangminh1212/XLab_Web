@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { ProductCard } from '@/features/products/components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/data/mockData';
+import { getValidImageUrl } from '@/features/products/services/images';
 
 export default function ProductsPage() {
   const { t } = useLanguage();
@@ -158,28 +159,8 @@ export default function ProductsPage() {
     })),
   ];
 
-  // Helper function to safely get a valid image URL
-  const getValidImageUrl = (product: any): string => {
-    if (!product) return '/images/placeholder/product-placeholder.svg';
+  // Helper: dùng shared service
 
-    // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
-    if (product.images && product.images.length > 0) {
-      const imageUrl = product.images[0];
-      // Kiểm tra xem đây là string hay object
-      if (typeof imageUrl === 'string') {
-        return imageUrl.replace(/\\/g, '/');
-      } else if (imageUrl.url) {
-        return String(imageUrl.url).replace(/\\/g, '/');
-      }
-    }
-
-    // Kiểm tra nếu có thuộc tính imageUrl
-    if (product.imageUrl) {
-      return product.imageUrl;
-    }
-
-    return '/images/placeholder/product-placeholder.svg';
-  };
 
   // Only show loading for a maximum of 1 second
   if (loading) {
