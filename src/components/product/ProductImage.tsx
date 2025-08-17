@@ -118,7 +118,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
             className={`object-contain transition-opacity duration-300 ${
               isLoading ? 'opacity-0' : 'opacity-100'
             }`}
-            onLoad={() => setIsLoading(false)}
+            onLoadingComplete={() => setIsLoading(false)}
             onError={handleImageError}
             style={{
               transform: isZoomed ? 'scale(1.5)' : 'scale(1)',
