@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Testimonial {
@@ -418,18 +420,18 @@ export default function TestimonialsPage() {
               {t('testimonials.cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <a
+              <Link
                 href="/contact"
                 className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
               >
                 {t('testimonials.cta.contact')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/services"
                 className="border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-4 rounded-full font-semibold transition-all transform hover:-translate-y-1"
               >
                 {t('testimonials.cta.explore')}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

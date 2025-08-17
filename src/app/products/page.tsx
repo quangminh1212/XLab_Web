@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { categories } from '@/data/mockData';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import ProductImage from '@/components/product/ProductImage';
+import React, { useState, useEffect } from 'react';
+
 import ProductCard from '@/components/product/ProductCard';
-import { Button } from '@/components/common/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { categories } from '@/data/mockData';
 
 export default function ProductsPage() {
   const { t } = useLanguage();
@@ -17,7 +16,7 @@ export default function ProductsPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [_searchTerm, _setSearchTerm] = useState<string>('');
 
   // Set filter from URL params
   useEffect(() => {
@@ -77,8 +76,8 @@ export default function ProductsPage() {
         }
 
         // Lọc theo tìm kiếm
-        if (searchTerm.trim() !== '') {
-          const search = searchTerm.toLowerCase();
+        if (_searchTerm.trim() !== '') {
+          const search = _searchTerm.toLowerCase();
           return (
             product.name.toLowerCase().includes(search) ||
             (product.description && product.description.toLowerCase().includes(search))
@@ -168,9 +167,9 @@ export default function ProductsPage() {
       const imageUrl = product.images[0];
       // Kiểm tra xem đây là string hay object
       if (typeof imageUrl === 'string') {
-        return imageUrl;
+        return imageUrl.replace(/\\/g, '/');
       } else if (imageUrl.url) {
-        return imageUrl.url;
+        return String(imageUrl.url).replace(/\\/g, '/');
       }
     }
 
@@ -372,10 +371,9 @@ export default function ProductsPage() {
               </div>
 
               {/* Product grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 {sortedProducts.map((product) => {
-                  // Log the product data for debugging
-                  console.log(`Product ${product.id} image data:`, product.images);
+                  // console.debug(`[DEV] Product ${product.id} image data:`, product.images);
 
                   // Xác định giá hiển thị - ưu tiên tùy chọn mặc định nếu có
                   const displayPrice = 
@@ -396,10 +394,10 @@ export default function ProductsPage() {
                   // Lấy ảnh sản phẩm (sử dụng helper function)
                   const imageUrl = getValidImageUrl(product);
 
-                  console.log(`Processed image URL for ${product.name}:`, imageUrl);
+                  // console.debug(`[DEV] Processed image URL for ${product.name}:`, imageUrl);
 
                   return (
-                    <div key={product.id} className="aspect-[1/1.5]">
+                    <div key={product.id}>
                       <ProductCard
                         id={product.id.toString()}
                         name={product.name}

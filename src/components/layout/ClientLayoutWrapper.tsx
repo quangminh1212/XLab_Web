@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Header, Footer } from '@/components/layout';
+import { ToastContainer } from 'react-toastify';
+
+import { SessionProvider } from '@/components/auth';
+import { CartProvider } from '@/components/cart';
 import {
   Analytics,
   CompileIndicator,
@@ -9,12 +12,11 @@ import {
   CssErrorHandler,
   GlobalStyles,
 } from '@/components/common';
-import { SessionProvider } from '@/components/auth';
-import { CartProvider } from '@/components/cart';
-import { NotificationProvider } from '@/contexts/NotificationContext';
+import { Header, Footer } from '@/components/layout';
 import { BalanceProvider } from '@/contexts/BalanceContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import { ToastContainer } from 'react-toastify';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ClientLayoutWrapperProps {

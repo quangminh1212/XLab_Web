@@ -1,13 +1,21 @@
 'use client';
 
-import React, { useState, useEffect, useRef, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import { Product } from '@/models/ProductModel';
-import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
-import RichTextEditor from '@/components/common/RichTextEditor';
-import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
+
+import dynamic from 'next/dynamic';
+const RichTextEditor = dynamic(() => import('@/components/common/RichTextEditor'), {
+  ssr: false,
+  loading: () => <div className="min-h-[180px] bg-gray-50 rounded-md animate-pulse" />,
+});
+import withAdminAuth from '@/components/withAdminAuth';
+import { Product } from '@/models/ProductModel';
+
+
+
 import './animations.css';
 
 // Danh sách các tùy chọn thời hạn
@@ -345,9 +353,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
   // Xử lý upload hình ảnh
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // Giới hạn kích thước file là 5MB
     if (file.size > 5 * 1024 * 1024) {
@@ -416,8 +423,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       setTimeout(() => setError(null), 3000);
 
       // Fallback to blob URL if server upload fails
-      const imageUrl = URL.createObjectURL(file);
-      setDescriptionImages([...descriptionImages, imageUrl]);
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setDescriptionImages([...descriptionImages, imageUrl]);
+      }
     }
 
     // Reset input file
@@ -428,9 +437,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
   // Xử lý upload ảnh nổi bật
   const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // Giới hạn kích thước file là 5MB
     if (file.size > 5 * 1024 * 1024) {
@@ -652,21 +660,25 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     // Xóa giá của tùy chọn
     setOptionPrices((prev) => {
       const newPrices = { ...prev };
-      delete newPrices[option];
+      if (option) {
+        delete (newPrices as any)[option as string];
+      }
       return newPrices;
     });
 
     // Xóa thời hạn của tùy chọn
     setOptionDurations((prev) => {
       const newDurations = { ...prev };
-      delete newDurations[option];
+      if (option) {
+        delete (newDurations as any)[option as string];
+      }
       return newDurations;
     });
 
     // Nếu xóa tùy chọn mặc định, chọn tùy chọn đầu tiên còn lại làm mặc định
     if (option === defaultProductOption) {
       if (newOptions.length > 0) {
-        setDefaultProductOption(newOptions[0]);
+        setDefaultProductOption(newOptions[0] ?? '');
       } else {
         setDefaultProductOption('');
       }
@@ -697,7 +709,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     // Cập nhật optionPrices
     setOptionPrices((prev) => {
       const newPrices = { ...prev };
-      newPrices[newOption] = newPrices[oldOption];
+      newPrices[newOption] = newPrices[oldOption] ?? { price: 0, originalPrice: 0 };
       delete newPrices[oldOption];
       return newPrices;
     });
@@ -705,7 +717,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     // Cập nhật optionDurations
     setOptionDurations((prev) => {
       const newDurations = { ...prev };
-      newDurations[newOption] = newDurations[oldOption];
+      newDurations[newOption] = newDurations[oldOption] ?? '';
       delete newDurations[oldOption];
       return newDurations;
     });
@@ -737,7 +749,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       // Kiểm tra giá trong các tùy chọn sản phẩm
       if (Object.keys(optionPrices).length > 0) {
         for (const option of Object.keys(optionPrices)) {
-          if (optionPrices[option].price > 0) {
+          const p = optionPrices[option]?.price ?? 0;
+          if (p > 0) {
             hasValidPrice = true;
             break;
           }
@@ -876,8 +889,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
     // Tìm kiếm hình ảnh trong clipboard
     for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        const file = items[i].getAsFile();
+      const item = items[i];
+      if (!item) continue;
+      if (item.type && item.type.indexOf('image') !== -1) {
+        const file = item.getAsFile ? item.getAsFile() : null;
         if (!file) continue;
 
         // Giới hạn kích thước file là 5MB
@@ -949,8 +964,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
     // Tìm kiếm hình ảnh trong clipboard
     for (let i = 0; i < items.length; i++) {
-      if (items[i].type.indexOf('image') !== -1) {
-        const file = items[i].getAsFile();
+      const item = items[i];
+      if (!item) continue;
+      if (item.type && item.type.indexOf('image') !== -1) {
+        const file = item.getAsFile ? item.getAsFile() : null;
         if (!file) continue;
 
         // Giới hạn kích thước file là 5MB
@@ -1691,14 +1708,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                     </span>
                                   )}
                                   {/* Di chuyển phần giảm giá lên đây */}
-                                  {optionPrices[option]?.originalPrice >
-                                    (optionPrices[option]?.price || 0) && (
+                                  {((optionPrices[option]?.originalPrice ?? 0) >
+                                    (optionPrices[option]?.price ?? 0)) && (
                                     <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium text-xs">
                                       Giảm{' '}
                                       {Math.round(
-                                        ((optionPrices[option].originalPrice -
-                                          optionPrices[option].price) /
-                                          optionPrices[option].originalPrice) *
+                                        (((optionPrices[option]?.originalPrice ?? 0) -
+                                          (optionPrices[option]?.price ?? 0)) /
+                                          Math.max(1, optionPrices[option]?.originalPrice ?? 1)) *
                                           100,
                                       )}
                                       %
@@ -1797,16 +1814,16 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       onChange={(e) => {
                                         const value = parseFloat(e.target.value);
                                         const price = isNaN(value) ? 0 : value;
-                                        setOptionPrices((prev) => ({
-                                          ...prev,
-                                          [option]: {
-                                            ...prev[option],
-                                            price: price,
-                                            originalPrice: !prev[option]?.originalPrice
-                                              ? price
-                                              : prev[option].originalPrice,
-                                          },
-                                        }));
+                                        setOptionPrices((prev) => {
+                                          const prevOpt = prev[option] ?? { price: 0, originalPrice: 0 };
+                                          return {
+                                            ...prev,
+                                            [option]: {
+                                              price: price,
+                                              originalPrice: prevOpt.originalPrice > 0 ? prevOpt.originalPrice : price,
+                                            },
+                                          };
+                                        });
                                       }}
                                       className="w-full p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 text-right font-semibold bg-white pr-6"
                                       min="0"
@@ -1846,13 +1863,16 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       onChange={(e) => {
                                         const value = parseFloat(e.target.value);
                                         const originalPrice = isNaN(value) ? 0 : value;
-                                        setOptionPrices((prev) => ({
-                                          ...prev,
-                                          [option]: {
-                                            ...prev[option],
-                                            originalPrice,
-                                          },
-                                        }));
+                                        setOptionPrices((prev) => {
+                                          const prevOpt = prev[option] ?? { price: 0, originalPrice: 0 };
+                                          return {
+                                            ...prev,
+                                            [option]: {
+                                              price: prevOpt.price,
+                                              originalPrice: originalPrice,
+                                            },
+                                          };
+                                        });
                                       }}
                                       className="w-full p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 text-gray-600 transition-all duration-200 text-right font-semibold bg-white pr-6"
                                       min="0"

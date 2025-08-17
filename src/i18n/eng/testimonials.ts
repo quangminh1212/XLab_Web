@@ -3,12 +3,12 @@ const testimonials = {
   'michael': '"I have been using XLab services for 2 years and am extremely satisfied. The software runs smoothly, has complete features, and the support team is very dedicated."',
   'david': '"XLab\'s AI solutions have helped our business save 30% in operating costs. The technical support team responds quickly and effectively."',
   'emily': '"XLab\'s continuous updates ensure the product always meets our increasingly high demands. The interface is friendly and easy to use even for newcomers."',
-  
+
   // Positions
   'position.business': 'Business Director',
   'position.cto': 'CTO - Tech Solutions',
   'position.project': 'Project Manager',
-  
+
   // Testimonials page
   'pageTitle': 'Customer Reviews',
   'pageSubtitle': 'Discover the experiences and real results that customers have achieved using XLab solutions',
@@ -19,6 +19,18 @@ const testimonials = {
   'results': 'Results achieved:',
   'verified': 'Verified',
   'title': 'Customer Reviews',
+
+  // CTA section placeholders
+  'cta.title': 'Ready to get started?',
+  'cta.description': 'Contact us to explore solutions tailored to your needs or browse our services.',
+  'cta.contact': 'Contact us',
+  // Duplicated keys with module prefix for flattened lookup
+  'testimonials.cta.title': 'Ready to get started?',
+  'testimonials.cta.description': 'Contact us to explore solutions tailored to your needs or browse our services.',
+  'testimonials.cta.contact': 'Contact us',
+  'testimonials.cta.explore': 'Explore services',
+
+  'cta.explore': 'Explore services',
 };
 
-export default testimonials; 
+export default testimonials;

@@ -10,7 +10,7 @@ export function setupCssErrorHandler() {
     window.fetch = function (url: RequestInfo | URL, options?: RequestInit) {
       if (
         typeof url === 'string' &&
-        (url.includes('/static/css/vendors.css') || url.includes('/static/css/app/layout.css'))
+        (url.includes('/_next/static/css/vendors.css') || url.includes('/_next/static/css/app/layout.css'))
       ) {
         // Return an empty CSS file instead of 404
         return Promise.resolve(

@@ -1,17 +1,15 @@
 import { type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { clsx as _clsx } from 'clsx';
+import { twMerge as _twMerge } from 'tailwind-merge';
+
 import { products } from '@/data/mockData';
-import { Product } from '@/types';
 import { Language } from '@/i18n';
+import { Product } from '@/types';
 
 // Safe imports to handle potential undefined modules
-let clsx: any;
-try {
-  clsx = require('clsx').clsx;
-} catch (error) {
-  console.warn('Failed to import clsx, using fallback');
-  clsx = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
-}
+
+const clsx = _clsx ?? ((...inputs: ClassValue[]) => inputs.filter(Boolean).join(' '));
+const twMerge = _twMerge ?? ((...inputs: ClassValue[]) => inputs.filter(Boolean).join(' '));
 
 /**
  * Kết hợp các class CSS với clsx và tailwind-merge
@@ -347,7 +345,10 @@ export const addItemToCart = (cart: CartItem[], item: CartItem): CartItem[] => {
   if (existingItemIndex >= 0) {
     // Item already exists, update quantity
     const newCart = [...cart];
-    newCart[existingItemIndex].quantity += item.quantity;
+    const target = newCart[existingItemIndex];
+    if (target) {
+      target.quantity += item.quantity;
+    }
     return newCart;
   } else {
     // Add new item

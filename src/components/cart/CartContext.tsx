@@ -1,7 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback, useRef } from 'react';
 
 // Constants
 const PLACEHOLDER_IMAGE = '/images/placeholder/product-placeholder.svg';
@@ -411,17 +411,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       if (existingItemIndex > -1) {
         // If item already exists, update quantity
         updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += newItem.quantity || 1;
+        const target = updatedItems[existingItemIndex];
+        if (target) {
+          target.quantity += newItem.quantity || 1;
 
-        // Ensure item has uniqueKey
-        if (!updatedItems[existingItemIndex].uniqueKey) {
-          updatedItems[existingItemIndex].uniqueKey = generateUniqueKey(updatedItems[existingItemIndex]);
-        }
+          // Ensure item has uniqueKey
+          if (!target.uniqueKey) {
+            target.uniqueKey = generateUniqueKey(target);
+          }
 
-        // Keep best image URL
-        if (newItem.image && (!updatedItems[existingItemIndex].image || 
-            normalizeImageUrl(updatedItems[existingItemIndex].image) === PLACEHOLDER_IMAGE)) {
-          updatedItems[existingItemIndex].image = normalizeImageUrl(newItem.image);
+          // Keep best image URL
+          if (newItem.image && (!target.image ||
+              normalizeImageUrl(target.image) === PLACEHOLDER_IMAGE)) {
+            target.image = normalizeImageUrl(newItem.image);
+          }
         }
       } else {
         // If new item, add to array

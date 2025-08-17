@@ -1,22 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+
 import { useCart } from '@/components/cart/CartContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
-import { useSession } from 'next-auth/react';
+
+
 import products from '../../../products.json';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const { language, t } = useLanguage();
+  const { language, t, localCode } = useLanguage();
 
   // Luôn bắt đầu với bước 2 (thanh toán)
   const [step, setStep] = useState(2);
@@ -81,7 +84,7 @@ export default function CheckoutPage() {
       productDetail.images.length > 0
     ) {
       const imagesArr = productDetail.images as string[];
-      imageUrl = imagesArr[0];
+      imageUrl = imagesArr[0] ?? imageUrl;
     } else if (item.image && !item.image.includes('placeholder')) {
       imageUrl = item.image;
     }

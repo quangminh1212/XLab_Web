@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
 import Image from 'next/image';
+import React, { useState } from 'react';
 
 interface AvatarProps {
   src?: string | null;
@@ -33,7 +33,7 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', className = '' }
   const { width, height } = sizePixels[size];
 
   const handleImageError = () => {
-    console.log('Avatar image failed to load:', src);
+    // console.debug('Avatar image failed to load:', src);
     setImageError(true);
   };
 

@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import path from 'path';
-import { Product } from '@/models/ProductModel';
+
+import { NextRequest, NextResponse } from 'next/server';
+
 import { getProductById } from '@/lib/i18n/products';
+import { Product } from '@/models/ProductModel';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -38,19 +40,21 @@ function saveProducts(products: Product[]): void {
 // GET: Lấy thông tin sản phẩm theo ID
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params: paramsPromise }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get language from query parameter or default to Vietnamese
     const searchParams = req.nextUrl.searchParams;
     const lang = searchParams.get('lang') || 'vie';
 
+    const { id } = await paramsPromise;
+
     // Get product file path based on ID and language
-    const productFilePath = path.join(process.cwd(), `src/i18n/${lang}/product/${params.id}.json`);
-    
+    const productFilePath = path.join(process.cwd(), `src/i18n/${lang}/product/${id}.json`);
+
     // Check if product file exists
-    console.log(`Looking for product with ID: ${params.id}, language: ${lang}`);
-    
+    console.log(`Looking for product with ID: ${id}, language: ${lang}`);
+
     let product: Product | null = null;
     
     try {
@@ -68,18 +72,18 @@ export async function GET(
           const fileContent = fs.readFileSync(filePath, 'utf-8');
           const productData = JSON.parse(fileContent) as Product;
           
-          if (productData.slug === params.id) {
+          if (productData.slug === id) {
             product = productData;
             break;
           }
         }
       }
     } catch (error) {
-      console.error(`Error reading product file for ${params.id}:`, error);
+      console.error(`Error reading product file for ${id}:`, error);
     }
 
     if (!product) {
-      console.log(`Could not find product with ID or slug: ${params.id}`);
+      console.log(`Could not find product with ID or slug: ${id}`);
       return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
     }
 
@@ -98,17 +102,15 @@ export async function GET(
 
     return NextResponse.json({ success: true, data: processedProduct }, { status: 200 });
   } catch (error) {
-    console.error(`Error fetching product with ID ${params.id}:`, error);
+    console.error('Error fetching product', error);
     return NextResponse.json({ success: false, error: 'Failed to fetch product' }, { status: 500 });
   }
 }
 
 // PUT: Cập nhật sản phẩm
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const { id } = await paramsPromise;
 
     const body = await request.json();
 
@@ -146,11 +148,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE: Xóa sản phẩm
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const { id } = await paramsPromise;
 
     if (!id) {
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });

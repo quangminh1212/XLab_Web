@@ -3,51 +3,26 @@
  * Giúp việc debug và phát triển dễ dàng hơn
  */
 
-// Lưu lại các hàm console gốc
-const originalConsoleLog = console.log;
-const originalConsoleInfo = console.info;
-const originalConsoleWarn = console.warn;
-const originalConsoleError = console.error;
-const originalConsoleDebug = console.debug;
+type LogArgs = unknown[];
 
-// Format timestamp dạng [YYYY-MM-DD HH:mm:ss.SSS]
-const getTimestamp = (): string => {
-  // Return empty string to remove timestamps from logs
-  return '';
+const isProd = process.env.NODE_ENV === 'production';
+
+// In production: no-op; In dev: forward to console
+const dev = {
+  log: (...args: LogArgs) => console.log(...args),
+  info: (...args: LogArgs) => console.info(...args),
+  warn: (...args: LogArgs) => console.warn(...args),
+  error: (...args: LogArgs) => console.error(...args),
+  debug: (...args: LogArgs) => console.debug(...args),
 };
 
-// Override console.log
-console.log = function (...args: any[]): void {
-  originalConsoleLog(...args);
+const noop = {
+  log: (..._args: LogArgs) => {},
+  info: (..._args: LogArgs) => {},
+  warn: (..._args: LogArgs) => {},
+  error: (..._args: LogArgs) => {},
+  debug: (..._args: LogArgs) => {},
 };
 
-// Override console.info
-console.info = function (...args: any[]): void {
-  originalConsoleInfo(...args);
-};
-
-// Override console.warn
-console.warn = function (...args: any[]): void {
-  originalConsoleWarn(...args);
-};
-
-// Override console.error
-console.error = function (...args: any[]): void {
-  originalConsoleError(...args);
-};
-
-// Override console.debug
-console.debug = function (...args: any[]): void {
-  originalConsoleDebug(...args);
-};
-
-// Export các hàm logger nếu cần sử dụng trực tiếp
-export const logger = {
-  log: console.log,
-  info: console.info,
-  warn: console.warn,
-  error: console.error,
-  debug: console.debug,
-};
-
-export default logger; 
+export const logger = isProd ? noop : dev;
+export default logger;

@@ -1,8 +1,9 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { memo, useMemo } from 'react';
+
 import { useBalance } from '@/contexts/BalanceContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatCurrency, getExchangeRate } from '@/lib/utils';
@@ -14,7 +15,7 @@ interface BalanceDisplayProps {
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading } = useBalance();
-  const { language, t } = useLanguage();
+  const { language, t, localCode } = useLanguage();
 
   const formattedBalance = useMemo(() => {
     return formatCurrency(balance, language);

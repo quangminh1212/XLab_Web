@@ -1,8 +1,10 @@
-import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
-import { Product } from '@/models/ProductModel';
+
 import { default as dynamicImport } from 'next/dynamic';
+import { notFound } from 'next/navigation';
+
+import { Product } from '@/models/ProductModel';
 
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {
@@ -60,7 +62,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     // Await params trước khi sử dụng thuộc tính của nó
     const { id: productId } = await params;
 
-    console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
+    // tìm kiếm sản phẩm với ID hoặc slug: productId
 
     // Lấy dữ liệu sản phẩm từ file JSON
     const products = getProducts();
@@ -75,19 +77,14 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
     // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
     if (!product) {
-      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
+      // Không tìm thấy sản phẩm với ID hoặc slug: productId
       notFound();
     }
 
-    // Xác định categoryId cho sản phẩm liên quan
-    const categoryId = product.categories && product.categories.length > 0 
-      ? product.categories[0].id 
-      : undefined;
-
-    // Ghi log thông tin truy cập
-    console.log(
-      `Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`,
-    );
+    // Xác định categoryId cho sản phẩm liên quan (không dùng hiện tại)
+    // const categoryId = product.categories && product.categories.length > 0
+    //   ? product.categories[0].id
+    //   : undefined;
 
     // Truyền dữ liệu sản phẩm sang client component
     return (

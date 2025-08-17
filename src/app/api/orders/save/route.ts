@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { getServerSession } from 'next-auth/next';
 import fs from 'fs';
 import path from 'path';
+
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/authOptions';
 
 // Tạo đường dẫn đến file lưu dữ liệu
 const dataDir = path.join(process.cwd(), 'data');
@@ -122,19 +124,21 @@ async function updateCouponUsage(couponCode: string, userEmail: string): Promise
     if (couponIndex === -1) return false;
 
     // Cập nhật số lần sử dụng tổng cộng
-    coupons[couponIndex].usedCount = (coupons[couponIndex].usedCount || 0) + 1;
+    const target = coupons[couponIndex];
+    if (!target) return false;
+    target.usedCount = (target.usedCount || 0) + 1;
 
     // Khởi tạo đối tượng userUsage nếu chưa có
-    if (!coupons[couponIndex].userUsage) {
-      coupons[couponIndex].userUsage = {};
+    if (!target.userUsage) {
+      target.userUsage = {};
     }
 
     // Cập nhật số lần sử dụng của người dùng
-    const currentUserUsage = coupons[couponIndex].userUsage![userEmail] || 0;
-    coupons[couponIndex].userUsage![userEmail] = currentUserUsage + 1;
+    const currentUserUsage = target.userUsage![userEmail] || 0;
+    target.userUsage![userEmail] = currentUserUsage + 1;
 
     // Cập nhật thời gian chỉnh sửa
-    coupons[couponIndex].updatedAt = new Date().toISOString();
+    target.updatedAt = new Date().toISOString();
 
     // Lưu lại dữ liệu
     return saveCoupons(coupons);

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import QRCode from 'qrcode';
-import { QRPay, BanksObject } from 'vietnam-qr-pay';
+import { useState, useEffect, useRef } from 'react';
+import { QRPay } from 'vietnam-qr-pay';
 
 interface QRBankTransferProps {
   amount: number;
@@ -188,7 +189,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
             {qrCodeUrl ? (
               <div className="inline-block p-6 bg-white rounded-xl shadow-inner">
                 <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
-                  <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
+                  <Image src={qrCodeUrl} alt="QR Code" width={288} height={288} className="w-72 h-72" />
                 </div>
               </div>
             ) : (
@@ -309,7 +310,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
               <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
               <li>Kiểm tra số tiền và mã giao dịch</li>
               <li>Xác nhận chuyển khoản</li>
-              <li className="font-semibold">Nhấn nút "Kiểm tra thanh toán"</li>
+              <li className="font-semibold">Nhấn nút &quot;Kiểm tra thanh toán&quot;</li>
             </ol>
             <div className="mt-2 text-xs text-teal-900 font-semibold flex items-center gap-1">
               <svg

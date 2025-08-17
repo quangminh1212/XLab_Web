@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import React, { useState, useEffect } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Testimonial {
@@ -60,7 +61,7 @@ const defaultTestimonials: Testimonial[] = [
 ];
 
 export default function Testimonials({ productId, limit = 3 }: TestimonialsProps) {
-  const { t, language } = useLanguage();
+  const { t, language, localCode } = useLanguage();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -192,7 +193,7 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('vi-VN', {
+      return date.toLocaleDateString(localCode === 'vi' ? 'vi-VN' : 'en-US', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -251,10 +252,10 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
                       <div className="font-medium text-gray-900">{testimonial.name}</div>
                       {(testimonial.position || testimonial.company) && (
                         <div className="text-sm text-gray-600">
-                          {language === 'en' && testimonial.position === 'CTO - Tech Solutions' ? 'Chief Technology Officer - Tech Solutions' :
-                           language === 'en' && testimonial.position === 'Quản lý Marketing' ? 'Marketing Manager' : 
-                           language === 'en' && testimonial.position === 'Nhà phát triển' ? 'Developer' :
-                           language === 'vi' && testimonial.position === 'CTO - Tech Solutions' ? 'Giám đốc Công nghệ - Tech Solutions' :
+                          {localCode === 'en' && testimonial.position === 'CTO - Tech Solutions' ? 'Chief Technology Officer - Tech Solutions' :
+                           localCode === 'en' && testimonial.position === 'Quản lý Marketing' ? 'Marketing Manager' :
+                           localCode === 'en' && testimonial.position === 'Nhà phát triển' ? 'Developer' :
+                           localCode === 'vi' && testimonial.position === 'CTO - Tech Solutions' ? 'Giám đốc Công nghệ - Tech Solutions' :
                            testimonial.position}
                           {testimonial.position && testimonial.company && ' - '}
                           {testimonial.company}

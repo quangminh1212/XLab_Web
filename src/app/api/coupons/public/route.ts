@@ -1,8 +1,12 @@
-import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+
+import { NextResponse } from 'next/server';
+export const runtime = 'nodejs';
+
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+
+import { authOptions } from '@/lib/authOptions';
 
 // Create path to data files
 const dataDir = path.join(process.cwd(), 'data');

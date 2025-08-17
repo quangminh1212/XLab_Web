@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useRef } from 'react';
 import Image from 'next/image';
+import { useState, useRef } from 'react';
+
 import { Product } from '@/types';
 
 interface AdminEditProductProps {
@@ -32,11 +33,10 @@ export default function AdminEditProduct({ product, onSave }: AdminEditProductPr
 
   // Xử lý thêm ảnh từ file
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // Giả lập upload ảnh (trong dự án thực tế, sẽ upload ảnh lên server)
-    const file = files[0];
     const imageUrl = URL.createObjectURL(file);
 
     // Thêm image tag vào mô tả

@@ -1,13 +1,15 @@
+import fs from 'fs';
+import path from 'path';
+
 import { NextResponse } from 'next/server';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/authOptions';
 import {
   SystemSettings,
   defaultSystemSettings,
   validateSystemSettings,
 } from '@/models/SystemSettingsModel';
-import fs from 'fs';
-import path from 'path';
 
 const settingsFilePath = path.join(process.cwd(), 'data', 'settings.json');
 

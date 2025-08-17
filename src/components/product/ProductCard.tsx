@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatCurrency } from '@/lib/utils';
@@ -41,6 +42,7 @@ export default function ProductCard({
   totalSold = 0,
   slug = '',
   onAddToCart = () => {},
+  // onView is optional and may be unused in some contexts
   onView = () => {},
 }: ProductCardProps) {
   const { t, language } = useLanguage();
@@ -53,8 +55,7 @@ export default function ProductCard({
   const router = useRouter();
   const { addItem, clearCart } = useCart();
 
-  // Log the image URL for debugging
-  console.log(`ProductCard image URL for ${name}:`, image);
+  // Debug log removed in production
 
   // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
   useEffect(() => {
@@ -65,14 +66,14 @@ export default function ProductCard({
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log(`ProductCard translation data for ${id}:`, data);
+            // debug: translation data fetched
             // Cập nhật mô tả ngắn đã dịch
             if (data && data.shortDescription) {
               setTranslatedDescription(data.shortDescription);
             } else {
               setTranslatedDescription(description); // Fallback to original if no translation
             }
-            
+
             // Cập nhật tên sản phẩm đã dịch
             if (data && data.name) {
               setTranslatedName(data.name);
@@ -83,8 +84,8 @@ export default function ProductCard({
             setTranslatedDescription(description); // Fallback to original
             setTranslatedName(name);
           }
-        } catch (error) {
-          console.error('Error fetching translation:', error);
+        } catch (_error) {
+          // console.error('Error fetching translation:', error);
           setTranslatedDescription(description); // Fallback to original
           setTranslatedName(name);
         }
@@ -116,7 +117,7 @@ export default function ProductCard({
       // Kiểm tra nếu là URL đầy đủ
       const url = new URL(imgUrl, window.location.origin);
       return url.toString();
-    } catch (e) {
+    } catch (_e) {
       // Nếu không phải URL hợp lệ, sử dụng placeholder
       return '/images/placeholder/product-placeholder.jpg';
     }
@@ -125,8 +126,27 @@ export default function ProductCard({
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image);
 
-  // Sử dụng mô tả đã được dịch
-  const shortDescription = translatedDescription || '';
+  // Chuẩn hóa mô tả: loại bỏ thẻ HTML và ký tự thừa để tránh hiển thị thô trong thẻ sản phẩm
+  const normalizeDescription = (input: string) => {
+    if (!input) return '';
+    try {
+      const noTags = input.replace(/<[^>]*>/g, ' ');
+      return noTags
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+        .replace(/\s+/g, ' ')
+        .trim();
+    } catch {
+      return input;
+    }
+  };
+
+  // Sử dụng mô tả đã được dịch và làm sạch
+  const shortDescription = normalizeDescription(translatedDescription || '');
 
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage =
@@ -142,15 +162,15 @@ export default function ProductCard({
   // Xử lý category có thể là object phức tạp
   const getCategoryName = (categoryValue: string | object | undefined): string | undefined => {
     if (!categoryValue) return undefined;
-    
+
     if (typeof categoryValue === 'string') {
       return categoryValue;
     }
-    
+
     if (typeof categoryValue === 'object') {
       // Nếu là object, thử lấy thuộc tính name hoặc id
       const categoryObj = categoryValue as any;
-      
+
       if (categoryObj.name) {
         // Nếu có thuộc tính name
         if (typeof categoryObj.name === 'string') {
@@ -159,7 +179,7 @@ export default function ProductCard({
           return categoryObj.name.id;
         }
       }
-      
+
       if (categoryObj.id) {
         // Nếu có thuộc tính id
         if (typeof categoryObj.id === 'string') {
@@ -169,7 +189,7 @@ export default function ProductCard({
         }
       }
     }
-    
+
     return undefined;
   };
 
@@ -240,13 +260,13 @@ export default function ProductCard({
     onAddToCart(id);
   };
 
-  const handleView = () => {
-    if (onView) onView(id);
-  };
+  // const handleView = () => {
+  //   if (onView) onView(id);
+  // };
 
   // Handle image error and use placeholder
   const handleImageError = () => {
-    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`);
+    // image load error
     setImageError(true);
     setIsImageLoaded(true); // Mark as loaded to hide spinner
   };
@@ -260,7 +280,9 @@ export default function ProductCard({
       .replace(/[^a-z0-9-]/g, '');
 
   // Color palette phù hợp với logo XLab (chuyên nghiệp, hiện đại)
-  const colorPalette = [
+  type Palette = { name: string; bg: string; hover: string; badge: string; button: string; buttonHover: string; price: string; stats: string; statsIcon: string; overlay: string };
+  const colorPalette: Palette[] = [
+
     {
       name: 'teal',
       bg: 'from-white via-primary-50 to-primary-100',
@@ -339,19 +361,20 @@ export default function ProductCard({
   const safeId = id || '0';
   const parsedId = parseInt(safeId);
   const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
-  const currentColor = colorPalette[colorIndex] || colorPalette[0];
+  const currentColor: Palette = (colorPalette[colorIndex] || colorPalette[0]) as Palette;
+  const safeCurrentColor: Palette = currentColor;
 
   return (
     <Link
       href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full w-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
+      className={`group flex flex-col h-full w-full bg-gradient-to-br ${safeCurrentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${safeCurrentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative pt-[100%] bg-white">
         {/* Always show discount % even if there's no actual discount */}
         <div
-          className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
+          className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${safeCurrentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
         >
           -{originalPrice && originalPrice > price ? discountPercentage : 80}%
         </div>
@@ -360,6 +383,7 @@ export default function ProductCard({
           src={displayImageUrl}
           alt={name}
           fill
+          unoptimized
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className={`object-contain transition-all duration-500 scale-100 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
@@ -389,10 +413,10 @@ export default function ProductCard({
 
         {showAddedEffect && (
           <div
-            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
+            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${safeCurrentColor.overlay} z-20 animate-fadeInOut`}
           >
             <div
-              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-3 py-1 rounded-full flex items-center shadow-lg text-xs`}
+              className={`bg-gradient-to-r ${safeCurrentColor.badge} text-white font-bold px-3 py-1 rounded-full flex items-center shadow-lg text-xs`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -484,7 +508,7 @@ export default function ProductCard({
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
-                className={`text-base font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+                className={`text-base font-extrabold bg-gradient-to-r ${safeCurrentColor.price} bg-clip-text text-transparent`}
               >
                 {formatCurrency(price)}
               </span>
@@ -499,13 +523,13 @@ export default function ProductCard({
           <div className="flex flex-col items-end gap-1">
             {weeklyPurchases > 0 && (
               <div
-                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${safeCurrentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                  className={`h-2 w-2 mr-1 ${safeCurrentColor.statsIcon}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path
@@ -520,13 +544,13 @@ export default function ProductCard({
             )}
             {totalSold > 0 && (
               <div
-                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${safeCurrentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                  className={`h-2 w-2 mr-1 ${safeCurrentColor.statsIcon}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path

@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../../auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+
+import { authOptions } from '@/lib/authOptions';
 
 // Tạo đường dẫn đến file lưu dữ liệu
 const dataDir = path.join(process.cwd(), 'data');
@@ -86,8 +88,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     // Cập nhật trạng thái
-    coupons[couponIndex].isActive = isActive;
-    coupons[couponIndex].updatedAt = new Date().toISOString();
+    const target = coupons[couponIndex];
+    if (!target) {
+      return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
+    }
+    target.isActive = isActive;
+    target.updatedAt = new Date().toISOString();
 
     // Lưu thay đổi vào file
     saveCoupons(coupons);

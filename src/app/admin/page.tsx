@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+
 import withAdminAuth from '@/components/withAdminAuth';
-import { Product } from '@/models/ProductModel';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatCurrency } from '@/lib/utils';
+import { Product } from '@/models/ProductModel';
 
 interface Stats {
   products: number;
@@ -157,8 +158,8 @@ function AdminDashboard() {
                         {formatCurrency(
                           product.defaultProductOption && 
                           product.optionPrices && 
-                          product.optionPrices[product.defaultProductOption] 
-                            ? product.optionPrices[product.defaultProductOption].price 
+                          product.defaultProductOption && product.optionPrices?.[product.defaultProductOption]
+                            ? product.optionPrices[product.defaultProductOption]!.price
                             : product.versions && product.versions.length > 0 
                               ? product.versions[0]?.price || 0 
                               : product.price || 0, 

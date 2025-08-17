@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, ComponentType } from 'react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
+import { useEffect, ComponentType } from 'react';
 
 // Higher Order Component để bảo vệ các trang admin
 function withAdminAuth<P extends object>(Component: ComponentType<P>) {

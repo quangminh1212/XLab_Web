@@ -30,7 +30,7 @@ export async function getSheetDataFromCSV(): Promise<SheetTransaction[]> {
     }
 
     const csvText = await response.text();
-    const rows = csvText.split('\n').map((row) => {
+    const rows: string[][] = csvText.split('\n').map((row) => {
       // Handle CSV parsing with quoted fields
       const fields: string[] = [];
       let current = '';
@@ -57,6 +57,7 @@ export async function getSheetDataFromCSV(): Promise<SheetTransaction[]> {
     // Skip header row and process data rows
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
+      if (!row) continue;
 
       // Skip empty rows
       if (!row[0] || row[0].trim() === '') continue;
@@ -147,16 +148,18 @@ export async function getGoogleSheetsData(): Promise<SheetTransaction[]> {
       key: apiKey,
     });
 
-    const rows = response.data.values;
-    if (!rows || rows.length === 0) {
+    const rowsRaw = response.data.values ?? [];
+    if (!rowsRaw || rowsRaw.length === 0) {
       return [];
     }
 
     // Skip header row and convert to objects
     const transactions: SheetTransaction[] = [];
-    for (let i = 1; i < rows.length; i++) {
-      const row = rows[i];
-      if (row[0] && row[1] && row[5] && row[7]) {
+    for (let i = 1; i < rowsRaw.length; i++) {
+      const row = rowsRaw[i];
+      if (!row) continue;
+      const cells = row as string[];
+      if (cells[0] && cells[1] && cells[5] && cells[7]) {
         transactions.push({
           bank: row[0] || '',
           date: row[1] || '',

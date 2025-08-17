@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import withAdminAuth from '@/components/withAdminAuth';
+import { useState, useEffect } from 'react';
+
 import VoucherUsageList from '@/components/admin/VoucherUsageList';
+import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Coupon {
@@ -130,8 +131,11 @@ function CouponsPage() {
     if (dateString.includes('T')) return dateString;
 
     // Phân tách các phần của ngày
-    const parts = dateString.split('-').map(Number);
-    const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+    const parts = dateString.split('-').map((v) => Number(v));
+    const y = parts[0] ?? 1970;
+    const m = (parts[1] ?? 1) - 1;
+    const d = parts[2] ?? 1;
+    const date = new Date(Date.UTC(y, m, d));
 
     // Đặt giờ cho ngày: 00:00:00 cho ngày bắt đầu và 23:59:59 cho ngày kết thúc
     if (isEndDate) {
@@ -297,8 +301,8 @@ function CouponsPage() {
       maxDiscount: coupon.maxDiscount || 0,
       usageLimit: coupon.usageLimit || 0,
       userLimit: coupon.userLimit || 1,
-      startDate: coupon.startDate.split('T')[0],
-      endDate: coupon.endDate.split('T')[0],
+      startDate: coupon.startDate?.split('T')[0] ?? '',
+      endDate: coupon.endDate?.split('T')[0] ?? '',
       applicableProducts: coupon.applicableProducts?.join(', ') || '',
       isPublic: coupon.isPublic ?? true,
     });
@@ -330,7 +334,7 @@ function CouponsPage() {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
+    ).toLocaleDateString((useLanguage().localCode === 'vi') ? 'vi-VN' : 'en-US');
   };
 
   // Check if coupon is expired
@@ -469,6 +473,7 @@ function CouponsPage() {
       }, 5000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [successMessage, errorMessage]);
 
   // Phân chia mã giảm giá thành nhóm còn hạn và hết hạn

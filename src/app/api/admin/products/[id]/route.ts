@@ -1,10 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
-import { Product, ProductCategory } from '@/models/ProductModel';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/authOptions';
 import { getProductById, updateProduct, deleteProduct } from '@/lib/i18n/products';
+import { Product, ProductCategory } from '@/models/ProductModel';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -99,14 +101,24 @@ function getCategoryName(categoryId: string): string {
 // Extract product ID from URL
 function extractIdFromUrl(url: string): string {
   const segments = url.split('/');
-  return segments[segments.length - 1];
+  return segments[segments.length - 1] ?? '';
 }
 
 // Handler setup
 export const dynamic = 'force-dynamic';
 
+/**
+ * Normalize language code from Accept-Language header to internal codes
+ * Maps 'en' -> 'eng', others -> 'vie'
+ */
+function normalizeLanguageHeader(lang: string | null): 'eng' | 'vie' {
+  if (!lang) return 'vie';
+  const primary = lang.split(',')[0]?.split('-')[0]?.toLowerCase() ?? 'vi';
+  return primary === 'en' ? 'eng' : 'vie';
+}
+
 // GET product handler
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -114,12 +126,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    // Get params and normalized language
+    const { id } = await paramsPromise;
 
-    // Get language from header or default to 'vie'
-    const language = request.headers.get('accept-language') || 'vie';
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = normalizeLanguageHeader(acceptLanguage);
     console.log(`Fetching product ${id} with language: ${language}`);
 
     // Find product using i18n product function
@@ -130,14 +141,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     return NextResponse.json(product);
-  } catch (error) {
-    console.error('Error fetching product:', error);
+  } catch (_error) {
+    // console.error('Error fetching product:', _error);
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
   }
 }
 
 // PUT product handler
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -145,13 +156,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    // Get params and normalized language
+    const { id } = await paramsPromise;
 
-    // Get language from header or default to 'vie'
-    const language = request.headers.get('accept-language') || 'vie';
-    console.log(`Updating product ${id} with language: ${language}`);
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = normalizeLanguageHeader(acceptLanguage);
+    // console.debug(`Updating product ${id} with language: ${language}`);
 
     // Get the updated product data from the request
     const updatedProductData = await request.json();
@@ -182,7 +192,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     // If ID was changed, we need to delete the old product after successful update
     if (isIdChanged) {
       // Log the ID change
-      console.log(`Product ID changed from ${id} to ${updatedProductData.id}`);
+      // console.debug(`Product ID changed from ${id} to ${updatedProductData.id}`);
       
       try {
         // Move the images from old product folder to new product folder
@@ -206,10 +216,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
             
             // Copy the file to new location
             fs.copyFileSync(oldFilePath, newFilePath);
-            console.log(`Copied image from ${oldFilePath} to ${newFilePath}`);
+            // console.debug(`Copied image from ${oldFilePath} to ${newFilePath}`);
           }
           
-          console.log(`All images moved from ${oldImagesDir} to ${newImagesDir}`);
+          // console.debug(`All images moved from ${oldImagesDir} to ${newImagesDir}`);
           
           // Update image paths in the product data
           if (mergedProduct.images && Array.isArray(mergedProduct.images)) {
@@ -234,8 +244,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
             });
           }
         }
-      } catch (error) {
-        console.error('Error moving product images:', error);
+      } catch (_error) {
+        // console.error('Error moving product images:', _error);
       }
       
       // Delete the old product version with the old ID
@@ -243,14 +253,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     return NextResponse.json(mergedProduct);
-  } catch (error) {
-    console.error('Error updating product:', error);
+  } catch (_error) {
+    // console.error('Error updating product:', _error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
   }
 }
 
 // DELETE product handler
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -258,24 +268,23 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    // Get params and (optional) normalized language
+    const { id } = await paramsPromise;
 
-    // Get language from header or default to both languages
-    const language = request.headers.get('accept-language');
-    console.log(`Deleting product ${id} ${language ? `for language: ${language}` : 'for all languages'}`);
+    const acceptLanguage = request.headers.get('accept-language');
+    const language = acceptLanguage ? normalizeLanguageHeader(acceptLanguage) : undefined;
+    // console.debug(`Deleting product ${id} ${language ? `for language: ${language}` : 'for all languages'}`);
 
     // Delete product using i18n product function (if language is specified, only delete that language version)
-    const deleteResult = await deleteProduct(id, language || undefined);
-    
+    const deleteResult = await deleteProduct(id, language);
+
     if (!deleteResult) {
       return NextResponse.json({ error: 'Product not found or failed to delete' }, { status: 404 });
     }
 
     return NextResponse.json({ message: 'Product deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting product:', error);
+  } catch (_error) {
+    // console.error('Error deleting product:', _error);
     return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
   }
 }

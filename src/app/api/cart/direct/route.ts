@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
+
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/authOptions';
 
 // Simple in-memory cache to prevent excessive file reads
 type CacheEntry = {

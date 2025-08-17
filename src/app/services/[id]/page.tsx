@@ -1,10 +1,13 @@
-import { products as mockProducts } from '@/data/mockData';
-import ProductDetail from '@/app/products/[id]/ProductDetail';
-import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
-import { Product } from '@/models/ProductModel';
+
+import { notFound } from 'next/navigation';
+
+import ProductDetail from '@/app/products/[id]/ProductDetail';
+import { products as mockProducts } from '@/data/mockData';
 import { getAllProducts, normalizeLanguageCode } from '@/lib/i18n/products';
+import { Product } from '@/models/ProductModel';
+import type { Product as MockProduct } from '@/types';
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'force-dynamic';
@@ -53,6 +56,12 @@ async function getProducts(lang = 'vie'): Promise<Product[]> {
         } else if (Array.isArray(parsedData)) {
           productsFromJson = parsedData;
         }
+        // Normalize backslashes to forward slashes in image paths
+        productsFromJson = productsFromJson.map((p: any) => ({
+          ...p,
+          images: Array.isArray(p.images) ? p.images.map((x: any) => typeof x === 'string' ? x.replace(/\\/g, '/') : x) : p.images,
+          imageUrl: typeof p.imageUrl === 'string' ? p.imageUrl.replace(/\\/g, '/') : p.imageUrl,
+        }));
       } catch (error) {
         console.error('Error parsing products.json:', error);
       }
@@ -114,15 +123,21 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   // Nếu không tìm thấy, tìm trong mockData
   if (!selectedProduct) {
     // Tìm theo slug trước
-    selectedProduct = mockProducts.find(
+    const bySlug = (mockProducts as unknown as MockProduct[]).find(
       (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
     );
+    if (bySlug) {
+      selectedProduct = normalizeProduct(bySlug as any);
+    }
 
     // Sau đó tìm theo id nếu không tìm thấy theo slug
     if (!selectedProduct) {
-      selectedProduct = mockProducts.find(
+      const byId = (mockProducts as unknown as MockProduct[]).find(
         (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
       );
+      if (byId) {
+        selectedProduct = normalizeProduct(byId as any);
+      }
     }
   }
 
@@ -316,11 +331,17 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData và products.json
   if (!selectedProduct) {
     // Tìm theo slug trước
-    selectedProduct = sampleAccounts.find((p) => p.slug === accountId);
+    const bySlugSample = sampleAccounts.find((p) => p.slug === accountId);
+    if (bySlugSample) {
+      selectedProduct = normalizeProduct(bySlugSample as any);
+    }
 
     // Sau đó tìm theo id nếu cần
     if (!selectedProduct) {
-      selectedProduct = sampleAccounts.find((p) => p.id === accountId);
+      const byIdSample = sampleAccounts.find((p) => p.id === accountId);
+      if (byIdSample) {
+        selectedProduct = normalizeProduct(byIdSample as any);
+      }
     }
   }
 

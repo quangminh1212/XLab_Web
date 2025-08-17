@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
-import { getUserData, verifyDataIntegrity } from '@/lib/userDataManager';
+
+import { authOptions } from '@/lib/authOptions';
 import { getUserStats } from '@/lib/sessionTracker';
+import { getUserData, verifyDataIntegrity } from '@/lib/userDataManager';
 
 export async function GET(request: NextRequest) {
   try {

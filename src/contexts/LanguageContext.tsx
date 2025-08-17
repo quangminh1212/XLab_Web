@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+
 import translations, { Language } from '@/i18n';
 import { mapLanguageCode, mapToInternalCode } from '@/i18n/client';
 
@@ -45,7 +46,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     // Get language data
     const langData = translations[language];
     if (!langData) {
-      console.warn(`No translations found for language: ${language}`);
+      // console.warn(`No translations found for language: ${language}`);
       return key;
     }
 
@@ -92,7 +93,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     // Xử lý keys như 'module.key.subkey'
     if (parts.length > 1) {
       const moduleName = parts[0]; // Lấy module (common, home, admin, ...)
-      const moduleData = (langData as any)[moduleName];
+      const moduleData = (langData as any && moduleName ? (langData as any)[moduleName] : undefined);
       
       if (moduleData) {
         const value = getTranslationValue(moduleData, parts.slice(1));
@@ -115,7 +116,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     }
     
     // Nếu không tìm thấy, trả về key gốc
-    console.warn(`Translation key not found: ${key}`);
+    // console.warn(`Translation key not found: ${key}`);
     return key;
   };
 

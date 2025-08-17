@@ -1,9 +1,12 @@
-import { NextResponse } from 'next/server';
-import { products } from '@/data/mockData';
-import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
+
+import { NextResponse } from 'next/server';
+
+import { products } from '@/data/mockData';
 import { saveProduct } from '@/lib/i18n/products';
+import { Product } from '@/models/ProductModel';
+
 
 // Hàm tạo ID từ tên sản phẩm
 function generateIdFromName(name: string): string {
@@ -184,7 +187,7 @@ export async function POST(request: Request) {
     
     // Lấy ngôn ngữ từ header hoặc mặc định là 'vie'
     const acceptLanguage = request.headers.get('accept-language') || 'vie';
-    const language = acceptLanguage.split(',')[0].trim().toLowerCase();
+    const language = (acceptLanguage?.split(',')[0] || 'vie').trim().toLowerCase();
     
     // Lưu sản phẩm vào thư mục i18n theo ngôn ngữ
     try {

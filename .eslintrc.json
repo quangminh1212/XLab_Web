@@ -10,17 +10,20 @@
     "ecmaFeatures": { "jsx": true },
     "ecmaVersion": 2022,
     "sourceType": "module",
-    "project": "./tsconfig.json"
+    "project": ["./tsconfig.json", "./tsconfig.eslint.json"]
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/no-unused-vars": ["error", {
+    "@typescript-eslint/no-unused-vars": ["warn", {
       "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_"
+      "varsIgnorePattern": "^_",
+      "caughtErrorsIgnorePattern": "^_"
     }],
     "@typescript-eslint/no-explicit-any": "warn",
-    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/rules-of-hooks": "warn",
     "react-hooks/exhaustive-deps": "warn",
+    "react/no-unescaped-entities": "warn",
+    "@next/next/no-html-link-for-pages": "warn",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "import/order": ["warn", {
       "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],

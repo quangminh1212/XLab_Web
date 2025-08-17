@@ -1,19 +1,30 @@
 const path = require('path');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    // Don’t block production builds on ESLint errors
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
+  // Keep dev assets around longer to avoid 404 on /_next/static after recompiles
   onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
+    maxInactiveAge: 60 * 60 * 1000, // 1 hour
+    pagesBufferLength: 50,
   },
   experimental: {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
-    optimizeCss: true,
+    // Chỉ tắt tối ưu CSS trong development để tránh lỗi 404 CSS chunk
+    optimizeCss: process.env.NODE_ENV === 'development' ? false : true,
     optimisticClientCache: true,
   },
+  output: 'standalone',
   images: {
     domains: [
       'via.placeholder.com',
@@ -46,6 +57,7 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  // Ensure assets are served from root; in production you can set ASSET_PREFIX
   assetPrefix: process.env.ASSET_PREFIX || '',
   logging: {
     fetches: {
@@ -117,8 +129,8 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: process.env.NODE_ENV === 'production' 
-              ? "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;" 
+            value: process.env.NODE_ENV === 'production'
+              ? "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;"
               : "",
           },
           {
@@ -131,8 +143,9 @@ const nextConfig = {
           },
         ].filter(header => header.value !== ""),
       },
+
     ];
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

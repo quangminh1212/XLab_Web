@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export interface Notification {

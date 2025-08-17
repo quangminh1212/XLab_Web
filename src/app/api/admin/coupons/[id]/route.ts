@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+
+import { authOptions } from '@/lib/authOptions';
 
 // Tạo đường dẫn đến file lưu dữ liệu
 const dataDir = path.join(process.cwd(), 'data');
@@ -23,8 +25,8 @@ const couponsFilePath = path.join(dataDir, 'coupons.json');
       try {
         const data = fs.readFileSync(couponsFilePath, 'utf8');
         JSON.parse(data);
-      } catch (error) {
-        console.error('Corrupted coupons.json file detected, creating backup and resetting');
+      } catch (_error) {
+        // console.error('Corrupted coupons.json file detected, creating backup and resetting');
         // Backup file hỏng
         const backupDir = path.join(dataDir, 'backups');
         if (!fs.existsSync(backupDir)) {
@@ -38,8 +40,8 @@ const couponsFilePath = path.join(dataDir, 'coupons.json');
         fs.writeFileSync(couponsFilePath, '[]', 'utf8');
       }
     }
-  } catch (error) {
-    console.error('Error initializing coupons.json:', error);
+  } catch (_error) {
+    // console.error('Error initializing coupons.json:', _error);
   }
 })();
 
@@ -71,8 +73,8 @@ function loadCoupons(): Coupon[] {
       const data = fs.readFileSync(couponsFilePath, 'utf8');
       try {
         return JSON.parse(data);
-      } catch (parseError) {
-        console.error('Error parsing JSON from coupons file:', parseError);
+      } catch (_parseError) {
+        // console.error('Error parsing JSON from coupons file:', _parseError);
         // Backup the corrupted file
         const backupDir = path.join(dataDir, 'backups');
         if (!fs.existsSync(backupDir)) {
@@ -89,8 +91,8 @@ function loadCoupons(): Coupon[] {
       }
     }
     return [];
-  } catch (error) {
-    console.error('Error loading coupons:', error);
+  } catch (_error) {
+    // console.error('Error loading coupons:', _error);
     return [];
   }
 }
@@ -131,8 +133,8 @@ function saveCoupons(data: Coupon[]): boolean {
     fs.renameSync(tempFilePath, couponsFilePath);
 
     return true;
-  } catch (error) {
-    console.error('Error saving coupons:', error);
+  } catch (_error) {
+    // console.error('Error saving coupons:', _error);
     return false;
   }
 }
@@ -161,8 +163,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       success: true,
       coupon,
     });
-  } catch (error) {
-    console.error('Error fetching coupon:', error);
+  } catch (_error) {
+    // console.error('Error fetching coupon:', _error);
     return NextResponse.json({ error: 'Đã xảy ra lỗi khi tải mã giảm giá' }, { status: 500 });
   }
 }
@@ -170,7 +172,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 // PUT - Cập nhật mã giảm giá
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    console.log('PUT request received for coupon with params:', params);
+    // console.debug('PUT request received for coupon with params:', params);
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.isAdmin) {
@@ -179,22 +181,22 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const awaitedParams = await params;
     const id = awaitedParams.id;
-    console.log('Processing update for coupon ID:', id);
+    // console.debug('Processing update for coupon ID:', id);
 
     // Đọc dữ liệu từ file
     const coupons = loadCoupons();
-    console.log('Loaded coupons:', coupons.length);
+    // console.debug('Loaded coupons:', coupons.length);
 
     const couponIndex = coupons.findIndex((c) => c.id === id);
-    console.log('Coupon index in array:', couponIndex);
+    // console.debug('Coupon index in array:', couponIndex);
 
     if (couponIndex === -1) {
-      console.log('Coupon not found for ID:', id);
+      // console.debug('Coupon not found for ID:', id);
       return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
     }
 
     const body = await request.json();
-    console.log('Update body:', body);
+    // console.debug('Update body:', body);
 
     const {
       code,
@@ -245,21 +247,27 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Cập nhật mã giảm giá
-    const updatedCoupon = {
-      ...coupons[couponIndex],
-      code: code.toUpperCase(),
-      name,
-      description: description || '',
-      type,
+    const base = coupons[couponIndex];
+    if (!base) {
+      return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
+    }
+    const updatedCoupon: Coupon = {
+      ...base,
+      id: base.id,
+      code: String(code).toUpperCase(),
+      name: String(name),
+      description: description ? String(description) : '',
+      type: type as Coupon['type'],
       value: Number(value),
       minOrder: minOrder ? Number(minOrder) : undefined,
       maxDiscount: maxDiscount ? Number(maxDiscount) : undefined,
       usageLimit: usageLimit ? Number(usageLimit) : undefined,
-      usedCount: usedCount !== undefined ? Number(usedCount) : coupons[couponIndex].usedCount,
+      usedCount: usedCount !== undefined ? Number(usedCount) : base.usedCount,
       startDate: startDate.includes('T') ? startDate : `${startDate}T00:00:00.000Z`,
       endDate: endDate.includes('T') ? endDate : `${endDate}T23:59:59.999Z`,
-      applicableProducts: applicableProducts || [],
+      applicableProducts: Array.isArray(applicableProducts) ? applicableProducts : [],
       isPublic: typeof isPublic === 'boolean' ? isPublic : true,
+      isActive: base.isActive ?? true,
       updatedAt: new Date().toISOString(),
     };
 
@@ -273,8 +281,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       message: 'Mã giảm giá đã được cập nhật thành công',
       coupon: updatedCoupon,
     });
-  } catch (error) {
-    console.error('Error updating coupon:', error);
+  } catch (_error) {
+    // console.error('Error updating coupon:', _error);
     return NextResponse.json({ error: 'Đã xảy ra lỗi khi cập nhật mã giảm giá' }, { status: 500 });
   }
 }
@@ -303,6 +311,9 @@ export async function DELETE(
     }
 
     const deletedCoupon = coupons[couponIndex];
+    if (!deletedCoupon) {
+      return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
+    }
 
     // Kiểm tra xem mã giảm giá đã được sử dụng chưa
     if (deletedCoupon.usedCount > 0) {
@@ -322,8 +333,8 @@ export async function DELETE(
       success: true,
       message: 'Mã giảm giá đã được xóa thành công',
     });
-  } catch (error) {
-    console.error('Error deleting coupon:', error);
+  } catch (_error) {
+    // console.error('Error deleting coupon:', _error);
     return NextResponse.json({ error: 'Đã xảy ra lỗi khi xóa mã giảm giá' }, { status: 500 });
   }
 }

@@ -1,5 +1,9 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx as _clsx } from 'clsx';
+import { twMerge as _twMerge } from 'tailwind-merge';
+
+const twMerge = _twMerge ?? ((...inputs: ClassValue[]) => inputs.filter(Boolean).join(' '));
+const clsx = _clsx ?? ((...inputs: ClassValue[]) => inputs.filter(Boolean).join(' '));
+
 import { products } from '@/data/mockData';
 import { Product } from '@/types';
 
@@ -175,8 +179,10 @@ const downloadCountCache: Record<string, number> = {};
 
 // Initialize cache from mockData
 products.forEach((product) => {
-  viewCountCache[product.slug] = product.viewCount;
-  downloadCountCache[product.slug] = product.downloadCount;
+  if (product.slug) {
+    viewCountCache[product.slug] = product.viewCount ?? 0;
+    downloadCountCache[product.slug] = product.downloadCount ?? 0;
+  }
 });
 
 /**
@@ -292,7 +298,10 @@ export const addItemToCart = (cart: CartItem[], item: CartItem): CartItem[] => {
   if (existingItemIndex >= 0) {
     // Item already exists, update quantity
     const newCart = [...cart];
-    newCart[existingItemIndex].quantity += item.quantity;
+    const target = newCart[existingItemIndex];
+    if (target) {
+      target.quantity += item.quantity;
+    }
     return newCart;
   } else {
     // Add new item

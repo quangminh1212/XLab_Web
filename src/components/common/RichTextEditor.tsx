@@ -50,7 +50,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       let imageFound = false;
 
       for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
+        const item = items[i];
+        if (!item) continue;
+        if (item.type && item.type.indexOf('image') !== -1) {
           // Prevent default paste behavior to avoid duplicate insertions
           e.preventDefault();
 
@@ -58,7 +60,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           if (imageFound) continue;
           imageFound = true;
 
-          const file = items[i].getAsFile();
+          const file = item.getAsFile ? item.getAsFile() : null;
           if (!file) continue;
 
           // Upload image to server if available
@@ -366,9 +368,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   // Xử lý tải lên ảnh từ máy tính
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+    if (!file) return;
     // Reuse our upload handler for consistency
     try {
       await handleUploadPastedFile(file);

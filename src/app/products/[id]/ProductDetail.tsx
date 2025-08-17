@@ -1,25 +1,22 @@
 'use client';
 
-import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import React, { useState, useEffect, Fragment } from 'react';
+
+import { useCart } from '@/components/cart/CartContext';
+import RichTextContent from '@/components/common/RichTextContent';
+import ProductOptions from '@/components/product/ProductOptions';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { formatCurrency } from '@/lib/utils';
 import { Product as ProductType } from '@/models/ProductModel';
-import { useCart } from '@/components/cart/CartContext';
-import dynamic from 'next/dynamic';
-import RichTextContent from '@/components/common/RichTextContent';
-import { Product as UIProduct } from '@/types';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import RelatedProducts from '../../../components/product/RelatedProducts';
-import { useLanguage } from '@/contexts/LanguageContext';
-import ProductOptions from '@/components/product/ProductOptions';
+// import { Product as UIProduct } from '@/types';
 
-// Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
-const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
-  loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
-  ssr: false, // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
-});
+
+import RelatedProducts from '../../../components/product/RelatedProducts';
+
+
+
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
@@ -34,7 +31,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log("ProductDescription translation data:", data); // Ghi log để debug
+            // ProductDescription translation data for debug: data
             if (data && data.description) {
               setTranslatedDescription(data.description);
             } else {
@@ -44,7 +41,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
             setTranslatedDescription(description); // Fallback to original
           }
         } catch (error) {
-          console.error('Error fetching translation:', error);
+          // Error fetching translation
           setTranslatedDescription(description); // Fallback to original
         }
       };
@@ -137,7 +134,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log("ProductShortDescription translation data:", data); // Ghi log để debug
+            // ProductShortDescription translation data for debug: data
             if (data && data.shortDescription) {
               setTranslatedShortDescription(data.shortDescription);
             } else {
@@ -147,7 +144,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
             setTranslatedShortDescription(shortDescription); // Fallback to original
           }
         } catch (error) {
-          console.error('Error fetching short description translation:', error);
+          // Error fetching short description translation
           setTranslatedShortDescription(shortDescription); // Fallback to original
         }
       };
@@ -159,8 +156,32 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
     }
   }, [shortDescription, language, productId]);
 
+  // Chuẩn hóa mô tả ngắn: giải mã HTML entities và loại bỏ thẻ HTML
+  const normalizeShortDescription = (input: string) => {
+    if (!input) return '';
+    try {
+      // Decode basic HTML entities first
+      const decoded = input
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>');
+
+      // Remove any HTML tags after decoding
+      const noTags = decoded.replace(/<[^>]*>/g, ' ');
+
+      return noTags.replace(/\s+/g, ' ').trim();
+    } catch {
+      return input;
+    }
+  };
+
+  const cleanShortDescription = normalizeShortDescription(translatedShortDescription || '');
+
   return (
-    <p className="mt-4 text-gray-600 text-lg" style={{width: '100%', margin: '0 auto'}}>{translatedShortDescription || ''}</p>
+    <p className="mt-4 text-gray-600 text-lg" style={{width: '100%', margin: '0 auto'}}>{cleanShortDescription}</p>
   );
 };
 
@@ -177,7 +198,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log("ProductFeatures translation data:", data); // Ghi log để debug
+            // ProductFeatures translation data for debug: data
             if (data && data.features) {
               setTranslatedFeatures(data.features);
             } else {
@@ -187,7 +208,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
             setTranslatedFeatures(features); // Fallback to original
           }
         } catch (error) {
-          console.error('Error fetching feature translations:', error);
+          // Error fetching feature translations
           setTranslatedFeatures(features); // Fallback to original
         }
       };
@@ -215,6 +236,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
   );
 };
 
+/*
 // Component hiển thị thông số kỹ thuật
 const ProductSpecifications = ({
   specifications,
@@ -222,7 +244,7 @@ const ProductSpecifications = ({
   specifications?: { key: string; value: string }[] | { [key: string]: string };
 }) => {
   const { t } = useLanguage();
-  
+
   if (!specifications) return null;
 
   // Convert specifications từ object sang array nếu cần
@@ -253,6 +275,7 @@ const ProductSpecifications = ({
     </div>
   );
 };
+*/
 
 export default function ProductDetail({ product }: { product: ProductType }) {
   const { t } = useLanguage();
@@ -271,14 +294,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   }, [product.name, t]);
 
   // State để theo dõi số lượt xem
-  const [viewCount, setViewCount] = useState<number>(0);
+  const [_viewCount, _setViewCount] = useState<number>(0);
 
   // State lưu số lượng sản phẩm
   const [quantity, setQuantity] = useState<number>(1);
 
   // State lưu phiên bản sản phẩm được chọn
   const [selectedVersion, setSelectedVersion] = useState<string>(
-    product.versions && product.versions.length > 0 ? product.versions[0].name : '',
+    product.versions && product.versions.length > 0 ? (product.versions[0]?.name ?? '') : '',
   );
 
   // State quản lý tùy chọn mới
@@ -288,16 +311,15 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
 
   // State tùy chọn đang chọn - ưu tiên chọn tùy chọn mặc định nếu có
-  const [selectedOption, setSelectedOption] = useState<string>(
-    product.defaultProductOption && product.productOptions?.includes(product.defaultProductOption)
-      ? product.defaultProductOption 
-      : product.productOptions && product.productOptions.length > 0 
-        ? product.productOptions[0] 
-        : '',
-  );
+  const [selectedOption, setSelectedOption] = useState<string>(() => {
+    const hasDefault = product.defaultProductOption && product.productOptions?.includes(product.defaultProductOption);
+    if (hasDefault) return product.defaultProductOption as string;
+    if (product.productOptions && product.productOptions.length > 0) return product.productOptions[0] as string;
+    return '';
+  });
 
   // State hiển thị tùy chọn hiện có
-  const [showOptions, setShowOptions] = useState(false);
+  const [_showOptions, _setShowOptions] = useState(false);
 
   // State cho việc kéo thả
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
@@ -307,7 +329,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [addedToCartMessage, setAddedToCartMessage] = useState<string>('');
 
   // Xử lý thêm tùy chọn mới
-  const handleAddOption = () => {
+  const _handleAddOption = () => {
     if (newOptionText.trim()) {
       setProductOptions([...productOptions, newOptionText.trim()]);
       setNewOptionText('');
@@ -315,14 +337,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
 
   // Xử lý xóa tùy chọn
-  const handleRemoveOption = (index: number) => {
+  const _handleRemoveOption = (index: number) => {
     const newOptions = [...productOptions];
     newOptions.splice(index, 1);
     setProductOptions(newOptions);
   };
 
   // Xử lý khi bắt đầu kéo
-  const handleDragStart = (index: number) => {
+  const _handleDragStart = (index: number) => {
     setDraggedItem(index);
   };
 
@@ -333,7 +355,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
     // Sắp xếp lại mảng
     const newOptions = [...productOptions];
-    const draggedOption = newOptions[draggedItem];
+    const draggedOption = newOptions[draggedItem] ?? '';
     newOptions.splice(draggedItem, 1);
     newOptions.splice(index, 0, draggedOption);
 
@@ -343,7 +365,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
 
   // Xử lý khi kết thúc kéo
-  const handleDragEnd = () => {
+  const _handleDragEnd = () => {
     setDraggedItem(null);
   };
 
@@ -373,13 +395,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // Lấy ảnh sản phẩm
   const getProductImage = () => {
     if (product.images && product.images.length > 0) {
-      const firstImage = product.images[0];
+      const firstImage = product.images?.[0];
       // Không sử dụng blob URLs
       if (typeof firstImage === 'string' && firstImage.startsWith('blob:')) {
         return '/images/placeholder/product-placeholder.svg';
       }
 
-      const imageUrl = typeof firstImage === 'string' ? firstImage : firstImage.url;
+      const imageUrl = typeof firstImage === 'string' ? firstImage : firstImage?.url || '';
       return fixImagePath(imageUrl);
     }
     return '/images/placeholder/product-placeholder.svg';
@@ -389,13 +411,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const calculateSelectedPrice = () => {
     // Nếu có giá tùy chọn, ưu tiên sử dụng giá của tùy chọn
     if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
-      return product.optionPrices[selectedOption].price;
+      return product.optionPrices[selectedOption]!.price;
     }
 
     // Nếu không có tùy chọn nào được chọn, sử dụng tùy chọn mặc định
-    if (!selectedOption && product.defaultProductOption && 
-        product.optionPrices && product.optionPrices[product.defaultProductOption]) {
-      return product.optionPrices[product.defaultProductOption].price;
+    if (!selectedOption && product.defaultProductOption &&
+        product.optionPrices && product.optionPrices[product.defaultProductOption!]) {
+      return product.optionPrices[product.defaultProductOption!]!.price;
     }
 
     // Ngược lại sử dụng giá của version
@@ -411,13 +433,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const calculateSelectedOriginalPrice = () => {
     // Nếu có giá gốc tùy chọn, ưu tiên sử dụng giá gốc của tùy chọn
     if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
-      return product.optionPrices[selectedOption].originalPrice;
+      return product.optionPrices[selectedOption]!.originalPrice;
     }
 
     // Nếu không có tùy chọn nào được chọn, sử dụng tùy chọn mặc định
-    if (!selectedOption && product.defaultProductOption && 
-        product.optionPrices && product.optionPrices[product.defaultProductOption]) {
-      return product.optionPrices[product.defaultProductOption].originalPrice;
+    if (!selectedOption && product.defaultProductOption &&
+        product.optionPrices && product.optionPrices[product.defaultProductOption!]) {
+      return product.optionPrices[product.defaultProductOption!]!.originalPrice;
     }
 
     // Ngược lại sử dụng giá gốc của version
@@ -447,7 +469,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     // Kiểm tra giá trong tùy chọn
     if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
       for (const option in product.optionPrices) {
-        const price = product.optionPrices[option].price;
+        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
         if (price < cheapestPrice) {
           cheapestPrice = price;
         }
@@ -474,10 +496,10 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     // Kiểm tra giá trong tùy chọn
     if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
       for (const option in product.optionPrices) {
-        const price = product.optionPrices[option].price;
+        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
         if (price < cheapestPrice) {
           cheapestPrice = price;
-          originalPrice = product.optionPrices[option].originalPrice;
+          originalPrice = product.optionPrices[option]?.originalPrice ?? 0;
         }
       }
     }
@@ -514,11 +536,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     let productImage = '/images/placeholder/product-placeholder.svg';
 
     if (product.images && product.images.length > 0) {
-      const firstImage = product.images[0];
+      const firstImage = product.images?.[0];
       // Xử lý đường dẫn ảnh
       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
         productImage = fixImagePath(firstImage);
-      } else if (typeof firstImage !== 'string' && firstImage.url) {
+      } else if (firstImage && typeof firstImage !== 'string' && firstImage.url) {
         productImage = fixImagePath(firstImage.url);
       }
     }
@@ -549,11 +571,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // Tăng số lượt xem khi người dùng truy cập trang
   useEffect(() => {
     // Tăng số lượt xem khi component được mount và chỉ mount lần đầu 
-    setViewCount((prev) => prev + 1);
+    _setViewCount((prev) => prev + 1);
 
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
     // Không tham chiếu đến viewCount trong effect để tránh vòng lặp vô hạn
-    console.log(`Đang xem sản phẩm: ${product.name}`);
+    // viewing product: product.name
   }, [product.id, product.name]); // Chỉ phụ thuộc vào ID và tên sản phẩm
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
@@ -662,8 +684,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               {/* Hiển thị giá */}
               <div className="mt-4 flex items-center">
                 <div className="text-3xl font-bold text-primary-600">
-                  {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                    ? formatCurrency(product.optionPrices[product.defaultProductOption].price)
+                  {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
+                    ? formatCurrency(product.optionPrices[product.defaultProductOption!]!.price)
                     : calculateCheapestPrice() === 0
                       ? t('product.free')
                       : formatCurrency(calculateCheapestPrice())}
@@ -672,16 +694,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 {/* Always show discount % */}
                 <>
                   <div className="ml-4 text-xl text-gray-500 line-through">
-                    {formatCurrency(product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                      ? product.optionPrices[product.defaultProductOption].originalPrice
+                    {formatCurrency(product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
+                      ? product.optionPrices[product.defaultProductOption!]!.originalPrice
                       : calculateOriginalPriceOfCheapest())}
                   </div>
                   <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
-                    -{product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
-                      ? (product.optionPrices[product.defaultProductOption].originalPrice > product.optionPrices[product.defaultProductOption].price
-                          ? Math.round(((product.optionPrices[product.defaultProductOption].originalPrice - 
-                            product.optionPrices[product.defaultProductOption].price) / 
-                            product.optionPrices[product.defaultProductOption].originalPrice) * 100)
+                    -{product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
+                      ? ((product.optionPrices[product.defaultProductOption!]!.originalPrice > product.optionPrices[product.defaultProductOption!]!.price)
+                          ? Math.round((((product.optionPrices[product.defaultProductOption!]!.originalPrice -
+                            product.optionPrices[product.defaultProductOption!]!.price) /
+                            Math.max(1, product.optionPrices[product.defaultProductOption!]!.originalPrice)) * 100))
                           : 80)
                       : (calculateOriginalPriceOfCheapest() > calculateCheapestPrice()
                           ? calculateCheapestDiscountPercentage()
@@ -796,10 +818,10 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     // Thêm sản phẩm hiện tại vào giỏ hàng
                     let productImage = '/images/placeholder/product-placeholder.svg';
                     if (product.images && product.images.length > 0) {
-                      const firstImage = product.images[0];
+                      const firstImage = product.images?.[0];
                       if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
                         productImage = fixImagePath(firstImage);
-                      } else if (typeof firstImage !== 'string' && firstImage.url) {
+                      } else if (firstImage && typeof firstImage !== 'string' && firstImage.url) {
                         productImage = fixImagePath(firstImage.url);
                       }
                     }

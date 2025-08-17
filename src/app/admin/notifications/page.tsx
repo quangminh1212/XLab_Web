@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+
 import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -280,6 +281,7 @@ function NotificationsPage() {
       }, 5000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [successMessage, errorMessage]);
 
   // Save settings

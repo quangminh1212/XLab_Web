@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+
+import { authOptions } from '@/lib/authOptions';
 import {
   getUsers,
   getAllUserEmails,
   getUserDataFromFile,
   getUserOrderStats,
 } from '@/lib/userService';
+
+export const runtime = 'nodejs';
 
 export async function GET() {
   try {

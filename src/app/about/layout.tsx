@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AboutLayout = ({ children }: { children: React.ReactNode }) => {

@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+
+import { NextRequest, NextResponse } from 'next/server';
+
 import { getProductById } from '@/lib/i18n/products';
 
 /**

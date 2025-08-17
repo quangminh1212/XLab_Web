@@ -1,8 +1,9 @@
+import crypto from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
-import crypto from 'crypto';
-import { User } from '@/models/UserModel';
+
 import { Transaction } from '@/models/TransactionModel';
+import { User } from '@/models/UserModel';
 
 // File paths cũ (fallback)
 const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
@@ -172,7 +173,7 @@ async function createNewUserFromEmail(email: string): Promise<User> {
   console.log(`Creating new user from email: ${email}`);
   const newUser: User = {
     id: Date.now().toString(),
-    name: email.split('@')[0],
+    name: (email.split('@')[0] ?? email) as string,
     email: email,
     image: undefined,
     isAdmin: false,
@@ -330,16 +331,17 @@ export async function updateUserBalance(email: string, amount: number): Promise<
     const users = await getUsers();
     const userIndex = users.findIndex((user) => user.email === email);
 
-    if (userIndex >= 0) {
-      users[userIndex].balance = (users[userIndex].balance || 0) + amount;
-      users[userIndex].updatedAt = new Date().toISOString();
+    if (userIndex >= 0 && users[userIndex]) {
+      users[userIndex]!.balance = (users[userIndex]!.balance || 0) + amount;
+      users[userIndex]!.updatedAt = new Date().toISOString();
       await saveUsers(users);
 
       // Tạo file riêng cho user này
-      const newUserData = createDefaultUserData(users[userIndex]);
+      const baseUser = users[userIndex]!;
+      const newUserData = createDefaultUserData(baseUser);
       await saveUserDataToFile(email, newUserData);
 
-      return users[userIndex];
+      return baseUser;
     }
   }
 
@@ -418,7 +420,10 @@ export async function addToUserCart(email: string, item: CartItem): Promise<void
 
   if (existingItemIndex > -1) {
     // Cập nhật số lượng
-    currentCart[existingItemIndex].quantity += item.quantity || 1;
+    const target = currentCart[existingItemIndex];
+    if (target) {
+      target.quantity += item.quantity || 1;
+    }
   } else {
     // Thêm mới
     currentCart.push({
@@ -515,7 +520,7 @@ export async function syncUserBalance(email: string): Promise<number> {
     let balanceFromUsers = 0;
     let balanceFromBalances = 0;
     let balanceFromUserFile = 0;
-    let errorMessages = [];
+    const errorMessages = [];
     let userData: UserData | null = null;
 
     // Get from user's individual file
@@ -654,9 +659,9 @@ async function updateUserBalanceInFile(email: string, amount: number): Promise<v
     const users = await getUsers();
     const userIndex = users.findIndex((user) => user.email === email);
 
-    if (userIndex >= 0) {
-      users[userIndex].balance = (users[userIndex].balance || 0) + amount;
-      users[userIndex].updatedAt = new Date().toISOString();
+    if (userIndex >= 0 && users[userIndex]) {
+      users[userIndex]!.balance = (users[userIndex]!.balance || 0) + amount;
+      users[userIndex]!.updatedAt = new Date().toISOString();
       await saveUsers(users);
     }
   } catch (error) {
@@ -896,21 +901,21 @@ async function syncUserDataWithoutCart(email: string): Promise<void> {
     const allUsers = await getUsers();
     const userIndex = allUsers.findIndex((u) => u.email === email);
     
-    if (userIndex >= 0) {
+    if (userIndex >= 0 && allUsers[userIndex]) {
       // Update user in users.json without changing cart data
       // Just pass the profile properties that are part of the User type
-      allUsers[userIndex] = {
-        ...allUsers[userIndex],
+      allUsers[userIndex]! = {
+        ...allUsers[userIndex]!,
         name: userData.profile.name,
         email: userData.profile.email,
         image: userData.profile.image,
-        isAdmin: userData.profile.isAdmin,
-        isActive: userData.profile.isActive,
-        balance: userData.profile.balance,
-        createdAt: userData.profile.createdAt,
+        isAdmin: userData.profile.isAdmin ?? false,
+        isActive: userData.profile.isActive ?? true,
+        balance: userData.profile.balance ?? 0,
+        createdAt: allUsers[userIndex]?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         lastLogin: userData.profile.lastLogin,
-      };
+      } as User;
       await saveUsers(allUsers);
     }
   } catch (error) {
@@ -1017,9 +1022,12 @@ export async function updateUserOrder(
 
     const orderIndex = userData.orders.findIndex((order) => order.id === orderId);
     if (orderIndex >= 0) {
+      const { id: _ignoreId, ...restUpdates } = updates as any;
+      const existing = userData.orders[orderIndex]!;
       userData.orders[orderIndex] = {
-        ...userData.orders[orderIndex],
-        ...updates,
+        ...existing,
+        ...restUpdates,
+        id: existing.id,
         updatedAt: new Date().toISOString(),
       };
 

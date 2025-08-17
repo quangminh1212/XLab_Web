@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../auth/[...nextauth]/route';
 import fs from 'fs/promises';
 import path from 'path';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+
+import { authOptions } from '@/lib/authOptions';
 
 const NOTIFICATIONS_FILE = path.join(process.cwd(), 'data', 'notifications.json');
 
@@ -109,15 +111,20 @@ export async function PUT(
     }
 
     // Cập nhật thông báo
+    const base = notifications[notificationIndex];
+    if (!base) {
+      return NextResponse.json({ error: 'Không tìm thấy thông báo' }, { status: 404 });
+    }
     const updatedNotification: Notification = {
-      ...notifications[notificationIndex],
-      title,
-      content,
-      type,
-      link: link || undefined,
-      priority,
-      expiresAt: expiresAt || undefined,
-      targetUsers: targetUsers || [],
+      ...base,
+      id: base.id,
+      title: String(title),
+      content: String(content),
+      type: type as Notification['type'],
+      link: link ? String(link) : undefined,
+      priority: priority as Notification['priority'],
+      expiresAt: expiresAt ? String(expiresAt) : undefined,
+      targetUsers: Array.isArray(targetUsers) ? targetUsers : [],
       updatedAt: new Date().toISOString(),
     };
 

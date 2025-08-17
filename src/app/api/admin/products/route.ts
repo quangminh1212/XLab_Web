@@ -1,11 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { Product, ProductCategory, ProductSpecification } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
 import { v4 as uuidv4 } from 'uuid';
+
+import { authOptions } from '@/lib/authOptions';
 import { getAllProducts, saveProduct, deleteProduct, updateProduct } from '@/lib/i18n/products';
+import { Product, ProductCategory, ProductSpecification } from '@/models/ProductModel';
+
+
 
 /**
  * Normalize language code from Accept-Language header
@@ -16,7 +20,7 @@ function normalizeLanguageHeader(lang: string | null): string {
   if (!lang) return 'vie'; // Default to Vietnamese
   
   // Extract primary language code before any quality values
-  const primaryLang = lang.split(',')[0].split('-')[0].toLowerCase();
+  const primaryLang = lang.split(',')[0]?.split('-')[0]?.toLowerCase() ?? 'vi';
   
   // Map to our supported codes
   if (primaryLang === 'en') return 'eng';

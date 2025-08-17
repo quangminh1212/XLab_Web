@@ -1,11 +1,9 @@
 'use client';
 
-import Link from 'next/link';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useCart } from '@/components/cart/CartContext';
-import { calculateCartTotals, formatCurrency } from '@/lib/utils';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
-// import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 import {
   AiOutlineShoppingCart,
   AiOutlinePlus,
@@ -14,8 +12,11 @@ import {
   AiOutlineTag,
   AiOutlineInfoCircle,
 } from 'react-icons/ai';
-import { motion } from 'framer-motion';
+
+import { useCart } from '@/components/cart/CartContext';
 import { useTranslation } from '@/i18n/client';
+import { calculateCartTotals, formatCurrency } from '@/lib/utils';
+// import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 
 // Kết hợp interface CartItem từ CartContext và utils
 interface CartItemWithVersion {

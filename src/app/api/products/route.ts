@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { getAllProducts } from '@/lib/i18n/products';
+export const runtime = 'nodejs';
+
 
 export async function GET(req: NextRequest) {
   try {
@@ -18,11 +21,11 @@ export async function GET(req: NextRequest) {
     const acceptLanguage = req.headers.get('accept-language');
     const language = langParam || acceptLanguage || 'vie';
 
-    console.log(`Getting products with language: ${language}`);
+    // console.debug(`Getting products with language: ${language}`);
 
     // Get all products using i18n library
     const allProducts = await getAllProducts(language);
-    
+
     // Filter by published status
     let productList = allProducts.filter((p) => p.isPublished !== false);
 
@@ -33,23 +36,23 @@ export async function GET(req: NextRequest) {
         // Handle both string array and object array formats
         return product.categories.some((cat: any) => {
           if (typeof cat === 'string') return cat === category;
-          if (cat.id) return cat.id === category || cat.slug === category;
+          if ((cat as any).id) return (cat as any).id === category || (cat as any).slug === category;
           return false;
         });
       });
-      console.log(`Filtered by category ${category}, found ${productList.length} products`);
+      // console.debug(`Filtered by category ${category}, found ${productList.length} products`);
     }
 
     // Filter by type if provided
     if (type) {
       productList = productList.filter((p) => p.type === type);
-      console.log(`Filtered by type ${type}, found ${productList.length} products`);
+      // console.debug(`Filtered by type ${type}, found ${productList.length} products`);
     }
 
     // Filter by featured if provided
     if (featured === 'true') {
       productList = productList.filter((p) => (p as any).isFeatured === true);
-      console.log(`Filtered by featured, found ${productList.length} products`);
+      // console.debug(`Filtered by featured, found ${productList.length} products`);
     }
 
     // Filter by search term if provided
@@ -62,7 +65,7 @@ export async function GET(req: NextRequest) {
           (product.shortDescription && product.shortDescription.toLowerCase().includes(searchLower))
         );
       });
-      console.log(`Filtered by search "${search}", found ${productList.length} products`);
+      // console.debug(`Filtered by search "${search}", found ${productList.length} products`);
     }
 
     // Sort products
@@ -84,13 +87,13 @@ export async function GET(req: NextRequest) {
     // Exclude specific product if exclude is provided
     if (exclude) {
       productList = productList.filter((p) => p.id !== exclude && p.slug !== exclude);
-      console.log(`Excluded product ${exclude}, remaining ${productList.length} products`);
+      // console.debug(`Excluded product ${exclude}, remaining ${productList.length} products`);
     }
 
     // Limit results if limit is provided
     if (limit && !isNaN(limit)) {
       productList = productList.slice(0, limit);
-      console.log(`Limited to ${productList.length} products`);
+      // console.debug(`Limited to ${productList.length} products`);
     }
 
     // Process blob URLs in images
@@ -113,14 +116,16 @@ export async function GET(req: NextRequest) {
       if (processedProduct.versions && processedProduct.versions.length > 0) {
         // Add price fields for compatibility with UI
         const firstVersion = processedProduct.versions[0];
-        (processedProduct as any).price = firstVersion.price;
-        (processedProduct as any).originalPrice = firstVersion.originalPrice;
+        if (firstVersion) {
+          (processedProduct as any).price = firstVersion.price;
+          (processedProduct as any).originalPrice = firstVersion.originalPrice;
 
-        // Calculate discount percentage if applicable
-        if (firstVersion.originalPrice > firstVersion.price) {
-          (processedProduct as any).discountPercentage = Math.round(
-            (1 - firstVersion.price / firstVersion.originalPrice) * 100,
-          );
+          // Calculate discount percentage if applicable
+          if (firstVersion.originalPrice > firstVersion.price) {
+            (processedProduct as any).discountPercentage = Math.round(
+              (1 - firstVersion.price / firstVersion.originalPrice) * 100,
+            );
+          }
         }
       }
 
@@ -132,8 +137,8 @@ export async function GET(req: NextRequest) {
       data: processedProducts,
       total: processedProducts.length,
     });
-  } catch (error) {
-    console.error('Error fetching products:', error);
+  } catch (_error) {
+    // console.error('Error fetching products:', _error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
 }
@@ -141,12 +146,12 @@ export async function GET(req: NextRequest) {
 // Helper function to get product price
 function getPrice(product: any): number {
   // Ưu tiên giá từ tùy chọn mặc định nếu có
-  if (product.defaultProductOption && 
-      product.optionPrices && 
+  if (product.defaultProductOption &&
+      product.optionPrices &&
       product.optionPrices[product.defaultProductOption]) {
     return product.optionPrices[product.defaultProductOption].price;
   }
-  
+
   if (product.price) return product.price;
   if (product.versions && product.versions.length > 0) return product.versions[0].price;
   return 0;

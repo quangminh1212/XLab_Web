@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+
+import { NextRequest, NextResponse } from 'next/server';
+
 import { Product } from '@/models/ProductModel';
 
 // Data file path

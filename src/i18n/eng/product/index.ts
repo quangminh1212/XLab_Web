@@ -1,6 +1,6 @@
+import canva from './canva.json';
 import chatgpt from './chatgpt.json';
 import grok from './grok.json';
-import canva from './canva.json';
 
 // Collection of all products
 const products = {

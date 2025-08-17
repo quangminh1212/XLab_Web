@@ -1,0 +1,11 @@
+# Ignore JS scripts from typed lint
+src/scripts/**
+src/components/auth/withAdminAuth.js
+
+
+# Health check and improvement scripts
+scripts/comprehensive-health-check.js
+scripts/gentle-improvements.js
+scripts/auto-fix-issues.js
+scripts/fix-syntax-errors.js
+scripts/quick-fix.js

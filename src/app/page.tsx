@@ -1,14 +1,12 @@
 'use client';
 
 // Thêm comment này để kiểm tra hot-reload
-import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
 import { CartItem } from '@/components/cart/CartContext';
-import ProductCard from '@/components/product/ProductCard';
 import { useCart } from '@/components/cart/CartContext';
+import ProductCard from '@/components/product/ProductCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Types
@@ -80,12 +78,12 @@ const getValidImageUrl = (product: Product): string => {
 
   // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
   if (product.images && product.images.length > 0) {
-    const imageUrl = product.images[0];
+    const imageUrl = product.images?.[0];
     // Kiểm tra xem đây là string hay object
     if (typeof imageUrl === 'string') {
       return imageUrl;
-    } else if (imageUrl.url) {
-      return imageUrl.url;
+    } else if (imageUrl && (imageUrl as any).url) {
+      return (imageUrl as any).url as string;
     }
   }
 
@@ -103,11 +101,11 @@ const getProductPrices = (product: Product): { price: number; originalPrice: num
   let price = 0;
   let originalPrice = 0;
   
-  if (product.defaultProductOption && 
-      product.optionPrices && 
+  if (product.defaultProductOption &&
+      product.optionPrices &&
       product.optionPrices[product.defaultProductOption]) {
-    price = product.optionPrices[product.defaultProductOption].price;
-    originalPrice = product.optionPrices[product.defaultProductOption].originalPrice;
+    price = product.optionPrices[product.defaultProductOption]!.price;
+    originalPrice = product.optionPrices[product.defaultProductOption]!.originalPrice;
   } else {
     // Fallback to regular price
     price = product.price || 0;
@@ -374,8 +372,8 @@ function HomePage() {
                       const prices = getProductPrices(product);
                         
                       return (
-                        <div key={product.id} className="aspect-[1/1.5]">
-                          <ProductCard 
+                        <div key={product.id}>
+                          <ProductCard
                             id={product.id}
                             name={product.name}
                             description={product.shortDescription || product.description || ''}
@@ -409,8 +407,8 @@ function HomePage() {
                       const prices = getProductPrices(product);
                       
                       return (
-                        <div key={product.id} className="aspect-[1/1.5]">
-                          <ProductCard 
+                        <div key={product.id}>
+                          <ProductCard
                             id={product.id}
                             name={product.name}
                             description={product.shortDescription || product.description || ''}

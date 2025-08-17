@@ -61,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ] as MetadataRoute.Sitemap;
 
-  // TODO: Thêm các trang động từ API hoặc database ở đây
+  // FUTURE: Add dynamic pages from API or database when needed
   // Ví dụ: /products/[id], etc.
 
   // Có thể fetch dữ liệu từ API hoặc sử dụng dữ liệu tĩnh

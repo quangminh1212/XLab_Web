@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import React, { useState, useEffect } from 'react';
 
 interface ProductImageProps {
   images: string[] | undefined;
@@ -10,14 +10,15 @@ interface ProductImageProps {
 }
 
 const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProps) => {
-  // Validate image URLs
+  // Validate and normalize image URLs
   const validateImageUrl = (url: string): string => {
-    if (!url) return '/images/placeholder/product-placeholder.jpg';
-    if (url.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg';
-    if (url.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
-    if (url.trim() === '') return '/images/placeholder/product-placeholder.jpg';
-
-    return url;
+    const placeholder = '/images/placeholder/product-placeholder.jpg';
+    if (!url) return placeholder;
+    const fixed = url.replace(/\\/g, '/');
+    if (fixed.startsWith('blob:')) return placeholder;
+    if (fixed.includes('undefined')) return placeholder;
+    if (fixed.trim() === '') return placeholder;
+    return fixed;
   };
 
   // Process the image array
@@ -40,7 +41,8 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
       setIsLoading(true);
       setImageFailed(false);
     }
-  }, [images]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [processedImages?.[0]]);
 
   // Fallback array if images is undefined
   const imageArray = processedImages.length
@@ -74,7 +76,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
 
   // Handle image error
   const handleImageError = () => {
-    console.error(`Không thể tải hình ảnh: ${mainImage}`);
+    // image load error for: mainImage
     setImageFailed(true);
     setIsLoading(false);
   };
@@ -96,7 +98,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
   };
 
   // Determine which image to show
-  const displayImage = imageFailed ? '/images/placeholder/product-placeholder.jpg' : mainImage;
+  const displayImage: string = (imageFailed ? '/images/placeholder/product-placeholder.jpg' : mainImage) || '/images/placeholder/product-placeholder.jpg';
 
   return (
     <div className="w-full">
@@ -112,6 +114,7 @@ const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProp
             src={displayImage}
             alt={name}
             fill
+            unoptimized
             className={`object-contain transition-opacity duration-300 ${
               isLoading ? 'opacity-0' : 'opacity-100'
             }`}

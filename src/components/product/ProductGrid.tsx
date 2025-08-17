@@ -71,10 +71,10 @@ const ProductGrid = ({
   // Tính giá từ các phiên bản và tùy chọn, ưu tiên lấy giá của tùy chọn mặc định
   const calculateMinPrice = (product: Product): number => {
     // Ưu tiên lấy giá từ tùy chọn mặc định nếu có
-    if (product.defaultProductOption && 
-        product.optionPrices && 
-        product.optionPrices[product.defaultProductOption]) {
-      return product.optionPrices[product.defaultProductOption].price;
+    if (product.defaultProductOption &&
+        product.optionPrices &&
+        product.optionPrices[product.defaultProductOption!]) {
+      return product.optionPrices[product.defaultProductOption!]!.price;
     }
 
     let minPrice = Infinity;
@@ -91,7 +91,7 @@ const ProductGrid = ({
     // Kiểm tra các tùy chọn sản phẩm
     if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
       Object.values(product.optionPrices).forEach((option) => {
-        if (option.price < minPrice) {
+        if (option && option.price < minPrice) {
           minPrice = option.price;
         }
       });
@@ -106,8 +106,8 @@ const ProductGrid = ({
   };
 
   // Tính giá gốc tương ứng với giá thấp nhất
-  const calculateOriginalPrice = (product: Product, minPrice: number): number | undefined => {
-    let correspondingOriginalPrice;
+  const calculateOriginalPrice = (product: Product, minPrice: number): number => {
+    let correspondingOriginalPrice: number | undefined; // used to compute discount, not returned directly
 
     // Nếu giá thấp nhất từ version
     if (product.versions && product.versions.length > 0) {
@@ -118,16 +118,16 @@ const ProductGrid = ({
     }
 
     // Nếu giá thấp nhất từ optionPrice
-    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+    if (product.optionPrices && typeof product.optionPrices === 'object' && Object.keys(product.optionPrices).length > 0) {
       for (const key in product.optionPrices) {
-        if (product.optionPrices[key].price === minPrice) {
-          return product.optionPrices[key].originalPrice;
+        if (product.optionPrices[key]?.price === minPrice) {
+          return product.optionPrices[key]?.originalPrice ?? minPrice * 5;
         }
       }
     }
 
     // Sử dụng giá gốc cố định nếu có
-    return product.originalPrice;
+    return product.originalPrice ?? minPrice * 5;
   };
 
   // Xử lý category từ sản phẩm
@@ -137,9 +137,9 @@ const ProductGrid = ({
     if (typeof category === 'string') {
       return category;
     }
-    
+
     if (typeof category === 'object' && category !== null) {
-      const categoryObj = category as any;
+      const categoryObj = category as { name?: unknown; id?: unknown };
       
       // Try to get string representation from the category object
       if (categoryObj.name && typeof categoryObj.name === 'string') {
@@ -165,7 +165,7 @@ const ProductGrid = ({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-6 auto-rows-fr`}>
+      <div className={`grid ${getColumnsClass()} gap-6`}>
         {products.map((product) => {
           // Extract category as string only
           let categoryString;
@@ -185,8 +185,8 @@ const ProductGrid = ({
               product.optionPrices && 
               product.optionPrices[product.defaultProductOption]) {
             const defaultOption = product.optionPrices[product.defaultProductOption];
-            finalPrice = defaultOption.price;
-            displayOriginalPrice = defaultOption.originalPrice;
+            finalPrice = defaultOption?.price ?? 0;
+            displayOriginalPrice = defaultOption?.originalPrice ?? 0;
             
             // If originalPrice is still not valid, calculate 80% discount
             if (!displayOriginalPrice || displayOriginalPrice <= finalPrice) {
@@ -222,10 +222,10 @@ const ProductGrid = ({
             weeklyPurchases: product.weeklyPurchases ? Number(product.weeklyPurchases) : undefined,
           };
 
-          console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
+          // debug: Safe props computed
 
           return (
-            <div key={safeProps.key} className="h-full aspect-[1/1] flex">
+            <div key={safeProps.key} className="h-full flex">
               <ProductCard
                 id={safeProps.id}
                 name={safeProps.name}
