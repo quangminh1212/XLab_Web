@@ -24,7 +24,6 @@
     "fix:all": "node scripts/fix-all-issues.js",
     "type-check": "tsc --noEmit",
     "analyze": "cross-env ANALYZE=true next build",
-
     "check": "npm run lint && npm run type-check",
     "prepare": "node scripts/fix-next-errors.js",
     "postinstall": "node scripts/fix-next-errors.js",
@@ -39,6 +38,7 @@
     "@tinymce/tinymce-react": "6.1.0",
     "@types/qrcode": "1.5.5",
     "@types/uuid": "10.0.0",
+    "@vercel/blob": "1.1.1",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cssnano": "7.0.7",
