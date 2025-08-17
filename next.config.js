@@ -35,7 +35,6 @@ const nextConfig = {
     ],
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
-      { protocol: 'http', hostname: '**' },
     ],
     formats: ['image/webp', 'image/avif'],
     // Bật unoptimized toàn cục để tránh mọi vấn đề tối ưu ảnh trên host (Vercel)
@@ -144,12 +143,7 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          {
-            key: 'Content-Security-Policy',
-            value: process.env.NODE_ENV === 'production'
-              ? "default-src 'self'; img-src 'self' data: blob: https: http: *; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;"
-              : "",
-          },
+          // CSP được set per-request trong middleware để có nonce động
           {
             key: 'Permissions-Policy',
             value: 'geolocation=(), camera=(), microphone=(), browsing-topics=()',
