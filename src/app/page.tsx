@@ -4,6 +4,8 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
+import { metadata } from './page.metadata';
+
 import { CartItem } from '@/components/cart/CartContext';
 import { useCart } from '@/components/cart/CartContext';
 import { ProductCard } from '@/features/products/components';
@@ -30,11 +32,11 @@ interface Product {
   isAccount?: boolean;
   type?: string;
   defaultProductOption?: string;
-  optionPrices?: { 
-    [key: string]: { 
-      price: number; 
-      originalPrice: number 
-    } 
+  optionPrices?: {
+    [key: string]: {
+      price: number;
+      originalPrice: number
+    }
   };
   productOptions?: string[];
 }
@@ -118,7 +120,7 @@ function HomePage() {
       const dateB = new Date(b.createdAt || '0');
       return dateB.getTime() - dateA.getTime();
     });
-  
+
   // Lấy số lượng sản phẩm hiển thị theo giá trị visibleProductCount
   const newProducts = sortedNewProducts.slice(0, visibleProductCount);
 
@@ -216,7 +218,7 @@ function HomePage() {
                   title={t('home.domesticProduct')}
                   description={t('home.vietnamDevs')}
                 />
-                
+
                 <FeatureCard
                   icon={
                     <svg
@@ -231,7 +233,7 @@ function HomePage() {
                   title={t('home.support247')}
                   description={t('home.supportTeam')}
                 />
-                
+
                 <FeatureCard
                   icon={
                     <svg
@@ -250,7 +252,7 @@ function HomePage() {
                   title={t('home.highSecurity')}
                   description={t('home.encryptedData')}
                 />
-                
+
                 <FeatureCard
                   icon={
                     <svg
@@ -270,7 +272,7 @@ function HomePage() {
                   title={t('home.reasonablePrice')}
                   description={t('home.budgetOptions')}
                 />
-                
+
                 <FeatureCard
                   icon={
                     <svg
@@ -285,7 +287,7 @@ function HomePage() {
                   title={t('home.aiIntegration')}
                   description={t('home.aiSupport')}
                 />
-                
+
                 <FeatureCard
                   icon={
                     <svg
@@ -329,7 +331,7 @@ function HomePage() {
                     {featuredProducts.map((product) => {
                       // Get prices based on default option
                       const prices = getDisplayPrices(product);
-                        
+
                       return (
                         <div key={product.id}>
                           <ProductCard
@@ -364,7 +366,7 @@ function HomePage() {
                     {newProducts.map((product) => {
                       // Get prices based on default option
                       const prices = getDisplayPrices(product);
-                      
+
                       return (
                         <div key={product.id}>
                           <ProductCard
@@ -385,7 +387,7 @@ function HomePage() {
                       );
                     })}
                   </div>
-                  
+
                   {/* Nút xem thêm sản phẩm mới */}
                   {sortedNewProducts.length > visibleProductCount && (
                     <div className="flex justify-center mt-6">
@@ -394,10 +396,10 @@ function HomePage() {
                         className="bg-primary-100 hover:bg-primary-200 text-primary-800 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
                       >
                         {t('home.loadMore')}
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          viewBox="0 0 20 20" 
-                          fill="currentColor" 
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
                           className="w-5 h-5"
                         >
                           <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.04 1.08l-5.25 5.5a.75.75 0 010 1.08l-5.25-5.5a.75.75 0 111.04-1.08l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />

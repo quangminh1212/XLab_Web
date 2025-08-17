@@ -76,7 +76,13 @@ export async function generateMetadata(
   return {
     title,
     description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: {
+        'vi-VN': url,
+        'en-US': url,
+      },
+    },
     openGraph: {
       type: 'website',
       url,
@@ -126,6 +132,24 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     //   : undefined;
 
     // Truyền dữ liệu sản phẩm sang client component
+        {/* UI Breadcrumbs */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+          {/* Lazy import để tránh SSR vấn đề */}
+          {await (async () => {
+            const { default: Breadcrumbs } = await import('@/components/navigation/Breadcrumbs');
+            const Comp = Breadcrumbs as any;
+            return (
+              <Comp
+                items={[
+                  { name: 'Trang chủ', href: '/' },
+                  { name: 'Sản phẩm', href: '/products' },
+                  { name: product.name },
+                ]}
+              />
+            );
+          })()}
+        </div>
+
     return (
       <>
         {/* JSON-LD Product structured data */}
