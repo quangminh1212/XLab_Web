@@ -5,9 +5,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
+import { put } from '@vercel/blob';
 
 import { authOptions } from '@/lib/auth';
-import { createDirectory } from '@/lib/fileSystem';
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     const width = formData.get('width') ? parseInt(formData.get('width') as string, 10) : undefined;
     const height = formData.get('height') ? parseInt(formData.get('height') as string, 10) : undefined;
     const quality = formData.get('quality') ? parseInt(formData.get('quality') as string, 10) : 80;
-    const productId = formData.get('productId') as string;
+    const productId = (formData.get('productId') as string) || 'misc';
 
     if (!imageUrl) {
       return NextResponse.json(
@@ -35,12 +35,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let imageBuffer;
-    let originalFilename;
+    let imageBuffer: Buffer;
+    let originalFilename: string | undefined;
 
     // Check if image is a local path or external URL
     if (imageUrl.startsWith('/')) {
-      // Local path - read from filesystem
+      // Local path - read from filesystem (dev only)
       try {
         const filePath = path.join(process.cwd(), 'public', imageUrl);
         imageBuffer = fs.readFileSync(filePath);
@@ -58,8 +58,6 @@ export async function POST(req: NextRequest) {
         const response = await fetch(imageUrl);
         if (!response.ok) throw new Error(`Failed to fetch image: ${response.status}`);
         imageBuffer = Buffer.from(await response.arrayBuffer());
-        
-        // Extract filename from URL
         const urlParts = new URL(imageUrl).pathname.split('/');
         originalFilename = urlParts[urlParts.length - 1];
       } catch (error) {
@@ -73,10 +71,10 @@ export async function POST(req: NextRequest) {
 
     // Get image info
     const metadata = await sharp(imageBuffer).metadata();
-    
+
     // Process image with sharp
     let sharpInstance = sharp(imageBuffer);
-    
+
     // Resize if dimensions provided
     if (width || height) {
       sharpInstance = sharpInstance.resize({
@@ -86,7 +84,7 @@ export async function POST(req: NextRequest) {
         withoutEnlargement: true
       });
     }
-    
+
     // Set quality and format
     const outputFormat = metadata.format === 'png' ? 'png' : 'jpeg';
     if (outputFormat === 'jpeg') {
@@ -94,37 +92,53 @@ export async function POST(req: NextRequest) {
     } else {
       sharpInstance = sharpInstance.png({ quality });
     }
-    
+
     // Generate output filename
     const timestamp = Date.now();
     const uniqueId = uuidv4().slice(0, 8);
     const fileExtension = outputFormat === 'jpeg' ? 'jpg' : outputFormat;
     const resizedFilename = `${path.parse(originalFilename || 'image').name}-resized-${timestamp}-${uniqueId}.${fileExtension}`;
-    
-    // Ensure directory exists
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'products', productId);
-    await createDirectory(uploadDir);
-    
-    // Save the processed image
-    const outputPath = path.join(uploadDir, resizedFilename);
-    const publicPath = `/uploads/products/${productId}/${resizedFilename}`;
-    
-    await sharpInstance.toFile(path.join(process.cwd(), 'public', publicPath));
-    
-    // Get the metadata of the resized image
-    const resizedImageInfo = await sharp(path.join(process.cwd(), 'public', publicPath)).metadata();
-    const stats = fs.statSync(path.join(process.cwd(), 'public', publicPath));
-    
-    return NextResponse.json({
-      url: publicPath,
-      imageInfo: {
-        width: resizedImageInfo.width,
-        height: resizedImageInfo.height,
-        format: resizedImageInfo.format,
-        size: stats.size
+
+    // Upload to Vercel Blob first
+    const key = `uploads/products/${productId}/${resizedFilename}`.replace(/\\/g, '/');
+    const processedBuffer = await sharpInstance.toBuffer();
+
+    try {
+      const blob = await put(key, processedBuffer, {
+        access: 'public',
+        contentType: outputFormat === 'png' ? 'image/png' : 'image/jpeg',
+      });
+      return NextResponse.json({
+        url: blob.url,
+        imageInfo: {
+          width: metadata.width,
+          height: metadata.height,
+          format: outputFormat,
+          size: processedBuffer.length,
+        }
+      });
+    } catch (err) {
+      console.warn('Blob upload failed, falling back to local file write (dev only):', err);
+
+      // Fallback local write (dev only)
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'products', productId);
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
       }
-    });
-    
+      const outputPath = path.join(uploadDir, resizedFilename);
+      fs.writeFileSync(outputPath, processedBuffer);
+      const publicPath = `/uploads/products/${productId}/${resizedFilename}`;
+
+      return NextResponse.json({
+        url: publicPath,
+        imageInfo: {
+          width: metadata.width,
+          height: metadata.height,
+          format: outputFormat,
+          size: processedBuffer.length,
+        }
+      });
+    }
   } catch (error) {
     console.error('Error processing image:', error);
     return NextResponse.json(
@@ -132,4 +146,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}
