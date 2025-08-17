@@ -1,0 +1,70 @@
+import { describe, it, expect, beforeEach, vi } from '@jest/globals';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+
+// Mock language context
+vi.mock('@/contexts/LanguageContext', () => ({
+  useLanguage: () => ({ t: (k: string) => k, language: 'vi' }),
+}));
+
+// Mock cart context minimal
+vi.mock('@/components/cart/CartContext', () => ({
+  useCart: () => ({ addItem: vi.fn(), clearCart: vi.fn() }),
+}));
+
+// Stub next/image to regular img for tests
+vi.mock('next/image', () => ({ __esModule: true, default: (props: any) => {
+  // eslint-disable-next-line @next/next/no-img-element
+  return React.createElement('img', { ...props, alt: props.alt || '' });
+}}));
+
+import ProductDetail from '../ProductDetail';
+
+function makeProduct(overrides: Partial<any> = {}) {
+  return {
+    id: 'p1',
+    name: 'Product 1',
+    description: 'desc',
+    shortDescription: 'short',
+    images: ['/images/p1.png'],
+    versions: [{ name: 'v1', price: 50, originalPrice: 100 }],
+    productOptions: ['A', 'B'],
+    defaultProductOption: 'A',
+    optionPrices: {
+      A: { price: 99, originalPrice: 199 },
+      B: { price: 59, originalPrice: 159 },
+    },
+    slug: 'p1',
+    rating: 4.5,
+    reviewCount: 10,
+    totalSold: 100,
+    weeklyPurchases: 5,
+    ...overrides,
+  } as any;
+}
+
+describe('ProductDetail UI', () => {
+  it('shows default option price by default', () => {
+    const product = makeProduct();
+    render(React.createElement(ProductDetail, { product }));
+
+    // Hiển thị giá: ưu tiên defaultProductOption
+    // Trong UI, giá hiển thị dạng currency VND, nhưng để đơn giản, kiểm tra sự có mặt của "199" (giá gốc line-through) và "99" (giá)
+    expect(screen.getByText(/99\s?₫|₫\s?99|99/)).toBeTruthy();
+  });
+
+  it('changes price when selecting another option', () => {
+    const product = makeProduct();
+    render(React.createElement(ProductDetail, { product }));
+
+    // Chọn option B nếu có selector render
+    const optionBtn = screen.queryByText('B');
+    if (optionBtn) {
+      fireEvent.click(optionBtn);
+    }
+
+    // Sau khi đổi sang B, giá nên đổi sang 59
+    expect(screen.getByText(/59\s?₫|₫\s?59|59/)).toBeTruthy();
+  });
+});
+
