@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 import ProductGrid from './ProductGrid';
+import { getDisplayPrices } from '@/features/products/services/pricing';
 
 interface OptionPrice {
   price: number;
@@ -121,22 +122,7 @@ export default function RelatedProducts({
     const safeName = String(product.name || '');
     const safeDescription = String(product.shortDescription || product.description || '');
 
-    let safePrice = 0;
-    let safeOriginalPrice = 0;
-
-    if (product.defaultProductOption &&
-        product.optionPrices &&
-        product.optionPrices[product.defaultProductOption!]) {
-      safePrice = product.optionPrices[product.defaultProductOption!]!.price;
-      safeOriginalPrice = product.optionPrices[product.defaultProductOption!]!.originalPrice;
-    } else {
-      safePrice = Number(product.price) || 0;
-      safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : 0;
-    }
-
-    if (!safeOriginalPrice || safeOriginalPrice <= safePrice) {
-      safeOriginalPrice = safePrice * 5;
-    }
+    const { price: safePrice, originalPrice: safeOriginalPrice } = getDisplayPrices(product);
 
     let safeImage = '';
     if (product.imageUrl) {

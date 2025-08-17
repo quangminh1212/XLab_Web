@@ -463,68 +463,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     return 0;
   };
 
-  // Tính toán giá rẻ nhất trong tất cả các tùy chọn
-  const calculateCheapestPrice = () => {
-    let cheapestPrice = Number.MAX_VALUE;
-
-    // Kiểm tra giá trong tùy chọn
-    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-      for (const option in product.optionPrices) {
-        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
-        if (price < cheapestPrice) {
-          cheapestPrice = price;
-        }
-      }
-    }
-
-    // Kiểm tra giá trong versions
-    if (product.versions && product.versions.length > 0) {
-      for (const version of product.versions) {
-        if (version.price < cheapestPrice) {
-          cheapestPrice = version.price;
-        }
-      }
-    }
-
-    return cheapestPrice === Number.MAX_VALUE ? 0 : cheapestPrice;
-  };
-
-  // Tính toán giá gốc của tùy chọn có giá rẻ nhất
-  const calculateOriginalPriceOfCheapest = () => {
-    let cheapestPrice = Number.MAX_VALUE;
-    let originalPrice = 0;
-
-    // Kiểm tra giá trong tùy chọn
-    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-      for (const option in product.optionPrices) {
-        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
-        if (price < cheapestPrice) {
-          cheapestPrice = price;
-          originalPrice = product.optionPrices[option]?.originalPrice ?? 0;
-        }
-      }
-    }
-
-    // Kiểm tra giá trong versions
-    if (product.versions && product.versions.length > 0) {
-      for (const version of product.versions) {
-        if (version.price < cheapestPrice) {
-          cheapestPrice = version.price;
-          originalPrice = version.originalPrice;
-        }
-      }
-    }
-
-    return originalPrice;
-  };
-
-  // Tính phần trăm giảm giá cho tùy chọn rẻ nhất
+  // Tính phần trăm giảm giá cho tùy chọn rẻ nhất - dùng pricing service
   const calculateCheapestDiscountPercentage = () => {
-    const originalPrice = calculateOriginalPriceOfCheapest();
-    const price = calculateCheapestPrice();
+    const originalPrice = getOriginalOfCheapest(product);
+    const price = getCheapestPrice(product);
 
     if (originalPrice > price) {
-      return Math.round(((originalPrice - price) / originalPrice) * 100);
+      return Math.round(((originalPrice - price) / Math.max(1, originalPrice)) * 100);
     }
     return 0;
   };
