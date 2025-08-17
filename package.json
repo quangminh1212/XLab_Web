@@ -30,7 +30,9 @@
     "health-check": "node scripts/comprehensive-health-check.js",
     "health-improve": "node scripts/gentle-improvements.js",
     "build:log": "node scripts/build-with-logger.js",
-    "logs:gc": "node scripts/logs-gc.js"
+    "logs:gc": "node scripts/logs-gc.js",
+    "test": "jest -c jest.config.ts",
+    "test:watch": "jest -c jest.config.ts --watch"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
