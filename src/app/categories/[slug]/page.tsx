@@ -1,5 +1,4 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -8,11 +7,32 @@ import React from 'react';
 import ProductCard from '@/components/product/ProductCard';
 import ProductImage from '@/components/product/ProductImage';
 import { categories, products } from '@/data/mockData';
+import { siteConfig } from '@/config/siteConfig';
 
 interface CategoryPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const category = categories.find((cat) => cat.slug === slug);
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
+  if (!category) {
+    return { title: `Danh mục không tồn tại | ${siteConfig.name}`, robots: { index: false, follow: false }, alternates: { canonical: `${baseUrl}/categories/${slug}` } };
+  }
+  const title = `${category.name} | ${siteConfig.name}`;
+  const desc = category.description || siteConfig.seo.defaultDescription;
+  const url = `${baseUrl}/categories/${category.slug}`;
+  const image = category.imageUrl || siteConfig.seo.ogImage;
+  return {
+    title,
+    description: desc,
+    alternates: { canonical: url },
+    openGraph: { type: 'website', url, title, description: desc, images: [{ url: image, width: 1200, height: 630, alt: category.name }] },
+    twitter: { card: 'summary_large_image', title, description: desc, images: [image], creator: siteConfig.seo.twitterHandle },
+  };
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
