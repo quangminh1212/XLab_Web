@@ -2,21 +2,25 @@
   "id": "8a1f6e7b-a5ca-4ac0-ad28-703f51f0b1cd",
   "name": "XLab Sample Product",
   "slug": "xlab-sample-product",
-  "description": "<p dir=\"auto\">Description is being updated.</p>",
-  "shortDescription": "New product – content will be updated.",
+  "description": "<p dir=\"auto\">XLab Sample Product is a demo software item to illustrate product display, SEO optimization (metadata + JSON-LD), and multilingual i18n structure. Ideal for showcasing features, UI/UX testing, and checkout flow experiments.</p><ul><li>i18n structure (vi/en)</li><li>SEO ready: metadata + JSON-LD Product</li><li>Extensible: versions, options, and pricing</li></ul>",
+  "shortDescription": "Sample product for UI/SEO/i18n demo at XLab.",
   "isPublished": true,
   "images": [
     "/images/products/xlab-sample-product/cover.png"
   ],
   "descriptionImages": [],
-  "features": [],
+  "features": [
+    "Bilingual i18n structure (vi/en)",
+    "SEO optimization: metadata + JSON-LD Product",
+    "Extensible model: versions, options, and pricing"
+  ],
   "requirements": [],
   "specifications": [],
   "categories": [],
   "versions": [
     {
       "name": "Default",
-      "description": "Default version",
+      "description": "Default version with complete UI/SEO/i18n demo features",
       "price": 99000,
       "originalPrice": 199000,
       "features": []
