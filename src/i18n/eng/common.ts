@@ -43,6 +43,8 @@ const common = {
   'product.viewDetails': 'View details',
   'product.weeklyPurchases': 'Purchases/week',
   'product.totalSold': 'Sold',
+  'product.added': 'Added to cart',
+
 
 
   // Vouchers

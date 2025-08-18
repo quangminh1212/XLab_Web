@@ -43,6 +43,8 @@ const common = {
   'product.viewDetails': 'Xem chi tiết',
   'product.weeklyPurchases': 'Lượt mua/tuần',
   'product.totalSold': 'Đã bán',
+  'product.added': 'Đã thêm vào giỏ',
+
 
   // Vouchers
   'voucher.title': 'Mã giảm giá',
