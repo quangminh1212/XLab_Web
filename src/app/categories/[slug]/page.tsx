@@ -53,7 +53,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+      <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
         <div className="mb-8">
           <Link href="/categories" className="text-primary-600 flex items-center mb-4 text-sm">
             <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

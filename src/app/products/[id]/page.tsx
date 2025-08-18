@@ -12,7 +12,7 @@ import { Product } from '@/models/ProductModel';
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {
   return (
-    <div className="container mx-auto px-4 py-8 animate-pulse">
+    <div className="container mx-auto px-0 sm:px-4 py-8 animate-pulse">
       <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -191,7 +191,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsLd) }} />
 
         {/* Phần chính sách bảo hành */}
-        <div className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="mt-12 max-w-6xl mx-auto px-0 sm:px-6 lg:px-8 mb-12">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Chính sách bảo hành</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -229,7 +229,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Phần thông tin hỗ trợ khách hàng */}
-        <div className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="mt-12 max-w-6xl mx-auto px-0 sm:px-6 lg:px-8 mb-12">
           <div className="bg-gradient-to-r from-primary-50 to-primary-100 p-6 rounded-lg shadow-sm">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-semibold text-gray-800 mb-2">Cần hỗ trợ thêm về sản phẩm?</h2>

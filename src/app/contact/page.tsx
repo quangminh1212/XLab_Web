@@ -85,7 +85,7 @@ export default function ContactPage() {
     <div>
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('contact.pageTitle')}</h1>
           <p className="text-xl text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl">
             {t('contact.pageSubtitle')}
@@ -95,7 +95,7 @@ export default function ContactPage() {
 
       {/* Contact Form and Information */}
       <section className="py-16">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>

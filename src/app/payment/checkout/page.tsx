@@ -87,7 +87,7 @@ export default function CheckoutPage() {
 
   if (!productName || amount <= 0) {
     return (
-      <div className="container mx-auto px-4 py-12 text-center">
+      <div className="container mx-auto px-0 sm:px-4 py-12 text-center">
         <h1 className="text-3xl font-bold mb-6">Thông tin thanh toán không hợp lệ</h1>
         <p className="mb-6">
           Không tìm thấy thông tin sản phẩm hoặc số tiền thanh toán không chính xác.
@@ -106,7 +106,7 @@ export default function CheckoutPage() {
     <div>
       {/* Page Header */}
       <section className="bg-teal-600 text-white py-8 md:py-12">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-0 sm:px-4">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Thanh toán</h1>
           <p className="text-base md:text-lg max-w-3xl">
             Hoàn tất đơn hàng của bạn với các phương thức thanh toán an toàn.
@@ -116,7 +116,7 @@ export default function CheckoutPage() {
 
       {/* Checkout Process */}
       <section className="py-8 md:py-12">
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="container mx-auto px-0 sm:px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="md:col-span-2 space-y-6">
             <div className="bg-white rounded-lg shadow-md p-4 md:p-6">

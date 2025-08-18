@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PaymentPage() {
   return (
-    <div className="mx-auto px-4 py-12 max-w-[98%] md:max-w-5xl">
+    <div className="mx-auto px-0 sm:px-4 py-12 max-w-full md:max-w-5xl">
       <h1 className="text-3xl font-bold text-center mb-8 text-balance">Tùy chọn thanh toán</h1>
 
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">

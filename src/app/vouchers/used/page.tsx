@@ -63,7 +63,7 @@ export default function UsedVouchersPage() {
 
   if (status === 'loading') {
     return (
-      <div className="mx-auto py-8 px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
+      <div className="mx-auto py-8 px-0 sm:px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-600"></div>
         </div>
@@ -73,7 +73,7 @@ export default function UsedVouchersPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <div className="mx-auto py-8 px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
+      <div className="mx-auto py-8 px-0 sm:px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
         <div className="text-center py-12">
           <h2 className="text-xl font-semibold mb-4">
             Bạn cần đăng nhập để xem voucher đã sử dụng
@@ -90,7 +90,7 @@ export default function UsedVouchersPage() {
   }
 
   return (
-    <div className="mx-auto py-8 px-4 min-h-screen max-w-full sm:max-w-xl md:max-w-2xl">
+    <div className="mx-auto py-8 px-0 sm:px-4 min-h-screen max-w-full sm:max-w-xl md:max-w-2xl">
       <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center text-balance">Voucher đã sử dụng</h1>
 
       <div className="mb-4 flex justify-between items-center">

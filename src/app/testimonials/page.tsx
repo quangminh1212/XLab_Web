@@ -208,7 +208,7 @@ export default function TestimonialsPage() {
 
       {/* Content */}
       <section className="py-16">
-        <div className="mx-auto px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           {activeTab === 'clients' && (
             <div className="animate-fadeIn">
               <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">

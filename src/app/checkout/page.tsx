@@ -181,7 +181,7 @@ export default function CheckoutPage() {
     <div>
       {/* Page Header */}
       <section className="bg-teal-600 text-white py-8 md:py-12">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-0 sm:px-4">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">{t('checkout.title')}</h1>
           <p className="text-base md:text-lg max-w-3xl">
             {t('checkout.subtitle')}
@@ -191,7 +191,7 @@ export default function CheckoutPage() {
 
       {/* Checkout Process */}
       <section className="py-8 md:py-12">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-0 sm:px-4">
           <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
             {/* Left Column - Payment Methods */}
             <div className="lg:w-2/3">

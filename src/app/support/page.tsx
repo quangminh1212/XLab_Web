@@ -92,7 +92,7 @@ export default function SupportPage() {
     <div>
       {/* Page Header */}
       <section className="bg-primary-600 text-white py-16">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Hỗ trợ & FAQ</h1>
           <p className="text-xl max-w-3xl">
             Tìm câu trả lời nhanh chóng cho câu hỏi của bạn hoặc liên hệ với đội ngũ hỗ trợ của
@@ -103,7 +103,7 @@ export default function SupportPage() {
 
       {/* Quick Support Links */}
       <section className="bg-white py-12 border-b">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-gray-50 p-6 rounded-lg text-center hover:shadow-md transition-shadow">
               <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -197,7 +197,7 @@ export default function SupportPage() {
 
       {/* Search */}
       <section className="py-12">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold text-center mb-8">Bạn cần trợ giúp?</h2>
             <div className="relative">
@@ -229,7 +229,7 @@ export default function SupportPage() {
 
       {/* FAQ Sections */}
       <section className="py-12 bg-gray-50">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <h2 className="text-3xl font-bold text-center mb-12">Câu hỏi thường gặp</h2>
 
           <div className="mb-12">
@@ -288,7 +288,7 @@ export default function SupportPage() {
 
       {/* Support Options */}
       <section className="py-16">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <h2 className="text-3xl font-bold text-center mb-12">Tùy chọn hỗ trợ</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -383,7 +383,7 @@ export default function SupportPage() {
 
       {/* Video Tutorials */}
       <section className="py-16 bg-gray-50">
-        <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
           <h2 className="text-3xl font-bold text-center mb-4">Video hướng dẫn</h2>
           <p className="text-center text-gray-600 max-w-3xl mx-auto mb-12">
             Xem các video hướng dẫn cách sử dụng các tính năng của phần mềm XLab
@@ -480,7 +480,7 @@ export default function SupportPage() {
 
       {/* CTA */}
       <section className="py-16 bg-primary-600 text-white">
-        <div className="mx-auto px-4 text-center max-w-[98%] md:max-w-4xl xl:max-w-5xl">
+        <div className="mx-auto px-0 sm:px-4 text-center max-w-full md:max-w-4xl xl:max-w-5xl">
           <h2 className="text-3xl font-bold mb-6">Vẫn chưa tìm thấy câu trả lời?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giúp đỡ bạn với bất kỳ câu hỏi nào.

@@ -9,7 +9,7 @@ import { categories } from '@/data/mockData';
 export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+      <div className="mx-auto px-0 sm:px-4 max-w-full xl:max-w-[1280px] 2xl:max-w-[1400px]">
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 text-balance">Danh mục sản phẩm</h1>
           <p className="text-gray-600 text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl mx-auto">
