@@ -173,7 +173,7 @@ function HomePage() {
               <span className="text-gray-900">X</span>
               <span className="text-primary-500">Lab</span>
             </h1>
-            <p className="text-responsive-lg text-gray-600 max-w-3xl mb-6 sm:mb-8">
+            <p className="text-responsive-lg text-gray-600 text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl mb-6 sm:mb-8">
               {t('home.slogan')}
             </p>
 
