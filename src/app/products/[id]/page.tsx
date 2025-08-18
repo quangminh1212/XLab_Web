@@ -84,7 +84,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title,
     description: desc,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: {
+        'vi-VN': url,
+        'en-US': url.replace(siteConfig.url, `${siteConfig.url}/en`),
+      },
+    },
     openGraph: {
       type: 'product',
       url,

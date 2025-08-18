@@ -38,7 +38,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title,
     description: desc,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: {
+        'vi-VN': url,
+        'en-US': url.replace(siteConfig.url, `${siteConfig.url}/en`),
+      },
+    },
     openGraph: { type: 'website', url, title, description: desc, images: [{ url: image, width: 1200, height: 630, alt: service.name }] },
     twitter: { card: 'summary_large_image', title, description: desc, images: [image], creator: siteConfig.seo.twitterHandle },
   };
