@@ -30,9 +30,9 @@ export default function Footer() {
           {/* Column 1: Logo and Company Info */}
           <div className="md:col-span-6 lg:col-span-6">
             <div className="flex flex-col sm:flex-row gap-8 mb-8">
-              <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start">
-                <Link href="/" className="inline-block">
-                  <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="w-40 h-auto sm:w-auto max-w-full" />
+              <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start w-28 sm:w-36 md:w-44 lg:w-48 xl:w-56">
+                <Link href="/" className="inline-block w-full">
+                  <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="w-full h-auto" sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, (max-width: 1024px) 176px, (max-width: 1280px) 192px, 224px" />
                 </Link>
               </div>
               <div className="max-w-none md:max-w-xl lg:max-w-2xl">
