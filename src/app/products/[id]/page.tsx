@@ -173,11 +173,22 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       brand: { '@type': 'Brand', name: siteConfig.name },
     };
 
+    const breadcrumbsLd = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+        { '@type': 'ListItem', position: 2, name: 'Products', item: `${baseUrl}/products` },
+        { '@type': 'ListItem', position: 3, name: product.name, item: `${baseUrl}/products/${product.slug || product.id}` },
+      ],
+    };
+
     // Truyền dữ liệu sản phẩm sang client component
     return (
       <>
         <DynamicProductDetail product={product} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsLd) }} />
 
         {/* Phần chính sách bảo hành */}
         <div className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
