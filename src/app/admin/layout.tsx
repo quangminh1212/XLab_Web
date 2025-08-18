@@ -95,7 +95,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <header className="bg-gradient-to-r from-teal-600 via-teal-700 to-teal-800 text-white">
-        <div className="mx-auto py-6 px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+        <div className="mx-auto py-6 px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-balance break-words">XLab Admin</h1>
@@ -118,7 +118,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </header>
 
       {/* Main content */}
-      <div className="mx-auto py-6 px-4 flex flex-col md:flex-row gap-6 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+      <div className="mx-auto py-6 px-4 flex flex-col md:flex-row gap-6 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
         {/* Sidebar */}
         <div
           className={`transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'w-16 md:w-16' : 'w-full md:w-64'} shrink-0`}

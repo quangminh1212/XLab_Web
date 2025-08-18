@@ -90,7 +90,7 @@ export default function UsedVouchersPage() {
   }
 
   return (
-    <div className="mx-auto py-8 px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
+    <div className="mx-auto py-8 px-4 min-h-screen max-w-full sm:max-w-xl md:max-w-2xl">
       <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center text-balance">Voucher đã sử dụng</h1>
 
       <div className="mb-4 flex justify-between items-center">

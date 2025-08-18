@@ -5,7 +5,7 @@ import { siteConfig } from '@/config/siteConfig';
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="mx-auto px-4 max-w-[98%] md:max-w-3xl xl:max-w-4xl 2xl:max-w-[1200px]">
+      <div className="mx-auto px-4 max-w-full md:max-w-3xl xl:max-w-4xl 2xl:max-w-[1200px]">
         <div className="bg-white rounded-xl shadow-sm p-8 sm:p-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-6 text-balance break-words">Chính sách bảo mật</h1>
 
