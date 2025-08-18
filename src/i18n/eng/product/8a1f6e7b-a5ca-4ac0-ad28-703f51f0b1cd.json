@@ -1,12 +1,12 @@
 {
   "id": "8a1f6e7b-a5ca-4ac0-ad28-703f51f0b1cd",
-  "name": "New Product",
-  "slug": "8a1f6e7b-a5ca-4ac0-ad28-703f51f0b1cd",
+  "name": "XLab Sample Product",
+  "slug": "xlab-sample-product",
   "description": "<p dir=\"auto\">Description is being updated.</p>",
   "shortDescription": "New product – content will be updated.",
   "isPublished": true,
   "images": [
-    "/images/placeholder/product-placeholder.svg"
+    "/images/products/xlab-sample-product/cover.png"
   ],
   "descriptionImages": [],
   "features": [],
@@ -34,8 +34,8 @@
   "defaultProductOption": "Default",
   "optionPrices": {
     "Default": {
-      "price": 99000,
-      "originalPrice": 199000
+      "price": 149000,
+      "originalPrice": 299000
     }
   },
   "specs": "",
