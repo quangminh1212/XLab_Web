@@ -26,16 +26,16 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-8 sm:gap-x-8 sm:gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-x-6 md:gap-x-10 lg:gap-x-12 gap-y-8 sm:gap-x-8 sm:gap-y-12">
           {/* Column 1: Logo and Company Info */}
           <div className="md:col-span-6 lg:col-span-6">
-            <div className="flex flex-col sm:flex-row gap-8 mb-8">
-              <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start w-28 sm:w-36 md:w-44 lg:w-48 xl:w-56">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-6 lg:gap-8 mb-6">
+              <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start w-24 sm:w-28 md:w-36 lg:w-40 xl:w-44">
                 <Link href="/" className="inline-block w-full">
-                  <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="w-full h-auto" sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, (max-width: 1024px) 176px, (max-width: 1280px) 192px, 224px" />
+                  <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="w-full h-auto" sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 160px, 176px" />
                 </Link>
               </div>
-              <div className="max-w-none md:max-w-xl lg:max-w-2xl">
+              <div className="flex-1 min-w-0 max-w-none md:max-w-lg lg:max-w-xl">
                 <p className="text-sm text-slate-400 leading-relaxed mb-4">
                   {t('footer.companyDescription1')}
                 </p>
@@ -45,12 +45,12 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex justify-center sm:justify-start flex-wrap gap-4 sm:gap-5 mt-2 mb-8">
+            <div className="flex justify-center sm:justify-start flex-wrap gap-3 sm:gap-4 mt-4 mb-6">
               <a
                 href={siteConfig.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-2 sm:p-3 rounded-xl bg-slate-800/60 hover:bg-blue-600/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-500/25 border border-slate-700/50 hover:border-blue-500/50"
+                className="group p-2 sm:p-2.5 rounded-lg bg-slate-800/40 hover:bg-blue-600/80 transition-colors duration-200 border border-slate-700/40"
               >
                 <svg
                   className="h-5 w-5 sm:h-6 sm:w-6 text-slate-400 group-hover:text-white transition-colors"
@@ -64,7 +64,7 @@ export default function Footer() {
                 href={siteConfig.social.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-2 sm:p-3 rounded-xl bg-slate-800/60 hover:bg-sky-500/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-sky-500/25 border border-slate-700/50 hover:border-sky-500/50"
+                className="group p-2 sm:p-2.5 rounded-lg bg-slate-800/40 hover:bg-sky-500/80 transition-colors duration-200 border border-slate-700/40"
               >
                 <svg
                   className="h-5 w-5 sm:h-6 sm:w-6 text-slate-400 group-hover:text-white transition-colors"
@@ -78,7 +78,7 @@ export default function Footer() {
                 href={siteConfig.social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-2 sm:p-3 rounded-xl bg-slate-800/60 hover:bg-blue-700/90 transition-all duration-300 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-700/25 border border-slate-700/50 hover:border-blue-700/50"
+                className="group p-2 sm:p-2.5 rounded-lg bg-slate-800/40 hover:bg-blue-700/80 transition-colors duration-200 border border-slate-700/40"
               >
                 <svg
                   className="h-5 w-5 sm:h-6 sm:w-6 text-slate-400 group-hover:text-white transition-colors"
