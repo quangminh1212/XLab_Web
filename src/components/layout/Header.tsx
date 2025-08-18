@@ -384,7 +384,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher */}
-              <LanguageSwitcher className="mr-2" />
+              <LanguageSwitcher className="mr-2 hidden md:inline-flex" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -647,7 +647,7 @@ const Header = () => {
               {/* Cart Icon */}
               <Link
                 href="/cart"
-                className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="hidden md:inline-flex relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
                 <span className="sr-only">View cart</span>
                 <svg
