@@ -92,13 +92,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+    <html lang="vi" className={`${inter.variable} scroll-smooth overflow-x-hidden`}>
       <head>
         <link rel="alternate" hrefLang="vi" href={siteConfig.url} />
         <link rel="alternate" hrefLang="en" href={`${siteConfig.url}/en`} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
       </head>
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased overflow-x-hidden">
         <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>

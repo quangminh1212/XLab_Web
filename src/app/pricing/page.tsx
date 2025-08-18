@@ -3,7 +3,7 @@ export default function PricingPage() {
     <div>
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
-        <div className="mx-auto px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Báo giá dịch vụ</h1>
           <p className="text-xl text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl">
             Chúng tôi cung cấp các gói dịch vụ với giá cả linh hoạt, phù hợp với quy mô và nhu cầu
@@ -14,7 +14,7 @@ export default function PricingPage() {
 
       {/* Pricing Plans */}
       <section className="py-16">
-        <div className="mx-auto px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+        <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Gói phần mềm doanh nghiệp</h2>
             <p className="text-xl text-gray-600 text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl mx-auto">
