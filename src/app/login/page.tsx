@@ -59,7 +59,7 @@ export default function LoginPage() {
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
           </Link>
-          <h2 className="mt-6 text-4xl font-extrabold text-gray-900 tracking-tight">{t('login.welcome')}</h2>
+          <h2 className="mt-6 text-4xl font-extrabold text-gray-900 tracking-tight text-balance">{t('login.welcome')}</h2>
           <p className="mt-3 text-center text-lg text-gray-600 max-w-md mx-auto">
             {t('login.continue')}
           </p>

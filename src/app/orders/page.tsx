@@ -232,7 +232,7 @@ export default function OrdersPage() {
                 {expandedOrderId === order.id && (
                   <div className="mt-4 border-t border-gray-200 pt-4">
                     <h4 className="text-sm font-medium text-gray-900 mb-2">Chi tiết đơn hàng</h4>
-                    <div className="bg-gray-50 rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 rounded-lg overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-100">
                           <tr>

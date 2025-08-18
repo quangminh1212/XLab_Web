@@ -178,7 +178,7 @@ export default function OrderHistoryPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="mx-auto py-8 px-4 max-w-[98%] md:max-w-3xl xl:max-w-4xl">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-500"></div>
         </div>
@@ -188,7 +188,7 @@ export default function OrderHistoryPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="mx-auto py-8 px-4 max-w-[98%] md:max-w-3xl xl:max-w-4xl">
         <div className="text-center py-12">
           <h2 className="text-2xl font-bold mb-4">{t('orders.needLogin')}</h2>
           <p className="text-gray-600 mb-6">{t('orders.needLoginDesc')}</p>
@@ -204,7 +204,7 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 px-4 max-w-4xl">
+    <div className="mx-auto py-6 px-4 max-w-[98%] md:max-w-3xl xl:max-w-4xl">
       <h1 className="text-xl font-semibold mb-6 text-gray-800">{t('orders.history')}</h1>
 
       {orders.length === 0 ? (

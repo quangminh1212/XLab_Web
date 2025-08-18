@@ -184,7 +184,7 @@ export default function DepositPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="mx-auto px-4 max-w-[98%] md:max-w-4xl xl:max-w-6xl">
         {/* Header */}
                     <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
@@ -201,7 +201,7 @@ export default function DepositPage() {
                     />
                   </svg>
                 </Link>
-                <h1 className="text-3xl font-bold text-gray-900">{t('deposit.title')}</h1>
+                <h1 className="text-3xl font-bold text-gray-900 text-balance">{t('deposit.title')}</h1>
               </div>
               <div>
                 <p className="text-gray-600">{t('deposit.subtitle')}</p>
@@ -240,7 +240,7 @@ export default function DepositPage() {
                 {qrCodeUrl && (
                   <div className="relative">
                     <div className="rounded-xl p-6 bg-white shadow-inner">
-                      <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
+                      <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center overflow-hidden">
                         <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                       </div>
                     </div>

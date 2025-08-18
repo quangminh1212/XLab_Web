@@ -107,7 +107,7 @@ export default function RegisterPage() {
               className="h-16 w-auto"
             />
           </Link>
-          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">Tạo tài khoản mới</h2>
+          <h2 className="mt-4 text-3xl font-extrabold text-gray-900 text-balance">Tạo tài khoản mới</h2>
           <p className="mt-2 text-center text-sm text-gray-600 max-w">
             Đăng ký nhanh chóng để trải nghiệm các dịch vụ của XLab
           </p>
