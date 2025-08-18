@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 import ProductGrid from './ProductGrid';
 import { getDisplayPrices } from '@/features/products/services/pricing';
+import { getValidImageUrl as getValidProductImageUrl } from '@/features/products/services/images';
 
 interface OptionPrice {
   price: number;
@@ -132,40 +133,16 @@ export default function RelatedProducts({
   };
 
   const mappedProducts = products.map((product) => {
-    // console.log('RelatedProducts - Raw product:', product);
-
     // Đảm bảo tất cả thuộc tính đều là primitive values
     const safeId = String(product.id || '');
     const safeName = String(product.name || '');
     const safeDescription = String(product.shortDescription || product.description || '');
-    
+
     // Dùng pricing service
     const { price: safePrice, originalPrice: safeOriginalPrice } = getDisplayPrices(product);
-    
-    // Xử lý trường hợp image hoặc imageUrl có thể là object thay vì string
-    let safeImage = '';
-    if (product.imageUrl) {
-      if (typeof product.imageUrl === 'string') {
-        safeImage = product.imageUrl;
-      } else if (typeof product.imageUrl === 'object' && product.imageUrl !== null) {
-        // Nếu imageUrl là object, thử lấy url từ object
-        // prefer url or src when available
-        safeImage = (product.imageUrl as any)?.url || (product.imageUrl as any)?.src || '/images/placeholder/product-placeholder.svg';
-      }
-    } else if (product.image) {
-      if (typeof product.image === 'string') {
-        safeImage = product.image;
-      } else if (typeof product.image === 'object' && product.image !== null) {
-        // Nếu image là object, thử lấy url từ object
-        // prefer url or src when available
-        safeImage = (product.image as any)?.url || (product.image as any)?.src || '/images/placeholder/product-placeholder.svg';
-      }
-    }
-    
-    // Nếu không có ảnh hợp lệ, sử dụng placeholder
-    if (!safeImage) {
-      safeImage = '/images/placeholder/product-placeholder.svg';
-    }
+
+    // Lấy URL ảnh chuẩn hoá giống các section khác
+    const safeImage = getValidProductImageUrl(product as any);
 
     const safeRating = product.rating ? Number(product.rating) : undefined;
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;

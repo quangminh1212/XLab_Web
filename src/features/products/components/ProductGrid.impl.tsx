@@ -1,5 +1,6 @@
 import ProductCard from './ProductCard';
 import { getDisplayPrices } from '@/features/products/services/pricing';
+import { getValidImageUrl as getValidProductImageUrl } from '@/features/products/services/images';
 
 interface OptionPrice {
   price: number;
@@ -148,7 +149,7 @@ const ProductGrid = ({
             description: String(product.shortDescription || product.description || ''),
             price: Number(finalPrice) || 0,
             originalPrice: Number(displayOriginalPrice) || finalPrice * 5, // Always provide an originalPrice
-            image: String(product.image || ''),
+            image: getValidProductImageUrl(product as any),
             category: categoryString,
             rating: product.rating ? Number(product.rating) : undefined,
             reviewCount: product.reviewCount ? Number(product.reviewCount) : undefined,
