@@ -82,9 +82,22 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: siteConfig.name,
+    url: siteConfig.url,
+    logo: '/images/topup.png',
+    sameAs: Object.values(siteConfig.social),
+  };
+
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
-      <head />
+      <head>
+        <link rel="alternate" hrefLang="vi" href={siteConfig.url} />
+        <link rel="alternate" hrefLang="en" href={`${siteConfig.url}/en`} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
+      </head>
       <body className="font-sans antialiased">
         <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
