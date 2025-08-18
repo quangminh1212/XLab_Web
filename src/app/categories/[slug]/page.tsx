@@ -53,7 +53,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
         <div className="mb-8">
           <Link href="/categories" className="text-primary-600 flex items-center mb-4 text-sm">
             <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,8 +79,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
-              <p className="text-gray-600 mt-1">{category.description}</p>
+              <h1 className="text-3xl font-bold text-gray-900 break-words text-balance">{category.name}</h1>
+              <p className="text-gray-600 mt-1 leading-relaxed text-balance break-words">{category.description}</p>
             </div>
           </div>
         </div>

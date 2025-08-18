@@ -541,7 +541,7 @@ export default function PricingPage() {
         <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-6">Không tìm thấy gói phù hợp?</h2>
-            <p className="text-xl mb-8">
+            <p className="text-xl text-balance leading-relaxed mb-8">
               Chúng tôi hiểu rằng mỗi doanh nghiệp có nhu cầu riêng biệt. Hãy liên hệ với chúng tôi
               để nhận được tư vấn và báo giá phù hợp nhất.
             </p>

@@ -55,9 +55,9 @@ export default function WarrantyPage() {
     <div>
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('warranty.title')}</h1>
-          <p className="text-xl max-w-3xl">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-balance">{t('warranty.title')}</h1>
+          <p className="text-xl text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl">
             {t('warranty.subtitle')}
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function WarrantyPage() {
 
       {/* Chính sách bảo hành và đổi trả */}
       <section className="py-8 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Chính sách bảo hành */}
             <div>
@@ -134,7 +134,7 @@ export default function WarrantyPage() {
 
       {/* Warranty Form & Info */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Warranty Form */}
             <div>
