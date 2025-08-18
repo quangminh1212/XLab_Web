@@ -167,7 +167,7 @@ function HomePage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-6 sm:py-8 md:py-10 lg:py-12">
-        <div className="container mx-auto px-responsive">
+        <div className="container-full sm:container mx-auto px-0 sm:px-responsive">
           <div className="flex flex-col items-center text-center">
             <h1 className="heading-1 mb-3 sm:mb-4 md:mb-6">
               <span className="text-gray-900">X</span>
@@ -182,7 +182,7 @@ function HomePage() {
         </div>
       </section>
 
-      <div className="container mx-auto py-responsive">
+      <div className="container-full sm:container mx-auto py-responsive px-0">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-responsive">
           {/* Sidebar Column - Left */}
