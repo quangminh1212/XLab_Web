@@ -7,6 +7,8 @@ import { updateUserOrder } from '@/lib/userService';
 test('updateUserOrder is callable and returns a Promise', async () => {
   // simplify call with fake data; we only assert invocation shape
   const promise = updateUserOrder('someone@example.com', 'order-1', { status: 'paid' } as any);
+  // Await to ensure any async logging completes before Jest finishes the test
+  await promise;
   expect(promise).toBeInstanceOf(Promise);
 });
 

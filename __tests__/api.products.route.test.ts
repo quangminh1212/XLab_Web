@@ -3,7 +3,7 @@ import { GET } from '@/app/api/products/route';
 // Use plain JS mocks to avoid TS syntax in test files
 jest.mock('next/server', () => ({
   NextResponse: {
-    json: (body, init) => ({ json: () => Promise.resolve(body), status: (init && init.status) || 200 }),
+    json: (body: any, init?: ResponseInit) => ({ json: () => Promise.resolve(body), status: (init && (init as any).status) || 200 }),
   },
 }));
 
@@ -23,8 +23,8 @@ jest.mock('@/lib/i18n/products', () => ({
   ])),
 }));
 
-function makeReq(url, headers = {}) {
-  return { nextUrl: new URL(url, 'http://localhost'), headers: { get: (k) => headers[k] || null } };
+function makeReq(url: string, headers: Record<string, string> = {}) {
+  return { nextUrl: new URL(url, 'http://localhost'), headers: { get: (k: string) => headers[k] || null } } as any;
 }
 
 describe('/api/products route', () => {

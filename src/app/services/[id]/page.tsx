@@ -41,9 +41,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const title = `${service.name} | ${siteConfig.name}`;
   const desc = (service as any).shortDescription || service.description || siteConfig.seo.defaultDescription;
-  const image = Array.isArray(service.images) && service.images.length > 0
-    ? (typeof service.images[0] === 'string' ? service.images[0] : (service.images[0].url || siteConfig.seo.ogImage))
-    : (service.imageUrl || siteConfig.seo.ogImage);
+  // Resolve representative image safely
+  let image = service.imageUrl || siteConfig.seo.ogImage;
+  if (Array.isArray(service.images) && service.images.length > 0) {
+    const img0: any = service.images[0] as any;
+    image = typeof img0 === 'string' ? img0 : (img0?.url || image);
+  }
   const url = `${baseUrl}/services/${service.slug || service.id}`;
 
   return {

@@ -10,6 +10,11 @@ import { getAllProducts, saveProduct, deleteProduct, updateProduct } from '@/lib
 import { Product, ProductCategory, ProductSpecification } from '@/models/ProductModel';
 
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const revalidate = 0;
+
+
 
 /**
  * Normalize language code from Accept-Language header
@@ -18,13 +23,13 @@ import { Product, ProductCategory, ProductSpecification } from '@/models/Product
  */
 function normalizeLanguageHeader(lang: string | null): string {
   if (!lang) return 'vie'; // Default to Vietnamese
-  
+
   // Extract primary language code before any quality values
   const primaryLang = lang.split(',')[0]?.split('-')[0]?.toLowerCase() ?? 'vi';
-  
+
   // Map to our supported codes
   if (primaryLang === 'en') return 'eng';
-  
+
   // Default to Vietnamese for any other language
   return 'vie';
 }
@@ -84,10 +89,10 @@ export async function POST(request: NextRequest) {
 
     // Get language from header or default to 'vie'
     const language = request.headers.get('accept-language') || 'vie';
-    
+
     // Save the new product using the i18n product function
     const saveResult = await saveProduct(newProduct, language);
-    
+
     if (saveResult) {
       return NextResponse.json(newProduct, { status: 201 });
     } else {

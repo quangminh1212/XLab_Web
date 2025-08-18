@@ -1,7 +1,7 @@
 import { describe, it, expect } from '@jest/globals';
 
 // Avoid TS syntax in test file to keep Jest parser simple
-const normalize = (url) => url.replace(/\\\\/g, '/');
+const normalize = (url: string) => url.replace(/\\\\/g, '/');
 
 describe('Image URL normalization', () => {
   it('replaces backslashes with forward slashes', () => {

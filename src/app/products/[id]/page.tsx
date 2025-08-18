@@ -76,9 +76,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const title = `${product.name} | ${siteConfig.name}`;
   const desc = product.shortDescription || product.description || siteConfig.seo.defaultDescription;
-  const image = Array.isArray(product.images) && product.images.length > 0
-    ? (typeof product.images[0] === 'string' ? product.images[0] : (product.images[0].url || siteConfig.seo.ogImage))
-    : (product.imageUrl || siteConfig.seo.ogImage);
+  // Resolve representative image safely
+  let image = product.imageUrl || siteConfig.seo.ogImage;
+  if (Array.isArray(product.images) && product.images.length > 0) {
+    const img0: any = product.images[0] as any;
+    image = typeof img0 === 'string' ? img0 : (img0?.url || image);
+  }
   const url = `${baseUrl}/products/${product.slug || product.id}`;
 
   return {
@@ -92,7 +95,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       },
     },
     openGraph: {
-      type: 'product',
+      type: 'website',
       url,
       title,
       description: desc,
@@ -141,9 +144,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
     // Chuẩn bị JSON-LD cho sản phẩm
     const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
-    const image = Array.isArray(product.images) && product.images.length > 0
-      ? (typeof product.images[0] === 'string' ? product.images[0] : (product.images[0].url || siteConfig.seo.ogImage))
-      : (product.imageUrl || siteConfig.seo.ogImage);
+    // Resolve representative image safely
+    let image = product.imageUrl || siteConfig.seo.ogImage;
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      const img0: any = product.images[0] as any;
+      image = typeof img0 === 'string' ? img0 : (img0?.url || image);
+    }
     const price = (product as any).salePrice ?? (product as any).price ?? (product.versions?.[0] as any)?.price ?? undefined;
 
     const productLd = {
