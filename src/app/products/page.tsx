@@ -261,9 +261,9 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container-full sm:container mx-auto px-0 sm:px-4 py-6 sm:py-8">
       <div className="bg-gray-50 py-4">
-        <div className="mx-auto px-2 md:px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
+        <div className="mx-auto px-2 md:px-4 max-w-[100%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <h1 className="text-3xl font-bold mb-2">{t('products.title')}</h1>
           
           <div className="mb-6">
