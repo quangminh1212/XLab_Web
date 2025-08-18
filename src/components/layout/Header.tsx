@@ -345,7 +345,7 @@ const Header = () => {
   return (
     <>
       <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
+        <div className="container mx-auto max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] py-2 sm:py-3 md:py-2">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <div className="flex items-center">
@@ -362,12 +362,12 @@ const Header = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
+            <nav className="hidden md:flex flex-wrap gap-x-4 gap-y-1 lg:gap-x-6 xl:gap-x-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`${isActive(link.href)} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                  className={`${isActive(link.href)} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50 whitespace-nowrap`}
                 >
                   {link.label}
                 </Link>
@@ -375,7 +375,7 @@ const Header = () => {
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
-            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+            <div className="flex items-center gap-x-1 sm:gap-x-2 md:gap-x-3">
               {/* Balance Display */}
               {session && (
                 <div className="hidden sm:block">
@@ -419,7 +419,7 @@ const Header = () => {
                 {/* Voucher Dropdown */}
                 {isVoucherOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10"
+                    className="absolute right-0 mt-2 w-[min(92vw,24rem)] sm:w-[min(92vw,26rem)] md:w-[min(92vw,28rem)] bg-white rounded-lg shadow-xl py-2 z-30"
                     tabIndex={0}
                     role="menu"
                     aria-orientation="vertical"
@@ -582,7 +582,7 @@ const Header = () => {
                   {/* Notification Dropdown */}
                   {isNotificationOpen && (
                     <div
-                      className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10"
+                      className="absolute right-0 mt-2 w-[min(92vw,24rem)] sm:w-[min(92vw,26rem)] md:w-[min(92vw,28rem)] bg-white rounded-lg shadow-xl py-2 z-30"
                       tabIndex={0}
                       role="menu"
                       aria-orientation="vertical"
@@ -716,7 +716,7 @@ const Header = () => {
                 {/* Profile Dropdown */}
                 {isProfileOpen && session && (
                   <div
-                    className="absolute right-0 mt-2 w-48 md:w-52 bg-white rounded-lg shadow-xl py-2 z-10"
+                    className="absolute right-0 mt-2 w-[min(92vw,12rem)] md:w-[min(92vw,13rem)] bg-white rounded-lg shadow-xl py-2 z-30"
                     tabIndex={0}
                     role="menu"
                     aria-orientation="vertical"
@@ -848,7 +848,7 @@ const Header = () => {
         <div
           className={`${
             isOpen ? 'block' : 'hidden'
-          } md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2`}
+          } md:hidden fixed top-[var(--header-height,56px)] left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2 z-40`}
         >
           <nav className="container mx-auto px-4 py-2 space-y-1">
             {navLinks.map((link) => (

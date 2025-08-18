@@ -26,7 +26,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-x-8 gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-x-8 gap-y-12">
           {/* Column 1: Logo and Company Info */}
           <div className="md:col-span-2">
             <div className="flex flex-col sm:flex-row gap-8 mb-8">
@@ -35,7 +35,7 @@ export default function Footer() {
                   <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="max-w-full" />
                 </Link>
               </div>
-              <div className="sm:max-w-[280px]">
+              <div className="max-w-none md:max-w-xl lg:max-w-2xl">
                 <p className="text-sm text-slate-400 leading-relaxed mb-4">
                   {t('footer.companyDescription1')}
                 </p>
@@ -195,7 +195,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-none sm:max-w-sm">
                   {t('footer.address')}
                 </span>
               </li>
@@ -216,7 +216,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-none sm:max-w-sm">
                   {t('footer.phone')}
                 </span>
               </li>
@@ -237,7 +237,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-none sm:max-w-sm">
                   {t('footer.email')}
                 </span>
               </li>
@@ -258,7 +258,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[180px]">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-none sm:max-w-sm">
                   {t('footer.supportHours')}
                 </span>
               </li>
