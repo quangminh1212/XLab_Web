@@ -1,0 +1,44 @@
+{
+  "id": "8a1f6e7b-a5ca-4ac0-ad28-703f51f0b1cd",
+  "name": "Sản phẩm mới",
+  "slug": "8a1f6e7b-a5ca-4ac0-ad28-703f51f0b1cd",
+  "description": "<p dir=\"auto\">Mô tả đang cập nhật.</p>",
+  "shortDescription": "Sản phẩm mới – nội dung sẽ được cập nhật.",
+  "isPublished": true,
+  "images": [
+    "/images/placeholder/product-placeholder.svg"
+  ],
+  "descriptionImages": [],
+  "features": [],
+  "requirements": [],
+  "specifications": [],
+  "categories": [],
+  "versions": [
+    {
+      "name": "Default",
+      "description": "Phiên bản mặc định",
+      "price": 99000,
+      "originalPrice": 199000,
+      "features": []
+    }
+  ],
+  "createdAt": "2025-08-18T00:00:00.000Z",
+  "updatedAt": "2025-08-18T00:00:00.000Z",
+  "rating": 5,
+  "weeklyPurchases": 0,
+  "type": "software",
+  "isAccount": false,
+  "productOptions": [
+    "Default"
+  ],
+  "defaultProductOption": "Default",
+  "optionPrices": {
+    "Default": {
+      "price": 99000,
+      "originalPrice": 199000
+    }
+  },
+  "specs": "",
+  "totalPurchases": 0,
+  "optionDurations": {}
+}

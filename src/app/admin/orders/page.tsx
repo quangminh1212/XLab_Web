@@ -165,7 +165,7 @@ function OrdersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-balance break-words">
           {localCode === 'vi' ? 'Quản lý đơn hàng' : 'Order Management'}
         </h1>
         <div className="flex space-x-3">

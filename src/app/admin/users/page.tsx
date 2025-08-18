@@ -95,7 +95,7 @@ function UsersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-balance break-words">
           {localCode === 'vi' ? 'Quản lý người dùng' : 'User Management'}
         </h1>
         <Link
@@ -185,7 +185,7 @@ function UsersPage() {
           </div>
         ) : (
           <>
-            <table className="min-w-full divide-y divide-gray-200">
+            <div className="overflow-x-auto"><table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th
@@ -330,7 +330,7 @@ function UsersPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
 
             {filteredUsers.length === 0 && (
               <div className="py-12 text-center text-gray-500">
