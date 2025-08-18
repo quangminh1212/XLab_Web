@@ -63,7 +63,7 @@ export default function UsedVouchersPage() {
 
   if (status === 'loading') {
     return (
-      <div className="max-w-2xl mx-auto py-8 px-4 min-h-screen">
+      <div className="mx-auto py-8 px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-600"></div>
         </div>
@@ -73,7 +73,7 @@ export default function UsedVouchersPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <div className="max-w-2xl mx-auto py-8 px-4 min-h-screen">
+      <div className="mx-auto py-8 px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
         <div className="text-center py-12">
           <h2 className="text-xl font-semibold mb-4">
             Bạn cần đăng nhập để xem voucher đã sử dụng
@@ -90,8 +90,8 @@ export default function UsedVouchersPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4 min-h-screen">
-      <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center">Voucher đã sử dụng</h1>
+    <div className="mx-auto py-8 px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
+      <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center text-balance">Voucher đã sử dụng</h1>
 
       <div className="mb-4 flex justify-between items-center">
         <Link
@@ -154,7 +154,7 @@ export default function UsedVouchersPage() {
             Danh sách các voucher mà bạn đã sử dụng trong quá trình mua hàng.
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-gray-200">
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>

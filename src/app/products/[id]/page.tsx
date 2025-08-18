@@ -6,6 +6,7 @@ import { default as dynamicImport } from 'next/dynamic';
 import { notFound } from 'next/navigation';
 
 import { siteConfig } from '@/config/siteConfig';
+import { getAllProducts as getI18nProducts } from '@/lib/i18n/products';
 import { Product } from '@/models/ProductModel';
 
 // Loading component đơn giản để hiển thị ngay lập tức
@@ -62,7 +63,17 @@ function getProducts(): Product[] {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const products = getProducts();
-  const product = products.find(p => p.slug === id) || products.find(p => p.id === id);
+  let product = products.find(p => p.slug === id) || products.find(p => p.id === id);
+
+  // Fallback: nếu không có trong products.json, tìm trong i18n
+  if (!product) {
+    try {
+      const i18nProducts = await getI18nProducts('vie');
+      product = i18nProducts.find(p => p.slug === id) || i18nProducts.find(p => p.id === id);
+    } catch {
+      // ignore
+    }
+  }
 
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
   if (!product) {
@@ -75,11 +86,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   const title = `${product.name} | ${siteConfig.name}`;
-  const desc = product.shortDescription || product.description || siteConfig.seo.defaultDescription;
+  const desc = (product as any).shortDescription || product.description || siteConfig.seo.defaultDescription;
   // Resolve representative image safely
-  let image = product.imageUrl || siteConfig.seo.ogImage;
+  let image = (product as any).imageUrl || siteConfig.seo.ogImage;
   if (Array.isArray(product.images) && product.images.length > 0) {
-    const img0: any = product.images[0] as any;
+    const img0: any = (product.images as any[])[0] as any;
     image = typeof img0 === 'string' ? img0 : (img0?.url || image);
   }
   const url = `${baseUrl}/products/${product.slug || product.id}`;
@@ -94,21 +105,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         'en-US': url.replace(siteConfig.url, `${siteConfig.url}/en`),
       },
     },
-    openGraph: {
-      type: 'website',
-      url,
-      title,
-      description: desc,
-      siteName: siteConfig.name,
-      images: [{ url: image, width: 1200, height: 630, alt: product.name }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description: desc,
-      images: [image],
-      creator: siteConfig.seo.twitterHandle,
-    },
+    openGraph: { type: 'website', url, title, description: desc, siteName: siteConfig.name, images: [{ url: image, width: 1200, height: 630, alt: product.name }] },
+    twitter: { card: 'summary_large_image', title, description: desc, images: [image], creator: siteConfig.seo.twitterHandle },
   };
 }
 
@@ -129,6 +127,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     // Nếu không tìm thấy bằng slug, thử tìm bằng id
     if (!product) {
       product = products.find((p) => p.id === productId);
+    }
+
+    // Fallback: tìm trong i18n nếu chưa thấy trong products.json
+    if (!product) {
+      try {
+        const i18nProducts = await getI18nProducts('vie');
+        product = i18nProducts.find((p) => p.slug === productId) || i18nProducts.find((p) => p.id === productId);
+      } catch {
+        // ignore
+      }
     }
 
     // Nếu không tìm thấy sản phẩm, hiển thị trang not-found

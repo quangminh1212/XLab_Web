@@ -94,8 +94,8 @@ export default function PublicCouponsPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-2 min-h-screen">
-      <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center">Mã giảm giá</h1>
+    <div className="mx-auto py-8 px-4 min-h-screen max-w-[98%] sm:max-w-xl md:max-w-2xl">
+      <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center text-balance">Mã giảm giá</h1>
 
       <div className="mb-4 flex justify-end">
         <a
