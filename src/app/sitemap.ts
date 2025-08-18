@@ -24,12 +24,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Trang động: sản phẩm và dịch vụ (account) từ cả products.json và i18n (vie/eng)
   const dynamicPages: MetadataRoute.Sitemap = [];
   const pushEntry = (href: string, lastMod?: Date) => {
+    const hrefEn = href.replace(baseUrl, `${baseUrl}/en`);
     dynamicPages.push({
       url: href,
       lastModified: lastMod || new Date(),
       changeFrequency: 'weekly',
       priority: 0.7,
-      alternates: { languages: { 'vi-VN': href, 'en-US': `${href}?lang=eng` } },
+      alternates: { languages: { 'vi-VN': href, 'en-US': hrefEn } },
     });
   };
 

@@ -24,8 +24,19 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const service = all.find(p => (p.isAccount || p.type === 'account') && (p.slug === id || p.id === id));
 
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
+  const notFoundUrl = `${baseUrl}/services/${id}`;
   if (!service) {
-    return { title: `Dịch vụ không tồn tại | ${siteConfig.name}`, robots: { index: false, follow: false }, alternates: { canonical: `${baseUrl}/services/${id}` } };
+    return {
+      title: `Dịch vụ không tồn tại | ${siteConfig.name}`,
+      robots: { index: false, follow: false },
+      alternates: {
+        canonical: notFoundUrl,
+        languages: {
+          'vi-VN': notFoundUrl,
+          'en-US': notFoundUrl.replace(siteConfig.url, `${siteConfig.url}/en`),
+        },
+      },
+    };
   }
 
   const title = `${service.name} | ${siteConfig.name}`;
