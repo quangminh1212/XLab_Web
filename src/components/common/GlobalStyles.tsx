@@ -7,7 +7,6 @@ export default function GlobalStyles() {
     <style jsx global>{`
       /* Critical CSS for immediate render */
       body {
-        font-family: var(--font-inter, ui-sans-serif, system-ui);
         background-color: rgb(249, 250, 251);
       }
 

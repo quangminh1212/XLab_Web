@@ -8,6 +8,11 @@ import { authOptions } from '@/lib/authOptions';
 import { getProductById, updateProduct, deleteProduct } from '@/lib/i18n/products';
 import { Product, ProductCategory } from '@/models/ProductModel';
 
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const revalidate = 0;
+
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
@@ -105,7 +110,6 @@ function extractIdFromUrl(url: string): string {
 }
 
 // Handler setup
-export const dynamic = 'force-dynamic';
 
 /**
  * Normalize language code from Accept-Language header to internal codes
@@ -184,7 +188,7 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
 
     // Update product using i18n product function
     const updateResult = await updateProduct(mergedProduct, language);
-    
+
     if (!updateResult) {
       return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
     }
@@ -193,34 +197,34 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
     if (isIdChanged) {
       // Log the ID change
       // console.debug(`Product ID changed from ${id} to ${updatedProductData.id}`);
-      
+
       try {
         // Move the images from old product folder to new product folder
         const oldImagesDir = path.join(process.cwd(), 'public', 'images', 'products', id);
         const newImagesDir = path.join(process.cwd(), 'public', 'images', 'products', updatedProductData.id);
-        
+
         // Check if old images directory exists
         if (fs.existsSync(oldImagesDir)) {
           // Create new directory if it doesn't exist
           if (!fs.existsSync(newImagesDir)) {
             fs.mkdirSync(newImagesDir, { recursive: true });
           }
-          
+
           // Read all files in the old directory
           const files = fs.readdirSync(oldImagesDir);
-          
+
           // Move each file to the new directory
           for (const file of files) {
             const oldFilePath = path.join(oldImagesDir, file);
             const newFilePath = path.join(newImagesDir, file);
-            
+
             // Copy the file to new location
             fs.copyFileSync(oldFilePath, newFilePath);
             // console.debug(`Copied image from ${oldFilePath} to ${newFilePath}`);
           }
-          
+
           // console.debug(`All images moved from ${oldImagesDir} to ${newImagesDir}`);
-          
+
           // Update image paths in the product data
           if (mergedProduct.images && Array.isArray(mergedProduct.images)) {
             mergedProduct.images = mergedProduct.images.map((img: any) => {
@@ -236,7 +240,7 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
               return img;
             });
           }
-          
+
           // Update description image paths
           if (mergedProduct.descriptionImages && Array.isArray(mergedProduct.descriptionImages)) {
             mergedProduct.descriptionImages = mergedProduct.descriptionImages.map((img: string) => {
@@ -247,7 +251,7 @@ export async function PUT(request: NextRequest, { params: paramsPromise }: { par
       } catch (_error) {
         // console.error('Error moving product images:', _error);
       }
-      
+
       // Delete the old product version with the old ID
       await deleteProduct(id, language);
     }

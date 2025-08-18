@@ -17,7 +17,12 @@ export default function robots(): MetadataRoute.Robots {
         '/.well-known/',
       ],
     },
+<<<<<<< HEAD
     sitemap: `${baseUrl}/sitemap.xml`,
     host: baseUrl,
+=======
+    sitemap: `${baseUrl.replace(/\/$/, '')}/sitemap.xml`,
+    host: baseUrl.replace(/\/$/, ''),
+>>>>>>> dev_26.fixUI
   };
 }

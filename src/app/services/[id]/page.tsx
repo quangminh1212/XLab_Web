@@ -1,17 +1,68 @@
 import fs from 'fs';
 import path from 'path';
 
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import ProductDetail from '@/app/products/[id]/ProductDetail';
 import { products as mockProducts } from '@/data/mockData';
 import { getAllProducts, normalizeLanguageCode } from '@/lib/i18n/products';
 import { Product } from '@/models/ProductModel';
+import { siteConfig } from '@/config/siteConfig';
 import type { Product as MockProduct } from '@/types';
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  // Tìm bản ghi "dịch vụ" trong các nguồn dữ liệu (isAccount/type==='account')
+  const language = 'vie';
+  const i18nProducts = await getAllProducts(language);
+  const all: Product[] = [...i18nProducts, ...mockProducts as any[]].map((p: any) => ({ ...p }));
+  const service = all.find(p => (p.isAccount || p.type === 'account') && (p.slug === id || p.id === id));
+
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
+  const notFoundUrl = `${baseUrl}/services/${id}`;
+  if (!service) {
+    return {
+      title: `Dịch vụ không tồn tại | ${siteConfig.name}`,
+      robots: { index: false, follow: false },
+      alternates: {
+        canonical: notFoundUrl,
+        languages: {
+          'vi-VN': notFoundUrl,
+          'en-US': notFoundUrl.replace(siteConfig.url, `${siteConfig.url}/en`),
+        },
+      },
+    };
+  }
+
+  const title = `${service.name} | ${siteConfig.name}`;
+  const desc = (service as any).shortDescription || service.description || siteConfig.seo.defaultDescription;
+  // Resolve representative image safely
+  let image = service.imageUrl || siteConfig.seo.ogImage;
+  if (Array.isArray(service.images) && service.images.length > 0) {
+    const img0: any = service.images[0] as any;
+    image = typeof img0 === 'string' ? img0 : (img0?.url || image);
+  }
+  const url = `${baseUrl}/services/${service.slug || service.id}`;
+
+  return {
+    title,
+    description: desc,
+    alternates: {
+      canonical: url,
+      languages: {
+        'vi-VN': url,
+        'en-US': url.replace(siteConfig.url, `${siteConfig.url}/en`),
+      },
+    },
+    openGraph: { type: 'website', url, title, description: desc, images: [{ url: image, width: 1200, height: 630, alt: service.name }] },
+    twitter: { card: 'summary_large_image', title, description: desc, images: [image], creator: siteConfig.seo.twitterHandle },
+  };
+}
 
 // Hàm chuyển đổi dữ liệu sản phẩm từ bất kỳ nguồn nào sang kiểu Product
 function normalizeProduct(product: any): Product {

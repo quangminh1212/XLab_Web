@@ -1,5 +1,4 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -7,11 +6,38 @@ import React from 'react';
 
 import { ProductCard, ProductImage } from '@/features/products/components';
 import { categories, products } from '@/data/mockData';
+import { siteConfig } from '@/config/siteConfig';
 
 interface CategoryPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const category = categories.find((cat) => cat.slug === slug);
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
+  if (!category) {
+    return { title: `Danh mục không tồn tại | ${siteConfig.name}`, robots: { index: false, follow: false }, alternates: { canonical: `${baseUrl}/categories/${slug}` } };
+  }
+  const title = `${category.name} | ${siteConfig.name}`;
+  const desc = category.description || siteConfig.seo.defaultDescription;
+  const url = `${baseUrl}/categories/${category.slug}`;
+  const image = category.imageUrl || siteConfig.seo.ogImage;
+  return {
+    title,
+    description: desc,
+    alternates: {
+      canonical: url,
+      languages: {
+        'vi-VN': url,
+        'en-US': url.replace(siteConfig.url, `${siteConfig.url}/en`),
+      },
+    },
+    openGraph: { type: 'website', url, title, description: desc, images: [{ url: image, width: 1200, height: 630, alt: category.name }] },
+    twitter: { card: 'summary_large_image', title, description: desc, images: [image], creator: siteConfig.seo.twitterHandle },
+  };
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
@@ -26,7 +52,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
         <div className="mb-8">
           <Link href="/categories" className="text-primary-600 flex items-center mb-4 text-sm">
             <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,8 +78,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
-              <p className="text-gray-600 mt-1">{category.description}</p>
+              <h1 className="text-3xl font-bold text-gray-900 break-words text-balance">{category.name}</h1>
+              <p className="text-gray-600 mt-1 leading-relaxed text-balance break-words">{category.description}</p>
             </div>
           </div>
         </div>

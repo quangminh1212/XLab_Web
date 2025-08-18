@@ -91,6 +91,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Rewrite i18n subpath /en/* -> /* with ?lang=eng (preserve existing query)
+  if (pathname === '/en' || pathname.startsWith('/en/')) {
+    const url = new URL(request.url);
+    const newPath = pathname.replace(/^\/en(\/|$)/, '/');
+    url.pathname = newPath === '' ? '/' : newPath;
+    if (url.searchParams.get('lang') !== 'eng') {
+      url.searchParams.set('lang', 'eng');
+    }
+    return NextResponse.rewrite(url);
+  }
+
+
   // Lấy token từ cookie với secret từ environment
   const token = await getToken({
     req: request,

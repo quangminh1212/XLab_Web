@@ -526,10 +526,10 @@ export default function ProductCard({
             {displayCategory}
           </div>
         )}
-        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-1 group-hover:text-gray-700 transition-colors duration-200">
+        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 break-words mb-1 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-xs text-gray-600 line-clamp-3 min-h-[3.6rem] mb-4 leading-relaxed">
+        <p className="text-xs text-gray-600 line-clamp-3 break-words min-h-[3.6rem] mb-4 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between mt-auto">

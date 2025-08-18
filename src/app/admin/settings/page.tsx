@@ -154,7 +154,7 @@ function SettingsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-balance break-words">
           {localCode === 'vi' ? 'Cài đặt hệ thống' : 'System Settings'}
         </h1>
       </div>
@@ -230,7 +230,7 @@ function SettingsPage() {
             {/* Thông tin chung */}
             {activeTab === 'site' && (
               <div className="space-y-6">
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900 text-balance">
                   {localCode === 'vi' ? 'Thông tin trang web' : 'Website Information'}
                 </h2>
 
@@ -359,7 +359,7 @@ function SettingsPage() {
             {/* Thanh toán */}
             {activeTab === 'payment' && (
               <div className="space-y-6">
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900 text-balance">
                   {localCode === 'vi' ? 'Cài đặt thanh toán' : 'Payment Settings'}
                 </h2>
 
@@ -510,7 +510,7 @@ function SettingsPage() {
             {/* Email */}
             {activeTab === 'email' && (
               <div className="space-y-6">
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900 text-balance">
                   {localCode === 'vi' ? 'Cài đặt email' : 'Email Settings'}
                 </h2>
 
@@ -638,7 +638,7 @@ function SettingsPage() {
 
             {activeTab === 'advanced' && (
               <div className="space-y-6">
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900 text-balance">
                   {localCode === 'vi' ? 'Cài đặt nâng cao' : 'Advanced Settings'}
                 </h2>
 

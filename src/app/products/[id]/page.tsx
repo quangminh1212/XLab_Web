@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
+import type { Metadata } from 'next';
 import { default as dynamicImport } from 'next/dynamic';
 import { notFound } from 'next/navigation';
 
+import { siteConfig } from '@/config/siteConfig';
 import { Product } from '@/models/ProductModel';
 
 // Loading component đơn giản để hiển thị ngay lập tức
@@ -101,6 +103,60 @@ export async function generateMetadata(
 }
 
 
+// SEO: generateMetadata cho sản phẩm
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const products = getProducts();
+  const product = products.find(p => p.slug === id) || products.find(p => p.id === id);
+
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
+  if (!product) {
+    return {
+      title: `Sản phẩm không tồn tại | ${siteConfig.name}`,
+      description: siteConfig.seo.defaultDescription,
+      alternates: { canonical: `${baseUrl}/products/${id}` },
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const title = `${product.name} | ${siteConfig.name}`;
+  const desc = product.shortDescription || product.description || siteConfig.seo.defaultDescription;
+  // Resolve representative image safely
+  let image = product.imageUrl || siteConfig.seo.ogImage;
+  if (Array.isArray(product.images) && product.images.length > 0) {
+    const img0: any = product.images[0] as any;
+    image = typeof img0 === 'string' ? img0 : (img0?.url || image);
+  }
+  const url = `${baseUrl}/products/${product.slug || product.id}`;
+
+  return {
+    title,
+    description: desc,
+    alternates: {
+      canonical: url,
+      languages: {
+        'vi-VN': url,
+        'en-US': url.replace(siteConfig.url, `${siteConfig.url}/en`),
+      },
+    },
+    openGraph: {
+      type: 'website',
+      url,
+      title,
+      description: desc,
+      siteName: siteConfig.name,
+      images: [{ url: image, width: 1200, height: 630, alt: product.name }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: desc,
+      images: [image],
+      creator: siteConfig.seo.twitterHandle,
+    },
+  };
+}
+
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   try {
@@ -130,6 +186,29 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     // const categoryId = product.categories && product.categories.length > 0
     //   ? product.categories[0].id
     //   : undefined;
+
+    // Chuẩn bị JSON-LD cho sản phẩm
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || siteConfig.url).replace(/\/$/, '');
+    // Resolve representative image safely
+    let image = product.imageUrl || siteConfig.seo.ogImage;
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      const img0: any = product.images[0] as any;
+      image = typeof img0 === 'string' ? img0 : (img0?.url || image);
+    }
+    const price = (product as any).salePrice ?? (product as any).price ?? (product.versions?.[0] as any)?.price ?? undefined;
+
+    const productLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      description: product.shortDescription || product.description,
+      sku: product.id,
+      image: image?.startsWith('http') ? image : `${baseUrl}${image}`,
+      url: `${baseUrl}/products/${product.slug || product.id}`,
+      aggregateRating: product.rating ? { '@type': 'AggregateRating', ratingValue: Number(product.rating), reviewCount: 10 } : undefined,
+      offers: price ? { '@type': 'Offer', priceCurrency: siteConfig.payment?.currency || 'VND', price: Number(price), availability: 'https://schema.org/InStock', url: `${baseUrl}/products/${product.slug || product.id}` } : undefined,
+      brand: { '@type': 'Brand', name: siteConfig.name },
+    };
 
     // Truyền dữ liệu sản phẩm sang client component
         {/* UI Breadcrumbs */}
@@ -185,6 +264,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           }}
         />
         <DynamicProductDetail product={product} />
+<<<<<<< HEAD
 
         {/* BreadcrumbList JSON-LD */}
         <script
@@ -201,6 +281,9 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             }),
           }}
         />
+=======
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }} />
+>>>>>>> dev_26.fixUI
 
         {/* Phần chính sách bảo hành */}
         <div className="mt-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">

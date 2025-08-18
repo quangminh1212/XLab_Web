@@ -302,7 +302,7 @@ function NotificationsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">{t('admin.notifications.title')}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 text-balance break-words">{t('admin.notifications.title')}</h1>
       </div>
 
       {/* Messages */}
@@ -473,7 +473,7 @@ function NotificationsPage() {
           {/* Form tạo thông báo */}
           {activeTab === 'create' && (
             <div className="max-w-2xl">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.notifications.create')}</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6 text-balance">{t('admin.notifications.create')}</h2>
 
               <form onSubmit={handleCreateNotification} className="space-y-6">
                 <div>
@@ -546,7 +546,7 @@ function NotificationsPage() {
           {/* Form chỉnh sửa thông báo */}
           {activeTab === 'edit' && (
             <div className="max-w-2xl">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.notifications.edit')}</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6 text-balance">{t('admin.notifications.edit')}</h2>
 
               <form onSubmit={handleUpdateNotification} className="space-y-6">
                 <div>
@@ -632,7 +632,7 @@ function NotificationsPage() {
           {/* Cài đặt */}
           {activeTab === 'settings' && (
             <div className="max-w-2xl">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.notifications.settings.title')}</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6 text-balance">{t('admin.notifications.settings.title')}</h2>
 
               <div className="space-y-6">
                 <div className="space-y-4">

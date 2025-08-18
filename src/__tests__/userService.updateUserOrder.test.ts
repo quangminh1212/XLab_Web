@@ -11,6 +11,8 @@ test('updateUserOrder is callable and returns a Promise', async () => {
   const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
   const promise = updateUserOrder('someone@example.com', 'order-1', { status: 'paid' } as any);
+  // Await to ensure any async logging completes before Jest finishes the test
+  await promise;
   expect(promise).toBeInstanceOf(Promise);
 
   // do not await promise (we only validate shape), but yield microtask queue

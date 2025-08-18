@@ -1,6 +1,7 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+<<<<<<< HEAD
   preset: 'ts-jest/presets/default-esm',
   // Use jsdom by default to support React component tests
   testEnvironment: 'jsdom',
@@ -29,6 +30,20 @@ const config: Config = {
     '<rootDir>/src/**/__tests__/**/*.test.ts',
   ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+=======
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testMatch: ['**/__tests__/**/*.test.(ts|tsx|js)'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+  transform: {
+    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+  },
+  transformIgnorePatterns: ['/node_modules/'],
+  testPathIgnorePatterns: ['/node_modules/', '/.next/', '/out/', '/dist/', '/coverage/', '/.next-dev/'],
+  clearMocks: true,
+>>>>>>> dev_26.fixUI
 };
 
 export default config;

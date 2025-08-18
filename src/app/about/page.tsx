@@ -11,7 +11,7 @@ export default function AboutPage() {
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('about.pageTitle')}</h1>
-          <p className="text-xl max-w-none whitespace-nowrap overflow-hidden text-ellipsis">
+          <p className="text-xl text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl">
             {t('about.pageSubtitle')}
           </p>
         </div>

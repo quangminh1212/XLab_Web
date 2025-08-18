@@ -1,0 +1,44 @@
+{
+  "id": "8a1f6e7b-a5ca-4ac0-ad28-703f51f0b1cd",
+  "name": "New Product",
+  "slug": "8a1f6e7b-a5ca-4ac0-ad28-703f51f0b1cd",
+  "description": "<p dir=\"auto\">Description is being updated.</p>",
+  "shortDescription": "New product – content will be updated.",
+  "isPublished": true,
+  "images": [
+    "/images/placeholder/product-placeholder.svg"
+  ],
+  "descriptionImages": [],
+  "features": [],
+  "requirements": [],
+  "specifications": [],
+  "categories": [],
+  "versions": [
+    {
+      "name": "Default",
+      "description": "Default version",
+      "price": 99000,
+      "originalPrice": 199000,
+      "features": []
+    }
+  ],
+  "createdAt": "2025-08-18T00:00:00.000Z",
+  "updatedAt": "2025-08-18T00:00:00.000Z",
+  "rating": 5,
+  "weeklyPurchases": 0,
+  "type": "software",
+  "isAccount": false,
+  "productOptions": [
+    "Default"
+  ],
+  "defaultProductOption": "Default",
+  "optionPrices": {
+    "Default": {
+      "price": 99000,
+      "originalPrice": 199000
+    }
+  },
+  "specs": "",
+  "totalPurchases": 0,
+  "optionDurations": {}
+}

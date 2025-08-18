@@ -1,14 +1,18 @@
 import { GET } from '@/app/api/products/route';
+
+// Use plain JS mocks to avoid TS syntax in test files
 jest.mock('next/server', () => ({
   NextResponse: {
-    json: (body: any, init?: any) => ({ json: () => Promise.resolve(body), status: init?.status ?? 200 }),
+    json: (body: any, init?: ResponseInit) => ({ json: () => Promise.resolve(body), status: (init && (init as any).status) || 200 }),
   },
 }));
 
-import type { NextRequest } from 'next/server';
+/** @typedef {{ nextUrl: URL, headers: { get: (k: string) => string | null } }} NextRequest */
+
 // Ensure global Response exists for completeness (not strictly needed due to mock above)
-if (!(global as any).Response) {
-  (global as any).Response = function() {} as any;
+if (!global.Response) {
+  // @ts-ignore
+  global.Response = function() {};
 }
 
 jest.mock('@/lib/i18n/products', () => ({
@@ -19,9 +23,8 @@ jest.mock('@/lib/i18n/products', () => ({
   ])),
 }));
 
-function makeReq(url: string, headers: Record<string, string> = {}): NextRequest {
-  // @ts-ignore - minimal mock compatible enough for route handler usage
-  return { nextUrl: new URL(url, 'http://localhost'), headers: { get: (k: string) => headers[k] || null } } as NextRequest;
+function makeReq(url: string, headers: Record<string, string> = {}) {
+  return { nextUrl: new URL(url, 'http://localhost'), headers: { get: (k: string) => headers[k] || null } } as any;
 }
 
 describe('/api/products route', () => {

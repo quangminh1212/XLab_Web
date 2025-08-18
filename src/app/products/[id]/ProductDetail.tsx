@@ -182,7 +182,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
   const cleanShortDescription = normalizeShortDescription(translatedShortDescription || '');
 
   return (
-    <p className="mt-4 text-gray-600 text-lg" style={{width: '100%', margin: '0 auto'}}>{cleanShortDescription}</p>
+    <p className="mt-4 text-gray-600 text-lg text-balance leading-relaxed break-words" style={{width: '100%', margin: '0 auto'}}>{cleanShortDescription}</p>
   );
 };
 
@@ -548,7 +548,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 product-detail-loaded">
+    <div className="mx-auto px-4 py-8 product-detail-loaded max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
       {/* Thông báo thêm vào giỏ hàng thành công */}
       {showAddToCartAnimation && (
         <div className="fixed top-20 right-4 bg-green-600 text-white py-2 px-4 rounded-md shadow-lg z-50 animate-fadeInOut">
@@ -570,7 +570,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         </div>
       )}
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Breadcrumbs */}
         <div className="flex items-center text-sm mb-4">
           <Link href="/" className="text-gray-500 hover:text-primary-600">
@@ -589,9 +589,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
         {/* Product main info */}
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
             {/* Product image */}
-            <div className="flex flex-col">
+            <div className="flex flex-col md:col-span-1 lg:col-span-5">
               <div className="relative aspect-square bg-white rounded-lg overflow-hidden border border-gray-100">
                 <Image
                   src={getProductImage()}
@@ -624,8 +624,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
             </div>
 
             {/* Product details - right column */}
-            <div style={{width: '100%', margin: '0 auto'}}>
-              <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{product.name}</h1>
+            <div className="md:col-span-1 lg:col-span-7" style={{width: '100%', margin: '0 auto'}}>
+              <h1 className="text-2xl font-bold text-gray-900 md:text-3xl break-words text-balance leading-tight">{product.name}</h1>
 
               {/* Hiển thị giá */}
               <div className="mt-4 flex items-center">
@@ -748,7 +748,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
 
               {/* Action buttons */}
-              <div className="mt-10 grid grid-cols-2 gap-6">
+              <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <button
                   onClick={handleAddToCart}
                   className="px-6 py-4 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-transform active:scale-95 text-lg"

@@ -9,10 +9,10 @@ import { categories } from '@/data/mockData';
 export default function CategoriesPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container max-w-7xl mx-auto px-4">
+      <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
         <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Danh mục sản phẩm</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 text-balance">Danh mục sản phẩm</h1>
+          <p className="text-gray-600 text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl mx-auto">
             Khám phá bộ sưu tập phần mềm và ứng dụng đa dạng của chúng tôi, được phân loại để giúp
             bạn dễ dàng tìm kiếm giải pháp phù hợp nhất.
           </p>
@@ -76,10 +76,10 @@ export default function CategoriesPage() {
         <div className="mt-16 bg-white rounded-xl p-8 shadow-sm border border-gray-100">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-6 md:mb-0 md:max-w-xl">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3 text-balance break-words">
                 Bạn chưa tìm thấy phần mềm phù hợp?
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-balance leading-relaxed break-words">
                 Liên hệ với đội ngũ hỗ trợ của chúng tôi để nhận tư vấn và tìm kiếm giải pháp phù
                 hợp nhất cho nhu cầu của bạn.
               </p>

@@ -245,7 +245,7 @@ export default function ProductsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-gray-50 py-4">
-        <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
+        <div className="mx-auto px-2 md:px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <h1 className="text-3xl font-bold mb-2">{t('products.title')}</h1>
           
           <div className="mb-6">
@@ -256,7 +256,7 @@ export default function ProductsPage() {
 
           {/* Filter tabs */}
           <div className="border-b border-gray-200 mb-4">
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
               <button
                 onClick={() => setFilter('all')}
                 className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
