@@ -120,6 +120,27 @@ export default function ProductCard({
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : 0;
 
+  // Chuẩn hóa mô tả ngắn: giải mã một số HTML entities và bỏ thẻ HTML
+  const normalizeDescription = (input: string) => {
+    if (!input) return '';
+    try {
+      const decoded = input
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>');
+      const noTags = decoded.replace(/<[^>]*>/g, ' ');
+      return noTags.replace(/\s+/g, ' ').trim();
+    } catch {
+      return input;
+    }
+  };
+
+  const shortDescription = normalizeDescription(translatedDescription || '');
+
+
   return (
     <div
       className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-200 flex flex-col"
@@ -178,7 +199,7 @@ export default function ProductCard({
           </p>
         )}
 
-        <p className="mt-2 text-sm text-gray-700 line-clamp-2">{translatedDescription}</p>
+        <p className="mt-2 text-sm text-gray-700 line-clamp-2">{shortDescription}</p>
 
         <div className="mt-4 flex items-end justify-between">
           <div>

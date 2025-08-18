@@ -10,11 +10,11 @@ const common = {
   'nav.logout': 'Đăng xuất',
   'nav.account': 'Tài khoản',
   'nav.admin': 'Quản trị',
-  
+
   // Authentication
   'auth.signOut': 'Đăng xuất',
   'auth.signIn': 'Đăng nhập',
-  
+
   // Common buttons
   'button.getStarted': 'Bắt đầu',
   'button.learnMore': 'Tìm hiểu thêm',
@@ -24,7 +24,7 @@ const common = {
   'button.download': 'Tải xuống',
   'button.contactUs': 'Liên hệ chúng tôi',
   'button.viewAll': 'Xem tất cả',
-  
+
   // Products
   'product.addToCart': 'Thêm vào giỏ',
   'product.buyNow': 'Mua ngay',
@@ -38,7 +38,12 @@ const common = {
   'product.relatedProductsSubtitle': 'Bạn có thể thích những sản phẩm này',
   'Grok': 'Grok',
   'Grok.description': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực như phân tích thị trường, chăm sóc khách hàng tự động, phát hiện gian lận, và tối ưu hóa quy trình kinh doanh.',
-  
+
+  'product.account': 'Tài khoản',
+  'product.viewDetails': 'Xem chi tiết',
+  'product.weeklyPurchases': 'Lượt mua/tuần',
+  'product.totalSold': 'Đã bán',
+
   // Vouchers
   'voucher.title': 'Mã giảm giá',
   'voucher.viewAll': 'Xem tất cả',
@@ -51,7 +56,7 @@ const common = {
   'voucher.loading': 'Đang tải mã giảm giá...',
   'voucher.noLimit': 'Không giới hạn',
   'voucher.copyTooltip': 'Nhấn để sao chép mã',
-  
+
   // Discount Codes Page
   'discountCodes.title': 'Mã giảm giá',
   'discountCodes.subtitle': 'Các mã giảm giá hiện có và hợp lệ mà bạn có thể sử dụng trong quá trình thanh toán',
@@ -79,7 +84,7 @@ const common = {
   'discountCodes.remaining': 'Còn lại:',
   'discountCodes.status': 'Trạng thái:',
   'discountCodes.expiredOn': 'Hết hạn vào',
-  
+
   // Notifications
   'notifications.title': 'Quản lý thông báo',
   'notifications.markAllRead': 'Đánh dấu tất cả đã đọc',
@@ -93,13 +98,13 @@ const common = {
   'notifications.systemMaintenance': 'Hệ thống sẽ bảo trì vào lúc {time} tối nay. Xin lỗi vì sự bất tiện này.',
   'notifications.newVersion': 'Phiên bản {version} đã ra mắt với nhiều tính năng mới',
   'notifications.none': 'Không có thông báo nào',
-  
+
   // Notification Types
   'notifications.type.promotion': 'Khuyến mãi',
   'notifications.type.update': 'Cập nhật',
   'notifications.type.order': 'Đơn hàng',
   'notifications.type.system': 'Hệ thống',
-  
+
   // Notification Demo
   'notifications.demo.title': 'Thử nghiệm thông báo',
   'notifications.demo.description': 'Tạo thông báo thử nghiệm để xem cách thông báo được hiển thị trong hệ thống.',
@@ -115,7 +120,7 @@ const common = {
   'notifications.demo.orderContent': 'Đơn hàng của bạn đã được xác nhận và đang được xử lý.',
   'notifications.demo.systemTitle': 'Thông báo hệ thống',
   'notifications.demo.systemContent': 'Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.',
-  
+
   // Notification Page
   'notifications.all': 'Tất cả',
   'notifications.unread': 'Chưa đọc',
@@ -126,12 +131,12 @@ const common = {
   'notifications.viewDetails': 'Xem chi tiết',
   'notifications.viewNow': 'Xem ngay',
   'notifications.backToHome': 'Trở về trang chủ',
-  
+
   // Page Titles
   'about.pageTitle': 'Giới thiệu - XLab',
   'contact.pageTitle': 'Liên hệ - XLab',
   'testimonials.pageTitle': 'Đánh giá - XLab',
-  
+
   // Products page
   'products.pageTitle': 'Sản phẩm - XLab',
   'products.title': 'Sản phẩm của chúng tôi',
@@ -146,7 +151,7 @@ const common = {
   'products.sortPriceHigh': 'Giá: Cao đến thấp',
   'products.sortPopular': 'Phổ biến nhất',
   'products.loading': 'Đang tải sản phẩm...',
-  
+
   // Footer
   'footer.aboutLink': 'Giới thiệu',
   'footer.contactLink': 'Liên hệ',
@@ -178,7 +183,7 @@ const common = {
   'footer.supportHours': '24/7',
   'footer.copyrightFull': '© 2025 XLab. Bản quyền thuộc về XLab Technologies.',
   'logo.alt': 'XLab Logo',
-  
+
   // Common form elements
   'form.submit': 'Gửi',
   'form.cancel': 'Hủy',
@@ -189,7 +194,7 @@ const common = {
   'form.optional': 'Tùy chọn',
   'form.error': 'Có lỗi xảy ra',
   'form.success': 'Thành công',
-  
+
   // Cart page
   'cart.title': 'Giỏ hàng của bạn',
   'cart.subtitle': 'Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng tôi.',
@@ -217,10 +222,10 @@ const common = {
   'cart.youMightAlsoLike': 'Bạn có thể quan tâm',
   'cart.enterCouponCode': 'Nhập mã khuyến mãi',
   'cart.removeCoupon': 'Xóa mã',
-  
+
   // Product details
   'product.free': 'Miễn phí',
-  
+
   // Checkout page
   'checkout.title': 'Thanh toán',
   'checkout.subtitle': 'Hoàn tất đơn hàng của bạn với các phương thức thanh toán an toàn.',
@@ -245,4 +250,4 @@ const common = {
   'checkout.privacy': 'Chính sách bảo mật',
 };
 
-export default common; 
+export default common;

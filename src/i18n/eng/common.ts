@@ -10,11 +10,11 @@ const common = {
   'nav.logout': 'Logout',
   'nav.account': 'Account',
   'nav.admin': 'Admin',
-  
+
   // Authentication
   'auth.signOut': 'Sign Out',
   'auth.signIn': 'Sign In',
-  
+
   // Common buttons
   'button.getStarted': 'Get Started',
   'button.learnMore': 'Learn More',
@@ -24,7 +24,7 @@ const common = {
   'button.download': 'Download',
   'button.contactUs': 'Contact Us',
   'button.viewAll': 'View All',
-  
+
   // Products
   'product.addToCart': 'Add to Cart',
   'product.buyNow': 'Buy Now',
@@ -39,7 +39,12 @@ const common = {
   'Grok': 'Grok',
   'Grok.description': 'Grok AI helps automate analysis and processing of big data quickly, supporting accurate decision making and saving time. Widely applied in many fields such as market analysis, automated customer service, fraud detection, and business process optimization.',
   'product.free': 'Free',
-  
+  'product.account': 'Account',
+  'product.viewDetails': 'View details',
+  'product.weeklyPurchases': 'Purchases/week',
+  'product.totalSold': 'Sold',
+
+
   // Vouchers
   'voucher.title': 'Vouchers',
   'voucher.viewAll': 'View All',
@@ -52,7 +57,7 @@ const common = {
   'voucher.loading': 'Loading vouchers...',
   'voucher.noLimit': 'No limit',
   'voucher.copyTooltip': 'Click to copy code',
-  
+
   // Discount Codes Page
   'discountCodes.title': 'Discount Codes',
   'discountCodes.subtitle': 'Current and valid discount codes that you can use during checkout',
@@ -80,7 +85,7 @@ const common = {
   'discountCodes.remaining': 'Remaining:',
   'discountCodes.status': 'Status:',
   'discountCodes.expiredOn': 'Expired on',
-  
+
   // Notifications
   'notifications.title': 'Notification Management',
   'notifications.markAllRead': 'Mark All as Read',
@@ -94,13 +99,13 @@ const common = {
   'notifications.systemMaintenance': 'The system will undergo maintenance at {time} tonight. We apologize for any inconvenience.',
   'notifications.newVersion': 'Version {version} has been released with many new features',
   'notifications.none': 'No notifications',
-  
+
   // Notification Types
   'notifications.type.promotion': 'Promotion',
   'notifications.type.update': 'Update',
   'notifications.type.order': 'Order',
   'notifications.type.system': 'System',
-  
+
   // Notification Demo
   'notifications.demo.title': 'Notification Demo',
   'notifications.demo.description': 'Create test notifications to see how they appear in the system.',
@@ -116,7 +121,7 @@ const common = {
   'notifications.demo.orderContent': 'Your order has been confirmed and is being processed.',
   'notifications.demo.systemTitle': 'System Notification',
   'notifications.demo.systemContent': 'The system will undergo maintenance at 10:00 PM tonight. We apologize for any inconvenience.',
-  
+
   // Notification Page
   'notifications.all': 'All',
   'notifications.unread': 'Unread',
@@ -127,12 +132,12 @@ const common = {
   'notifications.viewDetails': 'View details',
   'notifications.viewNow': 'View now',
   'notifications.backToHome': 'Back to Home',
-  
+
   // Page Titles
   'about.pageTitle': 'About - XLab',
   'contact.pageTitle': 'Contact - XLab',
   'testimonials.pageTitle': 'Testimonials - XLab',
-  
+
   // Products page
   'products.pageTitle': 'Products - XLab',
   'products.title': 'Our Products',
@@ -147,7 +152,7 @@ const common = {
   'products.sortPriceHigh': 'Price: High to Low',
   'products.sortPopular': 'Most Popular',
   'products.loading': 'Loading products...',
-  
+
   // Footer
   'footer.aboutLink': 'About',
   'footer.contactLink': 'Contact',
@@ -179,7 +184,7 @@ const common = {
   'footer.supportHours': '24/7',
   'footer.copyrightFull': '© 2025 XLab. Copyright belongs to XLab Technologies.',
   'logo.alt': 'XLab Logo',
-  
+
   // Common form elements
   'form.submit': 'Submit',
   'form.cancel': 'Cancel',
@@ -190,7 +195,7 @@ const common = {
   'form.optional': 'Optional',
   'form.error': 'An error occurred',
   'form.success': 'Success',
-  
+
   // Cart page
   'cart.title': 'Your Shopping Cart',
   'cart.subtitle': 'Review and complete your order to start experiencing our amazing products.',
@@ -218,7 +223,7 @@ const common = {
   'cart.youMightAlsoLike': 'You might also like',
   'cart.enterCouponCode': 'Enter coupon code',
   'cart.removeCoupon': 'Remove coupon',
-  
+
   // Checkout page
   'checkout.title': 'Checkout',
   'checkout.subtitle': 'Complete your order with secure payment methods.',
@@ -243,4 +248,4 @@ const common = {
   'checkout.privacy': 'Privacy Policy',
 };
 
-export default common; 
+export default common;
