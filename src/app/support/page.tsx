@@ -90,24 +90,6 @@ const faqCategories = [
 export default function SupportPage() {
   return (
     <div>
-      {/* FAQPage JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: faqCategories.flatMap((cat) =>
-              cat.questions.map((q) => ({
-                '@type': 'Question',
-                name: q.question,
-                acceptedAnswer: { '@type': 'Answer', text: q.answer },
-              })),
-            ),
-          }),
-        }}
-      />
-
       {/* Page Header */}
       <section className="bg-primary-600 text-white py-16">
         <div className="container">

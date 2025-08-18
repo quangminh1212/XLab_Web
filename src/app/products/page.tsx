@@ -4,11 +4,9 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import { ProductCard } from '@/features/products/components';
+import ProductCard from '@/components/product/ProductCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/data/mockData';
-import { getValidImageUrl } from '@/features/products/services/images';
-import { getDisplayPrices } from '@/features/products/services/pricing';
 
 export default function ProductsPage() {
   const { t } = useLanguage();
@@ -160,8 +158,28 @@ export default function ProductsPage() {
     })),
   ];
 
-  // Helper: dùng shared service
+  // Helper function to safely get a valid image URL
+  const getValidImageUrl = (product: any): string => {
+    if (!product) return '/images/placeholder/product-placeholder.svg';
 
+    // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
+    if (product.images && product.images.length > 0) {
+      const imageUrl = product.images[0];
+      // Kiểm tra xem đây là string hay object
+      if (typeof imageUrl === 'string') {
+        return imageUrl.replace(/\\/g, '/');
+      } else if (imageUrl.url) {
+        return String(imageUrl.url).replace(/\\/g, '/');
+      }
+    }
+
+    // Kiểm tra nếu có thuộc tính imageUrl
+    if (product.imageUrl) {
+      return product.imageUrl;
+    }
+
+    return '/images/placeholder/product-placeholder.svg';
+  };
 
   // Only show loading for a maximum of 1 second
   if (loading) {
@@ -357,10 +375,28 @@ export default function ProductsPage() {
                 {sortedProducts.map((product) => {
                   // console.debug(`[DEV] Product ${product.id} image data:`, product.images);
 
-                                    const { price: displayPrice, originalPrice } = getDisplayPrices(product);
+                  // Xác định giá hiển thị - ưu tiên tùy chọn mặc định nếu có
+                  const displayPrice = 
+                    product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
+                      ? product.optionPrices[product.defaultProductOption].price
+                      : product.versions && product.versions.length > 0
+                        ? product.versions[0].price || 0
+                        : product.price || 0;
+
+                  // Xác định giá gốc - ưu tiên tùy chọn mặc định nếu có
+                  const originalPrice =
+                    product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption]
+                      ? product.optionPrices[product.defaultProductOption].originalPrice
+                      : product.versions && product.versions.length > 0
+                        ? product.versions[0].originalPrice || 0
+                        : product.salePrice || 0;
 
                   // Lấy ảnh sản phẩm (sử dụng helper function)
                   const imageUrl = getValidImageUrl(product);
+
+                  try {
+                    console.warn('[IMG] /products item', { id: product.id, name: product.name, first: (product.images && product.images[0]) || product.imageUrl, final: imageUrl });
+                  } catch { /* no-op */ }
 
                   return (
                     <div key={product.id}>

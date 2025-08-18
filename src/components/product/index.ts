@@ -1,6 +1,5 @@
-// Legacy barrel preserved for backward compatibility
-export { default as ProductCard } from '@/features/products/components/ProductCard';
-export { default as ProductGrid } from '@/features/products/components/ProductGrid';
-export { default as ProductImage } from '@/features/products/components/ProductImage';
-export { default as FeaturedProducts } from '@/features/products/components/FeaturedProducts';
-export { default as CategoryList } from '@/features/categories/components/CategoryList';
+export { default as ProductCard } from './ProductCard';
+export { default as ProductGrid } from './ProductGrid';
+export { default as CategoryList } from './CategoryList';
+export { default as ProductImage } from './ProductImage';
+export { default as FeaturedProducts } from './FeaturedProducts';

@@ -14,9 +14,7 @@ export default function NewUserVoucherCard({
   maxUsage,
 }: NewUserVoucherCardProps) {
   const { t } = useLanguage();
-  const total = Number(maxUsage);
-  const used = Number(usedCount);
-  const usagePercentage = total > 0 && Number.isFinite(used / total) ? (used / total) * 100 : 0;
+  const usagePercentage = (usedCount / maxUsage) * 100;
 
   return (
     <div className="bg-teal-50 rounded-lg p-4 mb-4">

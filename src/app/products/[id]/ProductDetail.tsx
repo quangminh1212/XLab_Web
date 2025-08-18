@@ -6,15 +6,14 @@ import React, { useState, useEffect, Fragment } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
 import RichTextContent from '@/components/common/RichTextContent';
-import ProductOptions from '@/features/products/components/ProductOptions';
+import ProductOptions from '@/components/product/ProductOptions';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatCurrency } from '@/lib/utils';
 import { Product as ProductType } from '@/models/ProductModel';
 // import { Product as UIProduct } from '@/types';
 
 
-import { RelatedProducts } from '@/features/products/components';
-import { getCheapestPrice, getOriginalOfCheapest, getDisplayPrices } from '@/features/products/services/pricing';
+import RelatedProducts from '../../../components/product/RelatedProducts';
 
 
 
@@ -427,7 +426,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       return version ? version.price : product.versions[0]?.price || 0;
     }
 
-    return getCheapestPrice(product);
+    return calculateCheapestPrice();
   };
 
   // Tính toán giá gốc của tùy chọn đã chọn
@@ -449,7 +448,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       return version ? version.originalPrice : product.versions[0]?.originalPrice || 0;
     }
 
-    return getOriginalOfCheapest(product);
+    return calculateOriginalPriceOfCheapest();
   };
 
   // Tính phần trăm giảm giá
@@ -463,13 +462,68 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     return 0;
   };
 
-  // Tính phần trăm giảm giá cho tùy chọn rẻ nhất - dùng pricing service
+  // Tính toán giá rẻ nhất trong tất cả các tùy chọn
+  const calculateCheapestPrice = () => {
+    let cheapestPrice = Number.MAX_VALUE;
+
+    // Kiểm tra giá trong tùy chọn
+    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+      for (const option in product.optionPrices) {
+        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
+        if (price < cheapestPrice) {
+          cheapestPrice = price;
+        }
+      }
+    }
+
+    // Kiểm tra giá trong versions
+    if (product.versions && product.versions.length > 0) {
+      for (const version of product.versions) {
+        if (version.price < cheapestPrice) {
+          cheapestPrice = version.price;
+        }
+      }
+    }
+
+    return cheapestPrice === Number.MAX_VALUE ? 0 : cheapestPrice;
+  };
+
+  // Tính toán giá gốc của tùy chọn có giá rẻ nhất
+  const calculateOriginalPriceOfCheapest = () => {
+    let cheapestPrice = Number.MAX_VALUE;
+    let originalPrice = 0;
+
+    // Kiểm tra giá trong tùy chọn
+    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+      for (const option in product.optionPrices) {
+        const price = product.optionPrices[option]?.price ?? Number.MAX_VALUE;
+        if (price < cheapestPrice) {
+          cheapestPrice = price;
+          originalPrice = product.optionPrices[option]?.originalPrice ?? 0;
+        }
+      }
+    }
+
+    // Kiểm tra giá trong versions
+    if (product.versions && product.versions.length > 0) {
+      for (const version of product.versions) {
+        if (version.price < cheapestPrice) {
+          cheapestPrice = version.price;
+          originalPrice = version.originalPrice;
+        }
+      }
+    }
+
+    return originalPrice;
+  };
+
+  // Tính phần trăm giảm giá cho tùy chọn rẻ nhất
   const calculateCheapestDiscountPercentage = () => {
-    const originalPrice = getOriginalOfCheapest(product);
-    const price = getCheapestPrice(product);
+    const originalPrice = calculateOriginalPriceOfCheapest();
+    const price = calculateCheapestPrice();
 
     if (originalPrice > price) {
-      return Math.round(((originalPrice - price) / Math.max(1, originalPrice)) * 100);
+      return Math.round(((originalPrice - price) / originalPrice) * 100);
     }
     return 0;
   };
@@ -632,9 +686,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 <div className="text-3xl font-bold text-primary-600">
                   {product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
                     ? formatCurrency(product.optionPrices[product.defaultProductOption!]!.price)
-                    : getCheapestPrice(product) === 0
+                    : calculateCheapestPrice() === 0
                       ? t('product.free')
-                      : formatCurrency(getCheapestPrice(product))}
+                      : formatCurrency(calculateCheapestPrice())}
                 </div>
 
                 {/* Always show discount % */}
@@ -642,7 +696,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   <div className="ml-4 text-xl text-gray-500 line-through">
                     {formatCurrency(product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
                       ? product.optionPrices[product.defaultProductOption!]!.originalPrice
-                      : getOriginalOfCheapest(product))}
+                      : calculateOriginalPriceOfCheapest())}
                   </div>
                   <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
                     -{product.defaultProductOption && product.optionPrices && product.optionPrices[product.defaultProductOption!]
@@ -651,7 +705,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                             product.optionPrices[product.defaultProductOption!]!.price) /
                             Math.max(1, product.optionPrices[product.defaultProductOption!]!.originalPrice)) * 100))
                           : 80)
-                      : (getOriginalOfCheapest(product) > getCheapestPrice(product)
+                      : (calculateOriginalPriceOfCheapest() > calculateCheapestPrice()
                           ? calculateCheapestDiscountPercentage()
                           : 80)}%
                   </div>

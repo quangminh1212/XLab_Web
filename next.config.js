@@ -20,8 +20,8 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
-    // Tắt tối ưu CSS để tránh hành vi chèn script vào CSS và cảnh báo MIME trên production
-    optimizeCss: false,
+    // Chỉ tắt tối ưu CSS trong development để tránh lỗi 404 CSS chunk
+    optimizeCss: process.env.NODE_ENV === 'development' ? false : true,
     optimisticClientCache: true,
   },
   output: 'standalone',
@@ -35,6 +35,7 @@ const nextConfig = {
     ],
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' },
     ],
     formats: ['image/webp', 'image/avif'],
     // Bật unoptimized toàn cục để tránh mọi vấn đề tối ưu ảnh trên host (Vercel)
@@ -77,11 +78,10 @@ const nextConfig = {
             return [];
           }
         };
-        // Debug list of product images during build (removed for production cleanliness)
-        // const files = walk(base).map((p) => p.replace(__dirname, ''));
-        // console.warn('[BUILD] Product images detected:', files.slice(0, 50));
+        const files = walk(base).map((p) => p.replace(__dirname, ''));
+        console.warn('[BUILD] Ảnh products phát hiện:', files.slice(0, 50));
       } catch (e) {
-        // console.warn('[BUILD] Unable to log image list:', e?.message || e);
+        console.warn('[BUILD] Không log được danh sách ảnh:', e?.message || e);
       }
     }
 
@@ -143,30 +143,27 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          // CSP được set per-request trong middleware để có nonce động
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: process.env.NODE_ENV === 'production'
+              ? "default-src 'self'; img-src 'self' data: blob: https: http: *; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;"
+              : "",
+          },
           {
             key: 'Permissions-Policy',
-            value: 'geolocation=(), camera=(), microphone=(), browsing-topics=()',
+            value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
           },
           {
             key: 'Strict-Transport-Security',
-            value: process.env.NODE_ENV === 'production' ? 'max-age=63072000; includeSubDomains; preload' : '',
+            value: 'max-age=63072000; includeSubDomains; preload',
           },
         ].filter(header => header.value !== ""),
       },
 
-    ];
-  },
-  async rewrites() {
-    return [
-      // Map /en/* to same content; app router will render same routes
-      { source: '/en', destination: '/' },
-      { source: '/en/products', destination: '/products' },
-      { source: '/en/products/:slug*', destination: '/products/:slug*' },
-      { source: '/en/contact', destination: '/contact' },
-      { source: '/en/support', destination: '/support' },
-      { source: '/en/pricing', destination: '/pricing' },
-      { source: '/en/services', destination: '/services' },
     ];
   },
 };

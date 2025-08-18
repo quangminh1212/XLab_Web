@@ -7,22 +7,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: [
-        '/api/',
-        '/admin/',
-        '/account/',
-        '/checkout/',
-        '/payment/checkout/',
-        '/cart/',
-        '/.well-known/',
-      ],
+      disallow: ['/api/', '/admin/', '/account/', '/checkout/', '/cart/', '/.well-known/'],
     },
-<<<<<<< HEAD
-    sitemap: `${baseUrl}/sitemap.xml`,
-    host: baseUrl,
-=======
     sitemap: `${baseUrl.replace(/\/$/, '')}/sitemap.xml`,
     host: baseUrl.replace(/\/$/, ''),
->>>>>>> dev_26.fixUI
   };
 }

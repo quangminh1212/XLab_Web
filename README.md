@@ -66,24 +66,11 @@ Components are organized by feature and can be imported using aliases:
 ```tsx
 // Import specific components
 import { Header, Footer } from '@/components/layout';
+import { ProductCard } from '@/components/product';
+import { Button } from '@/components/common';
 
-// Product UI (feature-first)
-import { ProductCard, ProductGrid, FeaturedProducts, RelatedProducts, ProductImage } from '@/features/products/components';
-
-// Categories UI (feature-first)
-import { CategoryList } from '@/features/categories/components';
-
-// Legacy (vẫn hoạt động nhờ barrel cũ, nhưng khuyến nghị dùng đường dẫn features/*):
-import { ProductCard as LegacyProductCard } from '@/components/product';
-
-// Utilities
+// Import utilities
 import { formatCurrency } from '@/shared/utils';
-```
-
-```ts
-// Dùng services chia sẻ
-import { getValidImageUrl } from '@/features/products/services/images';
-import { getDisplayPrices, getCheapestPrice, getOriginalOfCheapest } from '@/features/products/services/pricing';
 ```
 
 ## 🚀 Technologies

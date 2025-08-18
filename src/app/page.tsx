@@ -4,14 +4,10 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
-import { metadata } from './page.metadata';
-
 import { CartItem } from '@/components/cart/CartContext';
 import { useCart } from '@/components/cart/CartContext';
-import { ProductCard } from '@/features/products/components';
+import ProductCard from '@/components/product/ProductCard';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getDisplayPrices } from '@/features/products/services/pricing';
-import { getValidImageUrl } from '@/features/products/services/images';
 
 // Types
 interface Product {
@@ -32,11 +28,11 @@ interface Product {
   isAccount?: boolean;
   type?: string;
   defaultProductOption?: string;
-  optionPrices?: {
-    [key: string]: {
-      price: number;
-      originalPrice: number
-    }
+  optionPrices?: { 
+    [key: string]: { 
+      price: number; 
+      originalPrice: number 
+    } 
   };
   productOptions?: string[];
 }
@@ -76,11 +72,54 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, titl
   </div>
 );
 
-// Helper function: dùng shared service for image
+// Helper function
+const getValidImageUrl = (product: Product): string => {
+  if (!product) return '/images/placeholder/product-placeholder.svg';
 
+  // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
+  if (product.images && product.images.length > 0) {
+    const imageUrl = product.images?.[0];
+    // Kiểm tra xem đây là string hay object
+    if (typeof imageUrl === 'string') {
+      return imageUrl;
+    } else if (imageUrl && (imageUrl as any).url) {
+      return (imageUrl as any).url as string;
+    }
+  }
 
-// Helper: dùng shared pricing service
+  // Kiểm tra nếu có thuộc tính imageUrl
+  if (typeof product.imageUrl === 'string') {
+    return product.imageUrl;
+  }
 
+  return '/images/placeholder/product-placeholder.svg';
+};
+
+// Helper function to get the correct price based on default option
+const getProductPrices = (product: Product): { price: number; originalPrice: number } => {
+  // Get price from default option if available
+  let price = 0;
+  let originalPrice = 0;
+  
+  if (product.defaultProductOption &&
+      product.optionPrices &&
+      product.optionPrices[product.defaultProductOption]) {
+    price = product.optionPrices[product.defaultProductOption]!.price;
+    originalPrice = product.optionPrices[product.defaultProductOption]!.originalPrice;
+  } else {
+    // Fallback to regular price
+    price = product.price || 0;
+    originalPrice = product.originalPrice || 0;
+  }
+  
+  // If originalPrice is not set or is less than or equal to the price, 
+  // set it to 5x the price to show an 80% discount
+  if (!originalPrice || originalPrice <= price) {
+    originalPrice = price * 5;
+  }
+  
+  return { price, originalPrice };
+};
 
 function HomePage() {
   const { t } = useLanguage();
@@ -120,7 +159,7 @@ function HomePage() {
       const dateB = new Date(b.createdAt || '0');
       return dateB.getTime() - dateA.getTime();
     });
-
+  
   // Lấy số lượng sản phẩm hiển thị theo giá trị visibleProductCount
   const newProducts = sortedNewProducts.slice(0, visibleProductCount);
 
@@ -218,7 +257,7 @@ function HomePage() {
                   title={t('home.domesticProduct')}
                   description={t('home.vietnamDevs')}
                 />
-
+                
                 <FeatureCard
                   icon={
                     <svg
@@ -233,7 +272,7 @@ function HomePage() {
                   title={t('home.support247')}
                   description={t('home.supportTeam')}
                 />
-
+                
                 <FeatureCard
                   icon={
                     <svg
@@ -252,7 +291,7 @@ function HomePage() {
                   title={t('home.highSecurity')}
                   description={t('home.encryptedData')}
                 />
-
+                
                 <FeatureCard
                   icon={
                     <svg
@@ -272,7 +311,7 @@ function HomePage() {
                   title={t('home.reasonablePrice')}
                   description={t('home.budgetOptions')}
                 />
-
+                
                 <FeatureCard
                   icon={
                     <svg
@@ -287,7 +326,7 @@ function HomePage() {
                   title={t('home.aiIntegration')}
                   description={t('home.aiSupport')}
                 />
-
+                
                 <FeatureCard
                   icon={
                     <svg
@@ -330,8 +369,8 @@ function HomePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {featuredProducts.map((product) => {
                       // Get prices based on default option
-                      const prices = getDisplayPrices(product);
-
+                      const prices = getProductPrices(product);
+                        
                       return (
                         <div key={product.id}>
                           <ProductCard
@@ -365,8 +404,8 @@ function HomePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {newProducts.map((product) => {
                       // Get prices based on default option
-                      const prices = getDisplayPrices(product);
-
+                      const prices = getProductPrices(product);
+                      
                       return (
                         <div key={product.id}>
                           <ProductCard
@@ -387,7 +426,7 @@ function HomePage() {
                       );
                     })}
                   </div>
-
+                  
                   {/* Nút xem thêm sản phẩm mới */}
                   {sortedNewProducts.length > visibleProductCount && (
                     <div className="flex justify-center mt-6">
@@ -396,10 +435,10 @@ function HomePage() {
                         className="bg-primary-100 hover:bg-primary-200 text-primary-800 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
                       >
                         {t('home.loadMore')}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          viewBox="0 0 20 20" 
+                          fill="currentColor" 
                           className="w-5 h-5"
                         >
                           <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.04 1.08l-5.25 5.5a.75.75 0 010 1.08l-5.25-5.5a.75.75 0 111.04-1.08l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />

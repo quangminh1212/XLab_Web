@@ -581,8 +581,6 @@ export async function cleanupOldFiles(): Promise<void> {
 
     // Cleanup user directory
     try {
-      // Đảm bảo thư mục tồn tại trước khi đọc
-      await ensureDirectoryExists(userDir);
       const userFiles = await fs.readdir(userDir);
       const now = Date.now();
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours
@@ -596,19 +594,17 @@ export async function cleanupOldFiles(): Promise<void> {
               await fs.unlink(filePath);
               console.log(`🧹 Cleaned up old file: ${file}`);
             }
-          } catch (_error) {
+          } catch (error) {
             // Ignore errors for individual files
           }
         }
       }
     } catch (error) {
-      console.warn('Warn cleaning user directory:', error);
+      console.error('Error cleaning user directory:', error);
     }
 
     // Cleanup backup directory
     try {
-      // Đảm bảo thư mục tồn tại trước khi đọc
-      await ensureDirectoryExists(backupDir);
       const backupFiles = await fs.readdir(backupDir);
       const now = Date.now();
       const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -622,13 +618,13 @@ export async function cleanupOldFiles(): Promise<void> {
               await fs.unlink(filePath);
               console.log(`🧹 Cleaned up old backup: ${file}`);
             }
-          } catch (_error) {
+          } catch (error) {
             // Ignore errors for individual files
           }
         }
       }
     } catch (error) {
-      console.warn('Warn cleaning backup directory:', error);
+      console.error('Error cleaning backup directory:', error);
     }
 
     console.log('✅ File cleanup completed');

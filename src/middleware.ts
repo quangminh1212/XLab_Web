@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { buildCSP, generateNonce } from '@/lib/csp';
-import { env } from '@/env';
 
 // Định nghĩa các loại route
 const ROUTES = {
@@ -131,16 +129,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Mọi route khác được xử lý bởi Next.js App Router
-  const res = NextResponse.next();
-
-  // Thiết lập CSP với nonce per-request
-  const nonce = generateNonce();
-  const strictStyles = env.STRICT_CSP_STYLES === 'true' && process.env.NODE_ENV === 'production';
-  const csp = buildCSP(nonce, process.env.NODE_ENV === 'production', strictStyles);
-  res.headers.set('Content-Security-Policy', csp);
-  res.headers.set('x-csp-nonce', nonce);
-
-  return res;
+  return NextResponse.next();
 }
 
 export const config = {
