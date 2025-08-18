@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: new URL('/products', siteConfig.url).toString(),
     languages: {
       'vi-VN': new URL('/products', siteConfig.url).toString(),
-      'en-US': new URL('/products', siteConfig.url).toString(),
+      'en-US': new URL('/en/products', siteConfig.url).toString(),
     },
   },
   openGraph: {

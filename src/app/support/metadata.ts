@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     canonical: new URL('/support', siteConfig.url).toString(),
     languages: {
       'vi-VN': new URL('/support', siteConfig.url).toString(),
-      'en-US': new URL('/support', siteConfig.url).toString(),
+      'en-US': new URL('/en/support', siteConfig.url).toString(),
     },
   },
 };

@@ -80,7 +80,7 @@ export async function generateMetadata(
       canonical: url,
       languages: {
         'vi-VN': url,
-        'en-US': url,
+        'en-US': `${siteConfig.url}/en/products/${id}`,
       },
     },
     openGraph: {

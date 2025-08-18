@@ -157,6 +157,18 @@ const nextConfig = {
 
     ];
   },
+  async rewrites() {
+    return [
+      // Map /en/* to same content; app router will render same routes
+      { source: '/en', destination: '/' },
+      { source: '/en/products', destination: '/products' },
+      { source: '/en/products/:slug*', destination: '/products/:slug*' },
+      { source: '/en/contact', destination: '/contact' },
+      { source: '/en/support', destination: '/support' },
+      { source: '/en/pricing', destination: '/pricing' },
+      { source: '/en/services', destination: '/services' },
+    ];
+  },
 };
 
 module.exports = withBundleAnalyzer(nextConfig);

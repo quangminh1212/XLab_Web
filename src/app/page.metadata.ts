@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     canonical: siteConfig.url,
     languages: {
       'vi-VN': siteConfig.url,
-      'en-US': siteConfig.url,
+      'en-US': `${siteConfig.url}/en`,
     },
   },
 
