@@ -1,4 +1,4 @@
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard.impl';
 import { getDisplayPrices } from '@/features/products/services/pricing';
 import { getValidImageUrl as getValidProductImageUrl } from '@/features/products/services/images';
 
