@@ -49,7 +49,6 @@ export const StyleLoader: React.FC = () => {
         <style jsx global>{`
           /* Critical CSS that will be inlined and always available */
           body {
-            font-family: var(--font-inter, ui-sans-serif, system-ui);
             background-color: rgb(249, 250, 251);
           }
         `}</style>
