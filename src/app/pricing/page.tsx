@@ -3,9 +3,9 @@ export default function PricingPage() {
     <div>
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
-        <div className="container">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Báo giá dịch vụ</h1>
-          <p className="text-xl max-w-3xl">
+          <p className="text-xl text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl">
             Chúng tôi cung cấp các gói dịch vụ với giá cả linh hoạt, phù hợp với quy mô và nhu cầu
             của doanh nghiệp bạn
           </p>
@@ -14,10 +14,10 @@ export default function PricingPage() {
 
       {/* Pricing Plans */}
       <section className="py-16">
-        <div className="container">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Gói phần mềm doanh nghiệp</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl mx-auto">
               Các giải pháp phần mềm toàn diện, đáp ứng nhu cầu quản lý và phát triển kinh doanh
             </p>
           </div>
@@ -387,7 +387,7 @@ export default function PricingPage() {
 
       {/* Development Services */}
       <section className="py-16 bg-gray-50">
-        <div className="container">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Dịch vụ phát triển phần mềm</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -470,7 +470,7 @@ export default function PricingPage() {
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Câu hỏi thường gặp</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl mx-auto">
               Những thông tin bạn cần biết về chính sách giá và dịch vụ của chúng tôi
             </p>
           </div>
@@ -538,7 +538,7 @@ export default function PricingPage() {
 
       {/* Call to Action */}
       <section className="py-16 bg-primary-600 text-white">
-        <div className="container">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-6">Không tìm thấy gói phù hợp?</h2>
             <p className="text-xl mb-8">

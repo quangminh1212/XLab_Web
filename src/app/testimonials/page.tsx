@@ -164,10 +164,10 @@ export default function TestimonialsPage() {
       <section className="bg-gradient-to-r from-primary-700 to-primary-500 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-balance break-words">
               {t('testimonials.pageTitle')}
             </h1>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+            <p className="text-xl opacity-90 text-balance leading-relaxed max-w-2xl md:max-w-3xl xl:max-w-4xl mx-auto">
               {t('testimonials.pageSubtitle')}
             </p>
           </div>
@@ -208,7 +208,7 @@ export default function TestimonialsPage() {
 
       {/* Content */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto px-4 max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px]">
           {activeTab === 'clients' && (
             <div className="animate-fadeIn">
               <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
@@ -356,7 +356,7 @@ export default function TestimonialsPage() {
                       <span className="text-sm font-semibold text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
                         {caseStudy.company}
                       </span>
-                      <h3 className="text-2xl font-bold mt-4 mb-4 text-gray-900">
+                      <h3 className="text-2xl font-bold mt-4 mb-4 text-gray-900 break-words text-balance">
                         {caseStudy.title}
                       </h3>
                       <p className="text-gray-700 mb-8 leading-relaxed">{caseStudy.description}</p>
