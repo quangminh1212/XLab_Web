@@ -30,7 +30,7 @@ export default function Footer() {
           {/* Column 1: Logo and Company Info */}
           <div className="md:col-span-2">
             <div className="flex flex-col sm:flex-row gap-8 mb-8">
-              <div className="flex-shrink-0 mb-4 sm:mb-0 sm:self-start">
+              <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start">
                 <Link href="/" className="inline-block">
                   <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="max-w-full" />
                 </Link>
