@@ -30,7 +30,7 @@
 
 @layer components {
   .container {
-    @apply mx-auto w-full max-w-[98%] px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8;
+    @apply mx-auto w-full max-w-full px-0 sm:px-3 md:px-4 lg:px-6 xl:px-8;
     width: 100%;
     margin-right: auto;
     margin-left: auto;
@@ -134,7 +134,7 @@
   }
 
   .container-custom {
-    @apply container mx-auto max-w-[98%];
+    @apply container mx-auto max-w-full sm:max-w-[95%] lg:max-w-[98%];
   }
 
   /* Responsive grid utilities */
