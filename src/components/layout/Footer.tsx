@@ -28,7 +28,7 @@ export default function Footer() {
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-x-6 md:gap-x-10 lg:gap-x-12 gap-y-8 sm:gap-x-8 sm:gap-y-12">
           {/* Column 1: Logo and Company Info */}
-          <div className="md:col-span-6 lg:col-span-6">
+          <div className="sm:col-span-2 md:col-span-6 lg:col-span-6">
             <div className="flex flex-col sm:flex-row sm:items-start gap-6 lg:gap-8 mb-6">
               <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start w-24 sm:w-28 md:w-36 lg:w-40 xl:w-44">
                 <Link href="/" className="inline-block w-full">
