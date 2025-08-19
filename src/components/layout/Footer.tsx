@@ -25,7 +25,7 @@ export default function Footer() {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
-      <div className="container mx-auto w-full md:w-[50vw] px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
+      <div className="container mx-auto w-full px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-6 md:gap-x-10 lg:gap-x-12 gap-y-8 sm:gap-x-8 sm:gap-y-12">
           {/* Column 1: Logo and Company Info */}
           <div className="sm:col-span-2 md:col-span-2 lg:col-span-12 xl:col-span-6">
