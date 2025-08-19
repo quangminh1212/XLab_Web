@@ -367,7 +367,7 @@ const Header = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`${isActive(link.href)} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50 whitespace-nowrap`}
+                  className={`${isActive(link.href)} transition-colors text-base lg:text-lg tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50 whitespace-nowrap`}
                 >
                   {link.label}
                 </Link>
@@ -707,7 +707,7 @@ const Header = () => {
                 ) : (
                   <button
                     onClick={() => signIn()}
-                    className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
+                    className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-sm md:text-base transition-colors"
                   >
                     {t('auth.signIn')}
                   </button>
