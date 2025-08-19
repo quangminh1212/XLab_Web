@@ -172,8 +172,8 @@ export default function Footer() {
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
 
-            <ul className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-left mb-3 sm:mb-4 w-full">
-              <li className="flex items-center justify-start group w-full">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-left mb-3 sm:mb-4 w-full">
+              <li className="flex items-center justify-start group w-full min-w-0">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 mr-3 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-all duration-300 border border-orange-500/20">
                   <svg
                     className="h-5 w-5 text-orange-400 flex-shrink-0"
@@ -195,12 +195,12 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-pre-line">
                   {t('footer.address')}
                 </span>
               </li>
 
-              <li className="flex items-center justify-start group w-full">
+              <li className="flex items-center justify-start group w-full min-w-0">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mr-3 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all duration-300 border border-blue-500/20">
                   <svg
                     className="h-5 w-5 text-blue-400 flex-shrink-0"
@@ -216,12 +216,12 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm truncate" title={t('footer.phone')}>
                   {t('footer.phone')}
                 </span>
               </li>
 
-              <li className="flex items-center justify-start group w-full">
+              <li className="flex items-center justify-start group w-full min-w-0">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-3 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
                   <svg
                     className="h-5 w-5 text-green-400 flex-shrink-0"
@@ -237,12 +237,12 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm truncate" title={t('footer.email')}>
                   {t('footer.email')}
                 </span>
               </li>
 
-              <li className="flex items-center justify-start group w-full">
+              <li className="flex items-center justify-start group w-full min-w-0">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 mr-3 group-hover:from-purple-500/30 group-hover:to-indigo-500/30 transition-all duration-300 border border-purple-500/20">
                   <svg
                     className="h-5 w-5 text-purple-400 flex-shrink-0"
@@ -258,7 +258,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm truncate" title={t('footer.supportHours')}>
                   {t('footer.supportHours')}
                 </span>
               </li>
