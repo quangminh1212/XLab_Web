@@ -23,12 +23,15 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
-    // Giới hạn kích thước file ~ 5MB
+    // Giới hạn kích thước file (5MB)
     const contentLength = request.headers.get('content-length');
     const maxBytes = 5 * 1024 * 1024;
     if (contentLength && parseInt(contentLength, 10) > maxBytes) {
       return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 413 });
     }
+
+    // Kiểm tra MIME an toàn (ảnh phổ biến)
+    const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
     // Lấy thông tin sản phẩm từ formData
     const productId = (formData.get('productId') as string) || '';
     const productSlug = (formData.get('productSlug') as string) || '';

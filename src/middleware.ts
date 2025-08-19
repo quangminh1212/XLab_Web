@@ -209,7 +209,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (isRateLimited(request, pathname)) {
-      return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': '60' } });
+      return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': '60', ...getCorsHeaders(request) } });
     }
     // Bỏ qua CSRF cho NextAuth routes vì đã có bảo vệ nội bộ
     if (!pathname.startsWith('/api/auth')) {
