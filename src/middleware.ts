@@ -153,25 +153,12 @@ function getClientId(req: NextRequest) {
   return (req.ip as string) || req.headers.get('x-real-ip') || 'unknown';
 }
 
-// Simple in-memory rate limit theo IP
-const rateBuckets = new Map<string, { ts: number[] }>();
+import { isRateLimitedUpstash } from '@/lib/rateLimit';
 
-function isRateLimited(req: NextRequest, pathname: string): boolean {
+async function isRateLimited(req: NextRequest, pathname: string): Promise<boolean> {
   const key = `${getClientId(req)}::${pathname.startsWith('/api/admin') ? 'admin' : 'api'}`;
-  const now = Date.now();
-  let bucket = rateBuckets.get(key);
-  if (!bucket) {
-    bucket = { ts: [] };
-    rateBuckets.set(key, bucket);
-  }
-  // áp dụng cửa sổ 60s
-  const windowMs = 60_000;
-  const limit = pathname.startsWith('/api/admin') ? 30 : 100;
-  // loại bỏ request cũ ngoài cửa sổ
-  bucket.ts = bucket.ts.filter((t) => now - t < windowMs);
-  if (bucket.ts.length >= limit) return true;
-  bucket.ts.push(now);
-  return false;
+  const limited = await isRateLimitedUpstash(key, pathname.startsWith('/api/admin'));
+  return limited;
 }
 
 function isCsrfValid(req: NextRequest): boolean {
@@ -208,7 +195,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    if (isRateLimited(request, pathname)) {
+    if (await isRateLimited(request, pathname)) {
       return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': '60', ...getCorsHeaders(request) } });
     }
     // Bỏ qua CSRF cho NextAuth routes vì đã có bảo vệ nội bộ
