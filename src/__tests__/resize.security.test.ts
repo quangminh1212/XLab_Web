@@ -19,9 +19,9 @@ describe('Resize-image security', () => {
       headers: new Headers(),
     };
     const prevEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'production';
+    (process as any).env.NODE_ENV = 'production';
     const res = await ResizePOST(req);
-    process.env.NODE_ENV = prevEnv;
+    (process as any).env.NODE_ENV = prevEnv;
     expect(res.status).toBe(400);
   });
 });
