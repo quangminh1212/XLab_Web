@@ -325,14 +325,7 @@ export default function Footer() {
               {/* ZaloPay */}
               <div className="group relative">
                 <div className="w-8 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
-                  <svg viewBox="0 0 48 48" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="24" cy="24" r="20" fill="#005ec2" />
-                    <path
-                      d="M34.5,18.5H13.5v11h21V18.5z M31.8,26.8H16.2v-5.6h15.6V26.8z"
-                      fill="white"
-                    />
-                    <circle cx="24" cy="24" r="2.5" fill="#005ec2" />
-                  </svg>
+                  <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={24} height={24} className="w-6 h-6" />
                 </div>
               </div>
 
@@ -348,16 +341,7 @@ export default function Footer() {
                 </div>
               </div>
 
-              {/* PayPal */}
-              <div className="group relative">
-                <div className="w-8 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-8 h-5">
-                    <path fill="#1565C0" d="M18.7,13.767l-0.87,5.442h2.181l0.87-5.442H18.7z" />
-                    <path fill="#1565C0" d="M46,25.01c0,1.704-1.386,3.09-3.09,3.09h-6.183l-0.87,5.446h-4.358l0.87-5.446H18.701l2.181-13.62h8.723c1.704,0,3.09,1.386,3.09,3.09c0,0.356-0.061,0.698-0.172,1.016C34.081,21.269,37,22.968,37,25.01L46,25.01L46,25.01z" />
-                    <path fill="#039BE5" d="M2,25.01c0,1.704,1.386,3.09,3.09,3.09h6.183l0.87,5.446h4.358l-0.87-5.446h13.667l-2.181-13.62h-8.723c-1.704,0-3.09,1.386-3.09,3.09c0,0.356,0.061,0.698,0.172,1.016C13.919,21.269,11,22.968,11,25.01L2,25.01L2,25.01z" />
-                  </svg>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
