@@ -96,7 +96,7 @@ export default function ContactPage() {
       {/* Contact Form and Information */}
       <section className="py-16">
         <div className="mx-auto px-0 sm:px-4 max-w-full md:max-w-4xl xl:max-w-5xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
               <h2 className="text-2xl font-bold mb-6 text-balance">{t('contact.sendMessage')}</h2>
