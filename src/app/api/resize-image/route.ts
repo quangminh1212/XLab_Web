@@ -38,6 +38,12 @@ export async function POST(req: NextRequest) {
     let imageBuffer: Buffer;
     let originalFilename: string | undefined;
 
+    // Allow list hostnames from env (comma-separated)
+    const ALLOWED_IMAGE_HOSTS = (process.env.ALLOWED_IMAGE_HOSTS || '')
+      .split(',')
+      .map((h) => h.trim())
+      .filter(Boolean);
+
     // Check if image is a local path or external URL
     if (imageUrl.startsWith('/')) {
       // Local path - read from filesystem (dev only)
@@ -55,10 +61,23 @@ export async function POST(req: NextRequest) {
     } else {
       // External URL - fetch image
       try {
+        const parsed = new URL(imageUrl);
+        if (process.env.NODE_ENV === 'production' && parsed.protocol !== 'https:') {
+          return NextResponse.json({ error: 'Only https URLs are allowed in production' }, { status: 400 });
+        }
+        if (ALLOWED_IMAGE_HOSTS.length > 0 && !ALLOWED_IMAGE_HOSTS.includes(parsed.hostname)) {
+          return NextResponse.json({ error: 'Image host is not allowed' }, { status: 400 });
+        }
+
         const response = await fetch(imageUrl);
         if (!response.ok) throw new Error(`Failed to fetch image: ${response.status}`);
-        imageBuffer = Buffer.from(await response.arrayBuffer());
-        const urlParts = new URL(imageUrl).pathname.split('/');
+        const arrBuf = await response.arrayBuffer();
+        const maxBytes = 5 * 1024 * 1024; // 5MB
+        if (arrBuf.byteLength > maxBytes) {
+          return NextResponse.json({ error: 'Image too large (max 5MB)' }, { status: 413 });
+        }
+        imageBuffer = Buffer.from(arrBuf);
+        const urlParts = parsed.pathname.split('/');
         originalFilename = urlParts[urlParts.length - 1];
       } catch (error) {
         console.error('Error fetching image:', error);

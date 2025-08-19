@@ -175,6 +175,20 @@ const nextConfig = {
           },
         ].filter(header => header.value !== ""),
       },
+      {
+        // Ngăn cache cho API responses
+        source: '/api/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store' }
+        ]
+      },
+      {
+        // Ngăn index các trang admin
+        source: '/admin/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' }
+        ]
+      }
 
     ];
   },
