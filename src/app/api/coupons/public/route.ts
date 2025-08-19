@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
+import { getCorsHeaders, handleCorsOptions } from '@/lib/cors';
 export const runtime = 'nodejs';
 
 import { getServerSession } from 'next-auth/next';
@@ -86,7 +87,11 @@ function loadUserData(email: string): UserData | null {
   }
 }
 
-export async function GET() {
+export async function OPTIONS(req: NextRequest) {
+  return handleCorsOptions(req, ['GET', 'OPTIONS']);
+}
+
+export async function GET(req: NextRequest) {
   try {
     // Get session information
     const session = await getServerSession(authOptions);
@@ -162,6 +167,7 @@ export async function GET() {
       {
         headers: {
           'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+          ...getCorsHeaders(req)
         },
       },
     );
@@ -173,6 +179,7 @@ export async function GET() {
         status: 500,
         headers: {
           'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+          ...getCorsHeaders(req)
         },
       },
     );

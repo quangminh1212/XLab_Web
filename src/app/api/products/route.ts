@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getCorsHeaders, handleCorsOptions } from '@/lib/cors';
 
 import { getAllProducts } from '@/lib/i18n/products';
 export const runtime = 'nodejs';
 
+
+export async function OPTIONS(req: NextRequest) {
+  return handleCorsOptions(req, ['GET', 'OPTIONS']);
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -142,7 +147,7 @@ export async function GET(req: NextRequest) {
       success: true,
       data: processedProducts,
       total: processedProducts.length,
-    });
+    }, { headers: { ...getCorsHeaders(req) } });
   } catch (_error) {
     // console.error('Error fetching products:', _error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
