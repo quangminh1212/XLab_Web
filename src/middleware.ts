@@ -139,8 +139,8 @@ function isCsrfValid(req: NextRequest): boolean {
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Bỏ qua các file static và api auth routes không cần kiểm tra
-  if (isStaticFile(pathname) || pathname.includes('/api/auth')) {
+  // Bỏ qua các file static
+  if (isStaticFile(pathname)) {
     return NextResponse.next();
   }
 
@@ -149,8 +149,11 @@ export async function middleware(request: NextRequest) {
     if (isRateLimited(request, pathname)) {
       return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': '60' } });
     }
-    if (!isCsrfValid(request)) {
-      return new NextResponse('Forbidden (CSRF)', { status: 403 });
+    // Bỏ qua CSRF cho NextAuth routes vì đã có bảo vệ nội bộ
+    if (!pathname.startsWith('/api/auth')) {
+      if (!isCsrfValid(request)) {
+        return new NextResponse('Forbidden (CSRF)', { status: 403 });
+      }
     }
   }
 

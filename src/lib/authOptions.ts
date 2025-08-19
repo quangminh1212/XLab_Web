@@ -18,6 +18,21 @@ declare module 'next-auth' {
     };
   }
 }
+// Kiểm tra biến môi trường bắt buộc (cảnh báo mặc định, cho phép siết chặt bằng SECURE_STRICT_ENV=1)
+(function checkEnv() {
+  if (process.env.NODE_ENV === 'production') {
+    const required = ['NEXTAUTH_SECRET', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'DATA_ENCRYPTION_KEY'];
+    const missing = required.filter((n) => !process.env[n]);
+    if (missing.length > 0) {
+      if (process.env.SECURE_STRICT_ENV === '1') {
+        throw new Error(`Missing required environment variables in production: ${missing.join(', ')}`);
+      } else {
+        console.warn(`[SECURITY] Missing env vars: ${missing.join(', ')}. Set SECURE_STRICT_ENV=1 to enforce.`);
+      }
+    }
+  }
+})();
+
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'xlab.rnd@gmail.com')
   .split(',')
