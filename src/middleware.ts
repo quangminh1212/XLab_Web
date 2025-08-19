@@ -91,6 +91,12 @@ function isApiPath(pathname: string) {
   return pathname.startsWith('/api');
 }
 
+function isWebhookPath(pathname: string) {
+  const raw = process.env.WEBHOOK_PATHS || '';
+  const paths = raw.split(',').map((s) => s.trim()).filter(Boolean);
+  return paths.some((p) => pathname === p || pathname.startsWith(p + '/'));
+}
+
 function getClientId(req: NextRequest) {
   // Ưu tiên IP thực nếu reverse proxy set X-Forwarded-For
   const fwd = req.headers.get('x-forwarded-for');
@@ -146,6 +152,10 @@ export async function middleware(request: NextRequest) {
 
   // Rate limit & CSRF cho API
   if (isApiPath(pathname)) {
+    // Bypass cho webhook paths (sẽ xác thực chữ ký tại route)
+    if (isWebhookPath(pathname)) {
+      return NextResponse.next();
+    }
     if (isRateLimited(request, pathname)) {
       return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': '60' } });
     }

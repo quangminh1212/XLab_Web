@@ -149,9 +149,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: process.env.NODE_ENV === 'production'
-              ? "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data: blob: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; form-action 'self';"
-              : "",
+            value: require('./config/csp.js').buildCsp(process.env.NODE_ENV === 'production'),
           },
           {
             key: 'Permissions-Policy',
