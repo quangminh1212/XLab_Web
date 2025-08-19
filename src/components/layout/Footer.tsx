@@ -195,7 +195,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-pre-line">
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-nowrap truncate" title={t('footer.address')}>
                   {t('footer.address')}
                 </span>
               </li>
