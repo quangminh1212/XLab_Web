@@ -25,7 +25,10 @@ const ROUTES = {
 };
 
 // Danh sách email admin (lưu ở một nơi tập trung)
-const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',') || ['xlab.rnd@gmail.com'];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'xlab.rnd@gmail.com')
+  .split(',')
+  .map((e) => e.trim())
+  .filter(Boolean);
 
 /**
  * Kiểm tra xem đường dẫn có thuộc loại được xác định hay không
@@ -81,12 +84,74 @@ const redirectToLogin = (request: NextRequest, callbackPath: string): NextRespon
 /**
  * Middleware chính để xử lý kiểm tra quyền truy cập
  */
+// CSRF: chỉ chấp nhận các request state-changing từ cùng origin
+const SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS'];
+
+function isApiPath(pathname: string) {
+  return pathname.startsWith('/api');
+}
+
+function getClientId(req: NextRequest) {
+  // Ưu tiên IP thực nếu reverse proxy set X-Forwarded-For
+  const fwd = req.headers.get('x-forwarded-for');
+  if (typeof fwd === 'string' && fwd.length > 0) {
+    const first = fwd.split(',')[0];
+    if (first) return first.trim();
+  }
+  // NextRequest có thể có ip
+  // @ts-ignore
+  return (req.ip as string) || req.headers.get('x-real-ip') || 'unknown';
+}
+
+// Simple in-memory rate limit theo IP
+const rateBuckets = new Map<string, { ts: number[] }>();
+
+function isRateLimited(req: NextRequest, pathname: string): boolean {
+  const key = `${getClientId(req)}::${pathname.startsWith('/api/admin') ? 'admin' : 'api'}`;
+  const now = Date.now();
+  let bucket = rateBuckets.get(key);
+  if (!bucket) {
+    bucket = { ts: [] };
+    rateBuckets.set(key, bucket);
+  }
+  // áp dụng cửa sổ 60s
+  const windowMs = 60_000;
+  const limit = pathname.startsWith('/api/admin') ? 30 : 100;
+  // loại bỏ request cũ ngoài cửa sổ
+  bucket.ts = bucket.ts.filter((t) => now - t < windowMs);
+  if (bucket.ts.length >= limit) return true;
+  bucket.ts.push(now);
+  return false;
+}
+
+function isCsrfValid(req: NextRequest): boolean {
+  const method = req.method.toUpperCase();
+  if (SAFE_METHODS.includes(method)) return true;
+  const origin = req.headers.get('origin');
+  const referer = req.headers.get('referer');
+  const selfOrigin = new URL(req.url).origin;
+  if (origin) return origin === selfOrigin;
+  if (referer) return referer.startsWith(selfOrigin + '/');
+  // Không có Origin/Referer -> coi là không hợp lệ để an toàn
+  return false;
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Bỏ qua các file static và api auth routes không cần kiểm tra
   if (isStaticFile(pathname) || pathname.includes('/api/auth')) {
     return NextResponse.next();
+  }
+
+  // Rate limit & CSRF cho API
+  if (isApiPath(pathname)) {
+    if (isRateLimited(request, pathname)) {
+      return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': '60' } });
+    }
+    if (!isCsrfValid(request)) {
+      return new NextResponse('Forbidden (CSRF)', { status: 403 });
+    }
   }
 
   // Rewrite i18n subpath /en/* -> /* with ?lang=eng (preserve existing query)
@@ -133,6 +198,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Chỉ áp dụng cho các đường dẫn cần kiểm tra
-  matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/protected/:path*'],
+  // Áp dụng cho admin, các trang bảo vệ và toàn bộ API (trừ file tĩnh đã được loại ở trên)
+  matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/:path*'],
 };

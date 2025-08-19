@@ -150,12 +150,24 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: process.env.NODE_ENV === 'production'
-              ? "default-src 'self'; img-src 'self' data: blob: https: http: *; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;"
+              ? "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data: blob: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; form-action 'self';"
               : "",
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
+            value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()'
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'off'
           },
           {
             key: 'Strict-Transport-Security',

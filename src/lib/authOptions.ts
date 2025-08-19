@@ -19,7 +19,10 @@ declare module 'next-auth' {
   }
 }
 
-const ADMIN_EMAILS = ['xlab.rnd@gmail.com'];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'xlab.rnd@gmail.com')
+  .split(',')
+  .map((e) => e.trim())
+  .filter(Boolean);
 const AUTH_SECRET = process.env.NEXTAUTH_SECRET;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;

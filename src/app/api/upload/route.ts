@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
   try {
     // Verify authentication
     const session = await getServerSession(authOptions);
-    if (!session) {
-      console.error('Upload failed: Unauthorized');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session || !session.user?.isAdmin) {
+      console.error('Upload failed: Forbidden');
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     // Parse the form data

@@ -7,8 +7,8 @@ import { User } from '@/models/UserModel';
 
 // Cấu hình bảo mật
 const ENCRYPTION_KEY = process.env.DATA_ENCRYPTION_KEY || 'default-key-change-in-production';
-const ALGORITHM = 'aes-256-cbc';
-const IV_LENGTH = 16;
+const ALGORITHM = 'aes-256-gcm';
+const IV_LENGTH = 12; // GCM khuyến nghị 12 bytes
 
 // Đường dẫn lưu trữ
 const USER_DATA_DIR = path.join(process.cwd(), 'data', 'users');
@@ -50,28 +50,44 @@ function createDataChecksum(data: any): string {
   return crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
 }
 
-// Mã hóa dữ liệu đơn giản với Base64
-function encryptData(data: string): { encrypted: string; iv: string; tag: string } {
+// Mã hóa dữ liệu an toàn với AES-256-GCM
+function deriveKey(): Buffer {
+  // Hash secret thành 32-byte key buffer
+  return crypto.createHash('sha256').update(String(ENCRYPTION_KEY)).digest();
+}
+
+function encryptData(data: string): { encrypted: string; iv: string; tag: string; alg: string } {
   const iv = crypto.randomBytes(IV_LENGTH);
-  const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest('hex').slice(0, 32);
-  const cipher = crypto.createCipher(ALGORITHM, key);
+  const key = deriveKey();
+  const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
 
   let encrypted = cipher.update(data, 'utf8', 'hex');
   encrypted += cipher.final('hex');
+  const tag = cipher.getAuthTag().toString('hex');
 
   return {
     encrypted,
     iv: iv.toString('hex'),
-    tag: crypto
-      .createHash('sha256')
-      .update(encrypted + iv.toString('hex'))
-      .digest('hex'),
+    tag,
+    alg: 'aes-256-gcm',
   };
 }
 
-// Giải mã dữ liệu
-function decryptData(encryptedData: string, iv: string, tag: string): string {
-  // Kiểm tra tính toàn vẹn
+// Giải mã dữ liệu (hỗ trợ tương thích ngược)
+function decryptData(encryptedData: string, iv: string, tag: string, alg?: string): string {
+  const key = deriveKey();
+
+  // Nhánh AES-256-GCM mới: ưu tiên nếu alg khai báo, hoặc tag dài 32 hex (16 bytes)
+  if (alg === 'aes-256-gcm' || tag?.length === 32) {
+    const ivBuf = Buffer.from(iv, 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, ivBuf);
+    decipher.setAuthTag(Buffer.from(tag, 'hex'));
+    let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  }
+
+  // Legacy: aes-256-cbc với createDecipher (không dùng iv đúng cách)
   const expectedTag = crypto
     .createHash('sha256')
     .update(encryptedData + iv)
@@ -79,13 +95,10 @@ function decryptData(encryptedData: string, iv: string, tag: string): string {
   if (expectedTag !== tag) {
     throw new Error('Data integrity check failed');
   }
-
-  const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest('hex').slice(0, 32);
-  const decipher = crypto.createDecipher(ALGORITHM, key);
-
-  let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-
+  const legacyKey = crypto.createHash('sha256').update(String(ENCRYPTION_KEY)).digest('hex').slice(0, 32);
+  const legacyDecipher = crypto.createDecipher('aes-256-cbc', legacyKey);
+  let decrypted = legacyDecipher.update(encryptedData, 'hex', 'utf8');
+  decrypted += legacyDecipher.final('utf8');
   return decrypted;
 }
 
@@ -192,6 +205,7 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
       data: encrypted,
       iv: iv,
       tag: tag,
+      alg: 'aes-256-gcm',
       checksum: createDataChecksum(userData),
     };
 
@@ -231,6 +245,7 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
           data: encrypted,
           iv: iv,
           tag: tag,
+          alg: 'aes-256-gcm',
           timestamp: new Date().toISOString(),
         };
 
@@ -474,7 +489,7 @@ export async function restoreFromBackup(email: string, backupTimestamp: string):
     const backupContent = await fs.readFile(backupPath, 'utf8');
     const backupData = JSON.parse(backupContent);
 
-    const decryptedString = decryptData(backupData.data, backupData.iv, backupData.tag);
+    const decryptedString = decryptData(backupData.data, backupData.iv, backupData.tag, backupData.alg);
 
     const userData: UserData = JSON.parse(decryptedString);
 
@@ -542,7 +557,7 @@ export async function getUserData(email: string): Promise<UserData | null> {
 
         let decryptedString;
         try {
-          decryptedString = decryptData(encryptedData.data, encryptedData.iv, encryptedData.tag);
+          decryptedString = decryptData(encryptedData.data, encryptedData.iv, encryptedData.tag, encryptedData.alg);
         } catch (decryptError) {
           console.error(`❌ Decryption failed for user ${email}:`, decryptError);
           return null;
