@@ -172,8 +172,8 @@ export default function Footer() {
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
 
-            <ul className="flex flex-wrap items-center text-left mb-3 sm:mb-4 w-full gap-x-6 sm:gap-x-8 gap-y-3 sm:gap-y-4">
-              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 md:basis-1/4">
+            <ul className="flex items-center flex-wrap sm:flex-nowrap text-left mb-3 sm:mb-4 w-full gap-x-6 sm:gap-x-8 gap-y-3 sm:gap-y-0">
+              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 sm:basis-auto flex-none">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 mr-3 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-all duration-300 border border-orange-500/20">
                   <svg
                     className="h-5 w-5 text-orange-400 flex-shrink-0"
@@ -200,7 +200,7 @@ export default function Footer() {
                 </span>
               </li>
 
-              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 md:basis-1/4">
+              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 sm:basis-auto flex-none">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mr-3 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all duration-300 border border-blue-500/20">
                   <svg
                     className="h-5 w-5 text-blue-400 flex-shrink-0"
@@ -221,7 +221,7 @@ export default function Footer() {
                 </span>
               </li>
 
-              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 md:basis-1/4">
+              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 sm:basis-auto flex-none">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-3 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
                   <svg
                     className="h-5 w-5 text-green-400 flex-shrink-0"
@@ -242,7 +242,7 @@ export default function Footer() {
                 </span>
               </li>
 
-              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 md:basis-1/4">
+              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 sm:basis-auto flex-none">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 mr-3 group-hover:from-purple-500/30 group-hover:to-indigo-500/30 transition-all duration-300 border border-purple-500/20">
                   <svg
                     className="h-5 w-5 text-purple-400 flex-shrink-0"
