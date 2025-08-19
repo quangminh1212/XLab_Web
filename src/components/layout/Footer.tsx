@@ -275,10 +275,10 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-col sm:flex-col lg:flex-row items-center lg:items-start space-y-2 sm:space-y-2 lg:space-y-0 sm:space-x-0 lg:space-x-6 w-full lg:w-auto">
-            <span className="text-xs sm:text-sm text-slate-400 font-medium w-full text-center lg:text-left">
+            <span className="text-xs sm:text-sm text-slate-400 font-medium w-full lg:w-auto text-center lg:text-left">
               {t('footer.acceptedPayments')}
             </span>
-            <div className="flex items-center justify-center lg:justify-end flex-wrap space-x-1.5 sm:space-x-2.5 gap-y-2 w-full">
+            <div className="flex items-center justify-center lg:justify-end flex-wrap space-x-1.5 sm:space-x-2.5 gap-y-2 w-full lg:w-auto">
               {/* Visa */}
               <div className="group relative">
                 <div className="w-8 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
