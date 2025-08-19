@@ -26,9 +26,9 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-x-6 md:gap-x-10 lg:gap-x-12 gap-y-8 sm:gap-x-8 sm:gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-6 md:gap-x-10 lg:gap-x-12 gap-y-8 sm:gap-x-8 sm:gap-y-12">
           {/* Column 1: Logo and Company Info */}
-          <div className="sm:col-span-2 md:col-span-6 lg:col-span-6">
+          <div className="sm:col-span-2 md:col-span-2 lg:col-span-12 xl:col-span-6">
             <div className="flex flex-col sm:flex-row sm:items-start gap-6 lg:gap-8 mb-6">
               <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start w-24 sm:w-28 md:w-36 lg:w-40 xl:w-44">
                 <Link href="/" className="inline-block w-full">
@@ -92,7 +92,7 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Products and Services */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-2 lg:col-span-2">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-6 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <span className="relative z-10">{t('footer.productsAndServices')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
@@ -129,7 +129,7 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Navigation Links */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-2 lg:col-span-2">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-6 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <span className="relative z-10">{t('footer.navigationLinks')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
@@ -166,7 +166,7 @@ export default function Footer() {
           </div>
 
           {/* Column 4: Contact Info */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-2 lg:col-span-2">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-12 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <span className="relative z-10">{t('footer.contactLink')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
