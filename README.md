@@ -1,7 +1,7 @@
 # XLab Web
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black?style=flat&logo=next.js)](https://nextjs.org/)
-[![CI](https://github.com/<ORG_OR_USER>/<REPO>/actions/workflows/ci.yml/badge.svg)](https://github.com/<ORG_OR_USER>/<REPO>/actions/workflows/ci.yml)
+[![CI](https://github.com/VF-Apps/XLab_Web/actions/workflows/ci.yml/badge.svg)](https://github.com/VF-Apps/XLab_Web/actions/workflows/ci.yml)
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.0-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
