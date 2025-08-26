@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Language } from '@/i18n';
@@ -65,9 +65,9 @@ const Check = ({ className = '' }: { className?: string }) => (
 );
 
 const LanguageSwitcher = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const _router = useRouter();
+  const _pathname = usePathname();
+  const _searchParams = useSearchParams();
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 

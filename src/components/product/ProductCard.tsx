@@ -42,8 +42,8 @@ export default function ProductCard({
   totalSold = 0,
   slug = '',
   onAddToCart = () => {},
-  // onView is optional and may be unused in some contexts
-  onView = () => {},
+  // _onView is optional and may be unused in some contexts
+  onView: _onView = () => {},
 }: ProductCardProps) {
   const { t, language } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);

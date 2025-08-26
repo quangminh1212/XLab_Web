@@ -40,7 +40,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
           } else {
             setTranslatedDescription(description); // Fallback to original
           }
-        } catch (error) {
+        } catch (_error) {
           // Error fetching translation
           setTranslatedDescription(description); // Fallback to original
         }

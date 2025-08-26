@@ -40,7 +40,7 @@ const getUserBalance = async (userEmail: string): Promise<number> => {
       return 0;
     }
   } catch (_error) {
-    console.error('Error reading balance:', error);
+    console.error('Error reading balance:', _error);
     return 0;
   }
 };

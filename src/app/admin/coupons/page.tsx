@@ -46,7 +46,7 @@ interface CouponForm {
 
 function CouponsPage() {
   const { data: _session } = useSession();
-  const { t, language } = useLanguage();
+  const { t, language, localCode } = useLanguage();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -334,7 +334,7 @@ function CouponsPage() {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString((language === 'vi') ? 'vi-VN' : 'en-US');
+    ).toLocaleDateString((localCode === 'vi') ? 'vi-VN' : 'en-US');
   };
 
   // Check if coupon is expired

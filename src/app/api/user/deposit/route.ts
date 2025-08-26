@@ -6,7 +6,7 @@ import {
   getUserByEmail,
   updateUserBalance,
   createTransaction,
-  syncUserBalance,
+
   syncAllUserData,
 } from '@/lib/userService';
 

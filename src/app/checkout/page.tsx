@@ -15,7 +15,7 @@ import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 import products from '../../data/products.json';
 
 export default function CheckoutPage() {
-  const { items: cartItems, clearCart } = useCart();
+  const { items: cartItems } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
@@ -34,7 +34,7 @@ export default function CheckoutPage() {
     country: 'vietnam',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+  const [selectedPaymentMethod] = useState<
     'balance' | 'bank' | 'momo' | 'zalopay'
   >('balance');
   const [userBalance, setUserBalance] = useState(0);
