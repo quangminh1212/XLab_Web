@@ -27,7 +27,7 @@ const verifiedTransactions: Record<string, BankTransaction> = {};
 const processedTransactions: Set<string> = new Set(); // Tránh xử lý lặp lại
 
 // Function to get user balance
-const getUserBalance = async (userEmail: string): Promise<number> => {
+const _getUserBalance = async (userEmail: string): Promise<number> => {
   try {
     const balancePath = path.join(process.cwd(), 'data', 'balances.json');
 

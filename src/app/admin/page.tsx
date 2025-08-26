@@ -17,7 +17,7 @@ interface Stats {
 }
 
 function AdminDashboard() {
-  const { data: session } = useSession();
+  const { data: _session } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({

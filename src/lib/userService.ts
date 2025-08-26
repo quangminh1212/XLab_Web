@@ -125,7 +125,7 @@ export async function getUserDataFromFile(email: string): Promise<UserData | nul
 
     const data = await fs.readFile(filePath, 'utf8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch (_error) {
     console.log(`No individual file found for user: ${email}`);
     return null;
   }
@@ -143,9 +143,9 @@ async function saveUserDataToFile(email: string, userData: UserData): Promise<vo
 
     await fs.writeFile(filePath, JSON.stringify(userData, null, 2), 'utf8');
     console.log(`✅ User data saved for: ${email}`);
-  } catch (error) {
-    console.error(`❌ Error saving user data for ${email}:`, error);
-    throw error;
+  } catch (_error) {
+    console.error(`❌ Error saving user data for ${email}:`, _error);
+    throw _error;
   }
 }
 
@@ -213,8 +213,8 @@ export async function getUsers(): Promise<User[]> {
   try {
     const data = await fs.readFile(USERS_FILE, 'utf8');
     return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading users file:', error);
+  } catch (_error) {
+    console.error('Error reading users file:', _error);
     return [];
   }
 }
@@ -223,9 +223,9 @@ export async function getUsers(): Promise<User[]> {
 export async function saveUsers(users: User[]): Promise<void> {
   try {
     await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Error saving users file:', error);
-    throw error;
+  } catch (_error) {
+    console.error('Error saving users file:', _error);
+    throw _error;
   }
 }
 

@@ -96,8 +96,8 @@ const Header = () => {
       }
 
       setLastCouponFetch(Date.now());
-    } catch (error) {
-      console.error('Error fetching coupons:', error);
+    } catch (_error) {
+      console.error('Error fetching coupons:', _error);
     } finally {
       setLoadingCoupons(false);
     }
@@ -310,7 +310,7 @@ const Header = () => {
         const now = new Date();
         const expireDate = new Date(coupon.endDate);
         return expireDate < now;
-      } catch (error) {
+      } catch (_error) {
         return false;
       }
     };

@@ -89,8 +89,8 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
           // Sử dụng dữ liệu mẫu nếu API gặp lỗi
           setTestimonials(defaultTestimonials);
         }
-      } catch (error) {
-        console.error('Không thể tải đánh giá:', error);
+      } catch (_error) {
+        console.error('Không thể tải đánh giá:', _error);
         setTestimonials(defaultTestimonials);
       } finally {
         setLoading(false);
@@ -198,7 +198,7 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
         month: '2-digit',
         year: 'numeric',
       });
-    } catch (error) {
+    } catch (_error) {
       return dateString;
     }
   };

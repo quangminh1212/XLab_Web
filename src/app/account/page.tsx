@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
 import Avatar from '@/components/common/Avatar';
@@ -58,7 +58,7 @@ const userProfile = {
 export default function AccountPage() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
-  const [imageError, setImageError] = useState(false);
+
   const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -73,7 +73,7 @@ export default function AccountPage() {
     expiryReminders: true,
   });
   const [settingsSaved, setSettingsSaved] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({
+
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -120,7 +120,7 @@ export default function AccountPage() {
       if (data.allCoupons) {
         setAvailableCoupons(data.allCoupons);
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error fetching available coupons:', error);
     }
   };
@@ -134,7 +134,7 @@ export default function AccountPage() {
       if (data.success && data.coupons) {
         setPublicCoupons(data.coupons);
       }
-    } catch (error) {
+    } catch (_error) {
       console.error('Error fetching public coupons:', error);
     } finally {
       setLoadingCoupons(false);
@@ -217,7 +217,7 @@ export default function AccountPage() {
             const parsedSettings = JSON.parse(savedNotificationSettings);
             setNotificationSettings(parsedSettings);
             console.log('Đã tải cài đặt thông báo:', parsedSettings);
-          } catch (error) {
+          } catch (_error) {
             console.error('Lỗi khi parse cài đặt thông báo:', error);
           }
         }
@@ -296,7 +296,7 @@ export default function AccountPage() {
 
             setPurchaseHistory(allOrders);
             console.log('Combined orders:', allOrders);
-          } catch (err) {
+          } catch (_error) {
             console.error('Error fetching purchase history:', err);
             // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
             try {
@@ -340,7 +340,7 @@ export default function AccountPage() {
                 couponDiscount: order.couponDiscount,
               }));
               setPurchaseHistory(convertedOrders);
-            } catch (localErr) {
+            } catch (_error) {
               console.error('Error reading from localStorage:', localErr);
               setPurchaseHistory([]);
             }
@@ -351,7 +351,7 @@ export default function AccountPage() {
 
         fetchAvailableCoupons(); // Thêm dòng này để lấy danh sách mã giảm giá
         fetchPublicCoupons(); // Thêm dòng này để lấy danh sách mã giảm giá công khai
-      } catch (error) {
+      } catch (_error) {
         console.error('Lỗi khi đọc từ localStorage:', error);
         // Fallback to session data
         setProfile(updatedProfile);
@@ -421,7 +421,7 @@ export default function AccountPage() {
       setTimeout(() => {
         setSaveSuccess(false);
       }, 3000);
-    } catch (error) {
+    } catch (_error) {
       console.error('Lỗi khi lưu thông tin:', error);
       setSaving(false);
       // Xử lý thông báo lỗi ở đây nếu cần
@@ -429,7 +429,7 @@ export default function AccountPage() {
   };
 
   // Hàm định dạng ngày
-  const formatDate = (dateString: string) => {
+
     // Giả sử định dạng đầu vào là DD/MM/YYYY
     return dateString;
   };
@@ -456,7 +456,7 @@ export default function AccountPage() {
   }, 0);
 
   // Xử lý lỗi hình ảnh
-  const handleImageError = () => {
+
     setImageError(true);
     console.log('Lỗi khi tải ảnh đại diện, sử dụng ảnh mặc định');
   };
