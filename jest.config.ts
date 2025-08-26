@@ -13,6 +13,9 @@ const config: Config = {
   transformIgnorePatterns: ['/node_modules/'],
   testPathIgnorePatterns: ['/node_modules/', '/.next/', '/out/', '/dist/', '/coverage/', '/.next-dev/'],
   clearMocks: true,
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text-summary', 'lcov'],
 };
 
 export default config;
