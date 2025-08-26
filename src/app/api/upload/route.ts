@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Kiểm tra MIME an toàn (ảnh phổ biến)
-    const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
+    // const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
     // Lấy thông tin sản phẩm từ formData
     const productId = (formData.get('productId') as string) || '';
     const productSlug = (formData.get('productSlug') as string) || '';

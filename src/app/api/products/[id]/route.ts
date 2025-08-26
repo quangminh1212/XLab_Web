@@ -3,7 +3,6 @@ import path from 'path';
 
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getProductById } from '@/lib/i18n/products';
 import { Product } from '@/models/ProductModel';
 
 // Data file path
@@ -40,7 +39,7 @@ function saveProducts(products: Product[]): void {
 // GET: Lấy thông tin sản phẩm theo ID
 export async function GET(
   req: NextRequest,
-  { params: paramsPromise }: { params: Promise<{ id: string }> }
+  { params: paramsPromise }: { params: Promise<{ id: string }> },
 ) {
   try {
     // Get language from query parameter or default to Vietnamese

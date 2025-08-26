@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getAllProducts } from '@/lib/i18n/products';
@@ -125,7 +122,7 @@ export async function GET(_request: NextRequest) {
 
     return NextResponse.json(formattedProducts);
   } catch (_error) {
-    console.error('Lỗi khi xử lý sản phẩm liên quan:', error);
+    console.error('Lỗi khi xử lý sản phẩm liên quan:', _error);
     return NextResponse.json({ error: 'Lỗi máy chủ nội bộ' }, { status: 500 });
   }
 }

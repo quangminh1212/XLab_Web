@@ -144,8 +144,8 @@ const checkBankTransaction = async (
     }
 
     return null;
-  } catch (error) {
-    console.error('Error checking bank transaction:', error);
+  } catch (_error) {
+    console.error('Error checking bank transaction:', _error);
     return null;
   }
 };
@@ -204,8 +204,8 @@ export async function POST(request: NextRequest) {
           console.log(
             `🎉 Auto-deposited ${bankTransaction.amount} VND to ${session.user.email}, new balance: ${newBalance}`,
           );
-        } catch (error) {
-          console.error('Error auto-depositing funds:', error);
+        } catch (_error) {
+          console.error('Error auto-depositing funds:', _error);
           // Continue with response even if balance update fails
         }
       }
@@ -233,8 +233,8 @@ export async function POST(request: NextRequest) {
       message:
         'Giao dịch chưa được tìm thấy hoặc đang chờ xử lý. Vui lòng đợi vài phút và thử lại.',
     });
-  } catch (error) {
-    console.error('Error checking bank transfer:', error);
+  } catch (_error) {
+    console.error('Error checking bank transfer:', _error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

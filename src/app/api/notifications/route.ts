@@ -103,11 +103,11 @@ function formatTimeAgo(dateString: string, language: string = 'vie'): string {
 }
 
 // GET - Lấy thông báo cho người dùng
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const session = await getServerSession(authOptions);
     // Get user language preference
-    const language = request.headers.get('x-user-language') || 'vie';
+    const language = _request.headers.get('x-user-language') || 'vie';
 
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
@@ -180,14 +180,14 @@ export async function GET(request: Request) {
       });
 
     return NextResponse.json({ notifications: userNotifications });
-  } catch (error) {
-    console.error('Error fetching notifications:', error);
+  } catch (_error) {
+    console.error('Error fetching notifications:', _error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 // POST - Tạo thông báo mới (chỉ admin)
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
@@ -199,7 +199,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = await _request.json();
     const { title, content, type, targetUsers, link, priority, expiresAt } = body;
 
     // Validate input

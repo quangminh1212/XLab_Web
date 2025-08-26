@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 
-import { products } from '@/data/mockData';
 import { getProductBySlug, incrementDownloadCount } from '@/lib/utils';
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     // Get the slug from the URL
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(_request.url);
     const slug = searchParams.get('slug');
 
     if (!slug) {
@@ -37,8 +36,8 @@ export async function GET(request: Request) {
         downloadCount: product.downloadCount,
       },
     });
-  } catch (error: any) {
-    console.error('Error in download API:', error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+  } catch (_error: any) {
+    console.error('Error in download API:', _error);
+    return NextResponse.json({ error: _error.message || 'Internal server error' }, { status: 500 });
   }
 }

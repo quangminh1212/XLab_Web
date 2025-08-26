@@ -6,7 +6,7 @@ import { getServerSession } from 'next-auth/next';
 
 import { authOptions } from '@/lib/authOptions';
 import { getProductById, updateProduct, deleteProduct } from '@/lib/i18n/products';
-import { Product, ProductCategory } from '@/models/ProductModel';
+import { Product } from '@/models/ProductModel';
 
 
 export const dynamic = 'force-dynamic';

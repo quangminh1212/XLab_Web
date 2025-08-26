@@ -128,7 +128,7 @@ function saveUserData(email: string, userData: UserData): boolean {
 }
 
 // API để đồng bộ voucher đã dùng với dữ liệu người dùng
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     // Kiểm tra xác thực và quyền admin
     const session = await getServerSession(authOptions);
@@ -221,8 +221,8 @@ export async function GET(request: Request) {
       message: `Đã đồng bộ ${updatedCount} voucher với dữ liệu người dùng`,
       vouchers: userData.vouchers,
     });
-  } catch (error) {
-    console.error('Error syncing user vouchers:', error);
+  } catch (_error) {
+    console.error('Error syncing user vouchers:', _error);
     return NextResponse.json(
       { error: 'Đã xảy ra lỗi khi đồng bộ dữ liệu voucher' },
       { status: 500 },

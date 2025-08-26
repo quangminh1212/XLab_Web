@@ -26,7 +26,7 @@ async function getNotifications(): Promise<Notification[]> {
   try {
     const data = await fs.readFile(NOTIFICATIONS_FILE, 'utf-8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }
