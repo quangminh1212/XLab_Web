@@ -22,6 +22,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Restore Next.js cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-next-
+
       - name: Lint + type-check
         run: npm run check
+
+      - name: Run tests
+        run: npm test -- --ci
+
+      - name: Build
+        run: npm run build
 
