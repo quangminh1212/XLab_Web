@@ -288,7 +288,7 @@ function AdminProductsPage() {
                         {(() => {
                           // Tìm giá thấp nhất từ tất cả các nguồn
                           let minPrice = Infinity;
-                          let minPriceOption = '';
+                          let _minPriceOption = '';
 
                           // Kiểm tra giá cơ bản của phiên bản đầu tiên (nếu có)
                           if (product.versions && product.versions.length > 0) {
@@ -296,7 +296,7 @@ function AdminProductsPage() {
                               // Bỏ qua giá 0
                               if (version.price > 0 && version.price < minPrice) {
                                 minPrice = version.price;
-                                minPriceOption = version.name || (localCode === 'vi' ? 'Phiên bản mặc định' : 'Default version');
+                                _minPriceOption = version.name || (localCode === 'vi' ? 'Phiên bản mặc định' : 'Default version');
                               }
                             });
                           }
@@ -310,7 +310,7 @@ function AdminProductsPage() {
                               // Bỏ qua giá 0
                               if (priceData.price > 0 && priceData.price < minPrice) {
                                 minPrice = priceData.price;
-                                minPriceOption = option;
+                                _minPriceOption = option;
                               }
                             });
                           }
@@ -322,13 +322,13 @@ function AdminProductsPage() {
                             product.salePrice < minPrice
                           ) {
                             minPrice = product.salePrice;
-                            minPriceOption = localCode === 'vi' ? 'Giá khuyến mãi' : 'Sale price';
+                            _minPriceOption = localCode === 'vi' ? 'Giá khuyến mãi' : 'Sale price';
                           }
 
                           // Kiểm tra giá gốc của sản phẩm (nếu có)
                           if (product.price && product.price > 0 && product.price < minPrice) {
                             minPrice = product.price;
-                            minPriceOption = localCode === 'vi' ? 'Giá gốc' : 'Original price';
+                            _minPriceOption = localCode === 'vi' ? 'Giá gốc' : 'Original price';
                           }
 
                           // Nếu không có giá nào hợp lệ (khác 0) hoặc giá vẫn là Infinity

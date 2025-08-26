@@ -15,7 +15,7 @@ function SettingsPage() {
   const [activeTab, setActiveTab] = useState('site');
   const [errors, setErrors] = useState<string[]>([]);
   const [successMessage, setSuccessMessage] = useState('');
-  const { t, language, localCode } = useLanguage();
+  const { t, localCode } = useLanguage();
 
   useEffect(() => {
     const fetchSettings = async () => {

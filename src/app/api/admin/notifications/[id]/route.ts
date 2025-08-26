@@ -38,7 +38,7 @@ async function getNotifications(): Promise<Notification[]> {
     await ensureDataDir();
     const data = await fs.readFile(NOTIFICATIONS_FILE, 'utf-8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 }
@@ -163,7 +163,7 @@ export async function DELETE(
     }
 
     // Xóa thông báo
-    const deletedNotification = notifications[notificationIndex];
+    const _deletedNotification = notifications[notificationIndex];
     notifications.splice(notificationIndex, 1);
     await saveNotifications(notifications);
 

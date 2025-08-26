@@ -2,14 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
-import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
+// import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 
 
 import products from '../../data/products.json';
@@ -17,9 +17,9 @@ import products from '../../data/products.json';
 export default function CheckoutPage() {
   const { items: cartItems } = useCart();
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const { language, t, localCode } = useLanguage();
+  const { language, t } = useLanguage();
 
   // Luôn bắt đầu với bước 2 (thanh toán)
   const [step, setStep] = useState(2);

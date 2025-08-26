@@ -23,7 +23,7 @@ function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [timeFilter, setTimeFilter] = useState<string>('all');
-  const { language, localCode } = useLanguage();
+  const { localCode } = useLanguage();
 
   // Fetch real order data from the API
   useEffect(() => {

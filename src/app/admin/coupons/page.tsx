@@ -46,7 +46,7 @@ interface CouponForm {
 
 function CouponsPage() {
   const { data: _session } = useSession();
-  const { t, language, localCode } = useLanguage();
+  const { t, localCode } = useLanguage();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -343,7 +343,7 @@ function CouponsPage() {
   };
 
   // Check if coupon is valid now
-  const isValidNow = (startDate: string, endDate: string) => {
+  const _isValidNow = (startDate: string, endDate: string) => {
     const now = new Date();
     return new Date(startDate) <= now && new Date(endDate) >= now;
   };

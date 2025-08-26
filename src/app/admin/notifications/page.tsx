@@ -30,7 +30,7 @@ interface NotificationForm {
 }
 
 function NotificationsPage() {
-  const { data: session } = useSession();
+  const { data: _session } = useSession();
   const { t } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);

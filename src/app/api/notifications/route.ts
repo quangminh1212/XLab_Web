@@ -37,7 +37,7 @@ async function getNotifications(): Promise<Notification[]> {
     await ensureDataDir();
     const data = await fs.readFile(NOTIFICATIONS_FILE, 'utf-8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch (_error) {
     // Nếu file không tồn tại, tạo với dữ liệu mẫu
     const defaultNotifications: Notification[] = [
       {

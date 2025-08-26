@@ -24,7 +24,7 @@ function UsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive' | 'admin'>('all');
-  const { language, localCode } = useLanguage();
+  const { localCode } = useLanguage();
 
   // Lấy dữ liệu người dùng từ API
   useEffect(() => {
