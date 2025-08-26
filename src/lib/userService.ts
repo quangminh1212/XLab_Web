@@ -560,7 +560,7 @@ export async function syncUserBalance(email: string): Promise<number> {
       }
     } catch (_error) {
       console.log('Could not read from balances.json:', _error);
-      errorMessages.push(`balances.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      errorMessages.push(`balances.json error: ${_error instanceof Error ? _error.message : 'Unknown error'}`);
     }
 
     // If no user data exists anywhere, create new user with fallback mechanism
@@ -835,8 +835,8 @@ export async function syncAllUserData(
     console.log(`✅ Comprehensive sync completed for user: ${email}`);
     return user;
   } catch (_error) {
-    console.error(`❌ Error in comprehensive sync for ${email}:`, error);
-    throw error;
+    console.error(`❌ Error in comprehensive sync for ${email}:`, _error);
+    throw _error;
   } finally {
     // Always release the lock when done
     releaseSyncLock(email);
@@ -882,8 +882,8 @@ export async function updateUserCartSync(email: string, cart: CartItem[]): Promi
 
     console.log(`✅ Cart updated and synced for user: ${email}`);
   } catch (_error) {
-    console.error(`❌ Error updating cart for ${email}:`, error);
-    throw error;
+    console.error(`❌ Error updating cart for ${email}:`, _error);
+    throw _error;
   } finally {
     // Always release the lock when done
     releaseSyncLock(email);
@@ -919,7 +919,7 @@ async function syncUserDataWithoutCart(email: string): Promise<void> {
       await saveUsers(allUsers);
     }
   } catch (_error) {
-    console.error(`Error in syncUserDataWithoutCart for ${email}:`, error);
+    console.error(`Error in syncUserDataWithoutCart for ${email}:`, _error);
   }
 }
 
@@ -977,7 +977,7 @@ export async function migrateOrdersFromLocalStorage(email: string): Promise<void
       }
     }
   } catch (_error) {
-    console.error(`❌ Error migrating orders for ${email}:`, error);
+    console.error(`❌ Error migrating orders for ${email}:`, _error);
   }
 }
 
@@ -989,7 +989,7 @@ export async function getUserOrders(email: string): Promise<Order[]> {
     const userData = await getUserDataFromFile(email);
     return userData?.orders || [];
   } catch (_error) {
-    console.error(`Error getting orders for ${email}:`, error);
+    console.error(`Error getting orders for ${email}:`, _error);
     return [];
   }
 }
@@ -1006,8 +1006,8 @@ export async function addUserOrder(email: string, order: Order): Promise<void> {
     await saveUserDataToFile(email, userData);
     console.log(`✅ Order ${order.id} added for user: ${email}`);
   } catch (_error) {
-    console.error(`❌ Error adding order for ${email}:`, error);
-    throw error;
+    console.error(`❌ Error adding order for ${email}:`, _error);
+    throw _error;
   }
 }
 
@@ -1040,8 +1040,8 @@ export async function updateUserOrder(
       console.log(`❌ Order ${orderId} not found for user: ${email}`);
     }
   } catch (_error) {
-    console.error(`❌ Error updating order for ${email}:`, error);
-    throw error;
+    console.error(`❌ Error updating order for ${email}:`, _error);
+    throw _error;
   }
 }
 
@@ -1071,7 +1071,7 @@ export async function getUserOrderStats(email: string): Promise<{
       totalProducts,
     };
   } catch (_error) {
-    console.error(`Error getting order stats for ${email}:`, error);
+    console.error(`Error getting order stats for ${email}:`, _error);
     return {
       totalOrders: 0,
       completedOrders: 0,
