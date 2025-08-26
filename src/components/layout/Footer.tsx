@@ -110,10 +110,10 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Products and Services */}
+          {/* Column 2: Quick Links */}
           <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-3 xl:col-span-3">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.productsAndServices')}</span></div></div>
+              <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">Liên kết</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-2 sm:mb-4">
@@ -137,34 +137,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/testimonials"
-                  className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
-                >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.testimonials')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 3: Navigation Links */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-2 xl:col-span-2">
-            <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.navigationLinks')}</span></div></div>
-              <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
-            </h3>
-            <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-2 sm:mb-4">
-              <li>
-                <Link
-                  href="/"
-                  className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
-                >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('nav.home')}
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/about"
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
@@ -184,8 +156,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Contact Info */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-2 xl:col-span-2">
+          {/* Column 3: Contact Info */}
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-4 xl:col-span-4">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.contactLink')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
