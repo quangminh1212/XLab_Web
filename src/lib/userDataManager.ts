@@ -212,7 +212,7 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
     await fs.writeFile(backupPath, JSON.stringify(backupData, null, 2), 'utf8');
     console.log(`✅ Backup created for user: ${email} at ${backupPath}`);
   } catch (_error) {
-    console.error(`❌ Error creating backup for ${email}:`, error);
+    console.error(`❌ Error creating backup for ${email}:`, _error);
   }
 }
 
@@ -291,22 +291,22 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
             try {
               await fs.rename(backupPath, filePath);
             } catch (_restoreError) {
-              console.error('Failed to restore backup after rename failure:', restoreError);
+              console.error('Failed to restore backup after rename failure:', _restoreError);
             }
-            throw renameError;
+            throw _renameError;
           }
         } catch (_writeError) {
           // Xóa file tạm thời nếu có lỗi
           try {
             await fs.unlink(tempFilePath);
-          } catch (unlinkError) {
+          } catch (_unlinkError) {
             // Ignore unlink errors
           }
-          throw writeError;
+          throw _writeError;
         }
       } catch (_error) {
-        console.error(`❌ Error saving user data for ${email}:`, error);
-        throw error;
+        console.error(`❌ Error saving user data for ${email}:`, _error);
+        throw _error;
       }
     });
   });

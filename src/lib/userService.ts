@@ -306,7 +306,7 @@ async function updateUserInOldSystem(user: User): Promise<void> {
 
     await saveUsers(users);
   } catch (_error) {
-    console.error('Error updating old system:', error);
+    console.error('Error updating old system:', _error);
   }
 }
 
@@ -394,7 +394,7 @@ export async function getUserCart(email: string): Promise<CartItem[]> {
     
     return userData.cart || [];
   } catch (_error) {
-    console.error(`🔍 getUserCart - Error retrieving cart for: ${email}`, error);
+    console.error(`🔍 getUserCart - Error retrieving cart for: ${email}`, _error);
     return [];
   }
 }
@@ -455,7 +455,7 @@ export async function getTransactions(): Promise<Transaction[]> {
     const data = await fs.readFile(TRANSACTIONS_FILE, 'utf8');
     return JSON.parse(data);
   } catch (_error) {
-    console.error('Error reading transactions file:', error);
+    console.error('Error reading transactions file:', _error);
     return [];
   }
 }
@@ -465,8 +465,8 @@ export async function saveTransactions(transactions: Transaction[]): Promise<voi
   try {
     await fs.writeFile(TRANSACTIONS_FILE, JSON.stringify(transactions, null, 2), 'utf8');
   } catch (_error) {
-    console.error('Error saving transactions file:', error);
-    throw error;
+    console.error('Error saving transactions file:', _error);
+    throw _error;
   }
 }
 
@@ -530,8 +530,8 @@ export async function syncUserBalance(email: string): Promise<number> {
         balanceFromUserFile = userData.profile.balance || 0;
       }
     } catch (_error) {
-      console.log('Could not read from user file:', error);
-      errorMessages.push(`User file error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.log('Could not read from user file:', _error);
+      errorMessages.push(`User file error: ${_error instanceof Error ? _error.message : 'Unknown error'}`);
     }
 
     // Get from users.json
@@ -540,9 +540,9 @@ export async function syncUserBalance(email: string): Promise<number> {
       const users = await getUsers();
       user = users.find((u) => u.email === email) || null;
       balanceFromUsers = user?.balance || 0;
-    } catch (error) {
-      console.log('Could not read from users.json:', error);
-      errorMessages.push(`users.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } catch (_error) {
+      console.log('Could not read from users.json:', _error);
+      errorMessages.push(`users.json error: ${_error instanceof Error ? _error.message : 'Unknown error'}`);
     }
 
     // Get from balances.json
@@ -559,7 +559,7 @@ export async function syncUserBalance(email: string): Promise<number> {
         console.log('Created new balances.json file');
       }
     } catch (_error) {
-      console.log('Could not read from balances.json:', error);
+      console.log('Could not read from balances.json:', _error);
       errorMessages.push(`balances.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
@@ -571,8 +571,8 @@ export async function syncUserBalance(email: string): Promise<number> {
         await saveUserDataToFile(email, newUserData);
         return 0; // New user has 0 balance
       } catch (_createError) {
-        console.error('Failed to create new user:', createError);
-        errorMessages.push(`User creation error: ${createError instanceof Error ? createError.message : 'Unknown error'}`);
+        console.error('Failed to create new user:', _createError);
+        errorMessages.push(`User creation error: ${_createError instanceof Error ? _createError.message : 'Unknown error'}`);
         // Last resort fallback
         return 0;
       }
@@ -592,7 +592,7 @@ export async function syncUserBalance(email: string): Promise<number> {
         await updateUserBalanceInFile(email, finalBalance - balanceFromUsers);
       }
     } catch (_updateError) {
-      console.error('Failed to update users.json:', updateError);
+      console.error('Failed to update users.json:', _updateError);
     }
 
     try {
@@ -600,7 +600,7 @@ export async function syncUserBalance(email: string): Promise<number> {
         await updateBalanceInBalancesFile(email, finalBalance);
       }
     } catch (_updateError) {
-      console.error('Failed to update balances.json:', updateError);
+      console.error('Failed to update balances.json:', _updateError);
     }
 
     try {
@@ -622,14 +622,14 @@ export async function syncUserBalance(email: string): Promise<number> {
         }
       }
     } catch (_updateError) {
-      console.error('Failed to update user file:', updateError);
+      console.error('Failed to update user file:', _updateError);
     }
 
     return finalBalance;
   } catch (_error) {
-    console.error('Error syncing balance:', error);
+    console.error('Error syncing balance:', _error);
     // Rethrow with more context for better debugging
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = _error instanceof Error ? _error.message : 'Unknown error';
     throw new Error(`Failed to sync balance for ${email}: ${errorMessage}`);
   }
 }
@@ -649,7 +649,7 @@ async function updateBalanceInBalancesFile(email: string, newBalance: number): P
     balances[email] = newBalance;
     await fs.writeFile(BALANCES_FILE, JSON.stringify(balances, null, 2), 'utf8');
   } catch (_error) {
-    console.error('Error updating balances.json:', error);
+    console.error('Error updating balances.json:', _error);
   }
 }
 
@@ -665,7 +665,7 @@ async function updateUserBalanceInFile(email: string, amount: number): Promise<v
       await saveUsers(users);
     }
   } catch (_error) {
-    console.error('Error updating users.json:', error);
+    console.error('Error updating users.json:', _error);
   }
 }
 
@@ -706,8 +706,8 @@ export async function migrateToIndividualFiles(): Promise<void> {
 
     console.log('✅ Migration completed successfully!');
   } catch (_error) {
-    console.error('❌ Migration failed:', error);
-    throw error;
+    console.error('❌ Migration failed:', _error);
+    throw _error;
   }
 }
 
@@ -720,7 +720,7 @@ export async function getAllUserEmails(): Promise<string[]> {
       .filter((file) => file.endsWith('.json'))
       .map((file) => file.replace('.json', '').replace(/_/g, '@')); // Chuyển đổi ngược từ tên file
   } catch (_error) {
-    console.error('Error reading users directory:', error);
+    console.error('Error reading users directory:', _error);
     return [];
   }
 }
