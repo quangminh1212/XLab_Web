@@ -112,6 +112,15 @@
     "inflight": "2.0.0",
     "@humanwhocodes/config-array": "@eslint/config-array"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix --max-warnings=0"
+    ],
+    "*.{json,md,css,scss,mdx}": [
+      "prettier --write"
+    ]
+  },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
