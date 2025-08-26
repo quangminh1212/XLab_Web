@@ -26,7 +26,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container mx-auto max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-6 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 gap-y-8 sm:gap-x-8 sm:gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-4 sm:gap-x-6 md:gap-x-8 lg:gap-x-10 xl:gap-x-12 gap-y-8 sm:gap-y-10">
           {/* Column 1: Logo and Company Info */}
           <div className="sm:col-span-2 md:col-span-2 lg:col-span-5 xl:col-span-5">
             <div className="flex flex-col sm:flex-row sm:items-start gap-6 lg:gap-8 mb-6">
@@ -64,7 +64,7 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex justify-center sm:justify-start flex-wrap gap-3 sm:gap-4 mt-4 mb-6">
+            <div className="flex justify-center sm:justify-start flex-wrap sm:flex-nowrap gap-3 sm:gap-4 mt-4 mb-6">
               <a
                 href={siteConfig.social.facebook}
                 target="_blank"
@@ -191,8 +191,8 @@ export default function Footer() {
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
 
-            <ul className="flex items-start flex-wrap sm:flex-nowrap lg:flex-col text-left mb-3 sm:mb-4 w-full gap-x-6 sm:gap-x-8 gap-y-3 lg:gap-y-3">
-              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 sm:basis-auto lg:w-full flex-none">
+            <ul className="flex flex-col items-start text-left mb-3 sm:mb-4 w-full gap-y-3">
+              <li className="inline-flex items-center justify-start group min-w-0 w-full flex-none">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 mr-3 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-all duration-300 border border-orange-500/20">
                   <svg
                     className="h-5 w-5 text-orange-400 flex-shrink-0"
@@ -219,7 +219,7 @@ export default function Footer() {
                 </span>
               </li>
 
-              <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 sm:basis-auto lg:w-full flex-none">
+              <li className="inline-flex items-center justify-start group min-w-0 w-full flex-none">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mr-3 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all duration-300 border border-blue-500/20">
                   <svg
                     className="h-5 w-5 text-blue-400 flex-shrink-0"
