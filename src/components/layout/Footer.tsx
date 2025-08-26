@@ -32,18 +32,18 @@ export default function Footer() {
             <div className="rounded-2xl bg-slate-900/70 backdrop-blur-md px-4 sm:px-8 py-5 sm:py-7 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="text-center md:text-left max-w-2xl">
                 <h3 className="text-white text-lg sm:text-2xl font-semibold">
-                  Sẵn sàng đồng hành cùng XLab?
+                  {t('footer.cta.title')}
                 </h3>
                 <p className="text-slate-300 text-sm sm:text-base mt-1">
-                  Nhận tư vấn miễn phí cho dự án của bạn hoặc khám phá bảng giá phù hợp.
+                  {t('footer.cta.desc')}
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <Link href="/contact" className="px-5 py-2.5 rounded-full bg-primary-500 hover:bg-primary-600 text-white text-sm sm:text-base font-medium shadow-lg shadow-primary-500/20">
-                  Liên hệ ngay
+                  {t('footer.cta.contact')}
                 </Link>
                 <Link href="/pricing" className="px-5 py-2.5 rounded-full bg-white/95 hover:bg-white text-slate-900 text-sm sm:text-base font-medium shadow-lg">
-                  Xem bảng giá
+                  {t('footer.cta.pricing')}
 
                 </Link>
               </div>
