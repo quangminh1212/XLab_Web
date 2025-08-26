@@ -26,7 +26,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container mx-auto max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
-        {/* Compact CTA band to make footer feel fuller */
+        {/* Compact CTA band to make footer feel fuller */}
         <div className="mb-8 sm:mb-12">
           <div className="relative rounded-2xl p-[1px] bg-gradient-to-r from-emerald-500/50 via-cyan-500/50 to-blue-500/50 shadow-2xl">
             <div className="rounded-2xl bg-slate-900/70 backdrop-blur-md px-4 sm:px-8 py-5 sm:py-7 flex flex-col md:flex-row items-center justify-between gap-4">
