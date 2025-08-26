@@ -166,7 +166,7 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-4 sm:py-6 md:py-8 lg:py-10">
+      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-4 sm:py-5 md:py-6 lg:py-7 xl:py-8">
         <div className="container-full sm:container mx-auto px-0 sm:px-responsive">
           <div className="flex flex-col items-center text-center">
             <h1 className="heading-1 mb-3 sm:mb-4 md:mb-6">

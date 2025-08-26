@@ -344,8 +344,8 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container-full sm:container mx-auto max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] py-2 sm:py-3 md:py-2">
+      <header className="bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm sticky top-0 z-50">
+        <div className="container-full sm:container mx-auto max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] py-1.5 sm:py-2.5 md:py-2">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <div className="flex items-center">
