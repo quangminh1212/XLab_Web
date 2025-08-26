@@ -166,7 +166,7 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-6 sm:py-8 md:py-10 lg:py-12">
+      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-4 sm:py-6 md:py-8 lg:py-10">
         <div className="container-full sm:container mx-auto px-0 sm:px-responsive">
           <div className="flex flex-col items-center text-center">
             <h1 className="heading-1 mb-3 sm:mb-4 md:mb-6">
@@ -190,14 +190,14 @@ function HomePage() {
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-responsive-sm">
-                <div className="bg-white rounded-lg p-responsive-sm">
+                <div className="bg-white rounded-lg p-3 sm:p-4">
                   <div className="flex justify-center mb-3 sm:mb-4">
-                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-primary-50 rounded-full flex items-center justify-center">
+                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 bg-primary-50 rounded-full flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        className="w-8 h-8 sm:w-12 sm:h-12 text-primary-600"
+                        className="w-7 h-7 sm:w-10 sm:h-10 text-primary-600"
                       >
                         <path
                           fillRule="evenodd"
@@ -359,7 +359,7 @@ function HomePage() {
             ) : (
               <>
                 {/* Featured Products Section */}
-                <section className="mb-8 sm:mb-12">
+                <section className="mb-6 sm:mb-8">
                   <div className="flex items-center justify-between mb-4 sm:mb-6">
                     <h2 className="heading-3 text-gray-800">{t('home.featuredProducts')}</h2>
                     <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
