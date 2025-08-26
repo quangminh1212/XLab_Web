@@ -26,9 +26,32 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container mx-auto max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
+        {/* Compact CTA band to make footer feel fuller */
+        <div className="mb-8 sm:mb-12">
+          <div className="relative rounded-2xl p-[1px] bg-gradient-to-r from-emerald-500/50 via-cyan-500/50 to-blue-500/50 shadow-2xl">
+            <div className="rounded-2xl bg-slate-900/70 backdrop-blur-md px-4 sm:px-8 py-5 sm:py-7 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-center md:text-left max-w-2xl">
+                <h3 className="text-white text-lg sm:text-2xl font-semibold">
+                  Sẵn sàng đồng hành cùng XLab?
+                </h3>
+                <p className="text-slate-300 text-sm sm:text-base mt-1">
+                  Nhận tư vấn miễn phí cho dự án của bạn hoặc khám phá bảng giá phù hợp.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link href="/contact" className="px-5 py-2.5 rounded-full bg-primary-500 hover:bg-primary-600 text-white text-sm sm:text-base font-medium shadow-lg shadow-primary-500/20">
+                  Liên hệ ngay
+                </Link>
+                <Link href="/pricing" className="px-5 py-2.5 rounded-full bg-white/95 hover:bg-white text-slate-900 text-sm sm:text-base font-medium shadow-lg">
+                  Xem bảng giá
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-6 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 gap-y-8 sm:gap-x-8 sm:gap-y-12">
           {/* Column 1: Logo and Company Info */}
-          <div className="sm:col-span-2 md:col-span-2 lg:col-span-12 xl:col-span-6">
+          <div className="sm:col-span-2 md:col-span-2 lg:col-span-5 xl:col-span-5">
             <div className="flex flex-col sm:flex-row sm:items-start gap-6 lg:gap-8 mb-6">
               <div className="flex-shrink-0 mb-4 self-center sm:mb-0 sm:self-start w-24 sm:w-28 md:w-36 lg:w-40 xl:w-44">
                 <Link href="/" className="inline-block w-full">
@@ -92,7 +115,7 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Products and Services */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-5 xl:col-span-3">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-3 xl:col-span-3">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.productsAndServices')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
@@ -129,7 +152,7 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Navigation Links */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-4 xl:col-span-3">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-2 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.navigationLinks')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
@@ -166,7 +189,7 @@ export default function Footer() {
           </div>
 
           {/* Column 4: Contact Info */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-3 xl:col-span-3">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-2 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
               <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.contactLink')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
