@@ -195,7 +195,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap max-w-none" title={t('footer.address')}>
+                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.address')}>
                   {t('footer.address')}
                 </span>
               </li>
@@ -216,7 +216,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap max-w-none" title={t('footer.phone')}>
+                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.phone')}>
                   {t('footer.phone')}
                 </span>
               </li>
@@ -237,7 +237,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap max-w-none" title={t('footer.email')}>
+                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.email')}>
                   {t('footer.email')}
                 </span>
               </li>
@@ -258,7 +258,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap max-w-none" title={t('footer.supportHours')}>
+                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.supportHours')}>
                   {t('footer.supportHours')}
                 </span>
               </li>
