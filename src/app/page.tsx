@@ -184,9 +184,9 @@ function HomePage() {
 
       <div className="container-full sm:container mx-auto py-responsive px-0">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-responsive items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-responsive items-start">
           {/* Sidebar Column - Left */}
-          <div className="w-full flex flex-col h-full md:col-span-1 md:sticky md:top-4 self-stretch pr-2">
+          <div className="w-full flex flex-col h-full md:col-span-1 md:sticky md:top-4 self-start pr-2">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-responsive-sm">
@@ -238,7 +238,7 @@ function HomePage() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-2 space-y-3 snap-y snap-mandatory max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-2rem)]">
+              <div className="flex-1 overflow-y-auto p-2 space-y-3 snap-y snap-mandatory max-h-[calc(100vh-220px)] md:max-h-[calc(100vh-220px)]">
                 <FeatureCard
                   icon={
                     <svg
@@ -350,7 +350,7 @@ function HomePage() {
           </div>
 
           {/* Main Content Column - Right */}
-          <div className="md:col-span-4 h-full">
+          <div className="md:col-span-4">
             {/* Featured Products */}
             {isLoading ? (
               <div className="flex justify-center items-center h-40">
