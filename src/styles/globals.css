@@ -258,6 +258,25 @@
     display: none !important; /* Chrome, Safari, Opera */
   }
 
+
+  /* Scrollbar masking helpers: keep scrollable but hide bar area */
+  .no-scrollbar-mask {
+    overflow: hidden;
+  }
+  .no-scrollbar-content {
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-bottom: 12px; /* push scrollbar out of view */
+    margin-bottom: -12px; /* pull layout back up */
+  }
+  .no-scrollbar-content::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+    background: transparent !important;
+  }
+
   .animate-blob {
     animation: blob 10s infinite;
   }

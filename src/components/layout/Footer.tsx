@@ -26,7 +26,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container mx-auto max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] px-4 sm:px-6 pt-8 sm:pt-12 md:pt-16 pb-10 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-6 md:gap-x-10 lg:gap-x-12 gap-y-8 sm:gap-x-8 sm:gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-6 md:gap-x-12 lg:gap-x-16 xl:gap-x-20 gap-y-8 sm:gap-x-8 sm:gap-y-12">
           {/* Column 1: Logo and Company Info */}
           <div className="sm:col-span-2 md:col-span-2 lg:col-span-12 xl:col-span-6">
             <div className="flex flex-col sm:flex-row sm:items-start gap-6 lg:gap-8 mb-6">
@@ -92,9 +92,9 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Products and Services */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-6 xl:col-span-2">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-5 xl:col-span-3">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <div className="relative z-10 w-full overflow-x-auto scrollbar-hide"><span className="inline-block whitespace-nowrap">{t('footer.productsAndServices')}</span></div>
+              <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.productsAndServices')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-2 sm:mb-4">
@@ -129,9 +129,9 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Navigation Links */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-6 xl:col-span-2">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-4 xl:col-span-3">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <div className="relative z-10 w-full overflow-x-auto scrollbar-hide"><span className="inline-block whitespace-nowrap">{t('footer.navigationLinks')}</span></div>
+              <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.navigationLinks')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-2 sm:mb-4">
@@ -166,9 +166,9 @@ export default function Footer() {
           </div>
 
           {/* Column 4: Contact Info */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-12 xl:col-span-2">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-3 xl:col-span-3">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <div className="relative z-10 w-full overflow-x-auto scrollbar-hide"><span className="inline-block whitespace-nowrap">{t('footer.contactLink')}</span></div>
+              <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.contactLink')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
 
