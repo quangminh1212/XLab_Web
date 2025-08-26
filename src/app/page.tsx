@@ -366,7 +366,7 @@ function HomePage() {
                       {t('home.viewAll')}
                     </Link>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="grid-auto-fit gap-4 sm:gap-6">
                     {featuredProducts.map((product) => {
                       // Get prices based on default option
                       const prices = getProductPrices(product);
@@ -401,7 +401,7 @@ function HomePage() {
                       {t('home.viewAll')}
                     </Link>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="grid-auto-fit gap-4 sm:gap-6">
                     {newProducts.map((product) => {
                       // Get prices based on default option
                       const prices = getProductPrices(product);
