@@ -1,6 +1,8 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function AboutPage() {
   const { t } = useLanguage();
@@ -35,20 +37,27 @@ export default function AboutPage() {
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
               <div className="relative slideshow-container h-96">
-                <img
+                <Image
                   src="/images/office-workspace.jpg"
                   alt="Không gian làm việc tại XLab"
                   className="w-full h-full object-cover slideshow-item"
+                  width={1200}
+                  height={600}
+                  priority
                 />
-                <img
+                <Image
                   src="/images/company-team.jpg"
                   alt="Đội ngũ XLab làm việc cùng nhau"
                   className="w-full h-full object-cover slideshow-item hidden"
+                  width={1200}
+                  height={600}
                 />
-                <img
+                <Image
                   src="/images/tech-workspace.jpg"
                   alt="Không gian công nghệ tại XLab"
                   className="w-full h-full object-cover slideshow-item hidden"
+                  width={1200}
+                  height={600}
                 />
 
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
@@ -236,18 +245,18 @@ export default function AboutPage() {
               {t('about.partnershipDesc')}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a
+              <Link
                 href="/contact"
                 className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-bold transition-colors"
               >
                 {t('about.contactNow')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/services"
                 className="bg-primary-700 text-white hover:bg-primary-800 px-8 py-3 rounded-lg font-bold transition-colors"
               >
                 {t('about.exploreServices')}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

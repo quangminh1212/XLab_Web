@@ -149,7 +149,7 @@ function getClientId(req: NextRequest) {
     if (first) return first.trim();
   }
   // NextRequest có thể có ip
-  // @ts-ignore
+  // @ts-expect-error - NextRequest may not expose 'ip' in types depending on runtime
   return (req.ip as string) || req.headers.get('x-real-ip') || 'unknown';
 }
 

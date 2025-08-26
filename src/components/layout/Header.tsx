@@ -108,7 +108,7 @@ const Header = () => {
     if (isVoucherOpen && (Date.now() - lastCouponFetch > 5 * 60 * 1000 || lastCouponFetch === 0)) {
       fetchCoupons();
     }
-  }, [isVoucherOpen, session, lastCouponFetch]);
+  }, [isVoucherOpen, session?.user, lastCouponFetch]);
 
   // Thêm effect để tự động refresh mỗi 5 phút khi dropdown đang mở
   useEffect(() => {
@@ -126,7 +126,7 @@ const Header = () => {
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [isVoucherOpen]);
+  }, [isVoucherOpen, fetchCoupons]);
 
   // Thêm effect để refresh khi tab được kích hoạt lại
   useEffect(() => {

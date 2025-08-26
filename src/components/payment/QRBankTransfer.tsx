@@ -129,7 +129,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
     return () => {
       clearInterval(intervalRef.current);
     };
-  }, [amount]);
+  }, [amount, generateQRCode, onError]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);

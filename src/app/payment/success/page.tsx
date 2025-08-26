@@ -55,7 +55,7 @@ export default function PaymentSuccessPage() {
       saveOrderToHistory(finalOrderNumber);
       setOrderSaved(true);
     }
-  }, [orderId, session, orderSaved]);
+  }, [orderId, session?.user, orderSaved]);
 
   // Hàm lưu đơn hàng vào localStorage và gửi API
   const saveOrderToHistory = async (orderNumber: string) => {

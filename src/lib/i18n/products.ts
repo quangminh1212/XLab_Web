@@ -26,7 +26,7 @@ export function normalizeLanguageCode(lang: string): string {
     if (primaryLang === 'vi') return 'vie';
     
     // Default to 'vie' if unknown
-    console.log(`Unrecognized language code "${primaryLang}", defaulting to 'vie'`);
+    if (process.env.NODE_ENV !== 'production') console.log(`Unrecognized language code "${primaryLang}", defaulting to 'vie'`);
     return 'vie';
   } catch (error) {
     console.error(`Error normalizing language code "${lang}":`, error);
@@ -43,7 +43,7 @@ function ensureProductDirectory(lang: string): void {
   const productDir = path.join(process.cwd(), `src/i18n/${normalizedLang}/product`);
   if (!fs.existsSync(productDir)) {
     fs.mkdirSync(productDir, { recursive: true });
-    console.log(`Created product directory for language: ${normalizedLang}`);
+    if (process.env.NODE_ENV !== 'production') console.log(`Created product directory for language: ${normalizedLang}`);
   }
 }
 
@@ -58,7 +58,7 @@ export async function saveProduct(product: Product, lang = 'vie'): Promise<boole
     ensureProductDirectory(normalizedLang);
     const productFilePath = path.join(process.cwd(), `src/i18n/${normalizedLang}/product/${product.id}.json`);
     fs.writeFileSync(productFilePath, JSON.stringify(product, null, 2), 'utf-8');
-    console.log(`Product ${product.id} saved for language ${normalizedLang}`);
+    if (process.env.NODE_ENV !== 'production') console.log(`Product ${product.id} saved for language ${normalizedLang}`);
     return true;
   } catch (error) {
     console.error(`Error saving product ${product.id} for language ${lang}:`, error);
@@ -76,7 +76,7 @@ export async function getProductById(id: string, lang = 'vie'): Promise<Product 
   try {
     // Normalize the language code
     const normalizedLang = normalizeLanguageCode(lang);
-    console.log(`Getting product ${id} with normalized language: ${normalizedLang}`);
+    if (process.env.NODE_ENV !== 'production') console.log(`Getting product ${id} with normalized language: ${normalizedLang}`);
     
     // Get product file path based on ID and language
     const productFilePath = path.join(process.cwd(), `src/i18n/${normalizedLang}/product/${id}.json`);
@@ -96,7 +96,7 @@ export async function getProductById(id: string, lang = 'vie'): Promise<Product 
     }
     
     // If product not found, return null
-    console.warn(`Product ${id} not found for language ${normalizedLang}`);
+    if (process.env.NODE_ENV !== 'production') console.warn(`Product ${id} not found for language ${normalizedLang}`);
     return null;
   } catch (error) {
     console.error(`Error in getProductById for ${id}:`, error);
@@ -122,7 +122,7 @@ export async function deleteProduct(id: string, lang?: string): Promise<boolean>
       
       if (fs.existsSync(productFilePath)) {
         fs.unlinkSync(productFilePath);
-        console.log(`Product ${id} deleted for language ${language}`);
+        if (process.env.NODE_ENV !== 'production') console.log(`Product ${id} deleted for language ${language}`);
         success = true;
       }
     }
@@ -143,7 +143,7 @@ export async function getAllProducts(lang = 'vie'): Promise<Product[]> {
   try {
     // Normalize the language code
     const normalizedLang = normalizeLanguageCode(lang);
-    console.log(`Getting all products with normalized language: ${normalizedLang}`);
+    if (process.env.NODE_ENV !== 'production') console.log(`Getting all products with normalized language: ${normalizedLang}`);
     
     const products: Product[] = [];
     
@@ -217,11 +217,11 @@ export async function synchronizeProducts(
     if (sourceFile && fs.existsSync(sourceFile)) {
       const fileContent = fs.readFileSync(sourceFile, 'utf-8');
       sourceProducts = JSON.parse(fileContent) as Product[];
-      console.log(`Read ${sourceProducts.length} products from source file`);
+      if (process.env.NODE_ENV !== 'production') console.log(`Read ${sourceProducts.length} products from source file`);
     } else {
       // Otherwise, get products from source language
       sourceProducts = await getAllProducts(normalizedSourceLang);
-      console.log(`Read ${sourceProducts.length} products from ${normalizedSourceLang} directory`);
+      if (process.env.NODE_ENV !== 'production') console.log(`Read ${sourceProducts.length} products from ${normalizedSourceLang} directory`);
     }
     
     // Save each product to the target language directory
@@ -232,7 +232,7 @@ export async function synchronizeProducts(
       }
     }
     
-    console.log(`Successfully synchronized ${successCount} of ${sourceProducts.length} products to ${normalizedTargetLang}`);
+    if (process.env.NODE_ENV !== 'production') console.log(`Successfully synchronized ${successCount} of ${sourceProducts.length} products to ${normalizedTargetLang}`);
   } catch (error) {
     console.error('Error synchronizing products:', error);
   }
