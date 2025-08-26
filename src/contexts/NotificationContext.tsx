@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -44,7 +44,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   // Tải thông báo từ API
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const response = await fetch('/api/notifications', {
         headers: {
@@ -65,7 +65,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } finally {
       setLoading(false);
     }
-  };
+  }, [language, t]);
 
   // Hàm đánh dấu một thông báo đã đọc
   const markAsRead = async (id: number | string) => {
@@ -124,7 +124,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Tải thông báo khi component mount
   useEffect(() => {
     fetchNotifications();
-  }, []);
+  }, [fetchNotifications]);
 
   const value = {
     notifications,

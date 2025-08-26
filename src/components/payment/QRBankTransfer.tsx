@@ -71,7 +71,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       console.error('Error generating QR code:', error);
       onError?.('Không thể tạo mã QR. Vui lòng thử lại.');
     }
-  }, [amount, onError]);
+  }, [amount, onError, bankInfo.accountNumber]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
