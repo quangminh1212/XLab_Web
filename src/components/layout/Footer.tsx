@@ -214,7 +214,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto scrollbar-hide" title={t('footer.address')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-normal break-words" title={t('footer.address')}>
                   {t('footer.address')}
                 </span>
               </li>
@@ -235,7 +235,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto scrollbar-hide" title={t('footer.phone')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-normal break-words" title={t('footer.phone')}>
                   {t('footer.phone')}
                 </span>
               </li>
@@ -257,7 +257,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto scrollbar-hide" title={t('footer.email')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-normal break-words" title={t('footer.email')}>
                   {t('footer.email')}
                 </span>
               </li>
@@ -278,7 +278,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto scrollbar-hide" title={t('footer.supportHours')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-normal break-words" title={t('footer.supportHours')}>
                   {t('footer.supportHours')}
                 </span>
               </li>
