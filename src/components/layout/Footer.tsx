@@ -94,7 +94,7 @@ export default function Footer() {
           {/* Column 2: Products and Services */}
           <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-6 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.productsAndServices')}</span>
+              <div className="relative z-10 w-full overflow-x-auto custom-scrollbar"><span className="inline-block whitespace-nowrap">{t('footer.productsAndServices')}</span></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-2 sm:mb-4">
@@ -131,7 +131,7 @@ export default function Footer() {
           {/* Column 3: Navigation Links */}
           <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-6 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.navigationLinks')}</span>
+              <div className="relative z-10 w-full overflow-x-auto custom-scrollbar"><span className="inline-block whitespace-nowrap">{t('footer.navigationLinks')}</span></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-2 sm:mb-4">
@@ -168,7 +168,7 @@ export default function Footer() {
           {/* Column 4: Contact Info */}
           <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-12 xl:col-span-2">
             <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.contactLink')}</span>
+              <div className="relative z-10 w-full overflow-x-auto custom-scrollbar"><span className="inline-block whitespace-nowrap">{t('footer.contactLink')}</span></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
 
@@ -195,7 +195,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.address')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto custom-scrollbar" title={t('footer.address')}>
                   {t('footer.address')}
                 </span>
               </li>
@@ -216,7 +216,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.phone')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto custom-scrollbar" title={t('footer.phone')}>
                   {t('footer.phone')}
                 </span>
               </li>
@@ -237,7 +237,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.email')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto custom-scrollbar" title={t('footer.email')}>
                   {t('footer.email')}
                 </span>
               </li>
@@ -258,7 +258,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="block text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto max-w-full" title={t('footer.supportHours')}>
+                <span className="flex-1 min-w-0 text-xs sm:text-sm text-slate-400 leading-relaxed whitespace-nowrap overflow-x-auto custom-scrollbar" title={t('footer.supportHours')}>
                   {t('footer.supportHours')}
                 </span>
               </li>
