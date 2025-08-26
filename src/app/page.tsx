@@ -238,7 +238,7 @@ function HomePage() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-2 space-y-3 snap-y snap-mandatory">
+              <div className="flex-1 overflow-y-auto p-2 space-y-3 snap-y snap-mandatory max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-2rem)]">
                 <FeatureCard
                   icon={
                     <svg
