@@ -144,15 +144,7 @@ export default function Footer() {
                   {t('nav.about')}
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/pricing"
-                  className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
-                >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.pricing')}
-                </Link>
-              </li>
+
             </ul>
           </div>
 
