@@ -170,7 +170,7 @@ async function retryOperation<T>(
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await operation();
-    } catch (error: any) {
+    } catch (_error: any) {
       lastError = error;
 
       // Retry on file system errors
@@ -211,7 +211,7 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
 
     await fs.writeFile(backupPath, JSON.stringify(backupData, null, 2), 'utf8');
     console.log(`✅ Backup created for user: ${email} at ${backupPath}`);
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error creating backup for ${email}:`, error);
   }
 }
@@ -267,7 +267,7 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
           try {
             await fs.access(filePath);
             await fs.rename(filePath, backupPath);
-          } catch (accessError) {
+          } catch (_accessError) {
             // File cũ không tồn tại, không cần backup
           }
 
@@ -278,7 +278,7 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
             // Xóa backup file nếu thành công
             try {
               await fs.unlink(backupPath);
-            } catch (unlinkError) {
+            } catch (_unlinkError) {
               // Ignore cleanup errors
             }
 
@@ -286,16 +286,16 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
             if (process.env.NODE_ENV === 'development') {
               console.log(`✅ User data saved securely for: ${email}`);
             }
-          } catch (renameError) {
+          } catch (_renameError) {
             // Khôi phục file cũ nếu rename failed
             try {
               await fs.rename(backupPath, filePath);
-            } catch (restoreError) {
+            } catch (_restoreError) {
               console.error('Failed to restore backup after rename failure:', restoreError);
             }
             throw renameError;
           }
-        } catch (writeError) {
+        } catch (_writeError) {
           // Xóa file tạm thời nếu có lỗi
           try {
             await fs.unlink(tempFilePath);
@@ -304,7 +304,7 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
           }
           throw writeError;
         }
-      } catch (error) {
+      } catch (_error) {
         console.error(`❌ Error saving user data for ${email}:`, error);
         throw error;
       }
@@ -367,7 +367,7 @@ export async function addUserActivity(
     }
 
     await saveUserData(email, userData);
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error adding activity for ${email}:`, error);
   }
 }
@@ -401,7 +401,7 @@ export async function updateUserSession(
     }
 
     await saveUserData(email, userData);
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error updating session for ${email}:`, error);
   }
 }
@@ -428,7 +428,7 @@ export async function addUserTransaction(email: string, transaction: Transaction
       `Giao dịch ${transaction.type}: ${transaction.amount.toLocaleString('vi-VN')} VND`,
       { transactionId: transaction.id, amount: transaction.amount, type: transaction.type },
     );
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error adding transaction for ${email}:`, error);
   }
 }
@@ -441,7 +441,7 @@ export async function verifyDataIntegrity(email: string): Promise<boolean> {
 
     const currentChecksum = createDataChecksum(userData);
     return currentChecksum === userData.metadata.checksum;
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error verifying data integrity for ${email}:`, error);
     return false;
   }
@@ -471,12 +471,12 @@ export async function cleanupCorruptedFiles(): Promise<void> {
             await fs.unlink(filePath);
             console.log(`🗑️ Deleted old temporary file: ${file}`);
           }
-        } catch (error) {
+        } catch (_error) {
           console.error(`❌ Error deleting file ${file}:`, error);
         }
       }
     }
-  } catch (error) {
+  } catch (_error) {
     console.error('❌ Error during cleanup:', error);
   }
 }
@@ -503,7 +503,7 @@ export async function restoreFromBackup(email: string, backupTimestamp: string):
     await saveUserData(email, userData);
     console.log(`✅ Successfully restored data from backup for ${email}`);
     return true;
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error restoring backup for ${email}:`, error);
     return false;
   }
@@ -536,14 +536,14 @@ export async function getUserData(email: string): Promise<UserData | null> {
         let encryptedData;
         try {
           encryptedData = JSON.parse(fileContent);
-        } catch (parseError) {
+        } catch (_parseError) {
           console.error(`❌ Invalid JSON in user data file for ${email}:`, parseError);
           // Thử tạo backup của file bị lỗi
           try {
             const corruptedBackupPath = `${filePath}.corrupted.${Date.now()}`;
             await fs.copyFile(filePath, corruptedBackupPath);
             console.log(`📁 Corrupted file backed up to: ${corruptedBackupPath}`);
-          } catch (backupError) {
+          } catch (_backupError) {
             console.error('Failed to backup corrupted file:', backupError);
           }
           return null;
@@ -558,7 +558,7 @@ export async function getUserData(email: string): Promise<UserData | null> {
         let decryptedString;
         try {
           decryptedString = decryptData(encryptedData.data, encryptedData.iv, encryptedData.tag, encryptedData.alg);
-        } catch (decryptError) {
+        } catch (_decryptError) {
           console.error(`❌ Decryption failed for user ${email}:`, decryptError);
           return null;
         }
@@ -566,7 +566,7 @@ export async function getUserData(email: string): Promise<UserData | null> {
         let userData: UserData;
         try {
           userData = JSON.parse(decryptedString);
-        } catch (parseError) {
+        } catch (_parseError) {
           console.error(`❌ Invalid JSON in decrypted data for user ${email}:`, parseError);
           return null;
         }
@@ -580,7 +580,7 @@ export async function getUserData(email: string): Promise<UserData | null> {
         }
 
         return userData;
-      } catch (error) {
+      } catch (_error) {
         console.error(`❌ Error loading user data for ${email}:`, error);
         return null;
       }
@@ -613,7 +613,7 @@ export async function cleanupOldFiles(): Promise<void> {
               await fs.unlink(filePath);
               console.log(`🧹 Cleaned up old file: ${file}`);
             }
-          } catch (error) {
+          } catch (_error) {
             // Ignore errors for individual files
           }
         }
@@ -637,7 +637,7 @@ export async function cleanupOldFiles(): Promise<void> {
               await fs.unlink(filePath);
               console.log(`🧹 Cleaned up old backup: ${file}`);
             }
-          } catch (error) {
+          } catch (_error) {
             // Ignore errors for individual files
           }
         }
@@ -647,7 +647,7 @@ export async function cleanupOldFiles(): Promise<void> {
     }
 
     console.log('✅ File cleanup completed');
-  } catch (error) {
+  } catch (_error) {
     console.error('❌ Error during file cleanup:', error);
   }
 }

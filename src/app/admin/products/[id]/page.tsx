@@ -91,7 +91,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
   const [isEditingSpecs, setIsEditingSpecs] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [_isSubmitting, setIsSubmitting] = useState(false);
 
   // Thêm state cho quản lý tùy chọn sản phẩm
   const [productOptions, setProductOptions] = useState<string[]>([]);
@@ -200,10 +200,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       // Skip fetch in creation mode
       setLoading(false);
     }
-  }, [initialProductId, isNew]);
+  }, [initialProductId, isNew, productId]);
 
   // Kiểm tra URL hình ảnh có hợp lệ không
-  const isValidImageUrl = (url: string) => {
+  const _isValidImageUrl = (url: string) => {
     return (
       url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null ||
       url.startsWith('https://') ||
@@ -213,7 +213,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   };
 
   // Hàm lấy tên danh mục từ ID
-  const getCategoryName = (id: string): string => {
+  const _getCategoryName = (id: string): string => {
     const categories = [
       { id: 'office-software', name: 'Phần mềm văn phòng' },
       { id: 'business-solutions', name: 'Giải pháp doanh nghiệp' },
@@ -352,7 +352,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   };
 
   // Xử lý upload hình ảnh
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -524,7 +524,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   };
 
   // Xử lý xóa hình ảnh
-  const handleRemoveImage = (index: number) => {
+  const _handleRemoveImage = (index: number) => {
     const newImages = [...descriptionImages];
     newImages.splice(index, 1);
     setDescriptionImages(newImages);
@@ -561,7 +561,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   };
 
   // Xử lý chèn hình ảnh vào mô tả
-  const handleInsertImageToDescription = (imageUrl: string) => {
+  const _handleInsertImageToDescription = (imageUrl: string) => {
     // Không cần chèn thủ công, vì rich text editor có chức năng chèn ảnh
     // Nhưng chúng ta có thể sao chép URL để dễ dàng dán vào editor
     navigator.clipboard.writeText(imageUrl).then(() => {
@@ -854,7 +854,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   };
 
   // Xử lý thay đổi giá
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const price = parseFloat(value);
 
@@ -872,7 +872,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   };
 
   // Xử lý thay đổi giá gốc
-  const handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const salePrice = parseFloat(value);
 

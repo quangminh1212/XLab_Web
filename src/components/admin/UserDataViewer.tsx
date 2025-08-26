@@ -124,7 +124,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
       } else {
         alert('⚠️ Cảnh báo: Dữ liệu có thể bị thay đổi');
       }
-    } catch (error) {
+    } catch (_error) {
       alert('❌ Lỗi khi kiểm tra tính toàn vẹn dữ liệu');
     } finally {
       setLoading(false);

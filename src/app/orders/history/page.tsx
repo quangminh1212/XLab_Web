@@ -25,7 +25,7 @@ interface Order {
 }
 
 export default function OrderHistoryPage() {
-  const { data: session, status } = useSession();
+  const { data: _session, status } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);

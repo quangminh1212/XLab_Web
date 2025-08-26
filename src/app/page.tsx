@@ -4,8 +4,8 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
-import { CartItem } from '@/components/cart/CartContext';
-import { useCart } from '@/components/cart/CartContext';
+// import { CartItem } from '@/components/cart/CartContext';
+// import { useCart } from '@/components/cart/CartContext';
 import ProductCard from '@/components/product/ProductCard';
 import { useLanguage } from '@/contexts/LanguageContext';
 

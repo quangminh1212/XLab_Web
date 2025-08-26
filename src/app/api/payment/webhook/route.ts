@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const event = JSON.parse(raw || '{}');
+    const _event = JSON.parse(raw || '{}');
     // TODO: handle event types here
     return NextResponse.json({ received: true });
   } catch (_e) {

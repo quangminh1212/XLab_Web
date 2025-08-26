@@ -24,7 +24,7 @@ const formatDate = (dateString: string) => {
 };
 
 export default function UsedVouchersPage() {
-  const { data: session, status } = useSession();
+  const { data: _session, status } = useSession();
   const [vouchers, setVouchers] = useState<UserVoucher[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

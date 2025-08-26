@@ -33,7 +33,7 @@ interface CartItemWithVersion {
 // Danh sách mã giảm giá sẽ được lấy từ API
 
 export default function CartPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     items: cartItems,
     removeItem: removeItemFromCart,
@@ -95,7 +95,7 @@ export default function CartPage() {
                 return;
               }
             }
-          } catch (directError) {
+          } catch (_directError) {
             console.log('Direct cart API failed, using fallback');
           }
           

@@ -89,7 +89,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id: orderId } = React.use(params);
 
   const router = useRouter();
-  const { data: _session, status } = useSession();
+  const { data: _session } = useSession();
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]); // Thêm state cho danh sách sản phẩm

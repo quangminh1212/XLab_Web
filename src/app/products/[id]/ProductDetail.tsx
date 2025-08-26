@@ -143,7 +143,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
           } else {
             setTranslatedShortDescription(shortDescription); // Fallback to original
           }
-        } catch (error) {
+        } catch (_error) {
           // Error fetching short description translation
           setTranslatedShortDescription(shortDescription); // Fallback to original
         }
@@ -207,7 +207,7 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
           } else {
             setTranslatedFeatures(features); // Fallback to original
           }
-        } catch (error) {
+        } catch (_error) {
           // Error fetching feature translations
           setTranslatedFeatures(features); // Fallback to original
         }
@@ -349,7 +349,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
 
   // Xử lý khi kéo qua một phần tử khác
-  const handleDragOver = (e: React.DragEvent, index: number) => {
+  const _handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     if (draggedItem === null || draggedItem === index) return;
 
@@ -452,7 +452,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
 
   // Tính phần trăm giảm giá
-  const calculateDiscountPercentage = () => {
+  const _calculateDiscountPercentage = () => {
     const originalPrice = calculateSelectedOriginalPrice();
     const price = calculateSelectedPrice();
 

@@ -71,7 +71,7 @@ interface UserData {
 }
 
 // Hàm đọc dữ liệu mã giảm giá từ file
-function loadCoupons(): Coupon[] {
+function _loadCoupons(): Coupon[] {
   try {
     if (fs.existsSync(couponsFilePath)) {
       const data = fs.readFileSync(couponsFilePath, 'utf8');
@@ -90,7 +90,7 @@ function loadCoupons(): Coupon[] {
 }
 
 // Hàm đọc dữ liệu người dùng từ file
-function loadUserData(email: string): UserData | null {
+function _loadUserData(email: string): UserData | null {
   try {
     const userFilePath = path.join(usersDir, `${email}.json`);
     if (fs.existsSync(userFilePath)) {
@@ -110,7 +110,7 @@ function loadUserData(email: string): UserData | null {
 }
 
 // Hàm lưu dữ liệu người dùng vào file
-function saveUserData(email: string, userData: UserData): boolean {
+function _saveUserData(email: string, userData: UserData): boolean {
   try {
     if (!fs.existsSync(usersDir)) {
       fs.mkdirSync(usersDir, { recursive: true });

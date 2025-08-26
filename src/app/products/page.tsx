@@ -110,11 +110,11 @@ export default function ProductsPage() {
     : [];
 
   // Lọc các loại sản phẩm đặc biệt
-  const featuredProducts = Array.isArray(allProducts)
+  const _featuredProducts = Array.isArray(allProducts)
     ? allProducts.filter((product) => product.isFeatured)
     : [];
 
-  const newProducts = Array.isArray(allProducts)
+  const _newProducts = Array.isArray(allProducts)
     ? allProducts
         .slice()
         .sort(
@@ -125,7 +125,7 @@ export default function ProductsPage() {
         .slice(0, 6)
     : [];
 
-  const popularProducts = Array.isArray(allProducts)
+  const _popularProducts = Array.isArray(allProducts)
     ? allProducts
         .slice()
         .sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0))
@@ -133,7 +133,7 @@ export default function ProductsPage() {
     : [];
 
   // Danh mục sản phẩm
-  const productCategories = [
+  const _productCategories = [
     { id: 'all', name: 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
     {
       id: 'software',
@@ -428,7 +428,7 @@ export default function ProductsPage() {
 }
 
 // Helper function to format currency
-function formatCurrency(value: number): string {
+function _formatCurrency(value: number): string {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',

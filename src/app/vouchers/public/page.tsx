@@ -59,7 +59,7 @@ const isExpired = (endDate: string) => {
     const end = new Date(endDate);
     const now = new Date();
     return end < now;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 };

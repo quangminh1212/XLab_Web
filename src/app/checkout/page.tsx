@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   const { language, t } = useLanguage();
 
   // Luôn bắt đầu với bước 2 (thanh toán)
-  const [step, _setStep] = useState(2);
+  const [_step, _setStep] = useState(2);
 
   const [shippingInfo, setShippingInfo] = useState({
     firstName: '',
@@ -33,8 +33,8 @@ export default function CheckoutPage() {
     city: '',
     country: 'vietnam',
   });
-  const [errors, _setErrors] = useState<Record<string, string>>({});
-  const [selectedPaymentMethod] = useState<
+  const [_errors, _setErrors] = useState<Record<string, string>>({});
+  const [_selectedPaymentMethod] = useState<
     'balance' | 'bank' | 'momo' | 'zalopay'
   >('balance');
   const [userBalance, setUserBalance] = useState(0);

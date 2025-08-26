@@ -9,7 +9,7 @@ export function buildCsp(isProd: boolean): string {
   const styleHosts = [self, unsafeInline];
   const fontHosts = [self, 'data:'];
   const connectHosts = [self, 'https:'];
-  const frameAncestors = [self];
+  const _frameAncestors = [self];
 
   // Cho phép bổ sung domain động qua ENV, ví dụ: CDN_SCRIPT_HOSTS, IMG_HOSTS,
   function fromEnv(name: string) {

@@ -8,9 +8,9 @@ import { Language } from '@/i18n';
 
 // Định nghĩa các component UI đơn giản thay vì import từ thư viện bên ngoài
 const Button = ({ 
-  children, 
-  variant = 'default', 
-  size = 'md', 
+  children,
+  variant: _variant = 'default',
+  size: _size = 'md',
   className = '', 
   ...props 
 }: { 

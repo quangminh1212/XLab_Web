@@ -3,7 +3,7 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
 import translations, { Language } from '@/i18n';
-import { mapLanguageCode, mapToInternalCode } from '@/i18n/client';
+import { mapLanguageCode } from '@/i18n/client';
 
 type LanguageContextType = {
   language: Language;

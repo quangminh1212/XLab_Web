@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import ProductDetail from '@/app/products/[id]/ProductDetail';
 import { siteConfig } from '@/config/siteConfig';
 import { products as mockProducts } from '@/data/mockData';
-import { getAllProducts, normalizeLanguageCode } from '@/lib/i18n/products';
+import { getAllProducts } from '@/lib/i18n/products';
 import { Product } from '@/models/ProductModel';
 import type { Product as MockProduct } from '@/types';
 
