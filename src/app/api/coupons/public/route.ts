@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { NextResponse, NextRequest } from 'next/server';
+
 import { getCorsHeaders, handleCorsOptions } from '@/lib/cors';
 export const runtime = 'nodejs';
 

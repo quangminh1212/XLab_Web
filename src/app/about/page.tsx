@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AboutPage() {

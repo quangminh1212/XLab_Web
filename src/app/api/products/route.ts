@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCorsHeaders, handleCorsOptions } from '@/lib/cors';
 
+import { getCorsHeaders, handleCorsOptions } from '@/lib/cors';
 import { getAllProducts } from '@/lib/i18n/products';
 export const runtime = 'nodejs';
 

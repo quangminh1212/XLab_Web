@@ -6,8 +6,8 @@ import React from 'react';
 
 import ProductCard from '@/components/product/ProductCard';
 import ProductImage from '@/components/product/ProductImage';
-import { categories, products } from '@/data/mockData';
 import { siteConfig } from '@/config/siteConfig';
+import { categories, products } from '@/data/mockData';
 
 interface CategoryPageProps {
   params: Promise<{

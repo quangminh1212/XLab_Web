@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+
 import { middleware } from '@/middleware';
 
 describe('Security middleware', () => {

@@ -1,12 +1,12 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 
-import dynamic from 'next/dynamic';
 const RichTextEditor = dynamic(() => import('@/components/common/RichTextEditor'), {
   ssr: false,
   loading: () => <div className="min-h-[180px] bg-gray-50 rounded-md animate-pulse" />,
