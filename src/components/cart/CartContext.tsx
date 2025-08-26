@@ -152,7 +152,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             return;
           }
         }
-      } catch (directError) {
+      } catch (_directError) {
         console.log('Direct cart API not available, trying debug endpoint');
       }
       
@@ -171,7 +171,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             return;
           }
         }
-      } catch (debugError) {
+      } catch (_debugError) {
         console.log('Debug endpoint not available, falling back to regular API');
       }
       

@@ -74,10 +74,7 @@ export default function AccountPage() {
   });
   const [settingsSaved, setSettingsSaved] = useState(false);
 
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
+
   
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
@@ -121,7 +118,7 @@ export default function AccountPage() {
         setAvailableCoupons(data.allCoupons);
       }
     } catch (_error) {
-      console.error('Error fetching available coupons:', error);
+      console.error('Error fetching available coupons:', _error);
     }
   };
 
@@ -135,7 +132,7 @@ export default function AccountPage() {
         setPublicCoupons(data.coupons);
       }
     } catch (_error) {
-      console.error('Error fetching public coupons:', error);
+      console.error('Error fetching public coupons:', _error);
     } finally {
       setLoadingCoupons(false);
     }
@@ -218,7 +215,7 @@ export default function AccountPage() {
             setNotificationSettings(parsedSettings);
             console.log('Đã tải cài đặt thông báo:', parsedSettings);
           } catch (_error) {
-            console.error('Lỗi khi parse cài đặt thông báo:', error);
+            console.error('Lỗi khi parse cài đặt thông báo:', _error);
           }
         }
 
@@ -297,7 +294,7 @@ export default function AccountPage() {
             setPurchaseHistory(allOrders);
             console.log('Combined orders:', allOrders);
           } catch (_error) {
-            console.error('Error fetching purchase history:', err);
+            console.error('Error fetching purchase history:', _error);
             // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
             try {
               // Vẫn cần lấy dữ liệu sản phẩm cho fallback
@@ -341,7 +338,7 @@ export default function AccountPage() {
               }));
               setPurchaseHistory(convertedOrders);
             } catch (_error) {
-              console.error('Error reading from localStorage:', localErr);
+              console.error('Error reading from localStorage:', _error);
               setPurchaseHistory([]);
             }
           } finally {
@@ -352,7 +349,7 @@ export default function AccountPage() {
         fetchAvailableCoupons(); // Thêm dòng này để lấy danh sách mã giảm giá
         fetchPublicCoupons(); // Thêm dòng này để lấy danh sách mã giảm giá công khai
       } catch (_error) {
-        console.error('Lỗi khi đọc từ localStorage:', error);
+        console.error('Lỗi khi đọc từ localStorage:', _error);
         // Fallback to session data
         setProfile(updatedProfile);
         setIsLoading(false);
@@ -422,17 +419,13 @@ export default function AccountPage() {
         setSaveSuccess(false);
       }, 3000);
     } catch (_error) {
-      console.error('Lỗi khi lưu thông tin:', error);
+      console.error('Lỗi khi lưu thông tin:', _error);
       setSaving(false);
       // Xử lý thông báo lỗi ở đây nếu cần
     }
   };
 
-  // Hàm định dạng ngày
 
-    // Giả sử định dạng đầu vào là DD/MM/YYYY
-    return dateString;
-  };
 
   // Thêm liên kết đến trang đơn hàng
   const goToOrdersPage = () => {
@@ -455,11 +448,7 @@ export default function AccountPage() {
     return sum + saleSavings + voucherSavings;
   }, 0);
 
-  // Xử lý lỗi hình ảnh
 
-    setImageError(true);
-    console.log('Lỗi khi tải ảnh đại diện, sử dụng ảnh mặc định');
-  };
 
   // Hàm xử lý đăng xuất
   const handleSignOut = async () => {

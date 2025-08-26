@@ -448,7 +448,7 @@ const Header = () => {
                             </div>
                           )}
 
-                          {getDisplayVouchers().map((coupon, index) => (
+                          {getDisplayVouchers().map((coupon, _index) => (
                             <div key={coupon.id}>
                               <div
                                 className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}

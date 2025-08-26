@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 

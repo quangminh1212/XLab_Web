@@ -34,11 +34,11 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('vi-VN');
 };
 
-const isExpired = (endDate: string) => {
+const _isExpired = (endDate: string) => {
   return new Date(endDate) < new Date();
 };
 
-const isValidNow = (startDate: string, endDate: string) => {
+const _isValidNow = (startDate: string, endDate: string) => {
   const now = new Date();
   return new Date(startDate) <= now && new Date(endDate) >= now;
 };
@@ -62,7 +62,7 @@ export default function PublicCouponsPage() {
             c.isPublic && c.isActive && new Date(c.startDate) <= now && new Date(c.endDate) >= now,
         );
         setCoupons(publicCoupons);
-      } catch (error) {
+      } catch (_error) {
         setCoupons([]);
       } finally {
         setIsLoading(false);

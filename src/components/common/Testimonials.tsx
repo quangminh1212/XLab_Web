@@ -61,7 +61,7 @@ const defaultTestimonials: Testimonial[] = [
 ];
 
 export default function Testimonials({ productId, limit = 3 }: TestimonialsProps) {
-  const { t, language, localCode } = useLanguage();
+  const { t, localCode } = useLanguage();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -235,7 +235,7 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${activeIndex * 100}%)` }}
           >
-            {testimonials.map((testimonial, index) => (
+            {testimonials.map((testimonial, _index) => (
               <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
                 <div className="bg-gradient-to-br from-primary-50 to-white p-6 rounded-xl border border-primary-100">
                   <div className="flex items-center mb-4">

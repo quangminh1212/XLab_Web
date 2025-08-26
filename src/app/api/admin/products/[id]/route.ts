@@ -17,7 +17,7 @@ export const revalidate = 0;
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
 // Function to generate ID from product name
-function generateIdFromName(name: string): string {
+function _generateIdFromName(name: string): string {
   return name
     .toLowerCase()
     .trim()
@@ -27,7 +27,7 @@ function generateIdFromName(name: string): string {
 }
 
 // Read product data
-function getProducts(): Product[] {
+function _getProducts(): Product[] {
   try {
     if (!fs.existsSync(dataFilePath)) {
       fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
@@ -42,7 +42,7 @@ function getProducts(): Product[] {
 }
 
 // Save product data
-function saveProducts(products: Product[]): void {
+function _saveProducts(products: Product[]): void {
   try {
     const dirPath = path.dirname(dataFilePath);
     if (!fs.existsSync(dirPath)) {
@@ -55,7 +55,7 @@ function saveProducts(products: Product[]): void {
 }
 
 // Function to delete old images
-function deleteOldImages(
+function _deleteOldImages(
   oldImages: (string | { url: string })[],
   newImages: (string | { url: string })[],
 ): void {
@@ -92,7 +92,7 @@ function deleteOldImages(
 }
 
 // Category lookup
-function getCategoryName(categoryId: string): string {
+function _getCategoryName(categoryId: string): string {
   const categories: Record<string, string> = {
     'office-software': 'Phần mềm văn phòng',
     'business-solutions': 'Giải pháp doanh nghiệp',
@@ -104,7 +104,7 @@ function getCategoryName(categoryId: string): string {
 }
 
 // Extract product ID from URL
-function extractIdFromUrl(url: string): string {
+function _extractIdFromUrl(url: string): string {
   const segments = url.split('/');
   return segments[segments.length - 1] ?? '';
 }

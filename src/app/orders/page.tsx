@@ -103,7 +103,7 @@ export default function OrdersPage() {
   }, []);
 
   // Hàm lấy ảnh sản phẩm từ danh sách sản phẩm
-  const getProductImage = (productId: string, productName: string) => {
+  const getProductImage = (productId: string, _productName: string) => {
     const product = products.find((p) => p.id === productId || p.slug === productId);
 
     if (product && product.images && product.images.length > 0) {

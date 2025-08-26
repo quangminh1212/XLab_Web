@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import React from 'react';
 
 import ProductCard from '@/components/product/ProductCard';
-import ProductImage from '@/components/product/ProductImage';
+// import ProductImage from '@/components/product/ProductImage';
 import { siteConfig } from '@/config/siteConfig';
 import { categories, products } from '@/data/mockData';
 

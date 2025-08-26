@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
@@ -29,7 +29,7 @@ export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
-  const { t, language, localCode } = useLanguage();
+  const { t, localCode } = useLanguage();
 
   useEffect(() => {
     // Tải danh sách sản phẩm
@@ -40,8 +40,8 @@ export default function OrderHistoryPage() {
           const data = await response.json();
           setProducts(data.data || []);
         }
-      } catch (error) {
-        console.error('Lỗi khi tải danh sách sản phẩm:', error);
+      } catch (_error) {
+        console.error('Lỗi khi tải danh sách sản phẩm:', _error);
       }
     };
 
@@ -49,7 +49,7 @@ export default function OrderHistoryPage() {
   }, []);
 
   // Hàm lấy ảnh sản phẩm từ danh sách sản phẩm
-  const getProductImage = (productId: string, productName: string) => {
+  const getProductImage = (productId: string, _productName: string) => {
     const product = products.find((p) => p.id === productId || p.slug === productId);
 
     if (product && product.images && product.images.length > 0) {
@@ -75,8 +75,8 @@ export default function OrderHistoryPage() {
 
           const data = await response.json();
           setOrders(data.orders);
-        } catch (error) {
-          console.error('Lỗi khi lấy dữ liệu đơn hàng:', error);
+        } catch (_error) {
+          console.error('Lỗi khi lấy dữ liệu đơn hàng:', _error);
 
           // Dữ liệu mẫu để hiển thị khi có lỗi
           const sampleOrders: Order[] = [

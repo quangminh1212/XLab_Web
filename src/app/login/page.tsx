@@ -12,9 +12,9 @@ export default function LoginPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get('callbackUrl') || '/';
+  const _callbackUrl = searchParams?.get('callbackUrl') || '/';
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, _setError] = useState('');
   const { t } = useLanguage();
 
   // Kiểm tra nếu đã đăng nhập thì chuyển hướng về trang chủ

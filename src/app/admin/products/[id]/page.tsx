@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { toast } from 'react-toastify';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 const RichTextEditor = dynamic(() => import('@/components/common/RichTextEditor'), {
   ssr: false,

@@ -89,7 +89,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id: orderId } = React.use(params);
 
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: _session, status } = useSession();
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]); // Thêm state cho danh sách sản phẩm
@@ -103,8 +103,8 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           const data = await response.json();
           setProducts(data.data || []);
         }
-      } catch (error) {
-        console.error('Lỗi khi tải danh sách sản phẩm:', error);
+      } catch (_error) {
+        console.error('Lỗi khi tải danh sách sản phẩm:', _error);
       }
     };
 
@@ -112,8 +112,8 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   }, []);
 
   // Hàm lấy ảnh sản phẩm từ danh sách sản phẩm
-  const getProductImage = (productId: string, productName: string) => {
-    console.log('Tìm ảnh cho sản phẩm:', { productId, productName });
+  const getProductImage = (productId: string, _productName: string) => {
+    console.log('Tìm ảnh cho sản phẩm:', { productId, _productName });
     console.log('Danh sách sản phẩm hiện có:', products);
 
     const product = products.find((p) => p.id === productId || p.slug === productId);

@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   const { language, t } = useLanguage();
 
   // Luôn bắt đầu với bước 2 (thanh toán)
-  const [step, setStep] = useState(2);
+  const [step, _setStep] = useState(2);
 
   const [shippingInfo, setShippingInfo] = useState({
     firstName: '',
@@ -33,7 +33,7 @@ export default function CheckoutPage() {
     city: '',
     country: 'vietnam',
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, _setErrors] = useState<Record<string, string>>({});
   const [selectedPaymentMethod] = useState<
     'balance' | 'bank' | 'momo' | 'zalopay'
   >('balance');
@@ -95,7 +95,7 @@ export default function CheckoutPage() {
   });
 
   // Calculate cart totals
-  const { subtotal, tax } = calculateCartTotals(cart);
+  const { subtotal } = calculateCartTotals(cart);
   const total = subtotal;
 
   // Lấy số dư người dùng
@@ -152,11 +152,11 @@ export default function CheckoutPage() {
       newErrors.city = 'Vui lòng nhập thành phố';
     }
 
-    setErrors(newErrors);
+    _setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleShippingInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const _handleShippingInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setShippingInfo((prev) => ({
       ...prev,
@@ -164,11 +164,11 @@ export default function CheckoutPage() {
     }));
   };
 
-  const handleSubmitShippingInfo = (e: React.FormEvent) => {
+  const _handleSubmitShippingInfo = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateShippingInfo()) {
-      setStep(2);
+      _setStep(2);
     }
   };
 

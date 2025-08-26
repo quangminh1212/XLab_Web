@@ -42,7 +42,7 @@ const formatDate = (dateString: string) => {
       return 'Undefined';
     }
     return date.toLocaleDateString('vi-VN');
-  } catch (error) {
+  } catch (_error) {
     return 'Undefined';
   }
 };
@@ -71,7 +71,7 @@ const isFullyUsedByUser = (voucher: Voucher) => {
 };
 
 export default function PublicVouchersPage() {
-  const { data: session } = useSession();
+  const { data: _session } = useSession();
   const { t } = useLanguage();
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -91,8 +91,8 @@ export default function PublicVouchersPage() {
         } else {
           console.error('Failed to load vouchers:', data);
         }
-      } catch (error) {
-        console.error('Error fetching vouchers:', error);
+      } catch (_error) {
+        console.error('Error fetching vouchers:', _error);
         setVouchers([]);
       } finally {
         setIsLoading(false);
@@ -112,8 +112,8 @@ export default function PublicVouchersPage() {
           setIsCopied({ ...isCopied, [code]: false });
         }, 2000);
       })
-      .catch((err) => {
-        console.error('Copy failed:', err);
+      .catch((_err) => {
+        console.error('Copy failed:', _err);
         alert('Unable to copy the code. Please try again.');
       });
   };
