@@ -162,7 +162,7 @@
   /* Auto-fit product grid to avoid empty columns when item count < columns */
   .grid-auto-fit {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
 
