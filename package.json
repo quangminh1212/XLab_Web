@@ -26,7 +26,6 @@
     "analyze": "cross-env ANALYZE=true next build",
     "check": "npm run lint && npm run type-check",
     "prepare": "node scripts/fix-next-errors.js",
-
     "postinstall": "node scripts/fix-next-errors.js || true",
     "health-check": "node scripts/comprehensive-health-check.js",
     "health-improve": "node scripts/gentle-improvements.js",
@@ -113,14 +112,13 @@
     "inflight": "2.0.0",
     "@humanwhocodes/config-array": "@eslint/config-array"
   },
-  "lint-staged-disabled": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix --max-warnings=0"
-    ],
-    "*.{json,md,css,scss,mdx}": [
-      "prettier --write"
-    ]
-  },
+
+
+
+
+
+
+
 
   "keywords": [],
   "author": "",

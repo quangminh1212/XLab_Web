@@ -769,7 +769,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       }
 
       // Slug generation
-      const slug = generateSlug(formData.name);
+      const _slug = generateSlug(formData.name);
 
       // Prepare product data to send to API
       const productData = {
@@ -1412,7 +1412,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     name="type"
                     value="software"
                     checked={formData.type === 'software'}
-                    onChange={(e) => {
+                    onChange={(_e) => {
                       setFormData((prev) => ({
                         ...prev,
                         type: 'software',
@@ -1429,7 +1429,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     name="type"
                     value="account"
                     checked={formData.type === 'account'}
-                    onChange={(e) => {
+                    onChange={(_e) => {
                       setFormData((prev) => ({
                         ...prev,
                         type: 'account',
