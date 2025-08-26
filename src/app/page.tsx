@@ -189,7 +189,7 @@ function HomePage() {
           <div className="w-full flex flex-col h-full md:col-span-1 md:sticky md:top-4 self-start pr-2">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
-              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-responsive-sm">
+              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-4 sm:mb-5">
                 <div className="bg-white rounded-lg p-3 sm:p-4">
                   <div className="flex justify-center mb-3 sm:mb-4">
                     <div className="relative w-12 h-12 sm:w-16 sm:h-16 bg-primary-50 rounded-full flex items-center justify-center">
@@ -350,7 +350,7 @@ function HomePage() {
           </div>
 
           {/* Main Content Column - Right */}
-          <div className="md:col-span-4">
+          <div className="md:col-span-4 pl-2 md:pl-4">
             {/* Featured Products */}
             {isLoading ? (
               <div className="flex justify-center items-center h-40">
