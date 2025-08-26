@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 
@@ -37,28 +37,7 @@ export default function PaymentSuccessPage() {
   const [orderNumber, setOrderNumber] = useState('');
   const [orderSaved, setOrderSaved] = useState(false);
 
-  // Tạo mã đơn hàng giả lập và lưu đơn hàng
-  useEffect(() => {
-    let finalOrderNumber = '';
-
-    if (orderId) {
-      finalOrderNumber = orderId;
-      setOrderNumber(orderId);
-    } else {
-      // Tạo mã đơn hàng với định dạng XL-YYYYMMDDHHMMSS
-      finalOrderNumber = generateDetailedOrderId();
-      setOrderNumber(finalOrderNumber);
-    }
-
-    // Lưu đơn hàng nếu có session và chưa lưu
-    if (session?.user && !orderSaved && finalOrderNumber) {
-      saveOrderToHistory(finalOrderNumber);
-      setOrderSaved(true);
-    }
-  }, [orderId, session?.user, orderSaved]);
-
-  // Hàm lưu đơn hàng vào localStorage và gửi API
-  const saveOrderToHistory = async (orderNumber: string) => {
+  const saveOrderToHistory = useCallback(async (orderNumber: string) => {
     if (!session?.user?.email) return;
 
     // Lấy thông tin coupon discount từ URL params nếu có
@@ -122,7 +101,27 @@ export default function PaymentSuccessPage() {
     } catch (error) {
       console.error('Error saving order:', error);
     }
-  };
+  }, [amount, productName, quantity, session?.user, transactionId, unitPrice, searchParams]);
+
+  // Tạo mã đơn hàng giả lập và lưu đơn hàng
+  useEffect(() => {
+    let finalOrderNumber = '';
+
+    if (orderId) {
+      finalOrderNumber = orderId;
+      setOrderNumber(orderId);
+    } else {
+      // Tạo mã đơn hàng với định dạng XL-YYYYMMDDHHMMSS
+      finalOrderNumber = generateDetailedOrderId();
+      setOrderNumber(finalOrderNumber);
+    }
+
+    // Lưu đơn hàng nếu có session và chưa lưu
+    if (session?.user && !orderSaved && finalOrderNumber) {
+      saveOrderToHistory(finalOrderNumber);
+      setOrderSaved(true);
+    }
+  }, [orderId, session?.user, orderSaved, saveOrderToHistory]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {

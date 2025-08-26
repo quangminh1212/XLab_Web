@@ -1476,9 +1476,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   >
                     {(imageResizeOptions.previewUrl || featuredImage) ? (
                       <>
-                        <img
+                        <Image
                           src={imageResizeOptions.previewUrl || featuredImage || ''}
                           alt={formData.name}
+                          width={600}
+                          height={600}
                           className="object-contain max-w-full max-h-full"
                         />
                         <button

@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -61,7 +61,7 @@ function NotificationsPage() {
   });
 
   // Fetch thông báo từ API
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/admin/notifications');
@@ -77,7 +77,7 @@ function NotificationsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t]);
 
   // Reset form
   const resetForm = () => {
@@ -270,7 +270,7 @@ function NotificationsPage() {
         console.error('Error parsing notification settings:', error);
       }
     }
-  }, []);
+  }, [fetchNotifications]);
 
   // Clear messages after 5 seconds
   useEffect(() => {

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import withAdminAuth from '@/components/withAdminAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -17,8 +17,7 @@ function AdminProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const { language, localCode } = useLanguage();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
       try {
         setLoading(true);
         const response = await fetch('/api/admin/products');
@@ -35,10 +34,13 @@ function AdminProductsPage() {
       } finally {
         setLoading(false);
       }
-    };
 
+
+  }, [localCode]);
+
+  useEffect(() => {
     fetchProducts();
-  }, [language]);
+  }, [fetchProducts, language]);
 
   const handleEdit = (productId: string) => {
     router.push(`/admin/products/${productId}`);

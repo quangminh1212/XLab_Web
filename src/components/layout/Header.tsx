@@ -35,16 +35,16 @@ const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { t, language } = useLanguage();
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
-  const [isVoucherOpen, setIsVoucherOpen] = React.useState(false);
-  const [publicCoupons, setPublicCoupons] = React.useState<PublicCoupon[]>([]);
-  const [userCoupons, setUserCoupons] = React.useState<PublicCoupon[]>([]);
-  const [loadingCoupons, setLoadingCoupons] = React.useState(false);
-  const [lastCouponFetch, setLastCouponFetch] = React.useState<number>(0);
-  const [showNotification, setShowNotification] = React.useState(false);
-  const [notificationMessage, setNotificationMessage] = React.useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isVoucherOpen, setIsVoucherOpen] = useState(false);
+  const [publicCoupons, setPublicCoupons] = useState<PublicCoupon[]>([]);
+  const [userCoupons, setUserCoupons] = useState<PublicCoupon[]>([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(false);
+  const [lastCouponFetch, setLastCouponFetch] = useState<number>(0);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
 
   // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
@@ -101,14 +101,14 @@ const Header = () => {
     } finally {
       setLoadingCoupons(false);
     }
-  }, []);
+  }, [session?.user]);
 
   useEffect(() => {
     // Chỉ fetch khi voucher dropdown được mở hoặc đã quá 5 phút kể từ lần fetch cuối
     if (isVoucherOpen && (Date.now() - lastCouponFetch > 5 * 60 * 1000 || lastCouponFetch === 0)) {
       fetchCoupons();
     }
-  }, [isVoucherOpen, session?.user, lastCouponFetch]);
+  }, [isVoucherOpen, session?.user, lastCouponFetch, fetchCoupons]);
 
   // Thêm effect để tự động refresh mỗi 5 phút khi dropdown đang mở
   useEffect(() => {
