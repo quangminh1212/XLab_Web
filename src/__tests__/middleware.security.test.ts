@@ -6,7 +6,7 @@ describe('Security middleware', () => {
 
   function makeReq(path: string, method: string, headers: Record<string, string> = {}) {
     const url = new URL(path, baseUrl).toString();
-    // @ts-expect-error - constructing NextRequest with custom init in tests
+    // Constructing NextRequest with custom init for tests
     return new NextRequest(url, { method, headers: new Headers(headers) });
   }
 

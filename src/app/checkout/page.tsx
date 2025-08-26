@@ -12,7 +12,7 @@ import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 
 
-import products from '../../../products.json';
+import products from '../../data/products.json';
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
@@ -63,7 +63,7 @@ export default function CheckoutPage() {
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map((item) => {
     // Tìm sản phẩm tương ứng trong danh sách products
-    const productDetail = products.data.find((p: any) => {
+    const productDetail = products.find((p: any) => {
       const productId = String(p.id).toLowerCase();
       const itemId = String(item.id).toLowerCase();
       const productName = String(p.name).toLowerCase();
