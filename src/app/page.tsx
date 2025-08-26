@@ -184,9 +184,9 @@ function HomePage() {
 
       <div className="container-full sm:container mx-auto py-responsive px-0">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-responsive">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-responsive items-start">
           {/* Sidebar Column - Left */}
-          <div className="w-full flex flex-col h-full md:col-span-1 md:sticky md:top-4 self-start">
+          <div className="w-full flex flex-col h-full md:col-span-1 md:sticky md:top-4 self-start max-h-[80vh] overflow-y-auto pr-2">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-responsive-sm">
