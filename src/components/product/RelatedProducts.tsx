@@ -222,7 +222,7 @@ export default function RelatedProducts({
         products={mappedProducts}
         title={t('product.relatedProducts')}
         subtitle={t('product.relatedProductsSubtitle')}
-        columns={3}
+        columns={4}
       />
     </div>
   );
