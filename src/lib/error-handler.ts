@@ -45,7 +45,7 @@ export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
  */
 export function createErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
-  FallbackComponent: React.ComponentType<{ error: Error; reset: () => void }>,
+  _FallbackComponent: React.ComponentType<{ error: Error; reset: () => void }>,
 ): React.ComponentType<P> {
   return function ErrorBoundaryWrapper(props: P) {
     // Trong Next.js, sử dụng error.js hoặc error boundary chính trong app directory

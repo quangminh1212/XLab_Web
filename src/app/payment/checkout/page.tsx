@@ -39,7 +39,7 @@ export default function CheckoutPage() {
           const data = await response.json();
           setUserBalance(data.balance || 0);
         }
-      } catch (error) {
+      } catch (_error) {
         setUserBalance(0);
       } finally {
         setIsLoadingBalance(false);
@@ -74,7 +74,7 @@ export default function CheckoutPage() {
         setCouponDiscount(0);
         setCouponError(data.message || 'Mã giảm giá không hợp lệ');
       }
-    } catch (err) {
+    } catch (_error) {
       setCouponDiscount(0);
       setCouponError('Có lỗi xảy ra, thử lại sau.');
     }

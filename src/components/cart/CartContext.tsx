@@ -394,7 +394,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     }
-  }, [isAuthenticated, loaded, loadCartFromServer]);
+  }, [isAuthenticated, loaded, loadCartFromServer, items]);
 
   /**
    * Add item to cart

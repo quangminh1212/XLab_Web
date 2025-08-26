@@ -65,7 +65,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } finally {
       setLoading(false);
     }
-  }, [language, t]);
+  }, [language]);
 
   // Hàm đánh dấu một thông báo đã đọc
   const markAsRead = async (id: number | string) => {

@@ -276,7 +276,7 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
                   </div>
                   
                   <blockquote className="text-gray-700 italic mb-3">
-                    "{testimonial.content}"
+                    &quot;{testimonial.content}&quot;
                   </blockquote>
                   
                   <div className="text-xs text-gray-500 text-right">

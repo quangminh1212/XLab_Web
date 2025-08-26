@@ -73,8 +73,8 @@ export async function GET(
       success: true,
       notification,
     });
-  } catch (error) {
-    console.error('Error fetching notification:', error);
+  } catch (_error) {
+    console.error('Error fetching notification:', _error);
     return NextResponse.json({ error: 'Đã xảy ra lỗi khi tải thông báo' }, { status: 500 });
   }
 }
@@ -136,8 +136,8 @@ export async function PUT(
       message: 'Thông báo đã được cập nhật thành công',
       notification: updatedNotification,
     });
-  } catch (error) {
-    console.error('Error updating notification:', error);
+  } catch (_error) {
+    console.error('Error updating notification:', _error);
     return NextResponse.json({ error: 'Đã xảy ra lỗi khi cập nhật thông báo' }, { status: 500 });
   }
 }
@@ -171,8 +171,8 @@ export async function DELETE(
       success: true,
       message: 'Thông báo đã được xóa thành công',
     });
-  } catch (error) {
-    console.error('Error deleting notification:', error);
+  } catch (_error) {
+    console.error('Error deleting notification:', _error);
     return NextResponse.json({ error: 'Đã xảy ra lỗi khi xóa thông báo' }, { status: 500 });
   }
 }

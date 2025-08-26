@@ -35,11 +35,11 @@ const getUserBalance = async (userEmail: string): Promise<number> => {
       const balanceData = await fs.readFile(balancePath, 'utf-8');
       const balances: UserBalance = JSON.parse(balanceData);
       return balances[userEmail] || 0;
-    } catch (error) {
+    } catch (_error) {
       // File doesn't exist, return 0
       return 0;
     }
-  } catch (error) {
+  } catch (_error) {
     console.error('Error reading balance:', error);
     return 0;
   }
@@ -64,7 +64,7 @@ const updateUserBalance = async (userEmail: string, amount: number): Promise<num
     try {
       const balanceData = await fs.readFile(balancePath, 'utf-8');
       balances = JSON.parse(balanceData);
-    } catch (error) {
+    } catch (_error) {
       // File doesn't exist, start with empty object
       balances = {};
     }

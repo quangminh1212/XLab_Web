@@ -6,7 +6,7 @@ import { memo, useMemo } from 'react';
 
 import { useBalance } from '@/contexts/BalanceContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency, getExchangeRate } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 
 interface BalanceDisplayProps {
   className?: string;

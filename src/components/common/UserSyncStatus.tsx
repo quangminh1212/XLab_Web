@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface SyncStatus {
   hasUserFile: boolean;
@@ -25,7 +25,7 @@ export default function UserSyncStatus() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
 
-  const checkSyncStatus = async () => {
+  const checkSyncStatus = useCallback(async () => {
     if (!session?.user?.email) return;
 
     setIsLoading(true);
@@ -40,9 +40,9 @@ export default function UserSyncStatus() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [session?.user?.email]);
 
-  const forceSyncData = async () => {
+  const forceSyncData = useCallback(async () => {
     if (!session?.user?.email) return;
 
     setIsSyncing(true);
@@ -64,13 +64,13 @@ export default function UserSyncStatus() {
     } finally {
       setIsSyncing(false);
     }
-  };
+  }, [session?.user?.email, checkSyncStatus]);
 
   useEffect(() => {
     if (session?.user?.email) {
       checkSyncStatus();
     }
-  }, [session?.user?.email]);
+  }, [session?.user?.email, checkSyncStatus]);
 
   if (!session?.user?.email) {
     return null;

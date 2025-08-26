@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import VoucherUsageList from '@/components/admin/VoucherUsageList';
 import withAdminAuth from '@/components/withAdminAuth';
@@ -45,12 +45,12 @@ interface CouponForm {
 }
 
 function CouponsPage() {
-  const { data: session } = useSession();
+  const { data: _session } = useSession();
   const { t, language } = useLanguage();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
-  const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [_isEditing, setIsEditing] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'list' | 'create' | 'edit'>('list');
   const [filterTab, setFilterTab] = useState<'active' | 'expired'>('active');
   const [successMessage, setSuccessMessage] = useState('');
@@ -107,7 +107,7 @@ function CouponsPage() {
   };
 
   // Fetch coupons
-  const fetchCoupons = async () => {
+  const fetchCoupons = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/admin/coupons');
@@ -123,7 +123,7 @@ function CouponsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t]);
 
   // Thêm helper function để chuẩn hóa ngày tháng
   const formatDateForAPI = (dateString: string, isEndDate: boolean = false) => {
@@ -334,7 +334,7 @@ function CouponsPage() {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString((useLanguage().localCode === 'vi') ? 'vi-VN' : 'en-US');
+    ).toLocaleDateString((language === 'vi') ? 'vi-VN' : 'en-US');
   };
 
   // Check if coupon is expired
@@ -462,7 +462,7 @@ function CouponsPage() {
 
   useEffect(() => {
     fetchCoupons();
-  }, []);
+  }, [fetchCoupons]);
 
   // Clear messages
   useEffect(() => {
@@ -477,7 +477,7 @@ function CouponsPage() {
   }, [successMessage, errorMessage]);
 
   // Phân chia mã giảm giá thành nhóm còn hạn và hết hạn
-  const nonExpiredCoupons = coupons.filter((coupon) => !isExpired(coupon.endDate));
+  // const nonExpiredCoupons = coupons.filter((coupon) => !isExpired(coupon.endDate));
   const expiredCoupons = coupons.filter((coupon) => isExpired(coupon.endDate));
 
   // Các mã đang hoạt động thực sự (active và chưa hết hạn)

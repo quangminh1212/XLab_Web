@@ -107,7 +107,6 @@ const ProductGrid = ({
 
   // Tính giá gốc tương ứng với giá thấp nhất
   const calculateOriginalPrice = (product: Product, minPrice: number): number => {
-    let correspondingOriginalPrice: number | undefined; // used to compute discount, not returned directly
 
     // Nếu giá thấp nhất từ version
     if (product.versions && product.versions.length > 0) {

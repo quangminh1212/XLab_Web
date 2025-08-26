@@ -9,4 +9,5 @@ import './logger';
 // Log thông báo khởi động
 console.log('🚀 Application initialization complete');
 
-export default {}; 
+const init = {};
+export default init;

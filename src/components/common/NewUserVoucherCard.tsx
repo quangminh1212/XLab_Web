@@ -3,13 +3,12 @@ import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface NewUserVoucherCardProps {
-  minAmount: number;
+  // minAmount: number; // currently unused
   usedCount: number;
   maxUsage: number;
 }
 
 export default function NewUserVoucherCard({
-  minAmount,
   usedCount,
   maxUsage,
 }: NewUserVoucherCardProps) {

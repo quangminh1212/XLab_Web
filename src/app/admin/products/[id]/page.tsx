@@ -2096,7 +2096,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
               ) : (
                 <div className="bg-gray-50 p-4 rounded-lg text-gray-500 text-center">
-                  Chưa có thông số kỹ thuật nào. Nhấn "Chỉnh sửa" để thêm.
+                  Chưa có thông số kỹ thuật nào. Nhấn &quot;Chỉnh sửa&quot; để thêm.
                 </div>
               )}
               <p className="text-sm text-gray-500 mt-4">
