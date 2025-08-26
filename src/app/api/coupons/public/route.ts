@@ -2,13 +2,12 @@ import fs from 'fs';
 import path from 'path';
 
 import { NextResponse, NextRequest } from 'next/server';
-
-import { getCorsHeaders, handleCorsOptions } from '@/lib/cors';
-export const runtime = 'nodejs';
-
 import { getServerSession } from 'next-auth/next';
 
 import { authOptions } from '@/lib/authOptions';
+import { getCorsHeaders, handleCorsOptions } from '@/lib/cors';
+
+export const runtime = 'nodejs';
 
 // Create path to data files
 const dataDir = path.join(process.cwd(), 'data');

@@ -156,7 +156,7 @@ function saveCoupons(data: Coupon[]): boolean {
 let coupons: Coupon[] = loadCoupons();
 
 // GET - Lấy danh sách mã giảm giá
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -181,7 +181,7 @@ export async function GET(request: NextRequest) {
 }
 
 // POST - Tạo mã giảm giá mới
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
     // Đọc lại dữ liệu từ file để đảm bảo dữ liệu mới nhất
     coupons = loadCoupons();
 
-    const body = await request.json();
+    const body = await _request.json();
     const {
       code,
       name,

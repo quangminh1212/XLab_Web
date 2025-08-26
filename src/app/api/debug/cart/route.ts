@@ -2,14 +2,14 @@ import fs from 'fs';
 import path from 'path';
 
 import { NextResponse } from 'next/server';
-export const runtime = 'nodejs';
-
 import { getServerSession } from 'next-auth/next';
 
 import { authOptions } from '@/lib/authOptions';
 
+export const runtime = 'nodejs';
+
 // Debug API to directly read user data file
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const session = await getServerSession(authOptions);
 

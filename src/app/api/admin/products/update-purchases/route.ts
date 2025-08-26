@@ -2,9 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 
-import { authOptions } from '@/lib/authOptions';
 import { Product } from '@/models/ProductModel';
 
 // Data file path

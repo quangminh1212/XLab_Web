@@ -37,7 +37,7 @@ async function getNotifications(): Promise<Notification[]> {
     await ensureDataDir();
     const data = await fs.readFile(NOTIFICATIONS_FILE, 'utf-8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch (_error) {
     // Nếu file không tồn tại, tạo với dữ liệu mẫu
     const defaultNotifications: Notification[] = [
       {
@@ -83,7 +83,7 @@ async function saveNotifications(notifications: Notification[]) {
 }
 
 // GET - Lấy tất cả thông báo cho admin
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
@@ -106,14 +106,14 @@ export async function GET(request: Request) {
       notifications: sortedNotifications,
       total: notifications.length,
     });
-  } catch (error) {
-    console.error('Error fetching admin notifications:', error);
+  } catch (_error) {
+    console.error('Error fetching admin notifications:', _error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 // DELETE - Xóa thông báo (admin only)
-export async function DELETE(request: Request) {
+export async function DELETE(_request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
@@ -125,7 +125,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(_request.url);
     const notificationId = searchParams.get('id');
 
     if (!notificationId) {

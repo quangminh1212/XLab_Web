@@ -16,7 +16,7 @@ const CACHE_TTL = 60 * 1000; // 60 seconds cache time
 const cartCache = new Map<string, CacheEntry>();
 
 // API route to directly read cart data from file, bypassing any middleware or service layer
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const session = await getServerSession(authOptions);
 

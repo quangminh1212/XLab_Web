@@ -1,13 +1,10 @@
-import fs from 'fs';
-import path from 'path';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { v4 as uuidv4 } from 'uuid';
 
 import { authOptions } from '@/lib/authOptions';
-import { getAllProducts, saveProduct, deleteProduct, updateProduct } from '@/lib/i18n/products';
-import { Product, ProductCategory, ProductSpecification } from '@/models/ProductModel';
+import { getAllProducts, saveProduct } from '@/lib/i18n/products';
+import { Product, ProductCategory } from '@/models/ProductModel';
 
 
 export const dynamic = 'force-dynamic';

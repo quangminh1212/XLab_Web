@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import QRCode from 'qrcode';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { QRPay } from 'vietnam-qr-pay';
 
 import { useBalance } from '@/contexts/BalanceContext';
@@ -36,13 +36,7 @@ export default function DepositPage() {
     accountName: 'BACH MINH QUANG',
   };
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (session?.user) {
-      generateTransactionCode();
-    }
-  }, [session, status, router]);
+
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -99,19 +93,7 @@ export default function DepositPage() {
     }
   };
 
-  const generateTransactionCode = () => {
-    if (!session?.user?.email) return;
-
-    // Tạo timestamp và thêm suffix XLab
-    const timestamp = Date.now();
-    const txId = `${timestamp}XLABRND`;
-    setTransactionId(txId);
-
-    // Tạo QR với mã giao dịch
-    generateQRCode(txId);
-  };
-
-  const generateQRCode = async (txId: string) => {
+  const generateQRCode = useCallback((txId: string) => {
     try {
       // Sử dụng thư viện vietnam-qr-pay để tạo VietQR chuẩn cho MBBank
       const qrPay = QRPay.initVietQR({
@@ -122,19 +104,43 @@ export default function DepositPage() {
 
       const qrContent = qrPay.build();
 
-      const qrUrl = await QRCode.toDataURL(qrContent, {
+      QRCode.toDataURL(qrContent, {
         width: 320,
         margin: 2,
         color: {
           dark: '#0F766E', // teal-700
           light: '#FFFFFF',
         },
+      }).then(setQrCodeUrl).catch((error) => {
+        console.error('Error generating QR code:', error);
       });
-      setQrCodeUrl(qrUrl);
     } catch (error) {
       console.error('Error generating QR code:', error);
     }
-  };
+  }, [BANK_INFO.accountNumber]);
+
+  const generateTransactionCode = useCallback(() => {
+    if (!session?.user?.email) return;
+
+    // Tạo timestamp và thêm suffix XLab
+    const timestamp = Date.now();
+    const txId = `${timestamp}XLABRND`;
+    setTransactionId(txId);
+
+    // Tạo QR với mã giao dịch
+    generateQRCode(txId);
+  }, [session?.user?.email, generateQRCode]);
+
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    } else if (session?.user) {
+      generateTransactionCode();
+    }
+  }, [status, session?.user, router, generateTransactionCode]);
+
+
 
   const formatCurrency = (amount: number) => {
     if (language === 'eng') {
@@ -162,18 +168,7 @@ export default function DepositPage() {
     alert(t('deposit.copied'));
   };
 
-  const formatTimestamp = (timestamp: string) => {
-    const epochTime = parseInt(timestamp);
-    const date = new Date(epochTime);
-    return date.toLocaleString('vi-VN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-  };
+
 
   if (status === 'loading') {
     return (

@@ -32,7 +32,7 @@ function saveProducts(products: Product[]): void {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const products = getProducts();
     let updatedCount = 0;
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
       success: true,
       message: `Đã thêm số lượt mua cho ${updatedCount} sản phẩm`,
     });
-  } catch (error: any) {
+  } catch (_error: any) {
     console.error('Error adding purchase counts:', error);
     return NextResponse.json(
       {

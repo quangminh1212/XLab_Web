@@ -19,7 +19,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const pasteListenerAttached = useRef<boolean>(false);
+
   const [showToolbar, setShowToolbar] = useState(false);
 
   // Đồng bộ giá trị từ props vào editor
