@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 interface RichTextEditorProps {
   value: string;
@@ -32,6 +32,125 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, [value]);
 
+  // Xử lý các thay đổi từ người dùng
+  const handleInput = useCallback(() => {
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
+  }, [onChange]);
+
+  // Xử lý khi click vào ảnh để hiện toolbar
+  const handleImageClick = useCallback((e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+
+    // Đầu tiên ẩn tất cả các toolbar đang mở
+    if (editorRef.current) {
+      const allToolbars = editorRef.current.querySelectorAll('.image-toolbar');
+      allToolbars.forEach(toolbar => {
+        toolbar.classList.remove('visible');
+      });
+    }
+
+    // Xử lý khi click vào ảnh bất kỳ trong editor
+    if (target.tagName === 'IMG') {
+      // Nếu ảnh đã có wrapper với toolbar, chỉ hiển thị toolbar
+      if (target.classList.contains('editor-image')) {
+        const toolbar = target.parentElement?.querySelector('.image-toolbar');
+        if (toolbar) {
+          toolbar.classList.add('visible');
+
+          // Đảm bảo toolbar hiển thị trong khung nhìn
+          const rect = toolbar.getBoundingClientRect();
+          if (rect.top < 0) {
+            window.scrollBy(0, rect.top - 10);
+          }
+        }
+      }
+      // Nếu ảnh chưa có wrapper và toolbar, tạo mới
+      else if (editorRef.current) {
+        // Tạo wrapper bao quanh ảnh đã có
+        const imageWrapper = document.createElement('div');
+        imageWrapper.className = 'image-wrapper';
+        imageWrapper.contentEditable = 'false';
+
+        // Lấy thông tin ảnh hiện tại
+        const originalSrc = target.getAttribute('src') || '';
+
+        // Thay thế ảnh với phiên bản mới có toolbar
+        const img = document.createElement('img');
+        img.src = originalSrc;
+        img.className = 'editor-image';
+        // Luôn đặt kích thước là đầy đủ và căn giữa
+        img.style.width = '100%';
+        img.style.display = 'block';
+        img.style.margin = '0 auto';
+
+        // Thêm thuộc tính từ ảnh cũ vào ảnh mới
+        for (const attr of target.attributes) {
+          if (attr.name !== 'src' && attr.name !== 'style' && attr.name !== 'class') {
+            img.setAttribute(attr.name, attr.value);
+          }
+        }
+
+        // Tạo toolbar điều chỉnh ảnh
+        const imageToolbar = document.createElement('div');
+        imageToolbar.className = 'image-toolbar visible';
+
+        // Nút căn giữa ảnh
+        const centerBtn = document.createElement('button');
+        centerBtn.innerHTML = '&#8592;&#8594;';
+        centerBtn.title = 'Căn giữa';
+        centerBtn.className = 'image-tool-btn';
+        centerBtn.onclick = (e) => {
+          e.preventDefault();
+          img.style.display = 'block';
+          img.style.margin = '0 auto';
+          handleInput();
+        };
+
+        // Nút xóa ảnh
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerHTML = '&#10005;';
+        deleteBtn.title = 'Xóa ảnh';
+        deleteBtn.className = 'image-tool-btn delete-btn';
+        deleteBtn.onclick = (e) => {
+          e.preventDefault();
+          const wrapper = img.parentElement;
+          if (wrapper) {
+            wrapper.remove();
+            handleInput();
+          }
+        };
+
+        // Thêm các nút vào toolbar
+        imageToolbar.appendChild(centerBtn);
+        imageToolbar.appendChild(deleteBtn);
+
+        // Thêm ảnh và toolbar vào wrapper
+        imageWrapper.appendChild(img);
+        imageWrapper.appendChild(imageToolbar);
+
+        // Thay thế ảnh cũ bằng wrapper mới
+        target.replaceWith(imageWrapper);
+
+        // Cập nhật nội dung và đánh dấu đã thay đổi
+        handleInput();
+      }
+    }
+    // Ẩn các toolbar khi click ra ngoài ảnh
+    else if (editorRef.current) {
+      // Kiểm tra nếu click vào toolbar thì bỏ qua
+      if (target.closest('.image-toolbar')) {
+        return;
+      }
+
+      const toolbars = editorRef.current?.querySelectorAll('.image-toolbar');
+      toolbars?.forEach(toolbar => {
+        toolbar.classList.remove('visible');
+      });
+    }
+  }, [handleInput]);
+
   // Xử lý các sự kiện khi thêm ảnh vào editor
   useEffect(() => {
     // Đính kèm sự kiện click để xử lý ảnh
@@ -40,8 +159,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     return () => {
       document.removeEventListener('click', handleImageClick);
     };
-  }, []);
-  
+  }, [handleImageClick]);
+
   // Xử lý dán ảnh từ clipboard
   const handlePasteInEditor = (e: React.ClipboardEvent<HTMLDivElement>) => {
     // Xử lý dán ảnh từ clipboard
@@ -65,24 +184,24 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
           // Upload image to server if available
           handleUploadPastedFile(file);
-          
+
           // Exit early since we've handled the image
           return;
         }
       }
     }
-    
+
     // If no image was found, call the external onPaste handler if provided
     if (onPaste) {
       onPaste(e);
     }
   };
-  
+
   // Upload pasted file
   const handleUploadPastedFile = async (file: File) => {
     try {
       if (!editorRef.current) return;
-      
+
       // Kiểm tra kích thước file (giới hạn 5MB)
       if (file.size > 5 * 1024 * 1024) {
         alert('Kích thước file không được vượt quá 5MB');
@@ -104,7 +223,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         }
       };
       reader.readAsDataURL(file);
-      
+
       try {
         // Cố gắng upload lên server ở background
         const uploadFormData = new FormData();
@@ -120,7 +239,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         if (response.ok) {
           const data = await response.json();
           const imageUrl = data.url || data.filepath || data.fileUrl;
-          
+
           if (imageUrl) {
             // Thay thế ảnh data URL bằng URL server khi đã upload xong
             // Tìm ảnh đã chèn trong editor và cập nhật src
@@ -133,134 +252,17 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             }
           }
         }
-      } catch (uploadErr) {
-        console.error('Lỗi khi upload hình ảnh lên server:', uploadErr);
+      } catch (_uploadErr) {
+        console.error('Lỗi khi upload hình ảnh lên server:', _uploadErr);
         // Không cần xử lý lỗi vì đã có ảnh local
       }
-    } catch (err) {
-      console.error('Lỗi khi xử lý hình ảnh:', err);
-      alert('Có lỗi khi xử lý hình ảnh: ' + (err as Error).message);
+    } catch (_err) {
+      console.error('Lỗi khi xử lý hình ảnh:', _err);
+      alert('Có lỗi khi xử lý hình ảnh: ' + (_err as Error).message);
     }
   };
 
-  // Xử lý khi click vào ảnh để hiện toolbar
-  const handleImageClick = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
 
-    // Đầu tiên ẩn tất cả các toolbar đang mở
-    if (editorRef.current) {
-      const allToolbars = editorRef.current.querySelectorAll('.image-toolbar');
-      allToolbars.forEach(toolbar => {
-        toolbar.classList.remove('visible');
-      });
-    }
-
-    // Xử lý khi click vào ảnh bất kỳ trong editor
-    if (target.tagName === 'IMG') {
-      // Nếu ảnh đã có wrapper với toolbar, chỉ hiển thị toolbar
-      if (target.classList.contains('editor-image')) {
-        const toolbar = target.parentElement?.querySelector('.image-toolbar');
-        if (toolbar) {
-          toolbar.classList.add('visible');
-          
-          // Đảm bảo toolbar hiển thị trong khung nhìn
-          const rect = toolbar.getBoundingClientRect();
-          if (rect.top < 0) {
-            window.scrollBy(0, rect.top - 10);
-          }
-        }
-      } 
-      // Nếu ảnh chưa có wrapper và toolbar, tạo mới
-      else if (editorRef.current) {
-        // Tạo wrapper bao quanh ảnh đã có
-        const imageWrapper = document.createElement('div');
-        imageWrapper.className = 'image-wrapper';
-        imageWrapper.contentEditable = 'false';
-        
-        // Lấy thông tin ảnh hiện tại
-        const originalSrc = target.getAttribute('src') || '';
-        
-        // Thay thế ảnh với phiên bản mới có toolbar
-        const img = document.createElement('img');
-        img.src = originalSrc;
-        img.className = 'editor-image';
-        // Luôn đặt kích thước là đầy đủ và căn giữa
-        img.style.width = '100%';
-        img.style.display = 'block';
-        img.style.margin = '0 auto';
-        
-        // Thêm thuộc tính từ ảnh cũ vào ảnh mới
-        for (const attr of target.attributes) {
-          if (attr.name !== 'src' && attr.name !== 'style' && attr.name !== 'class') {
-            img.setAttribute(attr.name, attr.value);
-          }
-        }
-        
-        // Tạo toolbar điều chỉnh ảnh
-        const imageToolbar = document.createElement('div');
-        imageToolbar.className = 'image-toolbar visible';
-        
-        // Function để update editor content khi thay đổi
-        const updateContent = () => {
-          if (editorRef.current) {
-            onChange(editorRef.current.innerHTML);
-          }
-        };
-        
-        // Nút căn giữa ảnh
-        const centerBtn = document.createElement('button');
-        centerBtn.innerHTML = '&#8592;&#8594;';
-        centerBtn.title = 'Căn giữa';
-        centerBtn.className = 'image-tool-btn';
-        centerBtn.onclick = (e) => {
-          e.preventDefault();
-          img.style.display = 'block';
-          img.style.margin = '0 auto';
-          handleInput();
-        };
-        
-        // Nút xóa ảnh
-        const deleteBtn = document.createElement('button');
-        deleteBtn.innerHTML = '&#10005;';
-        deleteBtn.title = 'Xóa ảnh';
-        deleteBtn.className = 'image-tool-btn delete-btn';
-        deleteBtn.onclick = (e) => {
-          e.preventDefault();
-          const wrapper = img.parentElement;
-          if (wrapper) {
-            wrapper.remove();
-            handleInput();
-          }
-        };
-
-        // Thêm các nút vào toolbar
-        imageToolbar.appendChild(centerBtn);
-        imageToolbar.appendChild(deleteBtn);
-        
-        // Thêm ảnh và toolbar vào wrapper
-        imageWrapper.appendChild(img);
-        imageWrapper.appendChild(imageToolbar);
-        
-        // Thay thế ảnh cũ bằng wrapper mới
-        target.replaceWith(imageWrapper);
-        
-        // Cập nhật nội dung và đánh dấu đã thay đổi
-        handleInput();
-      }
-    } 
-    // Ẩn các toolbar khi click ra ngoài ảnh
-    else if (editorRef.current) {
-      // Kiểm tra nếu click vào toolbar thì bỏ qua
-      if (target.closest('.image-toolbar')) {
-        return;
-      }
-      
-      const toolbars = editorRef.current?.querySelectorAll('.image-toolbar');
-      toolbars?.forEach(toolbar => {
-        toolbar.classList.remove('visible');
-      });
-    }
-  };
 
   // Thêm ảnh vào editor
   const insertImageToEditor = (imageSrc: string) => {
@@ -331,18 +333,18 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           // Thêm dòng trống trước ảnh nếu cần
           const p = document.createElement('p');
           p.innerHTML = '<br>';
-          
+
           // Thêm ảnh và một dòng trống sau ảnh
           range.deleteContents();
           range.insertNode(p.cloneNode(true));
           range.collapse(false);
-          
+
           range.insertNode(imageWrapper);
-          
+
           // Thêm dòng trống sau ảnh
           const pAfter = p.cloneNode(true);
           imageWrapper.after(pAfter);
-          
+
           // Di chuyển con trỏ xuống dòng sau ảnh
           range.setStartAfter(pAfter);
           range.setEndAfter(pAfter);
@@ -384,11 +386,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
 
   // Xử lý các thay đổi từ người dùng
-  const handleInput = () => {
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
-  };
+
 
   // Xử lý khi editor trống, hiển thị placeholder
   const handleFocus = () => {
@@ -547,7 +545,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             <s>S</s>
           </button>
         </div>
-        
+
         <div className="toolbar-group">
           <button
             type="button"
@@ -777,7 +775,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         .editor-image {
           display: block !important;
           max-width: 100%;
-          width: 100% !important; 
+          width: 100% !important;
           margin: 0 auto !important;
           text-align: center;
           border-radius: 4px;
