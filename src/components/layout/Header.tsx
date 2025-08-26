@@ -59,7 +59,7 @@ const Header = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   // Thêm useEffect để fetch vouchers công khai và vouchers của người dùng
-  const fetchCoupons = async () => {
+  const fetchCoupons = React.useCallback(async () => {
     try {
       setLoadingCoupons(true);
 
@@ -101,7 +101,7 @@ const Header = () => {
     } finally {
       setLoadingCoupons(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Chỉ fetch khi voucher dropdown được mở hoặc đã quá 5 phút kể từ lần fetch cuối
@@ -141,7 +141,7 @@ const Header = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [isVoucherOpen]);
+  }, [isVoucherOpen, fetchCoupons]);
 
   // Xử lý đóng dropdown khi click bên ngoài
   const handleClickOutside = useCallback(

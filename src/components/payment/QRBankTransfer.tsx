@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import QRCode from 'qrcode';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { QRPay } from 'vietnam-qr-pay';
 
 interface QRBankTransferProps {
@@ -41,7 +41,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
     }).format(value);
   };
 
-  const generateQRCode = async () => {
+  const generateQRCode = useCallback(async () => {
     // Tạo timestamp như trong deposit page
     const timestamp = Date.now();
     const newTransactionId = `${timestamp}XLABRND`;
@@ -71,7 +71,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       console.error('Error generating QR code:', error);
       onError?.('Không thể tạo mã QR. Vui lòng thử lại.');
     }
-  };
+  }, [amount, onError]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;

@@ -415,13 +415,13 @@ export default function ProductCard({
           -{originalPrice && originalPrice > price ? discountPercentage : 80}%
         </div>
 
-        <img
+        <Image
           src={displayImageUrl}
           alt={name}
+          width={600}
+          height={600}
           loading="lazy"
           fetchPriority="low"
-          decoding="async"
-          referrerPolicy="no-referrer"
           className={`object-contain transition-all duration-500 scale-100 absolute inset-0 w-full h-full ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
           onError={handleImageError}

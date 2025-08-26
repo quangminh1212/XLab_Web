@@ -332,7 +332,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     // If user is logged in, also save to server (with debouncing)
     if (isAuthenticated && items.length > 0) {
-      console.log('🛒 Triggering debounced save with', items.length, 'items');
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('🛒 Triggering debounced save with', items.length, 'items');
+      }
       saveCartToServer(items);
     }
   }, [items, loaded, isAuthenticated, saveCartToServer]);
@@ -398,8 +400,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
    * Add item to cart
    */
   const addItem = useCallback((newItem: CartItem) => {
-    console.log('🛒 Adding item to cart:', newItem.name);
-    
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🛒 Adding item to cart:', newItem.name);
+    }
     setItems((prevItems) => {
       // Find product with the same attributes
       const existingItemIndex = prevItems.findIndex((item) => 
@@ -451,7 +454,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeItem = useCallback((uniqueKey: string) => {
     setItems((prevItems) => {
       const newItems = prevItems.filter((item) => item.uniqueKey !== uniqueKey);
-      console.log('🛒 Item removed from cart, uniqueKey:', uniqueKey);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('🛒 Item removed from cart, uniqueKey:', uniqueKey);
+      }
       return newItems;
     });
   }, []);
@@ -469,7 +474,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       prevItems.map((item) => (item.uniqueKey === uniqueKey ? { ...item, quantity } : item)),
     );
 
-    console.log('🛒 Cart quantity updated, uniqueKey:', uniqueKey, 'quantity:', quantity);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🛒 Cart quantity updated, uniqueKey:', uniqueKey, 'quantity:', quantity);
+    }
   }, [removeItem]);
 
   /**
@@ -477,7 +484,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
    */
   const clearCart = useCallback(() => {
     setItems([]);
-    console.log('🛒 Cart cleared');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🛒 Cart cleared');
+    }
   }, []);
 
   // Calculate cart stats with memoization to prevent unnecessary recalculations
