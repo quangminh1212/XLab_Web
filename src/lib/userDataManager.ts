@@ -171,17 +171,17 @@ async function retryOperation<T>(
     try {
       return await operation();
     } catch (_error: any) {
-      lastError = error;
+      lastError = _error;
 
       // Retry on file system errors
-      if (error.code === 'EPERM' || error.code === 'EBUSY' || error.code === 'ENOENT') {
+      if (_error.code === 'EPERM' || _error.code === 'EBUSY' || _error.code === 'ENOENT') {
         if (i < maxRetries - 1) {
           await new Promise((resolve) => setTimeout(resolve, delayMs * (i + 1)));
           continue;
         }
       }
 
-      throw error;
+      throw _error;
     }
   }
 

@@ -305,7 +305,7 @@ async function updateUserInOldSystem(user: User): Promise<void> {
     }
 
     await saveUsers(users);
-  } catch (error) {
+  } catch (_error) {
     console.error('Error updating old system:', error);
   }
 }
@@ -393,7 +393,7 @@ export async function getUserCart(email: string): Promise<CartItem[]> {
     console.log(`🔍 getUserCart - Successfully retrieved cart with ${userData.cart.length} items for: ${email}`);
     
     return userData.cart || [];
-  } catch (error) {
+  } catch (_error) {
     console.error(`🔍 getUserCart - Error retrieving cart for: ${email}`, error);
     return [];
   }
@@ -454,7 +454,7 @@ export async function getTransactions(): Promise<Transaction[]> {
   try {
     const data = await fs.readFile(TRANSACTIONS_FILE, 'utf8');
     return JSON.parse(data);
-  } catch (error) {
+  } catch (_error) {
     console.error('Error reading transactions file:', error);
     return [];
   }
@@ -464,7 +464,7 @@ export async function getTransactions(): Promise<Transaction[]> {
 export async function saveTransactions(transactions: Transaction[]): Promise<void> {
   try {
     await fs.writeFile(TRANSACTIONS_FILE, JSON.stringify(transactions, null, 2), 'utf8');
-  } catch (error) {
+  } catch (_error) {
     console.error('Error saving transactions file:', error);
     throw error;
   }
@@ -529,7 +529,7 @@ export async function syncUserBalance(email: string): Promise<number> {
       if (userData) {
         balanceFromUserFile = userData.profile.balance || 0;
       }
-    } catch (error) {
+    } catch (_error) {
       console.log('Could not read from user file:', error);
       errorMessages.push(`User file error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -553,12 +553,12 @@ export async function syncUserBalance(email: string): Promise<number> {
         const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
         const balances: UserBalance = JSON.parse(balanceData);
         balanceFromBalances = balances[email] || 0;
-      } catch (accessError) {
+      } catch (_accessError) {
         // Create empty balances file if it doesn't exist
         await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
         console.log('Created new balances.json file');
       }
-    } catch (error) {
+    } catch (_error) {
       console.log('Could not read from balances.json:', error);
       errorMessages.push(`balances.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -570,7 +570,7 @@ export async function syncUserBalance(email: string): Promise<number> {
         const newUserData = createDefaultUserData(user);
         await saveUserDataToFile(email, newUserData);
         return 0; // New user has 0 balance
-      } catch (createError) {
+      } catch (_createError) {
         console.error('Failed to create new user:', createError);
         errorMessages.push(`User creation error: ${createError instanceof Error ? createError.message : 'Unknown error'}`);
         // Last resort fallback
@@ -591,7 +591,7 @@ export async function syncUserBalance(email: string): Promise<number> {
       if (balanceFromUsers !== finalBalance) {
         await updateUserBalanceInFile(email, finalBalance - balanceFromUsers);
       }
-    } catch (updateError) {
+    } catch (_updateError) {
       console.error('Failed to update users.json:', updateError);
     }
 
@@ -599,7 +599,7 @@ export async function syncUserBalance(email: string): Promise<number> {
       if (balanceFromBalances !== finalBalance) {
         await updateBalanceInBalancesFile(email, finalBalance);
       }
-    } catch (updateError) {
+    } catch (_updateError) {
       console.error('Failed to update balances.json:', updateError);
     }
 
@@ -621,12 +621,12 @@ export async function syncUserBalance(email: string): Promise<number> {
           await saveUserDataToFile(email, userData);
         }
       }
-    } catch (updateError) {
+    } catch (_updateError) {
       console.error('Failed to update user file:', updateError);
     }
 
     return finalBalance;
-  } catch (error) {
+  } catch (_error) {
     console.error('Error syncing balance:', error);
     // Rethrow with more context for better debugging
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -642,13 +642,13 @@ async function updateBalanceInBalancesFile(email: string, newBalance: number): P
     try {
       const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
       balances = JSON.parse(balanceData);
-    } catch (error) {
+    } catch (_error) {
       // File doesn't exist, create new
     }
 
     balances[email] = newBalance;
     await fs.writeFile(BALANCES_FILE, JSON.stringify(balances, null, 2), 'utf8');
-  } catch (error) {
+  } catch (_error) {
     console.error('Error updating balances.json:', error);
   }
 }
@@ -664,7 +664,7 @@ async function updateUserBalanceInFile(email: string, amount: number): Promise<v
       users[userIndex]!.updatedAt = new Date().toISOString();
       await saveUsers(users);
     }
-  } catch (error) {
+  } catch (_error) {
     console.error('Error updating users.json:', error);
   }
 }
@@ -705,7 +705,7 @@ export async function migrateToIndividualFiles(): Promise<void> {
     }
 
     console.log('✅ Migration completed successfully!');
-  } catch (error) {
+  } catch (_error) {
     console.error('❌ Migration failed:', error);
     throw error;
   }
@@ -719,7 +719,7 @@ export async function getAllUserEmails(): Promise<string[]> {
     return files
       .filter((file) => file.endsWith('.json'))
       .map((file) => file.replace('.json', '').replace(/_/g, '@')); // Chuyển đổi ngược từ tên file
-  } catch (error) {
+  } catch (_error) {
     console.error('Error reading users directory:', error);
     return [];
   }
@@ -834,7 +834,7 @@ export async function syncAllUserData(
 
     console.log(`✅ Comprehensive sync completed for user: ${email}`);
     return user;
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error in comprehensive sync for ${email}:`, error);
     throw error;
   } finally {
@@ -881,7 +881,7 @@ export async function updateUserCartSync(email: string, cart: CartItem[]): Promi
     }
 
     console.log(`✅ Cart updated and synced for user: ${email}`);
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error updating cart for ${email}:`, error);
     throw error;
   } finally {
@@ -918,7 +918,7 @@ async function syncUserDataWithoutCart(email: string): Promise<void> {
       } as User;
       await saveUsers(allUsers);
     }
-  } catch (error) {
+  } catch (_error) {
     console.error(`Error in syncUserDataWithoutCart for ${email}:`, error);
   }
 }
@@ -976,7 +976,7 @@ export async function migrateOrdersFromLocalStorage(email: string): Promise<void
         console.log(`ℹ️ No new orders to migrate for: ${email}`);
       }
     }
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error migrating orders for ${email}:`, error);
   }
 }
@@ -988,7 +988,7 @@ export async function getUserOrders(email: string): Promise<Order[]> {
   try {
     const userData = await getUserDataFromFile(email);
     return userData?.orders || [];
-  } catch (error) {
+  } catch (_error) {
     console.error(`Error getting orders for ${email}:`, error);
     return [];
   }
@@ -1005,7 +1005,7 @@ export async function addUserOrder(email: string, order: Order): Promise<void> {
 
     await saveUserDataToFile(email, userData);
     console.log(`✅ Order ${order.id} added for user: ${email}`);
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error adding order for ${email}:`, error);
     throw error;
   }
@@ -1039,7 +1039,7 @@ export async function updateUserOrder(
     } else {
       console.log(`❌ Order ${orderId} not found for user: ${email}`);
     }
-  } catch (error) {
+  } catch (_error) {
     console.error(`❌ Error updating order for ${email}:`, error);
     throw error;
   }
@@ -1070,7 +1070,7 @@ export async function getUserOrderStats(email: string): Promise<{
       totalSpent,
       totalProducts,
     };
-  } catch (error) {
+  } catch (_error) {
     console.error(`Error getting order stats for ${email}:`, error);
     return {
       totalOrders: 0,
