@@ -195,7 +195,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-nowrap truncate" title={t('footer.address')}>
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-normal break-words" title={t('footer.address')}>
                   {t('footer.address')}
                 </span>
               </li>
@@ -216,7 +216,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm truncate" title={t('footer.phone')}>
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-normal break-words" title={t('footer.phone')}>
                   {t('footer.phone')}
                 </span>
               </li>
@@ -237,7 +237,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm truncate" title={t('footer.email')}>
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-normal break-words" title={t('footer.email')}>
                   {t('footer.email')}
                 </span>
               </li>
@@ -258,7 +258,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm truncate" title={t('footer.supportHours')}>
+                <span className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-[22rem] sm:max-w-sm whitespace-normal break-words" title={t('footer.supportHours')}>
                   {t('footer.supportHours')}
                 </span>
               </li>
