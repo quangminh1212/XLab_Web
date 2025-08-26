@@ -25,7 +25,7 @@ function getProducts(): Product[] {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const products = getProducts();
 
@@ -47,12 +47,12 @@ export async function GET(request: NextRequest) {
       productsWithPurchases: productsWithPurchases.length,
       products: simplifiedProducts,
     });
-  } catch (error: any) {
-    console.error('Error checking product data:', error);
+  } catch (_error: any) {
+    console.error('Error checking product data:', _error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Internal server error',
+        error: _error.message || 'Internal server error',
       },
       { status: 500 },
     );

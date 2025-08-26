@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
     const event = JSON.parse(raw || '{}');
     // TODO: handle event types here
     return NextResponse.json({ received: true });
-  } catch (e) {
-    console.error('[Webhook] Error parsing payload', e);
+  } catch (_e) {
+    console.error('[Webhook] Error parsing payload', _e);
     return new NextResponse('Bad Request', { status: 400 });
   }
 }

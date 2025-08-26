@@ -7,12 +7,12 @@ import { getAllProducts } from '@/lib/i18n/products';
 import { Product } from '@/models/ProductModel';
 
 // Đọc dữ liệu sản phẩm từ JSON file
-const productsPath = path.join(process.cwd(), 'src/data/products.json');
+// const productsPath = path.join(process.cwd(), 'src/data/products.json');
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Lấy các tham số từ URL
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(_request.url);
     const productId = searchParams.get('productId');
     const categoryId = searchParams.get('categoryId');
     const limitParam = searchParams.get('limit');
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Lấy ngôn ngữ từ header hoặc tham số truy vấn (mặc định là 'vie')
-    const acceptLanguage = request.headers.get('accept-language');
+    const acceptLanguage = _request.headers.get('accept-language');
     const language = acceptLanguage || 'vie';
 
     // Lấy tất cả sản phẩm từ thư viện i18n thay vì đọc từ file
@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(formattedProducts);
-  } catch (error) {
+  } catch (_error) {
     console.error('Lỗi khi xử lý sản phẩm liên quan:', error);
     return NextResponse.json({ error: 'Lỗi máy chủ nội bộ' }, { status: 500 });
   }

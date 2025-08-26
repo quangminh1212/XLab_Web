@@ -8,8 +8,8 @@ import { getProductById } from '@/lib/i18n/products';
 /**
  * @deprecated Use /api/products/[id] with lang parameter instead
  */
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+export async function GET(_request: NextRequest) {
+  const searchParams = _request.nextUrl.searchParams;
   const id = searchParams.get('id') || '';
   const requestedLang = searchParams.get('lang') || 'en';
   
@@ -49,8 +49,8 @@ export async function GET(request: NextRequest) {
       console.log(`No translation found for ${id} in language ${lang}`);
       return NextResponse.json({ message: 'No translation available' }, { status: 404 });
     }
-  } catch (error) {
-    console.error('Error fetching product translation:', error);
+  } catch (_error) {
+    console.error('Error fetching product translation:', _error);
     return NextResponse.json({ error: 'Failed to fetch translation' }, { status: 500 });
   }
 } 

@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 
 import { products } from '@/data/mockData';
-import { getProductBySlug } from '@/lib/utils';
 
 // In a real application, this would interact with a database or session store
 // For now, we'll use a mock implementation
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     // Get the product ID from the URL
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(_request.url);
     const id = searchParams.get('id');
     const quantity = Number(searchParams.get('quantity')) || 1;
 
@@ -37,8 +36,8 @@ export async function GET(request: Request) {
         image: product.imageUrl,
       },
     });
-  } catch (error: any) {
-    console.error('Error adding to cart:', error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+  } catch (_error: any) {
+    console.error('Error adding to cart:', _error);
+    return NextResponse.json({ error: _error.message || 'Internal server error' }, { status: 500 });
   }
 }

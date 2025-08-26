@@ -43,14 +43,14 @@ async function saveNotifications(notifications: Notification[]) {
 }
 
 // POST - Đánh dấu thông báo đã đọc
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
+    const body = await _request.json();
     const { notificationId, markAll } = body;
     const userId = session.user.email;
 
@@ -103,8 +103,8 @@ export async function POST(request: Request) {
       message: markAll ? 'All notifications marked as read' : 'Notification marked as read',
       success: true,
     });
-  } catch (error) {
-    console.error('Error marking notification as read:', error);
+  } catch (_error) {
+    console.error('Error marking notification as read:', _error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

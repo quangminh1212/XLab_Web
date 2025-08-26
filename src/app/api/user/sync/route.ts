@@ -128,7 +128,7 @@ function saveUserData(email: string, userData: UserData): boolean {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -197,8 +197,8 @@ export async function GET(request: NextRequest) {
       },
       recommendations: userData ? [] : ['Dữ liệu user chưa được khởi tạo, cần sync'],
     });
-  } catch (error) {
-    console.error('Error checking sync status:', error);
+  } catch (_error) {
+    console.error('Error checking sync status:', _error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

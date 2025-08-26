@@ -61,11 +61,11 @@ export async function GET(_request: NextRequest) {
       message: `Đã thêm số lượt mua cho ${updatedCount} sản phẩm`,
     });
   } catch (_error: any) {
-    console.error('Error adding purchase counts:', error);
+    console.error('Error adding purchase counts:', _error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Internal server error',
+        error: _error.message || 'Internal server error',
       },
       { status: 500 },
     );
