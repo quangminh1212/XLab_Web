@@ -44,6 +44,7 @@ export default function Footer() {
                 </Link>
                 <Link href="/pricing" className="px-5 py-2.5 rounded-full bg-white/95 hover:bg-white text-slate-900 text-sm sm:text-base font-medium shadow-lg">
                   Xem bảng giá
+
                 </Link>
               </div>
             </div>
@@ -63,6 +64,25 @@ export default function Footer() {
                   {t('footer.companyDescription1')}
                 </p>
                 <p className="text-sm text-slate-400 leading-relaxed mb-4">
+
+            {/* Quick stats to add visual weight */}
+            <div className="mt-2 sm:mt-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span className="text-xs sm:text-sm text-slate-300">{t('footer.customers')}</span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                  <span className="text-xs sm:text-sm text-slate-300">{t('footer.years')}</span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                  <span className="text-xs sm:text-sm text-slate-300">{t('footer.support')}</span>
+                </div>
+              </div>
+            </div>
+
                   {t('footer.companyDescription2')}
                 </p>
               </div>
@@ -246,6 +266,7 @@ export default function Footer() {
 
               <li className="inline-flex items-center justify-start group min-w-0 basis-1/2 sm:basis-auto lg:w-full flex-none">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-3 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
+
                   <svg
                     className="h-5 w-5 text-green-400 flex-shrink-0"
                     fill="none"
@@ -288,6 +309,10 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
+
+        {/* subtle divider above bottom bar to add structure */}
+        <div className="mt-6 sm:mt-10 h-px bg-gradient-to-r from-transparent via-slate-700/40 to-transparent"></div>
 
         <div className="flex flex-col lg:flex-row justify-between items-center space-y-3 lg:space-y-0 mt-8 sm:mt-12">
           <div className="text-center sm:text-left">
