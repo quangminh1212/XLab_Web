@@ -55,5 +55,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.node }}
-          path: .next
+          path: |
+            .next/BUILD_ID
+            .next/build-manifest.json
+            .next/prerender-manifest.json
+            .next/routes-manifest.json
+            .next/trace
+            .next/static
 
