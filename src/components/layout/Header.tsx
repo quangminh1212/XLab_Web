@@ -390,14 +390,14 @@ const Header = () => {
               <div className="relative" ref={voucherRef}>
                 <button
                   onClick={toggleVoucher}
-                  className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                  className="hidden md:inline-flex items-center justify-center h-9 w-9 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 relative"
                   aria-label="Voucher"
                   aria-expanded={isVoucherOpen}
                   aria-haspopup="true"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 sm:h-5 sm:w-5"
+                    className="h-5 w-5 block transform -translate-y-[1px]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -553,14 +553,14 @@ const Header = () => {
                 <div className="relative" ref={notificationRef}>
                   <button
                     onClick={toggleNotification}
-                    className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                    className="inline-flex items-center justify-center h-9 w-9 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 relative"
                     aria-label="Thông báo"
                     aria-expanded={isNotificationOpen}
                     aria-haspopup="true"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 sm:h-5 sm:w-5"
+                      className="h-5 w-5 block transform -translate-y-[1px]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -647,12 +647,12 @@ const Header = () => {
               {/* Cart Icon */}
               <Link
                 href="/cart"
-                className="hidden md:inline-flex relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="hidden md:inline-flex relative items-center justify-center h-9 w-9 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
                 <span className="sr-only">View cart</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
+                  className="h-5 w-5 block transform -translate-y-[1px]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
