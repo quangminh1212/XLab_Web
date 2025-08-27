@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { useLangFetch } from '@/lib/langFetch';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -61,7 +62,8 @@ const defaultTestimonials: Testimonial[] = [
 ];
 
 export default function Testimonials({ productId, limit = 3 }: TestimonialsProps) {
-  const { t, localCode } = useLanguage();
+  const { t, localCode, language } = useLanguage();
+  const lfetch = useLangFetch(language);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -71,22 +73,12 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
       setLoading(true);
       try {
         // Thử lấy testimonials từ API
-        let endpoint = '/api/testimonials';
-        if (productId) {
-          endpoint = `/api/testimonials?productId=${productId}&limit=${limit}`;
-        }
-        
-        const response = await fetch(endpoint);
-        if (response.ok) {
-          const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
-            setTestimonials(data);
-          } else {
-            // Sử dụng dữ liệu mẫu nếu API không trả về dữ liệu
-            setTestimonials(defaultTestimonials);
-          }
+        const endpoint = productId ? `/api/testimonials?productId=${productId}&limit=${limit}` : '/api/testimonials';
+        const data = await lfetch(endpoint);
+        const arr = (data && 'data' in data) ? (data as any).data : data;
+        if (Array.isArray(arr) && arr.length > 0) {
+          setTestimonials(arr);
         } else {
-          // Sử dụng dữ liệu mẫu nếu API gặp lỗi
           setTestimonials(defaultTestimonials);
         }
       } catch (_error) {
@@ -105,7 +97,7 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [productId, limit, testimonials.length]);
+  }, [productId, limit, testimonials.length, language]);
 
   const nextTestimonial = () => {
     setActiveIndex((prev) => (prev + 1) % testimonials.length);

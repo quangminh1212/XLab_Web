@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLangFetch } from '@/lib/langFetch';
 
 export interface Notification {
   id: number | string;
@@ -39,6 +40,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const { t, language } = useLanguage();
+  const lfetch = useLangFetch(language);
 
   // Tính toán số thông báo chưa đọc
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -46,15 +48,19 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Tải thông báo từ API
   const fetchNotifications = useCallback(async () => {
     try {
-      const response = await fetch('/api/notifications', {
-        headers: {
-          'x-user-language': language
-        }
+      const res = await lfetch('/api/notifications', {
+        headers: { 'x-user-language': language }
       });
-      if (response.ok) {
-        const data = await response.json();
-        setNotifications(data.notifications || []);
-      } else if (response.status === 401) {
+      // lfetch throws on non-ok; if success, notifications array may be under .notifications or .data
+      const data = (res && typeof res === 'object' && 'notifications' in res) ? res : res?.data;
+      setNotifications((data?.notifications as any[]) || []);
+    } catch (error: any) {
+      if (error?.message?.includes('Unauthorized') || error?.message?.includes('401')) {
+        setNotifications([]);
+      } else {
+        console.error('Failed to fetch notifications:', error);
+      }
+    } finally {
         // User chưa đăng nhập, không hiển thị thông báo
         setNotifications([]);
       } else {
