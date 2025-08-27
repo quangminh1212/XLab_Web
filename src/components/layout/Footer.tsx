@@ -85,23 +85,6 @@ export default function Footer() {
                 </p>
                 <p className="text-sm text-slate-400 leading-relaxed mb-4">
 
-            {/* Quick stats to add visual weight */}
-            <div className="mt-2 sm:mt-3">
-              <div className="flex flex-wrap gap-2 sm:gap-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                  <span className="text-xs sm:text-sm text-slate-300">{t('footer.customers')}</span>
-                </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                  <span className="text-xs sm:text-sm text-slate-300">{t('footer.years')}</span>
-                </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-                  <span className="text-xs sm:text-sm text-slate-300">{t('footer.support')}</span>
-                </div>
-              </div>
-            </div>
 
                   {t('footer.companyDescription2')}
                 </p>
