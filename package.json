@@ -24,7 +24,7 @@
     "fix:all": "node scripts/fix-all-issues.js",
     "type-check": "tsc --noEmit",
     "analyze": "cross-env ANALYZE=true next build",
-    "check": "npm run lint && npm run type-check",
+    "check": "npm run lint && npm run type-check && npm run enforce:useLangFetch",
     "enforce:useLangFetch": "node scripts/enforce-useLangFetch.js",
     "prepare": "node scripts/fix-next-errors.js",
     "postinstall": "node scripts/fix-next-errors.js || true",
