@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useLangFetch } from '@/lib/langFetch';
 import { useState, useEffect } from 'react';
+
+import { useLangFetch } from '@/lib/langFetch';
 
 interface Product {
   id: string;

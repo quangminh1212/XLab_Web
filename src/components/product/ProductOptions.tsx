@@ -7,7 +7,7 @@ import { formatCurrency } from '@/lib/utils';
 
 interface ProductOptionsProps {
   options: string[];
-  productId: string;
+  _productId: string;
   productOptions: string[];
   selectedOption: string;
   setSelectedOption: (option: string) => void;
@@ -17,7 +17,7 @@ interface ProductOptionsProps {
 
 const ProductOptions = ({
   options,
-  productId,
+  _productId,
   productOptions,
   selectedOption,
   setSelectedOption,
@@ -25,7 +25,7 @@ const ProductOptions = ({
   product
 }: ProductOptionsProps) => {
   const { t } = useLanguage();
-  const [translatedOptions, setTranslatedOptions] = useState<{ [key: string]: string }>(
+  const [translatedOptions] = useState<{ [key: string]: string }>(
     productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {})
   );
   const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));

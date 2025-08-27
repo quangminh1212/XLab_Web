@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useCart } from '@/components/cart/CartContext';
 import RichTextContent from '@/components/common/RichTextContent';
@@ -20,7 +20,7 @@ import RelatedProducts from '../../../components/product/RelatedProducts';
 
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
-const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
+const ProductDescription = ({ description, _productId }: { description: string, _productId: string }) => {
   const { t } = useLanguage();
 
   return (
@@ -92,7 +92,7 @@ const ProductDescription = ({ description, productId }: { description: string, p
 };
 
 // Component xử lý hiển thị mô tả ngắn sản phẩm
-const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
+const ProductShortDescription = ({ shortDescription, _productId }: { shortDescription: string, _productId: string }) => {
   const { } = useLanguage();
   const translatedShortDescription = shortDescription;
 
@@ -126,7 +126,7 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
 };
 
 // Component xử lý hiển thị tính năng sản phẩm với khả năng dịch
-const ProductFeatures = ({ features, productId }: { features: any[], productId: string }) => {
+const ProductFeatures = ({ features, _productId }: { features: any[], _productId: string }) => {
   const { t } = useLanguage();
 
   if (!features || features.length === 0) return null;
@@ -705,7 +705,7 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
                 {product.productOptions && product.productOptions.length > 0 && (
                   <ProductOptions 
                     options={productOptions} 
-                    productId={product.id.toString()}
+                    _productId={product.id.toString()}
                     productOptions={productOptions}
                     selectedOption={selectedOption}
                     setSelectedOption={setSelectedOption}
@@ -715,9 +715,9 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
                 )}
               </div>
 
-              <ProductShortDescription 
-                shortDescription={product.shortDescription || ''} 
-                productId={product.id.toString()} 
+              <ProductShortDescription
+                shortDescription={product.shortDescription || ''}
+                _productId={product.id.toString()}
               />
 
               {/* Quantity selector */}
@@ -790,7 +790,7 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
 
               {/* Features list */}
               {product.features && product.features.length > 0 && (
-                <ProductFeatures features={product.features} productId={product.id.toString()} />
+                <ProductFeatures features={product.features} _productId={product.id.toString()} />
               )}
             </div>
           </div>
@@ -798,7 +798,7 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
 
         {/* Product description */}
         <div className="max-w-6xl mx-auto">
-          <ProductDescription description={product.description} productId={product.id.toString()} />
+          <ProductDescription description={product.description} _productId={product.id.toString()} />
         </div>
 
         {/* Related products */}

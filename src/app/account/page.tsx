@@ -357,7 +357,7 @@ export default function AccountPage() {
         setIsLoading(false);
       }
     }
-  }, [status, router, session]);
+  }, [status, router, session, lfetch]);
 
   // Hàm xử lý khi thay đổi thông tin
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
