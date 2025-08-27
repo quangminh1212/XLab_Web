@@ -122,7 +122,7 @@ const getProductPrices = (product: Product): { price: number; originalPrice: num
 };
 
 function HomePage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleProductCount, setVisibleProductCount] = useState(8);
@@ -131,7 +131,7 @@ function HomePage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
+        const response = await fetch(`/api/products?lang=${language}`);
         const result = await response.json();
 
         if (result.success && result.data) {
@@ -147,7 +147,7 @@ function HomePage() {
     };
 
     fetchProducts();
-  }, []);
+  }, [language]);
 
   // Lọc sản phẩm nổi bật (giả định tất cả sản phẩm đều là featured trong trường hợp này)
   const featuredProducts = products.slice(0, 6);

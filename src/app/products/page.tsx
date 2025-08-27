@@ -9,7 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/data/mockData';
 
 export default function ProductsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -31,7 +31,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/products');
+        const response = await fetch(`/api/products?lang=${language}`);
 
         if (!response.ok) {
           throw new Error(t('products.loadError'));
@@ -53,7 +53,7 @@ export default function ProductsPage() {
     };
 
     fetchProducts();
-  }, [t]);
+  }, [t, language]);
 
   // Update title when component is rendered
   useEffect(() => {

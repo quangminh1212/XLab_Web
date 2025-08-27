@@ -43,7 +43,7 @@ export default function RelatedProducts({
   categoryId,
   limit = 4,
 }: RelatedProductsProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -53,12 +53,14 @@ export default function RelatedProducts({
         // Fetch related products from API or import from data
         const response = await fetch(
           `/api/products/related?productId=${currentProductId}&categoryId=${categoryId || ''}&limit=${limit}`,
+          { headers: { 'accept-language': language } },
         );
 
         if (!response.ok) {
           // Fallback: If API fails, try to fetch products from the same category
           const categoryResponse = await fetch(
             `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
+            { headers: { 'accept-language': language } },
           );
           if (categoryResponse.ok) {
             const data = await categoryResponse.json();
@@ -93,7 +95,7 @@ export default function RelatedProducts({
     if (currentProductId) {
       fetchRelatedProducts();
     }
-  }, [currentProductId, categoryId, limit]);
+  }, [currentProductId, categoryId, limit, language]);
 
   if (loading) {
     return (
