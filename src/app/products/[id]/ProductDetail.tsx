@@ -8,6 +8,7 @@ import { useCart } from '@/components/cart/CartContext';
 import RichTextContent from '@/components/common/RichTextContent';
 import ProductOptions from '@/components/product/ProductOptions';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLangFetch } from '@/lib/langFetch';
 import { formatCurrency } from '@/lib/utils';
 import { Product as ProductType } from '@/models/ProductModel';
 // import { Product as UIProduct } from '@/types';
@@ -187,6 +188,7 @@ const ProductSpecifications = ({
 
 export default function ProductDetail({ product: initialProduct }: { product: ProductType }) {
   const { t, language } = useLanguage();
+  const lfetch = useLangFetch(language);
   const [product, setProduct] = useState<ProductType>(initialProduct);
   
   // Thêm class để đánh dấu khi component đã load xong
@@ -201,7 +203,7 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
   useEffect(() => {
     const fetchTranslated = async () => {
       try {
-        const res = await fetch(`/api/products/${product.id}?lang=${language}`);
+        const res = await lfetch(`/api/products/${product.id}`);
         if (res.ok) {
           const json = await res.json();
           if (json?.success && json?.data) {

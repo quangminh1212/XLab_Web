@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLangFetch } from '@/lib/langFetch';
 
 import ProductGrid from './ProductGrid';
 
@@ -44,6 +45,7 @@ export default function RelatedProducts({
   limit = 4,
 }: RelatedProductsProps) {
   const { t, language } = useLanguage();
+  const lfetch = useLangFetch(language);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,16 +53,14 @@ export default function RelatedProducts({
     const fetchRelatedProducts = async () => {
       try {
         // Fetch related products from API or import from data
-        const response = await fetch(
+        const response = await lfetch(
           `/api/products/related?productId=${currentProductId}&categoryId=${categoryId || ''}&limit=${limit}`,
-          { headers: { 'accept-language': language } },
         );
 
         if (!response.ok) {
           // Fallback: If API fails, try to fetch products from the same category
-          const categoryResponse = await fetch(
+          const categoryResponse = await lfetch(
             `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
-            { headers: { 'accept-language': language } },
           );
           if (categoryResponse.ok) {
             const data = await categoryResponse.json();

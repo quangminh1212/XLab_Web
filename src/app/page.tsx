@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 // import { useCart } from '@/components/cart/CartContext';
 import ProductCard from '@/components/product/ProductCard';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLangFetch } from '@/lib/langFetch';
 
 // Types
 interface Product {
@@ -123,6 +124,7 @@ const getProductPrices = (product: Product): { price: number; originalPrice: num
 
 function HomePage() {
   const { t, language } = useLanguage();
+  const lfetch = useLangFetch(language);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleProductCount, setVisibleProductCount] = useState(8);
@@ -131,7 +133,7 @@ function HomePage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`/api/products?lang=${language}`);
+        const response = await lfetch(`/api/products`);
         const result = await response.json();
 
         if (result.success && result.data) {

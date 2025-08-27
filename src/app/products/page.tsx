@@ -6,10 +6,12 @@ import React, { useState, useEffect } from 'react';
 
 import ProductCard from '@/components/product/ProductCard';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLangFetch } from '@/lib/langFetch';
 import { categories } from '@/data/mockData';
 
 export default function ProductsPage() {
   const { t, language } = useLanguage();
+  const lfetch = useLangFetch(language);
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -31,7 +33,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/products?lang=${language}`);
+        const response = await lfetch(`/api/products`);
 
         if (!response.ok) {
           throw new Error(t('products.loadError'));
