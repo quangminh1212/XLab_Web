@@ -53,36 +53,27 @@ export default function RelatedProducts({
     const fetchRelatedProducts = async () => {
       try {
         // Fetch related products from API or import from data
-        const response = await lfetch(
+        const related = await lfetch(
           `/api/products/related?productId=${currentProductId}&categoryId=${categoryId || ''}&limit=${limit}`,
         );
 
-        if (!response.ok) {
-          // Fallback: If API fails, try to fetch products from the same category
-          const categoryResponse = await lfetch(
+        // The related endpoint returns an array directly
+        if (Array.isArray(related)) {
+          setProducts(related);
+        } else {
+          // Fallback: fetch same-category products from list API
+          const data = await lfetch(
             `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
           );
-          if (categoryResponse.ok) {
-            const data = await categoryResponse.json();
-            const allProducts = data.data || [];
-            
-            // Kiểm tra xem allProducts có phải là một mảng không
-            if (Array.isArray(allProducts)) {
-              // Filter out the current product
-              const filtered = allProducts
-                .filter((p: Product) => p.id !== currentProductId)
-                .slice(0, limit);
-              setProducts(filtered);
-            } else {
-              // console.error('Expected array but received:', allProducts);
-              setProducts([]);
-            }
+          const allProducts = data.data || [];
+          if (Array.isArray(allProducts)) {
+            const filtered = allProducts
+              .filter((p: Product) => p.id !== currentProductId)
+              .slice(0, limit);
+            setProducts(filtered);
           } else {
             setProducts([]);
           }
-        } else {
-          const data = await response.json();
-          setProducts(data);
         }
       } catch (_error) {
         // console.error('Error fetching related products:', error);

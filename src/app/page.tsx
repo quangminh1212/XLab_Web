@@ -133,9 +133,7 @@ function HomePage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await lfetch(`/api/products`);
-        const result = await response.json();
-
+        const result = await lfetch(`/api/products`);
         if (result.success && result.data) {
           setProducts(result.data);
         } else {

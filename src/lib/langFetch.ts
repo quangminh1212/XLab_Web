@@ -28,7 +28,29 @@ export async function langFetch(input: string, init: RequestInit & { lang?: Lang
     headers,
   };
 
-  return fetch(url.toString(), finalInit);
+  const res = await fetch(url.toString(), finalInit);
+  const contentType = res.headers.get('content-type') || '';
+  let payload: any = null;
+  if (contentType.includes('application/json')) {
+    try {
+      payload = await res.json();
+    } catch {
+      payload = null;
+    }
+  }
+
+  // Normalize common API shapes to a consistent result
+  if (!res.ok) {
+    const errorMessage = payload?.error || payload?.message || res.statusText || 'Request failed';
+    throw new Error(errorMessage);
+  }
+
+  // If API already wraps { success, data }, return that; else wrap plain JSON
+  if (payload && typeof payload === 'object' && ('success' in payload || 'data' in payload)) {
+    return payload;
+  }
+
+  return { success: true, data: payload };
 }
 
 // React hook to use in client components
