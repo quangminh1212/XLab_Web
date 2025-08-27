@@ -26,7 +26,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
 
       <div className="container mx-auto max-w-full md:max-w-[98%] xl:max-w-[1280px] 2xl:max-w-[1400px] px-4 sm:px-6 pt-6 sm:pt-8 md:pt-10 pb-8 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-4 sm:gap-x-6 md:gap-x-8 lg:gap-x-10 xl:gap-x-12 gap-y-6 sm:gap-y-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-3 sm:gap-x-4 md:gap-x-6 lg:gap-x-8 xl:gap-x-8 gap-y-6 sm:gap-y-8">
           {/* Column 1: Logo and Company Info */}
           <div className="sm:col-span-2 md:col-span-2 lg:col-span-5 xl:col-span-5">
             <div className="flex flex-col sm:flex-row sm:items-start gap-6 lg:gap-8 mb-6">
@@ -95,8 +95,8 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-3 xl:col-span-3">
-            <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-3 xl:col-span-3 lg:pr-6">
+            <h3 className="text-white text-lg sm:text-2xl font-bold mb-4 sm:mb-5 relative group">
               <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">Liên kết</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
@@ -133,8 +133,8 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Contact Info */}
-          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-4 xl:col-span-4">
-            <h3 className="text-white text-base sm:text-xl font-bold mb-4 sm:mb-5 relative group">
+          <div className="flex flex-col items-center sm:items-start md:col-span-1 lg:col-span-4 xl:col-span-4 lg:border-l lg:border-slate-700/40 lg:pl-6">
+            <h3 className="text-white text-lg sm:text-2xl font-bold mb-4 sm:mb-5 relative group">
               <div className="relative z-10 no-scrollbar-mask"><div className="no-scrollbar-content"><span className="inline-block whitespace-nowrap">{t('footer.contactLink')}</span></div></div>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
