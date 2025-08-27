@@ -34,7 +34,7 @@ export default function Footer() {
                 <Link href="/" className="inline-block w-full">
                   <Image src="/images/logo.jpg" alt={t('logo.alt')} width={280} height={140} unoptimized className="w-full h-auto" sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, (max-width: 1024px) 144px, (max-width: 1280px) 160px, 176px" />
                 </Link>
-                <div className="flex justify-center sm:justify-start flex-wrap sm:flex-nowrap gap-2 sm:gap-3 mt-2">
+                <div className="flex justify-center sm:justify-center flex-wrap sm:flex-nowrap gap-2 sm:gap-3 mt-2">
                   <a
                     href={siteConfig.social.facebook}
                     target="_blank"
