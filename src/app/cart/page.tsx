@@ -155,7 +155,7 @@ export default function CartPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const result = await lfetch('/api/products');
+        const result = await lfetch('/api/products', { retries: 2 });
         if (result.success && result.data) {
           setProducts(result.data);
         } else {

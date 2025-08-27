@@ -33,7 +33,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const result = await lfetch(`/api/products`);
+        const result = await lfetch(`/api/products`, { retries: 2 });
         // Use the data property from the API response
         if (result.success && Array.isArray(result.data)) {
           setProducts(result.data);

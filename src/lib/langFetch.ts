@@ -85,6 +85,6 @@ export async function langFetch(input: string, init: LangFetchOptions = {}) {
 // React hook to use in client components
 export function useLangFetch(currentLang?: Lang) {
   const lang = (currentLang || (typeof window !== 'undefined' ? (localStorage.getItem('language') as Lang | null) : null) || 'vie') as Lang;
-  return (input: string, init: RequestInit = {}) => langFetch(input, { ...init, lang });
+  return (input: string, init: LangFetchOptions = {}) => langFetch(input, { ...init, lang });
 }
 

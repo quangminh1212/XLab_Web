@@ -203,7 +203,7 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
   useEffect(() => {
     const fetchTranslated = async () => {
       try {
-        const res = await lfetch(`/api/products/${product.id}`);
+        const res = await lfetch(`/api/products/${product.id}`, { retries: 2 });
         if (res?.success && res?.data) {
           setProduct(res.data as ProductType);
         }

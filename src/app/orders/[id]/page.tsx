@@ -100,7 +100,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
     // Tải danh sách sản phẩm
     const fetchProducts = async () => {
       try {
-        const data = await lfetch('/api/products');
+        const data = await lfetch('/api/products', { retries: 2 });
         setProducts(data.data || []);
       } catch (_error) {
         console.error('Lỗi khi tải danh sách sản phẩm:', _error);

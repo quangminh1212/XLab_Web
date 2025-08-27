@@ -55,6 +55,7 @@ export default function RelatedProducts({
         // Fetch related products from API or import from data
         const related = await lfetch(
           `/api/products/related?productId=${currentProductId}&categoryId=${categoryId || ''}&limit=${limit}`,
+          { retries: 2 }
         );
 
         // The related endpoint returns an array directly
@@ -64,6 +65,7 @@ export default function RelatedProducts({
           // Fallback: fetch same-category products from list API
           const data = await lfetch(
             `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
+            { retries: 2 }
           );
           const allProducts = data.data || [];
           if (Array.isArray(allProducts)) {

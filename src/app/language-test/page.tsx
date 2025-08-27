@@ -25,7 +25,7 @@ export default function LanguageTestPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const result = await lfetch(`/api/products`);
+        const result = await lfetch(`/api/products`, { retries: 2 });
         setProducts(result.data || []);
       } catch (error) {
         console.error('Error fetching products:', error);

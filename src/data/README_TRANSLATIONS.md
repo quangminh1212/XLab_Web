@@ -53,4 +53,25 @@ if (result.success) {
 
 ## Contact
 
-If you have any questions about this migration, please contact the development team. 
+If you have any questions about this migration, please contact the development team.
+
+---
+
+## Developer Guide: Fetching product data with useLangFetch
+
+- Always use `useLangFetch` in client components to call product APIs (`/api/products`, `/api/products/[id]`, `/api/products/related`, `/api/products/:id/faqs`).
+- Why: It automatically sets `lang` and `Accept-Language`, normalizes JSON, and supports retries for transient errors.
+
+Example:
+
+```ts
+import { useLangFetch } from '@/lib/langFetch';
+
+const lfetch = useLangFetch(language);
+const { success, data } = await lfetch('/api/products', { retries: 2 });
+if (success && Array.isArray(data)) setProducts(data);
+```
+
+Notes:
+- Prefer adding `{ retries: 2 }` for product list or related products.
+- Non-product APIs (cart, coupons, auth) can keep using native fetch unless they require language.
