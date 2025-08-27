@@ -2,36 +2,46 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 
-const TARGET_ENDPOINTS = [
-  '/api/products',
-];
+const TARGET_PREFIX = '/api/products';
 
 const isClientFile = (content) => content.includes("'use client'") || content.includes('"use client"');
+
+function classifyEndpoint(url) {
+  if (url.startsWith(`${TARGET_PREFIX}/related`)) return 'related';
+  if (/^\/api\/products\/.+\/faqs/.test(url)) return 'faqs';
+  if (/^\/api\/products\/(?:[^/?]+)(?:[/?]|$)/.test(url)) return 'detail';
+  if (url === TARGET_PREFIX || url.startsWith(`${TARGET_PREFIX}?`)) return 'list';
+  return 'unknown';
+}
+
+function findFetchCalls(content) {
+  const matches = [];
+  // Ensure we don't match lfetch by requiring a word boundary before 'fetch'
+  const regex = /\bfetch\s*\(\s*([`'"])\s*([^`'"\n\r]+)\1/gm;
+  let m;
+  while ((m = regex.exec(content)) !== null) {
+    const raw = m[2].trim();
+    const startIdx = m.index;
+    const line = content.slice(0, startIdx).split(/\r?\n/).length;
+    matches.push({ line, rawUrl: raw });
+  }
+  return matches;
+}
 
 function checkFile(file) {
   const content = fs.readFileSync(file, 'utf8');
   if (!isClientFile(content)) return null; // only check client components/pages
 
   const issues = [];
-  const lines = content.split(/\r?\n/);
+  const calls = findFetchCalls(content);
 
-  lines.forEach((line, idx) => {
-    // simple detection of fetch calls to target endpoints
-    if (/fetch\(\s*[`'"]/.test(line)) {
-      const match = line.match(/fetch\(\s*([`'"])([^`'"]+)\1/);
-      if (match) {
-        const url = match[2];
-        if (TARGET_ENDPOINTS.some((ep) => url.startsWith(ep))) {
-          // Check if useLangFetch is imported or used
-          const hasImport = /useLangFetch/.test(content);
-          const usesLFetch = /\blfetch\s*\(/.test(content);
-          if (!hasImport || !usesLFetch) {
-            issues.push({ line: idx + 1, url });
-          }
-        }
-      }
+  for (const c of calls) {
+    const url = c.rawUrl;
+    if (url.startsWith(TARGET_PREFIX)) {
+      const kind = classifyEndpoint(url);
+      issues.push({ line: c.line, url, kind });
     }
-  });
+  }
 
   return issues.length ? issues : null;
 }
@@ -56,10 +66,10 @@ function main() {
   });
 
   if (report.length) {
-    console.log('❗ Detected direct fetch calls to product APIs without useLangFetch:');
+    console.log('❗ Detected direct fetch calls to product APIs. Please use useLangFetch (lfetch) instead:');
     report.forEach(({ file, issues }) => {
       console.log(`\n- ${file}`);
-      issues.forEach((iss) => console.log(`  line ${iss.line}: ${iss.url}`));
+      issues.forEach((iss) => console.log(`  line ${iss.line} [${iss.kind}]: ${iss.url}`));
     });
     process.exitCode = 1;
   } else {
