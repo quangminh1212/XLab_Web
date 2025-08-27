@@ -20,45 +20,14 @@ import RelatedProducts from '../../../components/product/RelatedProducts';
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
-  const { t, language } = useLanguage();
-  const [translatedDescription, setTranslatedDescription] = useState<string>(description);
-
-  useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
-      const fetchTranslation = async () => {
-        try {
-          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
-          if (response.ok) {
-            const data = await response.json();
-            // ProductDescription translation data for debug: data
-            if (data && data.description) {
-              setTranslatedDescription(data.description);
-            } else {
-              setTranslatedDescription(description); // Fallback to original if no translation
-            }
-          } else {
-            setTranslatedDescription(description); // Fallback to original
-          }
-        } catch (_error) {
-          // Error fetching translation
-          setTranslatedDescription(description); // Fallback to original
-        }
-      };
-
-      fetchTranslation();
-    } else {
-      // Nếu tiếng Việt, sử dụng mô tả gốc
-      setTranslatedDescription(description);
-    }
-  }, [description, language, productId]);
+  const { t } = useLanguage();
 
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.details')}</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm" style={{width: '100%', margin: '0 auto'}}>
         <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
-          <RichTextContent content={translatedDescription} className="product-description" />
+          <RichTextContent content={description} className="product-description" />
         </div>
 
         <style jsx global>{`
@@ -123,38 +92,8 @@ const ProductDescription = ({ description, productId }: { description: string, p
 
 // Component xử lý hiển thị mô tả ngắn sản phẩm
 const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
-  const { language } = useLanguage();
-  const [translatedShortDescription, setTranslatedShortDescription] = useState<string>(shortDescription);
-
-  useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
-      const fetchTranslation = async () => {
-        try {
-          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
-          if (response.ok) {
-            const data = await response.json();
-            // ProductShortDescription translation data for debug: data
-            if (data && data.shortDescription) {
-              setTranslatedShortDescription(data.shortDescription);
-            } else {
-              setTranslatedShortDescription(shortDescription); // Fallback to original if no translation
-            }
-          } else {
-            setTranslatedShortDescription(shortDescription); // Fallback to original
-          }
-        } catch (_error) {
-          // Error fetching short description translation
-          setTranslatedShortDescription(shortDescription); // Fallback to original
-        }
-      };
-
-      fetchTranslation();
-    } else {
-      // Nếu tiếng Việt, sử dụng mô tả gốc
-      setTranslatedShortDescription(shortDescription);
-    }
-  }, [shortDescription, language, productId]);
+  const { } = useLanguage();
+  const translatedShortDescription = shortDescription;
 
   // Chuẩn hóa mô tả ngắn: giải mã HTML entities và loại bỏ thẻ HTML
   const normalizeShortDescription = (input: string) => {
@@ -187,46 +126,15 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
 
 // Component xử lý hiển thị tính năng sản phẩm với khả năng dịch
 const ProductFeatures = ({ features, productId }: { features: any[], productId: string }) => {
-  const { t, language } = useLanguage();
-  const [translatedFeatures, setTranslatedFeatures] = useState<any[]>(features);
+  const { t } = useLanguage();
 
-  useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
-      const fetchTranslation = async () => {
-        try {
-          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
-          if (response.ok) {
-            const data = await response.json();
-            // ProductFeatures translation data for debug: data
-            if (data && data.features) {
-              setTranslatedFeatures(data.features);
-            } else {
-              setTranslatedFeatures(features); // Fallback to original if no translation
-            }
-          } else {
-            setTranslatedFeatures(features); // Fallback to original
-          }
-        } catch (_error) {
-          // Error fetching feature translations
-          setTranslatedFeatures(features); // Fallback to original
-        }
-      };
-
-      fetchTranslation();
-    } else {
-      // Nếu tiếng Việt, sử dụng tính năng gốc
-      setTranslatedFeatures(features);
-    }
-  }, [features, language, productId]);
-
-  if (!translatedFeatures || translatedFeatures.length === 0) return null;
+  if (!features || features.length === 0) return null;
 
   return (
     <div className="mt-8" style={{width: '100%', margin: '0 auto'}}>
       <h3 className="font-medium text-gray-900 mb-2">{t('product.features')}:</h3>
       <ul className="list-disc list-inside space-y-1">
-        {translatedFeatures.map((feature, index) => (
+        {features.map((feature, index) => (
           <li key={index} className="text-gray-600">
             {typeof feature === 'string' ? feature : feature.title}
           </li>
@@ -277,8 +185,9 @@ const ProductSpecifications = ({
 };
 */
 
-export default function ProductDetail({ product }: { product: ProductType }) {
-  const { t } = useLanguage();
+export default function ProductDetail({ product: initialProduct }: { product: ProductType }) {
+  const { t, language } = useLanguage();
+  const [product, setProduct] = useState<ProductType>(initialProduct);
   
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
@@ -288,7 +197,24 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     }
   }, []);
 
-  // Update document title khi component được render
+  // Fetch translated product by language and update title
+  useEffect(() => {
+    const fetchTranslated = async () => {
+      try {
+        const res = await fetch(`/api/products/${product.id}?lang=${language}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.success && json?.data) {
+            setProduct(json.data as ProductType);
+          }
+        }
+      } catch {
+        // no-op, keep initial product
+      }
+    };
+    fetchTranslated();
+  }, [language, product.id]);
+
   useEffect(() => {
     document.title = `${product.name} | ${t('product.metaTitle')}`;
   }, [product.name, t]);
