@@ -24,45 +24,16 @@ const ProductOptions = ({
   optionPrices,
   product
 }: ProductOptionsProps) => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [translatedOptions, setTranslatedOptions] = useState<{ [key: string]: string }>(
     productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {})
   );
   const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
-      const fetchTranslation = async () => {
-        try {
-          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.productOptions) {
-              // Process translations
-              const translations: { [key: string]: string } = {};
-              Object.keys(data.productOptions).forEach(key => {
-                const matchingOriginalKey = productOptions.find(opt => opt.toLowerCase().includes(key.toLowerCase()));
-                if (matchingOriginalKey) {
-                  translations[matchingOriginalKey] = data.productOptions[key];
-                }
-              });
-              setTranslatedOptions(prev => ({...prev, ...translations}));
-              
-              // Set options title if available
-              if (data.optionsTitle) {
-                setOptionsTitle(data.optionsTitle);
-              }
-            }
-          }
-        } catch (_error) {
-          // error fetching option translations (silent)
-        }
-      };
-
-      fetchTranslation();
-    }
-  }, [language, productId, productOptions]);
+    // Options đã đúng ngôn ngữ từ API; đồng bộ title về key i18n
+    setOptionsTitle(t('product.options'));
+  }, [t]);
 
   return (
     <div className="mb-6">

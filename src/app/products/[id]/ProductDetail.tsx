@@ -244,6 +244,25 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
     return '';
   });
 
+  // Đồng bộ options khi product thay đổi (do đổi ngôn ngữ)
+  useEffect(() => {
+    setProductOptions(product.productOptions || []);
+
+    // Giữ selectedOption nếu vẫn còn tồn tại; nếu không, rơi về default hoặc phần tử đầu
+    setSelectedOption(prev => {
+      if (prev && product.productOptions?.includes(prev)) return prev;
+      if (product.defaultProductOption && product.productOptions?.includes(product.defaultProductOption)) return product.defaultProductOption as string;
+      if (product.productOptions && product.productOptions.length > 0) return product.productOptions[0] as string;
+      return '';
+    });
+
+    // Đồng bộ selectedVersion tương tự
+    setSelectedVersion(prev => {
+      if (prev && product.versions?.some(v => v.name === prev)) return prev;
+      return product.versions && product.versions.length > 0 ? (product.versions[0]?.name ?? '') : '';
+    });
+  }, [product]);
+
   // State hiển thị tùy chọn hiện có
   const [_showOptions, _setShowOptions] = useState(false);
 

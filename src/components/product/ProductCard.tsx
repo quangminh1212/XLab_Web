@@ -45,7 +45,7 @@ export default function ProductCard({
   // _onView is optional and may be unused in some contexts
   onView: _onView = () => {},
 }: ProductCardProps) {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -57,47 +57,11 @@ export default function ProductCard({
 
   // Debug log removed in production
 
-  // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
+  // Props đã được dịch từ API; đồng bộ state khi props đổi
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
-    if (language === 'eng') {
-      const fetchTranslation = async () => {
-        try {
-          const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
-          if (response.ok) {
-            const data = await response.json();
-            // debug: translation data fetched
-            // Cập nhật mô tả ngắn đã dịch
-            if (data && data.shortDescription) {
-              setTranslatedDescription(data.shortDescription);
-            } else {
-              setTranslatedDescription(description); // Fallback to original if no translation
-            }
-
-            // Cập nhật tên sản phẩm đã dịch
-            if (data && data.name) {
-              setTranslatedName(data.name);
-            } else {
-              setTranslatedName(name); // Fallback to original if no translation
-            }
-          } else {
-            setTranslatedDescription(description); // Fallback to original
-            setTranslatedName(name);
-          }
-        } catch (_error) {
-          // console.error('Error fetching translation:', error);
-          setTranslatedDescription(description); // Fallback to original
-          setTranslatedName(name);
-        }
-      };
-
-      fetchTranslation();
-    } else {
-      // Nếu tiếng Việt, sử dụng mô tả và tên gốc
-      setTranslatedDescription(description);
-      setTranslatedName(name);
-    }
-  }, [description, name, language, id]);
+    setTranslatedDescription(description);
+    setTranslatedName(name);
+  }, [description, name]);
 
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
