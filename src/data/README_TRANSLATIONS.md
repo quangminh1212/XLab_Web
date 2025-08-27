@@ -15,14 +15,27 @@ Each product has its own file named after its ID (e.g., `chatgpt.json`, `grok.js
 
 ## API Changes
 
-The `/api/product-translations` endpoint has been updated to use the new i18n structure, but it is now marked as deprecated. 
+The `/api/product-translations` endpoint is now removed and returns HTTP 410 Gone.
 
-Please use the `/api/products/[id]` endpoint with the `lang` query parameter instead.
+Please use the `/api/products/[id]` endpoint with the `lang` query parameter instead, or set the `Accept-Language` header.
 
 Example:
 ```
 GET /api/products/chatgpt?lang=eng
 ```
+
+For client-side code, prefer the new helper that automatically appends `lang` and sets `Accept-Language`:
+
+```ts
+import { useLangFetch } from '@/lib/langFetch';
+
+const lfetch = useLangFetch(language); // language is 'eng' | 'vie'
+const result = await lfetch('/api/products');
+if (result.success) {
+  // result.data is your products array
+}
+```
+
 
 ## Migration Process
 

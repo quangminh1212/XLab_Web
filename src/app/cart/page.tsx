@@ -16,6 +16,7 @@ import {
 import { useCart } from '@/components/cart/CartContext';
 import { useTranslation } from '@/i18n/client';
 import { calculateCartTotals, formatCurrency } from '@/lib/utils';
+import { useLangFetch } from '@/lib/langFetch';
 // import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 
 // Kết hợp interface CartItem từ CartContext và utils
@@ -53,6 +54,7 @@ export default function CartPage() {
   const [couponError, setCouponError] = useState('');
   const [showCouponInfo, setShowCouponInfo] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
+  const lfetch = useLangFetch();
   const [loading, setLoading] = useState(true);
   const [addedProductName, setAddedProductName] = useState<string | null>(null);
   const [showAddedToast, setShowAddedToast] = useState(false);
@@ -153,9 +155,7 @@ export default function CartPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
-        const result = await response.json();
-
+        const result = await lfetch('/api/products');
         if (result.success && result.data) {
           setProducts(result.data);
         } else {

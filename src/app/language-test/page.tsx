@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useLangFetch } from '@/lib/langFetch';
 
 interface Product {
   id: string;
@@ -16,6 +17,7 @@ interface Product {
 
 export default function LanguageTestPage() {
   const [language, setLanguage] = useState<'vie' | 'eng'>('vie');
+  const lfetch = useLangFetch(language);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,8 +25,7 @@ export default function LanguageTestPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/products?lang=${language}`);
-        const result = await response.json();
+        const result = await lfetch(`/api/products`);
         setProducts(result.data || []);
       } catch (error) {
         console.error('Error fetching products:', error);
