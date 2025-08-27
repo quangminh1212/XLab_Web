@@ -204,18 +204,15 @@ export default function ProductDetail({ product: initialProduct }: { product: Pr
     const fetchTranslated = async () => {
       try {
         const res = await lfetch(`/api/products/${product.id}`);
-        if (res.ok) {
-          const json = await res.json();
-          if (json?.success && json?.data) {
-            setProduct(json.data as ProductType);
-          }
+        if (res?.success && res?.data) {
+          setProduct(res.data as ProductType);
         }
       } catch {
         // no-op, keep initial product
       }
     };
     fetchTranslated();
-  }, [language, product.id]);
+  }, [language, product.id, lfetch]);
 
   useEffect(() => {
     document.title = `${product.name} | ${t('product.metaTitle')}`;

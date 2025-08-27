@@ -5,6 +5,7 @@ import Link from 'next/link';
 // import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import { useLangFetch } from '@/lib/langFetch';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -29,17 +30,15 @@ export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
+  const lfetch = useLangFetch();
   const { t, localCode } = useLanguage();
 
   useEffect(() => {
     // Tải danh sách sản phẩm
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data.data || []);
-        }
+        const data = await lfetch('/api/products');
+        setProducts(data.data || []);
       } catch (_error) {
         console.error('Lỗi khi tải danh sách sản phẩm:', _error);
       }

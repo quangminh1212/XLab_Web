@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import { useLangFetch } from '@/lib/langFetch';
 
 import Avatar from '@/components/common/Avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -80,6 +81,7 @@ export default function AccountPage() {
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
   const { t, language } = useLanguage();
+  const lfetch = useLangFetch(language);
 
   const formatCurrency = (amount: number) => {
     if (language === 'eng') {
@@ -223,11 +225,11 @@ export default function AccountPage() {
         (async () => {
           try {
             // Lấy dữ liệu sản phẩm để có thông tin originalPrice chính xác
-            const productsRes = await fetch('/api/products', { cache: 'no-store' });
+            const productsRes = await lfetch('/api/products', { cache: 'no-store' });
             let productsData: any[] = [];
-            if (productsRes.ok) {
-              const data = await productsRes.json();
-              productsData = data.products || [];
+            if ((productsRes as any)?.success) {
+              const data = productsRes as any;
+              productsData = data.products || data.data || [];
             }
 
             // Lấy đơn hàng từ localStorage
@@ -298,11 +300,11 @@ export default function AccountPage() {
             // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
             try {
               // Vẫn cần lấy dữ liệu sản phẩm cho fallback
-              const productsRes = await fetch('/api/products', { cache: 'no-store' });
+              const productsRes = await lfetch('/api/products', { cache: 'no-store' });
               let productsData: any[] = [];
-              if (productsRes.ok) {
-                const data = await productsRes.json();
-                productsData = data.products || [];
+              if ((productsRes as any)?.success) {
+                const data = productsRes as any;
+                productsData = data.products || data.data || [];
               }
 
               const localOrders = JSON.parse(

@@ -15,8 +15,8 @@ import {
 
 import { useCart } from '@/components/cart/CartContext';
 import { useTranslation } from '@/i18n/client';
-import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 import { useLangFetch } from '@/lib/langFetch';
+import { calculateCartTotals, formatCurrency } from '@/lib/utils';
 // import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 
 // Kết hợp interface CartItem từ CartContext và utils

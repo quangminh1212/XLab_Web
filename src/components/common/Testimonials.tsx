@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { useLangFetch } from '@/lib/langFetch';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLangFetch } from '@/lib/langFetch';
 
 interface Testimonial {
   id: string;
@@ -97,7 +97,7 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [productId, limit, testimonials.length, language]);
+  }, [productId, limit, testimonials.length, language, lfetch]);
 
   const nextTestimonial = () => {
     setActiveIndex((prev) => (prev + 1) % testimonials.length);

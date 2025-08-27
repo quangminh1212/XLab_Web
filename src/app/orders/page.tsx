@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import { useLangFetch } from '@/lib/langFetch';
 
 // Khai báo kiểu dữ liệu
 interface OrderItem {
@@ -84,16 +85,14 @@ export default function OrdersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [products, setProducts] = useState<any[]>([]);
+  const lfetch = useLangFetch();
 
   useEffect(() => {
     // Tải danh sách sản phẩm
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data.data || []);
-        }
+        const data = await lfetch('/api/products');
+        setProducts(data.data || []);
       } catch (error) {
         console.error('Lỗi khi tải danh sách sản phẩm:', error);
       }

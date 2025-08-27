@@ -6,8 +6,8 @@ import React, { useState, useEffect } from 'react';
 
 import ProductCard from '@/components/product/ProductCard';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useLangFetch } from '@/lib/langFetch';
 import { categories } from '@/data/mockData';
+import { useLangFetch } from '@/lib/langFetch';
 
 export default function ProductsPage() {
   const { t, language } = useLanguage();
@@ -49,7 +49,7 @@ export default function ProductsPage() {
     };
 
     fetchProducts();
-  }, [t, language]);
+  }, [t, language, lfetch]);
 
   // Update title when component is rendered
   useEffect(() => {

@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import { useLangFetch } from '@/lib/langFetch';
+import { useState, useEffect } from 'react';
 
 interface Product {
   id: string;
@@ -35,7 +35,7 @@ export default function LanguageTestPage() {
     };
 
     fetchProducts();
-  }, [language]);
+  }, [language, lfetch]);
 
   return (
     <div className="container mx-auto py-8 px-4">

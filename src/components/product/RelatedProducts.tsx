@@ -86,7 +86,7 @@ export default function RelatedProducts({
     if (currentProductId) {
       fetchRelatedProducts();
     }
-  }, [currentProductId, categoryId, limit, language]);
+  }, [currentProductId, categoryId, limit, language, lfetch]);
 
   if (loading) {
     return (

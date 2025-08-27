@@ -49,29 +49,21 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const fetchNotifications = useCallback(async () => {
     try {
       const res = await lfetch('/api/notifications', {
-        headers: { 'x-user-language': language }
+        headers: { 'x-user-language': language },
       });
-      // lfetch throws on non-ok; if success, notifications array may be under .notifications or .data
       const data = (res && typeof res === 'object' && 'notifications' in res) ? res : res?.data;
       setNotifications((data?.notifications as any[]) || []);
     } catch (error: any) {
       if (error?.message?.includes('Unauthorized') || error?.message?.includes('401')) {
+        // User chưa đăng nhập, không hiển thị thông báo
         setNotifications([]);
       } else {
         console.error('Failed to fetch notifications:', error);
       }
     } finally {
-        // User chưa đăng nhập, không hiển thị thông báo
-        setNotifications([]);
-      } else {
-        console.error('Failed to fetch notifications:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-    } finally {
       setLoading(false);
     }
-  }, [language]);
+  }, [language, lfetch]);
 
   // Hàm đánh dấu một thông báo đã đọc
   const markAsRead = async (id: number | string) => {

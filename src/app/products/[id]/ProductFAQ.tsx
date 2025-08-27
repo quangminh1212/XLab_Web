@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useLangFetch } from '@/lib/langFetch';
 
 interface FAQ {
   question: string;
@@ -35,6 +36,7 @@ const defaultFAQs: FAQ[] = [
 
 export default function ProductFAQ({ productId }: ProductFAQProps) {
   const { t, language } = useLanguage();
+  const lfetch = useLangFetch(language);
   const [faqs, setFaqs] = useState<FAQ[]>(defaultFAQs);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -43,13 +45,11 @@ export default function ProductFAQ({ productId }: ProductFAQProps) {
     const fetchFAQs = async () => {
       try {
         // Thử lấy FAQs từ API
-        const response = await fetch(`/api/products/${productId}/faqs?lang=${language}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
-            setFaqs(data);
-            return;
-          }
+        const data = await lfetch(`/api/products/${productId}/faqs`);
+        const arr = (data && 'data' in data) ? (data as any).data : data;
+        if (Array.isArray(arr) && arr.length > 0) {
+          setFaqs(arr);
+          return;
         }
         // Nếu không có dữ liệu từ API, giữ nguyên defaultFAQs
       } catch (error) {
@@ -58,7 +58,7 @@ export default function ProductFAQ({ productId }: ProductFAQProps) {
     };
 
     fetchFAQs();
-  }, [productId, language]);
+  }, [productId, language, lfetch]);
 
   const toggleAccordion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);

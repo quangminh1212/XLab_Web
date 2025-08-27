@@ -147,7 +147,7 @@ function HomePage() {
     };
 
     fetchProducts();
-  }, [language]);
+  }, [language, lfetch]);
 
   // Lọc sản phẩm nổi bật (giả định tất cả sản phẩm đều là featured trong trường hợp này)
   const featuredProducts = products.slice(0, 6);
