@@ -169,7 +169,7 @@ export default function CartPage() {
     };
 
     fetchProducts();
-  }, []);
+  }, [lfetch]);
 
   // Enrich cart items with image and description from product data
   const cart = (cartItems.length > 0 ? cartItems : forcedCartItems).map((item) => {

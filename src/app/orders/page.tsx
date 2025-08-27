@@ -99,7 +99,7 @@ export default function OrdersPage() {
     };
 
     fetchProducts();
-  }, []);
+  }, [lfetch]);
 
   // Hàm lấy ảnh sản phẩm từ danh sách sản phẩm
   const getProductImage = (productId: string, _productName: string) => {
