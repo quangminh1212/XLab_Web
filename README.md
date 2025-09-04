@@ -184,6 +184,10 @@ npm run build
 npm run start
 ```
 
+### Health Check Endpoint
+
+- Liveness/Readiness: `GET /api/health` returns `{ status: "healthy", time: "..." }` with 200
+
 ### Environment Considerations
 
 - Set `NODE_ENV=production` for production environments
