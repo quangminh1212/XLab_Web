@@ -62,8 +62,12 @@ next-env.d.ts
 /data/transactions.json
 
 # Secure user data - NEVER commit these!
+/data/users/
 /data/backups/
 *.user_*.json
+# Ignore runtime data files
+/data/*.json
+/data/**/*.json
 
 # IDE
 .idea/
@@ -148,6 +152,9 @@ tmp_api_products.json
 
 # Local runtime data snapshots (do not commit root-level products.json)
 /products.json
+# Settings and notifications generated at runtime
+/data/settings.json
+/data/notifications.json
 
 # Editor/maintenance artifacts
 *.bak
